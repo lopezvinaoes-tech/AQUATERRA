@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5F5F7">
+<style>
+html{scroll-behavior:smooth;scroll-padding-top:52px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:#F5F5F7;color:#1D1D1F;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box}
+a{color:#0066CC;text-decoration:none}
+a:hover{color:#0077ED}
+[data-theme="noche"] a{color:#2997FF}
+button,a{touch-action:manipulation}
+button{-webkit-user-select:none;user-select:none}
+button,select,input{font-family:inherit}
+select option{color:#1D1D1F;background:#FFFFFF}
+::selection{background:#C9F15D;color:#1D1D1F}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" data-theme="{{ themeName }}" style="background:{{ th.bg }};color:{{ th.ink }};transition:background .6s;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;overflow-x:clip">
+
+<header style="position:fixed;top:0;left:0;right:0;z-index:50;padding-top:env(safe-area-inset-top);background:{{ hdrBg }};border-bottom:1px solid {{ hdrBorder }};backdrop-filter:{{ hdrBlur }};-webkit-backdrop-filter:{{ hdrBlur }};transition:background .35s, border-color .35s">
+  <div style="max-width:1120px;margin:0 auto;height:52px;padding:0 clamp(16px,3vw,24px);display:flex;align-items:center;justify-content:space-between;gap:20px">
+    <a href="#inicio" onClick="{{ closeMenu }}" style="display:flex;align-items:center;gap:9px;min-height:44px;color:{{ hdrInk }};font-weight:600;font-size:18px;letter-spacing:-0.02em;transition:color .35s">
+      <span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>
+      <span>Aquaterra</span>
+    </a>
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <nav style="display:flex;align-items:center;gap:clamp(18px,2.4vw,32px)">
+        <a href="Aquaterra%20Proyectos.dc.html" style="font-size:13px;letter-spacing:-0.01em;color:{{ hdrSub }};transition:color .3s" style-hover="opacity:0.7">Proyectos</a>
+        <a href="#inversiones" style="font-size:13px;letter-spacing:-0.01em;color:{{ hdrSub }};transition:color .3s" style-hover="opacity:0.7">Inversiones</a>
+        <a href="#edificio" style="font-size:13px;letter-spacing:-0.01em;color:{{ hdrSub }};transition:color .3s" style-hover="opacity:0.7">El edificio</a>
+        <a href="#nosotros" style="font-size:13px;letter-spacing:-0.01em;color:{{ hdrSub }};transition:color .3s" style-hover="opacity:0.7">Nosotros</a>
+        <a href="Aquaterra%20Blog.dc.html" style="font-size:13px;letter-spacing:-0.01em;color:{{ hdrSub }};transition:color .3s" style-hover="opacity:0.7">Blog</a>
+        <a href="#contacto" style="font-size:13px;letter-spacing:-0.01em;color:{{ hdrSub }};transition:color .3s" style-hover="opacity:0.7">Contacto</a>
+      </nav>
+    </sc-if>
+    <div style="display:flex;align-items:center;gap:6px">
+      <button onClick="{{ openModal }}" style="height:32px;padding:0 15px;border-radius:999px;border:0;cursor:pointer;background:#0071E3;color:#FFFFFF;font-size:13px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap;transition:background .2s" style-hover="background:#0077ED">{{ ctaLabel }}</button>
+      <sc-if value="{{ narrowNav }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleMenu }}" aria-label="Menú" style="width:44px;height:44px;margin-right:-10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:0;background:transparent;cursor:pointer">
+          <span style="width:18px;height:1.5px;border-radius:1px;background:{{ hdrInk }};transform:{{ burgerA }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
+          <span style="width:18px;height:1.5px;border-radius:1px;background:{{ hdrInk }};transform:{{ burgerB }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
+        </button>
+      </sc-if>
+    </div>
+  </div>
+</header>
+<sc-if value="{{ menu }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:49;background:{{ menuBg }};backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);padding:calc(72px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom));display:flex;flex-direction:column;overflow:auto;overscroll-behavior:contain">
+    <sc-for list="{{ menuItems }}" as="m" hint-placeholder-count="6">
+      <a href="{{ m.href }}" onClick="{{ closeMenu }}" style="display:flex;align-items:center;justify-content:space-between;min-height:60px;font-size:28px;font-weight:600;letter-spacing:-0.025em;color:{{ th.ink }};border-bottom:1px solid {{ th.line }}">{{ m.label }}<span style="font-size:24px;font-weight:400;color:{{ th.mute }}">›</span></a>
+    </sc-for>
+    <button onClick="{{ openModal }}" style="margin-top:28px;height:50px;border-radius:14px;border:0;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500;cursor:pointer">Agende una asesoría</button>
+  </div>
+</sc-if>
+
+<section id="inicio" ref="{{ heroRef }}" data-screen-label="01 Inicio" style="position:relative;height:100svh;min-height:600px;max-height:1100px;overflow:hidden;background:{{ heroBg }};transition:background .9s">
+  <div ref="{{ cityRef }}" style="position:absolute;inset:0"></div>
+  <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ dayHaze }};transition:opacity .9s;background:linear-gradient(to bottom, rgba(231,233,236,0.75) 0%, rgba(231,233,236,0) 16%), linear-gradient(to top, #E7E9EC 0%, rgba(231,233,236,0.94) 26%, rgba(231,233,236,0.45) 42%, rgba(231,233,236,0) 60%)"></div>
+  <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ nightHaze }};transition:opacity .9s;background:linear-gradient(to bottom, rgba(10,12,16,0.8) 0%, rgba(10,12,16,0) 16%), linear-gradient(to top, #0A0C10 0%, rgba(10,12,16,0.92) 26%, rgba(10,12,16,0.42) 42%, rgba(10,12,16,0) 60%)"></div>
+
+  <div style="position:absolute;left:0;right:0;bottom:0;padding:0 clamp(20px,3.2vw,48px) calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:clamp(24px,5vh,64px);pointer-events:none">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap">
+      <div data-reveal="100" style="display:flex;flex-direction:column;gap:16px;max-width:760px;padding:{{ heroPad }};border-radius:20px;background:{{ heroGlass }};border:1px solid {{ heroGlassBd }};backdrop-filter:{{ heroBlur }};-webkit-backdrop-filter:{{ heroBlur }}">
+        <span style="width:56px;height:2px;background:#C9F15D"></span>
+        <div style="display:flex;align-items:flex-start;gap:clamp(20px,3vw,48px);flex-wrap:wrap">
+          <h1 style="margin:0;font-size:clamp(42px,5.8vw,88px);line-height:0.98;letter-spacing:-0.035em;font-weight:700;color:{{ ink }};transition:color .9s">Una <span style="color:{{ limeText }};transition:color .9s">Nueva</span> Dimensión<br>del <span style="color:#86868B">Real Estate</span></h1>
+          <span style="padding-top:14px;font-size:13px;font-weight:500;line-height:1.4;color:{{ sub }};transition:color .9s">Compras en pozo<br>e inversión inteligente</span>
+        </div>
+        <p style="margin:0;font-size:clamp(15px,1.2vw,18px);line-height:1.5;color:{{ sub }};transition:color .9s">El futuro de la inversión inmobiliaria en Paraguay empieza aquí.</p>
+      </div>
+      <div data-reveal="300">
+        <div style="width:184px;padding:16px 18px 18px;border-radius:20px;background:{{ cardBg }};border:1px solid {{ cardBorder }};backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);color:#FFFFFF;display:flex;flex-direction:column;gap:30px;transition:background .9s, border-color .9s">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.72)">Inversores</span>
+            <span style="width:14px;height:14px;border:1.5px solid #C9F15D;border-radius:3px;transform:rotate(45deg);margin-right:3px"></span>
+          </div>
+          <span style="font-size:46px;line-height:1;letter-spacing:-0.05em;text-align:right">+10K</span>
+        </div>
+      </div>
+    </div>
+
+    <div data-reveal="450" style="display:grid;grid-template-columns:{{ heroCols }};align-items:center;gap:20px">
+      <sc-if value="{{ heroWide }}" hint-placeholder-val="{{ true }}">
+      <div style="justify-self:start;display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding:6px 10px;border-radius:10px;background:{{ heroGlass }};border:1px solid {{ heroGlassBd }};backdrop-filter:{{ heroBlur }};-webkit-backdrop-filter:{{ heroBlur }}">
+        <span style="font-size:12px;font-weight:500;color:{{ sub }};transition:color .9s">Explore la ciudad</span>
+        <span style="width:72px;height:2px;background:#C9F15D"></span>
+      </div>
+      </sc-if>
+      <button onClick="{{ toggleMode }}" aria-label="Cambiar modo día / noche" style="pointer-events:auto;position:relative;display:flex;align-items:center;padding:2px;border-radius:10px;border:0;background:{{ segTrack }};backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);cursor:pointer">
+        <span style="position:absolute;top:2px;left:{{ knobLeft }};width:84px;height:40px;border-radius:8px;background:{{ knobBg }};box-shadow:0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);transition:left .35s cubic-bezier(.3,.7,.2,1), background .35s"></span>
+        <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;letter-spacing:-0.01em;color:{{ dayInk }};transition:color .3s">Día</span>
+        <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;letter-spacing:-0.01em;color:{{ nightInk }};transition:color .3s">Noche</span>
+      </button>
+      <div style="justify-self:end;display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:3px 3px 3px 10px;border-radius:20px;background:{{ heroGlass }};border:1px solid {{ heroGlassBd }};backdrop-filter:{{ heroBlur }};-webkit-backdrop-filter:{{ heroBlur }}">
+        <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+          <span style="font-size:12px;line-height:1.45;text-align:right;color:{{ sub }};transition:color .9s">Desarrollos en Asunción<br>y el interior del país</span>
+        </sc-if>
+        <div style="display:flex">
+          <span style="width:32px;height:32px;border-radius:50%;background:#141517;border:2px solid {{ heroBg }};display:flex;align-items:center;justify-content:center"><span style="width:9px;height:9px;background:#C9F15D;transform:rotate(45deg);border-radius:1px"></span></span>
+          <span style="width:32px;height:32px;margin-left:-8px;border-radius:50%;border:2px solid {{ heroBg }};background:repeating-linear-gradient(135deg,#C9CCD1 0 2px,#DADCE0 2px 6px)"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="inversiones" data-screen-label="02 Por qué Paraguay" style="background:{{ th.bg }};transition:background .6s;padding:clamp(88px,12vw,168px) clamp(20px,3.2vw,48px)">
+  <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:clamp(48px,7vw,112px)">
+    <div data-reveal="" style="position:{{ stickyPos }};top:120px;align-self:start;display:flex;flex-direction:column;gap:22px">
+      <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:{{ th.mute }}">Por qué Paraguay</span>
+      <h2 style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Un mercado con <span style="color:#86868B">ventajas reales</span> para el inversor</h2>
+      <p style="margin:0;max-width:440px;font-size:17px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Lo que hace de Paraguay uno de los destinos más atractivos de la región para invertir en propiedades.</p>
+    </div>
+    <div ref="{{ tlRef }}" style="position:relative;padding-left:64px">
+      <span style="position:absolute;left:11px;top:12px;bottom:40px;width:2px;background:{{ th.line }}"></span>
+      <span style="position:absolute;left:11px;top:0;width:2px;height:{{ tlFill }};background:{{ th.ink }}"></span>
+
+      <div data-tl-item="" data-reveal="" style="position:relative;display:flex;flex-direction:column;gap:10px;padding-bottom:64px">
+        <span style="position:absolute;left:-64px;top:0;width:24px;height:24px;border-radius:50%;background:{{ t1.bg }};border:2px solid {{ t1.bd }};transition:background .4s, border-color .4s"></span>
+        <span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ th.mute }};line-height:24px">01</span>
+        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Régimen tributario simple</h3>
+        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">El conocido sistema 10-10-10: IVA, impuesto a la renta personal y a la renta empresarial con tasas del 10 %.</p>
+      </div>
+      <div data-tl-item="" data-reveal="" style="position:relative;display:flex;flex-direction:column;gap:10px;padding-bottom:64px">
+        <span style="position:absolute;left:-64px;top:0;width:24px;height:24px;border-radius:50%;background:{{ t2.bg }};border:2px solid {{ t2.bd }};transition:background .4s, border-color .4s"></span>
+        <span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ th.mute }};line-height:24px">02</span>
+        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Estabilidad macroeconómica</h3>
+        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Inflación controlada y una moneda estable que dan previsibilidad a las inversiones de mediano y largo plazo.</p>
+      </div>
+      <div data-tl-item="" data-reveal="" style="position:relative;display:flex;flex-direction:column;gap:10px;padding-bottom:64px">
+        <span style="position:absolute;left:-64px;top:0;width:24px;height:24px;border-radius:50%;background:{{ t3.bg }};border:2px solid {{ t3.bd }};transition:background .4s, border-color .4s"></span>
+        <span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ th.mute }};line-height:24px">03</span>
+        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Mercado en dólares</h3>
+        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Gran parte de las operaciones inmobiliarias se pactan en USD, lo que protege el valor de su capital.</p>
+      </div>
+      <div data-tl-item="" data-reveal="" style="position:relative;display:flex;flex-direction:column;gap:10px;padding-bottom:64px">
+        <span style="position:absolute;left:-64px;top:0;width:24px;height:24px;border-radius:50%;background:{{ t4.bg }};border:2px solid {{ t4.bd }};transition:background .4s, border-color .4s"></span>
+        <span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ th.mute }};line-height:24px">04</span>
+        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Precio de entrada en pozo</h3>
+        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Comprar en etapa de pozo permite acceder a valores menores que los de una unidad terminada y pagar en cuotas durante la obra.</p>
+      </div>
+      <div data-tl-item="" data-reveal="" style="position:relative;display:flex;flex-direction:column;gap:10px;padding-bottom:64px">
+        <span style="position:absolute;left:-64px;top:0;width:24px;height:24px;border-radius:50%;background:{{ t5.bg }};border:2px solid {{ t5.bd }};transition:background .4s, border-color .4s"></span>
+        <span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ th.mute }};line-height:24px">05</span>
+        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Demanda de alquiler en Asunción</h3>
+        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Barrios como Villa Morra, Carmelitas y Las Lomas concentran la demanda de profesionales y empresas.</p>
+      </div>
+      <div data-tl-item="" data-reveal="" style="position:relative;display:flex;flex-direction:column;gap:10px">
+        <span style="position:absolute;left:-64px;top:0;width:24px;height:24px;border-radius:50%;background:{{ t6.bg }};border:2px solid {{ t6.bd }};transition:background .4s, border-color .4s"></span>
+        <span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ th.mute }};line-height:24px">06</span>
+        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Residencia para extranjeros</h3>
+        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Procesos de radicación accesibles para inversores del exterior que deciden vivir o tener base en el país.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="edificio" ref="{{ towerSecRef }}" data-screen-label="03 Edificio" style="position:relative;height:940vh;background:{{ tw.bg }};transition:background .6s">
+  <div id="cocheras" style="position:absolute;left:0;top:53.6%;width:1px;height:1px;pointer-events:none"></div>
+  <div style="position:sticky;top:0;height:100svh;overflow:hidden">
+    <div ref="{{ towerRef }}" style="position:absolute;inset:0"></div>
+    <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ dayHaze }};transition:opacity .6s;background:linear-gradient(to right, rgba(19,21,25,0.94) 0%, rgba(19,21,25,0.7) 26%, rgba(19,21,25,0) 46%), linear-gradient(to bottom, #131519 0%, rgba(19,21,25,0) 14%, rgba(19,21,25,0) 86%, #131519 100%)"></div>
+    <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ nightHaze }};transition:opacity .6s;background:linear-gradient(to right, rgba(6,7,10,0.94) 0%, rgba(6,7,10,0.7) 26%, rgba(6,7,10,0) 46%), linear-gradient(to bottom, #06070A 0%, rgba(6,7,10,0) 14%, rgba(6,7,10,0) 86%, #06070A 100%)"></div>
+
+    <div ref="{{ linesRef }}" style="position:absolute;inset:0;pointer-events:none">
+      <span data-line="0" style="position:absolute;left:0;top:0;width:0;height:1px;background:#C9F15D;transform-origin:0 50%;opacity:0"></span>
+      <span data-line="1" style="position:absolute;left:0;top:0;width:0;height:1px;background:#C9F15D;transform-origin:0 50%;opacity:0"></span>
+      <span data-line="2" style="position:absolute;left:0;top:0;width:0;height:1px;background:#C9F15D;transform-origin:0 50%;opacity:0"></span>
+      <span data-line="3" style="position:absolute;left:0;top:0;width:0;height:1px;background:#C9F15D;transform-origin:0 50%;opacity:0"></span>
+      <span data-line="4" style="position:absolute;left:0;top:0;width:0;height:1px;background:#C9F15D;transform-origin:0 50%;opacity:0"></span>
+    </div>
+    <div ref="{{ nodesRef }}" style="position:absolute;inset:0;pointer-events:none">
+      <div data-node="0" style="position:absolute;left:0;top:0;width:0;height:0;opacity:0"><span style="position:absolute;left:-8px;top:-8px;width:16px;height:16px;border-radius:50%;background:#C9F15D;box-shadow:0 0 0 6px rgba(201,241,93,0.22), 0 0 26px rgba(201,241,93,0.65)"></span></div>
+      <div data-node="1" style="position:absolute;left:0;top:0;width:0;height:0;opacity:0"><span style="position:absolute;left:-8px;top:-8px;width:16px;height:16px;border-radius:50%;background:#C9F15D;box-shadow:0 0 0 6px rgba(201,241,93,0.22), 0 0 26px rgba(201,241,93,0.65)"></span></div>
+      <div data-node="2" style="position:absolute;left:0;top:0;width:0;height:0;opacity:0"><span style="position:absolute;left:-8px;top:-8px;width:16px;height:16px;border-radius:50%;background:#C9F15D;box-shadow:0 0 0 6px rgba(201,241,93,0.22), 0 0 26px rgba(201,241,93,0.65)"></span></div>
+      <div data-node="3" style="position:absolute;left:0;top:0;width:0;height:0;opacity:0"><span style="position:absolute;left:-8px;top:-8px;width:16px;height:16px;border-radius:50%;background:#C9F15D;box-shadow:0 0 0 6px rgba(201,241,93,0.22), 0 0 26px rgba(201,241,93,0.65)"></span></div>
+      <div data-node="4" style="position:absolute;left:0;top:0;width:0;height:0;opacity:0"><span style="position:absolute;left:-8px;top:-8px;width:16px;height:16px;border-radius:50%;background:#C9F15D;box-shadow:0 0 0 6px rgba(201,241,93,0.22), 0 0 26px rgba(201,241,93,0.65)"></span></div>
+    </div>
+
+    <div ref="{{ twInfoRef }}" style="position:absolute;left:clamp(20px,3.2vw,48px);top:0;bottom:0;width:{{ twInfoW }};padding:{{ twInfoPad }};display:flex;flex-direction:column;justify-content:{{ twInfoJustify }};gap:28px;color:#F5F5F7;pointer-events:none">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:rgba(245,245,247,0.62)">El proyecto, piso por piso</span>
+        <h2 style="margin:0;font-size:clamp(30px,3.6vw,54px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Recorra una inversión <span style="color:#86868B">de arriba a abajo</span></h2>
+        <sc-if value="{{ twWide }}" hint-placeholder-val="{{ true }}">
+          <p style="margin:0;max-width:380px;font-size:16px;line-height:1.6;color:rgba(245,245,247,0.72);text-wrap:pretty">Así analizamos cada desarrollo antes de recomendarlo: desde las amenities hasta la calle.</p>
+        </sc-if>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:14px">
+        <span style="font-size:clamp(36px,4vw,60px);line-height:1;letter-spacing:-0.045em;font-weight:500;color:#C9F15D">{{ twFloor }}</span>
+        <span style="font-size:12px;font-weight:500;color:rgba(245,245,247,0.62)">Nivel actual</span>
+      </div>
+      <div ref="{{ cardsRef }}" style="position:relative;height:176px;max-width:340px">
+        <div data-card="0" style="position:absolute;left:0;top:0;width:100%;opacity:0;visibility:hidden;padding:18px 20px;border-radius:16px;background:{{ tw.cardBg }};border:1px solid {{ tw.cardBd }};color:{{ tw.cardInk }};display:flex;flex-direction:column;gap:8px;box-shadow:0 24px 48px -24px rgba(0,0,0,0.6)">
+          <span style="display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:500;color:{{ tw.cardMute }}"><span>01 · Rooftop</span><span>Nivel 18</span></span>
+          <span style="font-size:21px;line-height:1.15;font-weight:500;letter-spacing:-0.02em">Amenities en altura</span>
+          <span style="font-size:14px;line-height:1.5;color:{{ tw.cardMute }}">Piscina, gimnasio y quincho que sostienen el valor de alquiler.</span>
+        </div>
+        <div data-card="1" style="position:absolute;left:0;top:0;width:100%;opacity:0;visibility:hidden;padding:18px 20px;border-radius:16px;background:{{ tw.cardBg }};border:1px solid {{ tw.cardBd }};color:{{ tw.cardInk }};display:flex;flex-direction:column;gap:8px;box-shadow:0 24px 48px -24px rgba(0,0,0,0.6)">
+          <span style="display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:500;color:{{ tw.cardMute }}"><span>02 · Residencias</span><span>Pisos 12–17</span></span>
+          <span style="font-size:21px;line-height:1.15;font-weight:500;letter-spacing:-0.02em">De 2 a 4 dormitorios</span>
+          <span style="font-size:14px;line-height:1.5;color:{{ tw.cardMute }}">Plantas eficientes, pensadas para renta de corta y larga estadía.</span>
+        </div>
+        <div data-card="2" style="position:absolute;left:0;top:0;width:100%;opacity:0;visibility:hidden;padding:18px 20px;border-radius:16px;background:{{ tw.cardBg }};border:1px solid {{ tw.cardBd }};color:{{ tw.cardInk }};display:flex;flex-direction:column;gap:8px;box-shadow:0 24px 48px -24px rgba(0,0,0,0.6)">
+          <span style="display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:500;color:{{ tw.cardMute }}"><span>03 · Obra</span><span>Fachada</span></span>
+          <span style="font-size:21px;line-height:1.15;font-weight:500;letter-spacing:-0.02em">Seguimiento de obra</span>
+          <span style="font-size:14px;line-height:1.5;color:{{ tw.cardMute }}">Informe mensual de avance con fotos y certificaciones.</span>
+        </div>
+        <div data-card="3" style="position:absolute;left:0;top:0;width:100%;opacity:0;visibility:hidden;padding:18px 20px;border-radius:16px;background:{{ tw.cardBg }};border:1px solid {{ tw.cardBd }};color:{{ tw.cardInk }};display:flex;flex-direction:column;gap:8px;box-shadow:0 24px 48px -24px rgba(0,0,0,0.6)">
+          <span style="display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:500;color:{{ tw.cardMute }}"><span>04 · Preventa</span><span>Pisos 2–7</span></span>
+          <span style="font-size:21px;line-height:1.15;font-weight:500;letter-spacing:-0.02em">Precio de pozo</span>
+          <span style="font-size:14px;line-height:1.5;color:{{ tw.cardMute }}">Anticipo y cuotas en dólares durante la construcción.</span>
+        </div>
+        <div data-card="4" style="position:absolute;left:0;top:0;width:100%;opacity:0;visibility:hidden;padding:18px 20px;border-radius:16px;background:{{ tw.cardBg }};border:1px solid {{ tw.cardBd }};color:{{ tw.cardInk }};display:flex;flex-direction:column;gap:8px;box-shadow:0 24px 48px -24px rgba(0,0,0,0.6)">
+          <span style="display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:500;color:{{ tw.cardMute }}"><span>05 · Planta baja</span><span>PB</span></span>
+          <span style="font-size:21px;line-height:1.15;font-weight:500;letter-spacing:-0.02em">Lobby y acceso a cocheras</span>
+          <span style="font-size:14px;line-height:1.5;color:{{ tw.cardMute }}">Acceso con seguridad 24 h y rampa a dos subsuelos de cocheras.</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:absolute;right:clamp(14px,2vw,28px);top:30%;height:40%;width:2px;background:rgba(245,245,247,0.14);pointer-events:none">
+      <span ref="{{ twFillRef }}" style="position:absolute;inset:0;background:#C9F15D;transform-origin:top center;transform:scaleY(0)"></span>
+    </div>
+    <div ref="{{ pkLayerRef }}" style="position:absolute;inset:0;z-index:7;opacity:0;visibility:hidden;background:#0D0F12">
+      <div ref="{{ parkRef }}" style="position:absolute;inset:0"></div>
+      <div style="position:absolute;inset:0;pointer-events:none;background:{{ pkGrad }}"></div>
+      <div style="position:absolute;left:clamp(20px,3.2vw,48px);right:{{ pkRight }};top:0;bottom:0;width:{{ pkW }};padding:{{ pkPad }};display:flex;flex-direction:column;justify-content:{{ pkJustify }};gap:28px;color:#F5F5F7;pointer-events:none">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:#C9F15D">Subsuelos · Cocheras</span>
+          <h2 style="margin:0;font-size:clamp(30px,3.6vw,54px);line-height:1.05;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Una plaza <span style="color:#86868B">por departamento.</span></h2>
+          <sc-if value="{{ pkWide }}" hint-placeholder-val="{{ true }}">
+            <p style="margin:0;max-width:380px;font-size:17px;line-height:1.5;color:rgba(245,245,247,0.72);text-wrap:pretty">64 departamentos, 64 cocheras. Cada plaza lleva el número de su unidad y se accede por rampa desde la calle.</p>
+          </sc-if>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <sc-if value="{{ pkWide }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:28px;flex-wrap:wrap">
+              <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:clamp(28px,2.6vw,38px);line-height:1;letter-spacing:-0.03em;font-weight:600;color:#C9F15D">64</span><span style="font-size:12px;font-weight:500;color:rgba(245,245,247,0.6)">Plazas</span></div>
+              <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:clamp(28px,2.6vw,38px);line-height:1;letter-spacing:-0.03em;font-weight:600">2</span><span style="font-size:12px;font-weight:500;color:rgba(245,245,247,0.6)">Subsuelos</span></div>
+              <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:clamp(28px,2.6vw,38px);line-height:1;letter-spacing:-0.03em;font-weight:600">2,6 × 5,2</span><span style="font-size:12px;font-weight:500;color:rgba(245,245,247,0.6)">Metros por plaza</span></div>
+            </div>
+          </sc-if>
+          <div style="display:flex;flex-direction:column;gap:10px;pointer-events:auto">
+            <div style="display:flex;padding:2px;border-radius:10px;background:rgba(118,118,128,0.32);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);width:max-content">
+              <button onClick="{{ pkL1 }}" style="height:40px;min-width:116px;padding:0 14px;border-radius:8px;border:0;cursor:pointer;font-size:14px;font-weight:500;color:#FFFFFF;background:{{ pk1Bg }};box-shadow:{{ pk1Sh }};transition:background .25s">Subsuelo 1</button>
+              <button onClick="{{ pkL2 }}" style="height:40px;min-width:116px;padding:0 14px;border-radius:8px;border:0;cursor:pointer;font-size:14px;font-weight:500;color:#FFFFFF;background:{{ pk2Bg }};box-shadow:{{ pk2Sh }};transition:background .25s">Subsuelo 2</button>
+            </div>
+            <span style="font-size:13px;color:rgba(245,245,247,0.62)">{{ pkCaption }}</span>
+          </div>
+          <div ref="{{ pkChipRef }}" style="display:flex;align-items:center;gap:14px;padding:12px 18px 12px 14px;border-radius:16px;background:#C9F15D;color:#1D1D1F;width:max-content;opacity:0;transform:translateY(8px)">
+            <span style="font-size:24px;line-height:1;font-weight:700;letter-spacing:-0.03em">{{ pkPlaza }}</span>
+            <span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:600">Plaza asignada</span><span style="font-size:12px;font-weight:500">Depto {{ pkPlaza }}</span></span>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;right:clamp(14px,2vw,28px);top:30%;height:40%;width:2px;border-radius:1px;background:rgba(245,245,247,0.14);pointer-events:none">
+        <span ref="{{ pkFillRef }}" style="position:absolute;inset:0;border-radius:1px;background:#C9F15D;transform-origin:top center;transform:scaleY(0)"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="nosotros" data-screen-label="04 Nosotros" style="background:{{ th.bg }};transition:background .6s;padding:clamp(88px,12vw,168px) clamp(20px,3.2vw,48px)">
+  <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(48px,7vw,96px)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:clamp(40px,6vw,96px)">
+      <div data-reveal="" style="display:flex;flex-direction:column;gap:22px">
+        <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:{{ th.mute }}">Sobre nosotros</span>
+        <h2 style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Asesoramos inversiones con <span style="color:#86868B">criterio de largo plazo</span></h2>
+      </div>
+      <div data-reveal="150" style="display:flex;flex-direction:column;gap:36px;padding-top:8px">
+        <p style="margin:0;font-size:18px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">Aquaterra acompaña a inversores locales y del exterior en la compra de propiedades en Paraguay, con foco en desarrollos en pozo. Analizamos cada caso antes de recomendar un proyecto.</p>
+        <div style="display:flex;flex-direction:column">
+          <div style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:22px 0;border-top:1px solid {{ th.line }}">
+            <span style="font-variant-numeric:tabular-nums;font-size:12px;color:{{ th.mute }};padding-top:5px">01</span>
+            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:20px;font-weight:500;letter-spacing:-0.02em">Análisis de su perfil</span><span style="font-size:15px;line-height:1.55;color:{{ th.mute }}">Objetivo, plazo y monto: definimos juntos qué inversión tiene sentido para usted.</span></div>
+          </div>
+          <div style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:22px 0;border-top:1px solid {{ th.line }}">
+            <span style="font-variant-numeric:tabular-nums;font-size:12px;color:{{ th.mute }};padding-top:5px">02</span>
+            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:20px;font-weight:500;letter-spacing:-0.02em">Selección de proyectos</span><span style="font-size:15px;line-height:1.55;color:{{ th.mute }}">Evaluamos desarrolladora, ubicación y plan de pagos antes de presentarle opciones.</span></div>
+          </div>
+          <div style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:22px 0;border-top:1px solid {{ th.line }};border-bottom:1px solid {{ th.line }}">
+            <span style="font-variant-numeric:tabular-nums;font-size:12px;color:{{ th.mute }};padding-top:5px">03</span>
+            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:20px;font-weight:500;letter-spacing:-0.02em">Acompañamiento hasta la entrega</span><span style="font-size:15px;line-height:1.55;color:{{ th.mute }}">Le informamos el avance de obra y lo asistimos hasta la entrega y la puesta en renta.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-reveal="" style="aspect-ratio:21/9;min-height:260px;border-radius:24px;background:{{ th.ph }};display:flex;align-items:center;justify-content:center">
+      <span style="font-size:13px;font-weight:500;color:{{ th.phInk }}">foto del equipo / oficina</span>
+    </div>
+  </div>
+</section>
+
+<section id="testimonios" data-screen-label="05 Testimonios" style="background:{{ th.dark }};transition:background .6s;color:#F5F5F7;padding:clamp(88px,11vw,150px) clamp(20px,3.2vw,48px)">
+  <div style="max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;gap:clamp(48px,7vw,112px)">
+    <div data-reveal="" style="flex:1 1 300px;display:flex;flex-direction:column;justify-content:space-between;gap:40px">
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:rgba(245,245,247,0.62)">Testimonios</span>
+        <h2 style="margin:0;font-size:clamp(36px,4vw,56px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Lo que dicen <span style="color:#86868B">nuestros inversores</span></h2>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button onClick="{{ prevT }}" aria-label="Anterior" style="width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,0.14);color:#F5F5F7;font-size:22px;line-height:1;cursor:pointer;transition:background .25s" style-hover="background:rgba(255,255,255,0.24)">‹</button>
+        <button onClick="{{ nextT }}" aria-label="Siguiente" style="width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,0.14);color:#F5F5F7;font-size:22px;line-height:1;cursor:pointer;transition:background .25s" style-hover="background:rgba(255,255,255,0.24)">›</button>
+        <span style="margin-left:10px;font-variant-numeric:tabular-nums;font-size:13px;color:rgba(245,245,247,0.62)">{{ tCount }}</span>
+      </div>
+    </div>
+    <figure data-reveal="150" style="margin:0;flex:2 1 520px;display:flex;flex-direction:column;gap:36px">
+      <span style="font-size:110px;line-height:0.7;height:52px;color:#C9F15D;font-weight:600">“</span>
+      <div style="display:flex;flex-direction:column;gap:36px;opacity:{{ tOp }};transition:opacity .22s">
+        <blockquote style="margin:0;font-size:clamp(26px,2.8vw,40px);line-height:1.25;letter-spacing:-0.025em;font-weight:400;text-wrap:pretty">{{ tq.text }}</blockquote>
+        <figcaption style="display:flex;align-items:center;gap:14px">
+          <span style="width:48px;height:48px;border-radius:50%;background:#F5F5F7;color:#1D1D1F;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px">{{ tq.ini }}</span>
+          <span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:16px;font-weight:500">{{ tq.name }}</span><span style="font-size:14px;color:rgba(245,245,247,0.65)">{{ tq.role }}</span></span>
+        </figcaption>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<section id="contacto" data-screen-label="07 Asesoría" style="background:{{ th.bg2 }};transition:background .6s;padding:clamp(96px,13vw,180px) clamp(20px,3.2vw,48px)">
+  <div data-reveal="" style="max-width:980px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:28px;text-align:center">
+    <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:{{ th.mute }}">Asesoría personalizada</span>
+    <h2 style="margin:0;font-size:clamp(52px,8vw,124px);line-height:0.95;letter-spacing:-0.045em;font-weight:700">Analicemos <span style="color:#86868B">su caso</span>.</h2>
+    <p style="margin:0;max-width:560px;font-size:18px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">Cada inversión empieza con una conversación. Cuéntenos su objetivo y le presentaremos opciones a su medida.</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:16px 28px;padding-top:8px">
+      <button onClick="{{ openModal }}" style="height:50px;padding:0 28px;border-radius:999px;border:0;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500;letter-spacing:-0.01em;cursor:pointer;transition:background .2s" style-hover="background:#0077ED">Agende una asesoría</button>
+      <a href="#contacto" style="display:flex;align-items:center;gap:4px;min-height:44px;font-size:17px;color:{{ linkC }}" style-hover="text-decoration:underline">Escribir por WhatsApp <span>›</span></a>
+    </div>
+  </div>
+</section>
+
+<footer data-screen-label="08 Footer" style="background:{{ th.foot }};transition:background .6s;color:#F5F5F7;padding:clamp(64px,8vw,104px) clamp(20px,3.2vw,48px) calc(28px + env(safe-area-inset-bottom));overflow:hidden">
+  <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(56px,8vw,96px)">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:48px">
+      <div style="flex:1 1 280px;display:flex;flex-direction:column;gap:16px;max-width:340px">
+        <span style="display:flex;align-items:center;gap:10px;font-size:20px;font-weight:600;letter-spacing:-0.035em"><span style="width:13px;height:13px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>Aquaterra</span>
+        <span style="font-size:15px;line-height:1.6;color:rgba(245,245,247,0.65)">Inversión inmobiliaria en Paraguay. Asunción y el interior del país.</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:clamp(40px,6vw,88px)">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:12px;font-weight:500;color:rgba(245,245,247,0.55)">Navegación</span>
+          <a href="Aquaterra%20Proyectos.dc.html" style="font-size:15px;color:#F5F5F7" style-hover="color:#C9F15D">Proyectos</a>
+          <a href="#inversiones" style="font-size:15px;color:#F5F5F7" style-hover="color:#C9F15D">Inversiones</a>
+          <a href="#nosotros" style="font-size:15px;color:#F5F5F7" style-hover="color:#C9F15D">Nosotros</a>
+          <a href="Aquaterra%20Blog.dc.html" style="font-size:15px;color:#F5F5F7" style-hover="color:#C9F15D">Blog</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:12px;font-weight:500;color:rgba(245,245,247,0.55)">Contacto</span>
+          <span style="font-size:15px">+595 21 000 000</span>
+          <span style="font-size:15px">hola@aquaterra.com.py</span>
+          <span style="font-size:15px">Asunción, Paraguay</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:12px;font-weight:500;color:rgba(245,245,247,0.55)">Redes</span>
+          <a href="#contacto" style="font-size:15px;color:#F5F5F7" style-hover="color:#C9F15D">Instagram</a>
+          <a href="#contacto" style="font-size:15px;color:#F5F5F7" style-hover="color:#C9F15D">LinkedIn</a>
+          <a href="#contacto" style="font-size:15px;color:#F5F5F7" style-hover="color:#C9F15D">Facebook</a>
+        </div>
+      </div>
+    </div>
+    <span style="font-size:clamp(72px,17vw,250px);line-height:0.8;letter-spacing:-0.05em;font-weight:700;color:#F5F5F7;margin-left:-0.04em">Aquaterra</span>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-top:20px;border-top:1px solid rgba(245,245,247,0.12);font-size:13px;color:rgba(245,245,247,0.6)">
+      <span>© 2026 Aquaterra. Todos los derechos reservados.</span>
+      <span>Asunción, Paraguay</span>
+    </div>
+  </div>
+</footer>
+
+<sc-if value="{{ modal }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:{{ shAlign }};justify-content:center;padding:{{ shOuter }}">
+    <div onClick="{{ stop }}" role="dialog" aria-modal="true" style="width:{{ shW }};max-height:{{ shMaxH }};overflow:auto;overscroll-behavior:contain;background:{{ th.modal }};border-radius:{{ shRadius }};padding:{{ shPad }};display:flex;flex-direction:column;gap:24px;box-shadow:0 30px 80px -20px rgba(0,0,0,0.45)">
+      <sc-if value="{{ sheetNarrow }}" hint-placeholder-val="{{ false }}">
+        <span style="align-self:center;width:36px;height:5px;border-radius:3px;background:{{ th.grab }};margin:-6px 0 -10px"></span>
+      </sc-if>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:28px;line-height:1.1;letter-spacing:-0.025em;font-weight:700">Agende una asesoría</span>
+          <span style="font-size:15px;line-height:1.45;color:{{ th.mute }}">Unas preguntas para preparar su caso antes de la llamada.</span>
+        </div>
+        <button onClick="{{ closeModal }}" aria-label="Cerrar" style="width:44px;height:44px;flex:0 0 auto;margin:-6px -8px 0 0;display:flex;align-items:center;justify-content:center;border:0;background:transparent;cursor:pointer">
+          <span style="width:30px;height:30px;border-radius:50%;background:{{ th.fill }};color:{{ th.mute }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">✕</span>
+        </button>
+      </div>
+      <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:22px">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Sus datos</span>
+            <div style="display:flex;flex-direction:column;border-radius:12px;overflow:hidden;background:{{ th.input }}">
+              <input value="{{ nombre }}" onChange="{{ onNombre }}" aria-label="Nombre y apellido" placeholder="Nombre y apellido" autocomplete="name" style="height:50px;padding:0 16px;border:0;background:transparent;font-size:17px;outline:none;color:{{ th.ink }}">
+              <span style="height:1px;margin-left:16px;background:{{ th.line }}"></span>
+              <input value="{{ tel }}" onChange="{{ onTel }}" aria-label="WhatsApp" placeholder="WhatsApp · +595 9xx xxx xxx" type="tel" inputmode="tel" autocomplete="tel" style="height:50px;padding:0 16px;border:0;background:transparent;font-size:17px;outline:none;color:{{ th.ink }}">
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px"><span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Monto aproximado a invertir</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ montoOpts }}" as="o" hint-placeholder-count="4">
+                <button onClick="{{ o.pick }}" style="min-height:44px;padding:0 16px;border-radius:999px;font-size:15px;cursor:pointer;background:{{ o.bg }};color:{{ o.ink }};border:0;transition:background .2s, color .2s">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px"><span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Objetivo principal</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ objOpts }}" as="o" hint-placeholder-count="4">
+                <button onClick="{{ o.pick }}" style="min-height:44px;padding:0 16px;border-radius:999px;font-size:15px;cursor:pointer;background:{{ o.bg }};color:{{ o.ink }};border:0;transition:background .2s, color .2s">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <button onClick="{{ submit }}" style="height:50px;border-radius:14px;border:0;background:{{ submitBg }};color:{{ submitInk }};font-size:17px;font-weight:600;cursor:{{ submitCursor }};transition:background .25s">Enviar solicitud</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:12px 0 4px">
+          <span style="width:56px;height:56px;border-radius:50%;background:#C9F15D;color:#1D1D1F;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700">✓</span>
+          <span style="font-size:22px;letter-spacing:-0.02em;font-weight:700">Recibimos su solicitud</span>
+          <span style="max-width:360px;font-size:15px;line-height:1.5;color:{{ th.mute }}">Un asesor de Aquaterra le contactará por WhatsApp a la brevedad para analizar su caso.</span>
+          <button onClick="{{ closeModal }}" style="align-self:stretch;margin-top:8px;height:50px;border-radius:14px;border:0;background:{{ th.fill }};font-size:17px;font-weight:600;cursor:pointer;color:#0071E3">Listo</button>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;modo&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Día&quot;,&quot;Noche&quot;],&quot;default&quot;:&quot;Día&quot;,&quot;tsType&quot;:&quot;'Día' | 'Noche'&quot;,&quot;section&quot;:&quot;Ciudad 3D&quot;},&quot;autoRotar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Ciudad 3D&quot;},&quot;velocidad&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.2,&quot;max&quot;:4,&quot;step&quot;:0.1,&quot;default&quot;:1.5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Ciudad 3D&quot;}}">
+class Component extends DCLogic {
+  state = {
+    mode: (() => { try { return localStorage.getItem('aquaterra-modo'); } catch (e) { return null; } })(), scrolled: false, twFloor: 'Rooftop', twStep: 0, w: typeof window !== 'undefined' ? window.innerWidth : 1280,
+    ti: 0, tVis: true, modal: false, sent: false, nombre: '', tel: '', monto: '', obj: '',
+    tlY: 0, tlOn: 0
+  };
+  rootRef = React.createRef(); heroRef = React.createRef(); cityRef = React.createRef();
+  tlRef = React.createRef(); towerSecRef = React.createRef(); towerRef = React.createRef(); nodesRef = React.createRef(); twFillRef = React.createRef(); cardsRef = React.createRef(); linesRef = React.createRef();
+
+  parkSecRef = React.createRef(); parkRef = React.createRef(); twCurtRef = React.createRef(); pkCurtRef = React.createRef(); pkFillRef = React.createRef(); pkChipRef = React.createRef(); twInfoRef = React.createRef(); pkLayerRef = React.createRef();
+  setPark(l) { if (l === (this.state.pkLevel || 1)) return; this.setState({ pkLevel: l }); if (this.park) this.park.setLevel(l); }
+
+  TESTI = [
+    { text: 'Me explicaron cada etapa de la compra en pozo con números claros. Hoy tengo dos unidades alquiladas en Asunción.', name: 'María G.', role: 'Inversora · Buenos Aires', ini: 'MG' },
+    { text: 'Buscaba diversificar fuera de mi país y necesitaba a alguien de confianza en el terreno. El seguimiento de obra fue impecable.', name: 'Rodrigo S.', role: 'Inversor · São Paulo', ini: 'RS' },
+    { text: 'Compramos nuestro primer departamento como inversión y nos acompañaron de principio a fin, sin sorpresas.', name: 'Laura y Pablo A.', role: 'Inversores · Asunción', ini: 'LA' }
+  ];
+  MONTOS = ['Hasta USD 50.000', 'USD 50.000 – 100.000', 'USD 100.000 – 250.000', 'Más de USD 250.000'];
+  OBJS = ['Renta por alquiler', 'Revalorización', 'Vivienda propia', 'Aún no lo sé'];
+
+  THEMES = {
+    dia: { bg: '#F5F5F7', bg2: '#FFFFFF', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', line2: 'rgba(0,0,0,0.18)', card: '#FFFFFF', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', panelBd: 'rgba(255,255,255,0)', dark: '#000000', foot: '#1D1D1F', btnBg: '#1D1D1F', btnInk: '#FFFFFF', modal: '#F2F2F7', input: '#FFFFFF', grab: 'rgba(60,60,67,0.3)', fill: 'rgba(118,118,128,0.12)' },
+    noche: { bg: '#000000', bg2: '#1C1C1E', ink: '#F5F5F7', mute: '#98989D', mute2: '#C7C7CC', line: 'rgba(255,255,255,0.12)', line2: 'rgba(255,255,255,0.2)', card: '#1C1C1E', ph: '#1C1C1E', phInk: '#8E8E93', panel: '#1C1C1E', panelBd: 'rgba(255,255,255,0.08)', dark: '#1C1C1E', foot: '#000000', btnBg: '#F5F5F7', btnInk: '#1D1D1F', modal: '#1C1C1E', input: '#2C2C2E', grab: 'rgba(235,235,245,0.3)', fill: 'rgba(118,118,128,0.24)' }
+  };
+
+  mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
+
+  componentDidMount() {
+    this._onScroll = () => this.onScroll();
+    document.addEventListener('scroll', this._onScroll, { passive: true, capture: true });
+    this._onResize = () => { this.setState((st) => ({ w: window.innerWidth, menu: window.innerWidth >= 900 ? false : st.menu })); this.onScroll(); };
+    window.addEventListener('resize', this._onResize);
+    this._onKey = (e) => { if (e.key === 'Escape' && (this.state.modal || this.state.menu)) this.setState({ modal: false, menu: false }); };
+    window.addEventListener('keydown', this._onKey);
+    this._lastMode = this.mode();
+    this.scanReveal();
+    this.onScroll();
+    this.initCity();
+    this.initTower();
+    this.initParking();
+  }
+
+  componentDidUpdate(pp) {
+    if (pp.modo !== this.props.modo) { const pm = this.props.modo === 'Noche' ? 'noche' : 'dia'; try { localStorage.setItem('aquaterra-modo', pm); } catch (e) {} this.setState({ mode: pm }); return; }
+    const m = this.mode();
+    if (m !== this._lastMode) { this._lastMode = m; if (this.city) this.city.setMode(m === 'noche' ? 1 : 0); if (this.tower) this.tower.setMode(m === 'noche' ? 1 : 0); }
+    this.scanReveal();
+  }
+
+  componentWillUnmount() {
+    this.dead = true;
+    document.removeEventListener('scroll', this._onScroll, { capture: true });
+    window.removeEventListener('resize', this._onResize);
+    window.removeEventListener('keydown', this._onKey);
+    if (this.io) this.io.disconnect();
+    if (this.city) this.city.dispose();
+    if (this.tower) this.tower.dispose();
+    if (this.park) this.park.dispose();
+  }
+
+  scanReveal() {
+    const root = this.rootRef.current;
+    if (!root || typeof IntersectionObserver === 'undefined') return;
+    if (!this.io) this.io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'none'; this.io.unobserve(e.target); }
+    }), { threshold: 0.08, rootMargin: '0px 0px -5% 0px' });
+    root.querySelectorAll('[data-reveal]:not([data-rv])').forEach((el) => {
+      el.setAttribute('data-rv', '1');
+      const d = parseInt(el.getAttribute('data-reveal'), 10) || 0;
+      const ease = 'cubic-bezier(.2,.7,.2,1)';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(16px)';
+      el.style.transition = `opacity .9s ${ease} ${d}ms, transform .9s ${ease} ${d}ms`;
+      this.io.observe(el);
+    });
+  }
+
+  onScroll() {
+    if (this._raf) return;
+    this._raf = requestAnimationFrame(() => {
+      this._raf = null;
+      const upd = {};
+      const hero = this.heroRef.current;
+      if (hero) { const sc = hero.getBoundingClientRect().bottom < 76; if (sc !== this.state.scrolled) upd.scrolled = sc; }
+      const tl = this.tlRef.current;
+      if (tl) {
+        const r = tl.getBoundingClientRect();
+        const y = Math.max(0, Math.min(r.height - 40, window.innerHeight * 0.55 - r.top));
+        let on = 0;
+        tl.querySelectorAll('[data-tl-item]').forEach((el) => { if (el.offsetTop + 12 <= y) on++; });
+        const yy = Math.round(y);
+        if (yy !== this.state.tlY) upd.tlY = yy;
+        if (on !== this.state.tlOn) upd.tlOn = on;
+      }
+      const ts = this.towerSecRef.current;
+      const cl = (x) => Math.max(0, Math.min(1, x)), ss = (x) => x * x * (3 - 2 * x);
+      if (ts) {
+        const r = ts.getBoundingClientRect(); const sh = ts.lastElementChild ? ts.lastElementChild.offsetHeight : window.innerHeight;
+        const span = r.height - sh; const raw = cl(-r.top / (span > 0 ? span : 1));
+        this.twP = Math.min(1, raw / 0.52); this.twZ = ss(cl((raw - 0.53) / 0.045));
+        const inf = this.twInfoRef.current; if (inf) inf.style.opacity = (1 - ss(cl((raw - 0.525) / 0.015))).toFixed(3);
+        const po = ss(cl((raw - 0.56) / 0.025));
+        const ly = this.pkLayerRef.current; if (ly) { ly.style.opacity = po.toFixed(3); ly.style.visibility = po > 0.002 ? 'visible' : 'hidden'; }
+        this.pkOn = raw > 0.545; this.twOff = raw > 0.59;
+        this.pkP = cl((raw - 0.585) / 0.415);
+      }
+      if (Object.keys(upd).length) this.setState(upd);
+    });
+  }
+
+  scrollToEl(el, off) {
+    if (!el) return;
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (off || 0), behavior: 'smooth' });
+  }
+
+  loadThree() {
+    if (!this._three) this._three = import('https://unpkg.com/three@0.160.0/build/three.module.js');
+    return this._three;
+  }
+
+  async initTower() {
+    let THREE;
+    try { THREE = await this.loadThree(); } catch (e) { return; }
+    const host = this.towerRef.current;
+    if (!host || this.dead) return;
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1;
+    const cv = renderer.domElement;
+    cv.style.cssText = 'display:block;width:100%;height:100%;opacity:0;transition:opacity 1.2s ease';
+    host.appendChild(cv);
+
+    const C = (h) => new THREE.Color(h);
+    const DAY = { bg: C('#131519'), conc: C('#EFEAE1'), gnd: C('#1B1E23'), walk: C('#BFC3C9'), glass: C('#2E3236'), tree: C('#A9BC96'), sky: C('#ffffff'), hg: C('#3a3f48'), sun: C('#fff4e6') };
+    const NIGHT = { bg: C('#06070A'), conc: C('#A3ACBC'), gnd: C('#08090C'), walk: C('#2E333C'), glass: C('#10151C'), tree: C('#3E4D3E'), sky: C('#7f90bd'), hg: C('#020305'), sun: C('#bccbf3') };
+    const scene = new THREE.Scene();
+    scene.background = DAY.bg.clone();
+    scene.fog = new THREE.Fog(DAY.bg.clone(), 150, 380);
+
+    const pm = new THREE.PMREMGenerator(renderer);
+    const es = new THREE.Scene();
+    es.add(new THREE.Mesh(new THREE.BoxGeometry(100, 100, 100), new THREE.MeshBasicMaterial({ color: 0x565c66, side: THREE.BackSide })));
+    const panel = (w, h, p, r, k) => {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(k, k, k), side: THREE.DoubleSide }));
+      m.position.set(p[0], p[1], p[2]); m.rotation.set(r[0], r[1], 0); es.add(m);
+    };
+    panel(70, 30, [0, 48, 0], [Math.PI / 2, 0], 5);
+    panel(26, 60, [-48, 8, 0], [0, Math.PI / 2], 2.2);
+    panel(18, 40, [48, 0, -12], [0, -Math.PI / 2], 1.4);
+    panel(60, 8, [0, -10, 48], [0, Math.PI], 0.8);
+    scene.environment = pm.fromScene(es, 0.035).texture;
+
+    const W = 16, D = 12, PB = 7.2, FH = 3.6, NF = 17, TOP = PB + NF * FH, hx = W / 2, hz = D / 2;
+    const conc = new THREE.MeshStandardMaterial({ color: DAY.conc.clone(), roughness: 0.78, envMapIntensity: 0.55 });
+    const glass = new THREE.MeshStandardMaterial({ color: DAY.glass.clone(), metalness: 0.9, roughness: 0.1, envMapIntensity: 1.5 });
+    const UG = { uWin: { value: 0 } };
+    glass.onBeforeCompile = (sh) => {
+      sh.uniforms.uWin = UG.uWin;
+      sh.vertexShader = sh.vertexShader
+        .replace('#include <common>', '#include <common>\nvarying vec3 vWP; varying vec3 vON;')
+        .replace('#include <begin_vertex>', '#include <begin_vertex>\nvON = objectNormal; vWP = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+      sh.fragmentShader = sh.fragmentShader
+        .replace('#include <common>', '#include <common>\nuniform float uWin; varying vec3 vWP; varying vec3 vON;\nfloat hh_(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }')
+        .replace('#include <emissivemap_fragment>', [
+          '#include <emissivemap_fragment>',
+          'float sd_ = 1.0 - step(0.5, abs(vON.y));',
+          'vec2 q_ = vec2(atan(vWP.z, vWP.x) * 9.0, (vWP.y - ' + PB.toFixed(2) + ') / ' + FH.toFixed(2) + ');',
+          'vec2 c_ = floor(q_); vec2 f_ = fract(q_);',
+          'float w_ = step(0.06, f_.x) * step(f_.x, 0.94) * step(0.1, f_.y) * step(f_.y, 0.9);',
+          'float sid_ = 3.0;',
+          'float r_ = hh_(c_ + vec2(sid_, sid_ * 1.3));',
+          'float lit_ = step(0.64, r_) * (0.35 + 0.65 * hh_(c_ * 1.9 + sid_));',
+          'totalEmissiveRadiance += uWin * sd_ * w_ * lit_ * vec3(1.0, 0.7, 0.38);'
+        ].join('\n'));
+    };
+    const lobby = new THREE.MeshStandardMaterial({ color: C('#2A3540'), metalness: 0.6, roughness: 0.15, envMapIntensity: 1.2, emissive: C('#ffcf8a'), emissiveIntensity: 0 });
+    const rail = new THREE.MeshStandardMaterial({ color: C('#c4d3dc'), metalness: 0.2, roughness: 0.05, transparent: true, opacity: 0.32, depthWrite: false, envMapIntensity: 1.2 });
+    const water = new THREE.MeshStandardMaterial({ color: C('#8FD3DA'), metalness: 0.1, roughness: 0.05, envMapIntensity: 1.4, emissive: C('#3fb7c4'), emissiveIntensity: 0 });
+    const gMat = new THREE.MeshStandardMaterial({ color: DAY.gnd.clone(), roughness: 0.95, envMapIntensity: 0.2 });
+    const wMat = new THREE.MeshStandardMaterial({ color: DAY.walk.clone(), roughness: 0.9, envMapIntensity: 0.3 });
+    const treeMat = new THREE.MeshStandardMaterial({ color: DAY.tree.clone(), roughness: 0.9, flatShading: true, envMapIntensity: 0.4 });
+    const bronze = new THREE.MeshStandardMaterial({ color: C('#B89466'), metalness: 1, roughness: 0.3, envMapIntensity: 1.3 });
+    const lime = new THREE.MeshStandardMaterial({ color: C('#C9F15D'), emissive: C('#C9F15D'), emissiveIntensity: 0.5 });
+    const lampMat = new THREE.MeshStandardMaterial({ color: C('#ffffff'), emissive: C('#ffd9a0'), emissiveIntensity: 0.15 });
+    const mark = new THREE.MeshStandardMaterial({ color: C('#D9DBDE'), roughness: 0.8 });
+
+    const B = new THREE.BoxGeometry(1, 1, 1); B.translate(0, 0.5, 0);
+    const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), pv = new THREE.Vector3(), sv = new THREE.Vector3();
+    const add = (m, cast) => { m.castShadow = cast !== false; m.receiveShadow = true; scene.add(m); return m; };
+    const box = (mat, w, h, d, x, y, z, cast) => { const m = new THREE.Mesh(B, mat); m.scale.set(w, h, d); m.position.set(x, y, z); return add(m, cast); };
+    const inst = (mat, arr, cast) => {
+      const im = new THREE.InstancedMesh(B, mat, arr.length);
+      arr.forEach((a, i) => { m4.compose(pv.set(a[3], a[4], a[5]), q, sv.set(a[0], a[1], a[2])); im.setMatrixAt(i, m4); });
+      im.instanceMatrix.needsUpdate = true; return add(im, cast);
+    };
+
+    // calle y veredas
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(900, 900), gMat);
+    ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+    box(wMat, 56, 0.18, 48, 0, 0, 0);
+    box(wMat, 200, 0.18, 7, 0, 0, 40.5); box(wMat, 200, 0.18, 7, 0, 0, -40.5);
+    box(wMat, 7, 0.18, 200, 43.5, 0, 0); box(wMat, 7, 0.18, 200, -43.5, 0, 0);
+    const marks = [];
+    for (let x = -84; x <= 84; x += 6) if (Math.abs(x) > 5) marks.push([2.6, 0.03, 0.22, x, 0, 30.5]);
+    for (let z = 24.6; z <= 36.6; z += 1.2) marks.push([4.2, 0.03, 0.6, 0, 0, z]);
+    inst(mark, marks, false);
+
+    // torre orgánica
+    const HT = NF * FH, CA = 12, CB = 8.4, SEG = 160;
+    const sgp = (x, e) => Math.sign(x) * Math.pow(Math.abs(x), e);
+    const coreAt = (t, k) => new THREE.Vector2(CA * k * sgp(Math.cos(t), 0.5), CB * k * sgp(Math.sin(t), 0.5));
+    const bulge = (t, f) => {
+      const wv = 0.5 * Math.sin(3 * t + f * 0.42) + 0.33 * Math.sin(5 * t - f * 0.27 + 1.3) + 0.22 * Math.sin(2 * t + f * 0.19 + 2.1);
+      const k = Math.max(0, Math.min(1, (wv + 0.15) / 0.95));
+      return 0.6 + 2.6 * k * k * (3 - 2 * k);
+    };
+    const edgeAt = (t, f, inset) => { const c = coreAt(t, 1), l = c.length() || 1, d = bulge(t, f) - (inset || 0); return new THREE.Vector2(c.x + (c.x / l) * d, c.y + (c.y / l) * d); };
+    const shapeFrom = (fn) => { const sh = new THREE.Shape(); for (let i = 0; i < SEG; i++) { const p = fn((i / SEG) * Math.PI * 2); if (i) sh.lineTo(p.x, -p.y); else sh.moveTo(p.x, -p.y); } sh.closePath(); return sh; };
+    const pathFrom = (fn) => { const pa = new THREE.Path(); for (let i = 0; i < SEG; i++) { const p = fn((i / SEG) * Math.PI * 2); if (i) pa.lineTo(p.x, -p.y); else pa.moveTo(p.x, -p.y); } pa.closePath(); return pa; };
+    const ext = (sh, depth) => { const g = new THREE.ExtrudeGeometry(sh, { depth, bevelEnabled: false, curveSegments: 1 }); g.rotateX(-Math.PI / 2); return g; };
+    const mk = (g, mat, y, cast) => { const m = new THREE.Mesh(g, mat); m.position.y = y; return add(m, cast); };
+    const ribbonGeo = (list) => {
+      const pos = [], idx = [];
+      list.forEach(([fn, y0, hh]) => {
+        const b = pos.length / 3;
+        for (let i = 0; i <= SEG; i++) { const p = fn((i / SEG) * Math.PI * 2); pos.push(p.x, y0, p.y, p.x, y0 + hh, p.y); }
+        for (let i = 0; i < SEG; i++) { const a = b + i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
+      });
+      const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals(); return g;
+    };
+    rail.side = THREE.DoubleSide;
+
+    // planta baja: lobby vidriado, pilotis y marquesina
+    mk(ext(shapeFrom((t) => coreAt(t, 0.84)), PB - 0.2), lobby, 0.18);
+    const pil = new THREE.CylinderGeometry(0.34, 0.34, PB - 0.2, 18); pil.translate(0, (PB - 0.2) / 2, 0);
+    const pilM = new THREE.InstancedMesh(pil, bronze, 22);
+    for (let i = 0; i < 22; i++) { const p = coreAt((i / 22) * Math.PI * 2 + 0.1, 0.98); m4.compose(pv.set(p.x, 0.18, p.y), q, sv.set(1, 1, 1)); pilM.setMatrixAt(i, m4); }
+    add(pilM);
+    const mq = new THREE.Shape(); mq.absellipse(0, 0, 8.4, 3.8, 0, Math.PI * 2, false, 0);
+    const mqM = mk(ext(mq, 0.3), conc, 5.6); mqM.position.z = CB + 2.6;
+    const mqL = new THREE.Mesh(ribbonGeo([[(t) => new THREE.Vector2(Math.cos(t) * 8.42, CB + 2.6 + Math.sin(t) * 3.82), 5.6, 0.3]]), bronze); scene.add(mqL);
+    box(conc, 15, 0.22, 3.4, 0, 0.18, CB + 9.6); box(water, 14.2, 0.1, 2.7, 0, 0.32, CB + 9.6, false);
+    box(conc, 18, 0.5, 1.2, 0, 0.18, CB + 12.2);
+    mk(ext(shapeFrom((t) => coreAt(t, 1.08)), 0.5), conc, PB - 0.34);
+
+    // núcleo de vidrio + parteluces
+    mk(ext(shapeFrom((t) => coreAt(t, 1)), HT), glass, PB);
+    const finG = new THREE.BoxGeometry(0.08, HT, 0.3); finG.translate(0, HT / 2, 0);
+    const NFIN = 64, finM = new THREE.InstancedMesh(finG, bronze, NFIN), Y = new THREE.Vector3(0, 1, 0);
+    for (let i = 0; i < NFIN; i++) {
+      const t = (i / NFIN) * Math.PI * 2, p = coreAt(t, 1), p2 = coreAt(t + 0.01, 1);
+      q.setFromAxisAngle(Y, -Math.atan2(p2.y - p.y, p2.x - p.x)); m4.compose(pv.set(p.x, PB, p.y), q, sv.set(1, 1, 1)); finM.setMatrixAt(i, m4);
+    }
+    q.identity(); add(finM);
+
+    // losas ondulantes con baranda de vidrio y jardineras
+    const rl = [], fas = [], shrubs = [];
+    for (let f = 1; f <= NF; f++) {
+      const y = PB + f * FH - 0.16;
+      mk(ext(shapeFrom((t) => edgeAt(t, f)), 0.32), conc, y);
+      rl.push([(t) => edgeAt(t, f, 0.05), y + 0.32, 1.05]);
+      fas.push([(t) => edgeAt(t, f, -0.01), y + 0.02, 0.1]);
+      if (f < NF) for (let t = 0; t < Math.PI * 2; t += 0.14) {
+        if (bulge(t, f) > 2.3 && Math.abs(Math.sin(t * 13.7 + f * 3.1)) < 0.42) { const p = edgeAt(t, f, 0.55); shrubs.push([p.x, y + 0.62, p.y, 0.7 + Math.abs(Math.sin(t * 7 + f)) * 0.5]); }
+      }
+    }
+    const railM = new THREE.Mesh(ribbonGeo(rl), rail); scene.add(railM);
+    scene.add(new THREE.Mesh(ribbonGeo(fas), bronze));
+    const shM = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(0.5, 1), treeMat, shrubs.length);
+    shrubs.forEach((b, i) => { m4.compose(pv.set(b[0], b[1], b[2]), q, sv.set(b[3], b[3] * 0.7, b[3])); shM.setMatrixAt(i, m4); });
+    add(shM);
+
+    // rooftop: piscina, pabellón y corona flotante
+    box(conc, 15, 0.14, 5.6, -3, TOP + 0.16, 2.6);
+    box(water, 13.8, 0.12, 4.4, -3, TOP + 0.24, 2.6, false);
+    box(glass, 7, 3.2, 4.6, 5.6, TOP + 0.16, -3.4);
+    box(bronze, 7.2, 0.18, 4.8, 5.6, TOP + 3.36, -3.4);
+    const CY = TOP + 5.4;
+    const crown = shapeFrom((t) => coreAt(t, 1.3)); crown.holes.push(pathFrom((t) => coreAt(t, 0.62)));
+    mk(ext(crown, 0.36), conc, CY);
+    scene.add(new THREE.Mesh(ribbonGeo([[(t) => coreAt(t, 1.302), CY + 0.04, 0.12]]), lime));
+    const cc = new THREE.CylinderGeometry(0.2, 0.2, CY - TOP - 0.16, 12); cc.translate(0, (CY - TOP - 0.16) / 2, 0);
+    const ccM = new THREE.InstancedMesh(cc, bronze, 12);
+    for (let i = 0; i < 12; i++) { const p = coreAt((i / 12) * Math.PI * 2 + 0.2, 0.96); m4.compose(pv.set(p.x, TOP + 0.16, p.y), q, sv.set(1, 1, 1)); ccM.setMatrixAt(i, m4); }
+    add(ccM);
+
+    // árboles y luminarias
+    const tpos = [[-20, 19.5], [-12.5, 19.5], [12.5, 19.5], [20, 19.5], [-23, 9], [-23, -1], [-23, -11], [23, 9], [23, -1], [23, -11], [-13, -19.5], [0, -19.5], [13, -19.5]];
+    const canopy = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1.7, 0), treeMat, tpos.length);
+    const trunk = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.14, 0.18, 2.6, 6), conc, tpos.length);
+    const eu = new THREE.Euler();
+    tpos.forEach(([x, z], i) => {
+      const s = 0.85 + ((i * 37) % 10) / 30;
+      m4.compose(pv.set(x, 1.48, z), q.identity(), sv.set(1, 1, 1)); trunk.setMatrixAt(i, m4);
+      m4.compose(pv.set(x, 2.6 + 1.5 * s, z), q.setFromEuler(eu.set(0, i, 0)), sv.set(s, s * 1.1, s)); canopy.setMatrixAt(i, m4);
+    });
+    q.identity();
+    add(canopy); add(trunk);
+    const lampPos = [[-16, 21.8], [16, 21.8], [-25.4, -6], [25.4, -6]];
+    lampPos.forEach(([x, z]) => {
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 6.4, 8), conc); pole.position.set(x, 3.38, z); add(pole);
+      box(lampMat, 0.9, 0.14, 0.9, x, 6.55, z, false);
+    });
+    const lamps = [-16, 16].map((x) => { const l = new THREE.PointLight(0xffd29a, 0, 34, 2); l.position.set(x, 6.2, 21.8); scene.add(l); return l; });
+
+    // manzanas vecinas
+    let sd = 11; const rr = () => { sd = (sd * 16807) % 2147483647; return sd / 2147483647; };
+    const nb = [];
+    for (let i = 0; i < 28; i++) {
+      const a = (i / 28) * Math.PI * 2 + rr() * 0.15, rad = 128 + rr() * 60;
+      nb.push([14 + rr() * 16, 5 + rr() * (rad < 155 ? 16 : 34), 14 + rr() * 16, Math.cos(a) * rad, 0, Math.sin(a) * rad]);
+    }
+    const nbMat = new THREE.MeshStandardMaterial({ color: C('#6B717B'), roughness: 0.85, envMapIntensity: 0.3 });
+    inst(nbMat, nb);
+
+    const hemi = new THREE.HemisphereLight(DAY.sky, DAY.hg, 0.8);
+    const sun = new THREE.DirectionalLight(DAY.sun, 2.8);
+    sun.position.set(48, 120, 70); sun.target.position.set(0, 30, 0);
+    sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+    const sc = sun.shadow.camera; sc.left = -78; sc.right = 78; sc.top = 88; sc.bottom = -78; sc.near = 20; sc.far = 300;
+    sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.25;
+    scene.add(hemi, sun, sun.target);
+
+    const camera = new THREE.PerspectiveCamera(34, 1, 0.5, 700);
+    const PCS = [0.08, 0.27, 0.46, 0.65, 0.9];
+    const NY = [TOP + 1.0, PB + 13 * FH + 1.6, PB + 8 * FH + 1.6, PB + 3 * FH + 1.6, 3.2];
+    const KP = [0].concat(PCS, [1]);
+    const KY = [TOP + 30, TOP + 10, NY[1] + 1.4, NY[2] + 1.4, NY[3] + 1.4, 4.4, 3.2];
+    const KL = [12, 6, 1.6, 1.6, 1.6, 0.4, -2.2];
+    const KR = [108, 88, 82, 82, 82, 84, 96];
+    const phi = (p) => Math.PI / 2 - (1 - p) * Math.PI * 2;
+    const sample = (arr, p) => {
+      let i = 0; while (i < KP.length - 2 && p > KP[i + 1]) i++;
+      let t = (p - KP[i]) / (KP[i + 1] - KP[i]); t = Math.max(0, Math.min(1, t)); t = t * t * (3 - 2 * t);
+      return arr[i] + (arr[i + 1] - arr[i]) * t;
+    };
+    const DEL = [0.62, 0.62, 0.62, 0.62, 0.95];
+    const NFL = [NF, 13, 8, 3];
+    const nodes = PCS.map((pc, i) => {
+      const a = phi(pc) + DEL[i];
+      if (i === 4) { const p = coreAt(a, 0.9); return new THREE.Vector3(p.x, 3.2, p.y); }
+      const p = edgeAt(a, NFL[i], 0.25); return new THREE.Vector3(p.x, PB + NFL[i] * FH + 0.75, p.y);
+    });
+    const sm = (e0, e1, x) => { let t = (e0 - x) / (e0 - e1); t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); };
+
+    const NBD = C('#6B717B'), NBN = C('#262B33');
+    let mt = this.mode() === 'noche' ? 1 : 0, mTarget = mt;
+    const L = (a, b) => a + (b - a) * mt;
+    const apply = () => {
+      scene.background.lerpColors(DAY.bg, NIGHT.bg, mt); scene.fog.color.copy(scene.background);
+      conc.color.lerpColors(DAY.conc, NIGHT.conc, mt); gMat.color.lerpColors(DAY.gnd, NIGHT.gnd, mt); wMat.color.lerpColors(DAY.walk, NIGHT.walk, mt);
+      glass.color.lerpColors(DAY.glass, NIGHT.glass, mt); treeMat.color.lerpColors(DAY.tree, NIGHT.tree, mt);
+      hemi.color.lerpColors(DAY.sky, NIGHT.sky, mt); hemi.groundColor.lerpColors(DAY.hg, NIGHT.hg, mt); hemi.intensity = L(0.8, 1.1);
+      sun.color.lerpColors(DAY.sun, NIGHT.sun, mt); sun.intensity = L(2.8, 1.5);
+      UG.uWin.value = mt * 0.42; lobby.emissiveIntensity = mt * 1.4; lampMat.emissiveIntensity = L(0.15, 4); water.emissiveIntensity = mt * 0.7;
+      lime.emissiveIntensity = L(0.5, 2.2);
+      nbMat.color.lerpColors(NBD, NBN, mt);
+      lamps.forEach((l) => { l.intensity = mt * 90; });
+      conc.envMapIntensity = L(0.55, 0.3); glass.envMapIntensity = L(1.5, 0.7);
+    };
+    apply();
+
+    const q$ = (r, sel) => Array.from((r && r.current ? r.current : host).querySelectorAll(sel));
+    const dots = q$(this.nodesRef, '[data-node]');
+    const cards = q$(this.cardsRef, '[data-card]');
+    const lines = q$(this.linesRef, '[data-line]');
+    let w = 1, h = 1, narrow = false, yOff = 0, xOff = 0, zz = this.twZ || 0;
+    const resize = () => {
+      w = host.clientWidth; h = host.clientHeight; if (!w || !h) return;
+      renderer.setSize(w, h, false); camera.aspect = w / h; narrow = w < 700;
+      camera.fov = narrow ? 46 : 34;
+      if (narrow) camera.clearViewOffset(); else { xOff = -w * 0.22 * (1 - zz); camera.setViewOffset(w, h, xOff, yOff, w, h); }
+      camera.updateProjectionMatrix();
+    };
+    const ro = new ResizeObserver(resize); ro.observe(host); resize();
+    let visible = true;
+    const vio = new IntersectionObserver((es2) => { visible = es2[0].isIntersecting; }, { threshold: 0 });
+    vio.observe(host);
+
+    const v = new THREE.Vector3(), zPos = new THREE.Vector3(0, 2.7, CB * 0.84 + 3.2), zTgt = new THREE.Vector3(0, 2.5, 0), zLook = new THREE.Vector3();
+    let pp = this.twP || 0, last = performance.now(), rafId = 0, shown = false;
+    const tick = (now) => {
+      rafId = requestAnimationFrame(tick);
+      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      if (!visible || document.hidden || this.twOff) return;
+      step(now, dt);
+    };
+    const step = (now, dt) => {
+      pp += ((this.twP || 0) - pp) * Math.min(1, dt * 4.5);
+      if (Math.abs(mTarget - mt) > 0.0005) { mt += (mTarget - mt) * Math.min(1, dt * 2.4); if (Math.abs(mTarget - mt) <= 0.0005) mt = mTarget; apply(); }
+      const ph = phi(pp), cy = sample(KY, pp), rad = sample(KR, pp) * (narrow ? 1.3 : 1), ld = sample(KL, pp);
+      zz += ((this.twZ || 0) - zz) * Math.min(1, dt * 7);
+      const ze = zz * zz * (3 - 2 * zz);
+      camera.position.set(Math.cos(ph) * rad, cy, Math.sin(ph) * rad);
+      if (ze > 0.0005) { camera.position.lerp(zPos, ze); zLook.set(0, cy - ld, 0).lerp(zTgt, ze); camera.lookAt(zLook); }
+      else camera.lookAt(0, cy - ld, 0);
+      camera.updateMatrixWorld();
+      const sr = host.getBoundingClientRect();
+      if (!narrow && cards[4]) {
+        const iL = nodes.length - 1;
+        const aL = pp > PCS[iL] ? 1 : sm(0.16, 0.05, Math.abs(pp - PCS[iL]));
+        v.copy(nodes[iL]).project(camera);
+        const y0 = (-v.y * 0.5 + 0.5) * h + yOff;
+        const c4 = cards[4].getBoundingClientRect();
+        const yc = c4.top - sr.top + c4.height / 2;
+        const ny = (y0 - yc) * aL * (1 - ze), nx = -w * 0.22 * (1 - ze);
+        if (Math.abs(ny - yOff) > 0.2 || Math.abs(nx - xOff) > 0.3) { yOff = ny; xOff = nx; camera.setViewOffset(w, h, xOff, yOff, w, h); camera.updateProjectionMatrix(); }
+      } else if (yOff) { yOff = 0; }
+      for (let i = 0; i < nodes.length; i++) {
+        const a = (i === nodes.length - 1 && pp > PCS[i] ? 1 : sm(0.08, 0.035, Math.abs(pp - PCS[i]))) * Math.max(0, 1 - zz * 4);
+        v.copy(nodes[i]).project(camera);
+        const x = (v.x * 0.5 + 0.5) * w, y = (-v.y * 0.5 + 0.5) * h;
+        const dEl = dots[i], cd = cards[i], ln = lines[i];
+        if (dEl) { dEl.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`; dEl.style.opacity = a.toFixed(3); }
+        if (cd) { cd.style.opacity = a.toFixed(3); cd.style.transform = `translateY(${((1 - a) * 10).toFixed(1)}px)`; cd.style.visibility = a > 0.002 ? 'visible' : 'hidden'; }
+        if (ln) {
+          ln.style.opacity = a.toFixed(3);
+          if (a > 0.002 && cd) {
+            const cr = cd.getBoundingClientRect();
+            const x1 = narrow ? cr.left - sr.left + cr.width * 0.5 : cr.right - sr.left;
+            const y1 = narrow ? cr.bottom - sr.top : cr.top - sr.top + cr.height / 2;
+            const dx = x - x1, dy = y - y1;
+            ln.style.width = Math.hypot(dx, dy).toFixed(1) + 'px';
+            ln.style.transform = `translate(${x1.toFixed(1)}px, ${y1.toFixed(1)}px) rotate(${Math.atan2(dy, dx).toFixed(4)}rad) scaleX(${a.toFixed(3)})`;
+          }
+        }
+      }
+      const fill = this.twFillRef.current; if (fill) fill.style.transform = `scaleY(${pp.toFixed(4)})`;
+      let lab;
+      if (cy > TOP + 1.6) lab = 'Rooftop';
+      else { const f = Math.floor((cy - 1.5 - PB) / FH) + 1; lab = f < 1 ? 'PB' : 'Piso ' + Math.min(NF, f); }
+      let st = 0; PCS.forEach((pc, i) => { if (pp >= pc - 0.095) st = i; });
+      if (lab !== this.state.twFloor || st !== this.state.twStep) this.setState({ twFloor: lab, twStep: st });
+      renderer.render(scene, camera);
+      if (!shown) { shown = true; cv.style.opacity = '1'; }
+    };
+    rafId = requestAnimationFrame(tick);
+    window.__twDbg = (p, m) => { this.twP = p; pp = p; if (m != null) { mt = m; mTarget = m; apply(); } step(performance.now(), 0.016); };
+
+    this.tower = {
+      setMode: (m) => { mTarget = m; },
+      dispose: () => { cancelAnimationFrame(rafId); ro.disconnect(); vio.disconnect(); renderer.dispose(); cv.remove(); }
+    };
+    const m0 = this.mode() === 'noche' ? 1 : 0; if (m0 !== mTarget) mTarget = m0;
+  }
+
+  async initParking() {
+    let THREE;
+    try { THREE = await this.loadThree(); } catch (e) { return; }
+    const host = this.parkRef.current;
+    if (!host || this.dead) return;
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
+    const cv = renderer.domElement;
+    cv.style.cssText = 'display:block;width:100%;height:100%';
+    host.appendChild(cv);
+    const C = (h) => new THREE.Color(h);
+    const BG = C('#0D0F12');
+    const scene = new THREE.Scene(); scene.background = BG; scene.fog = new THREE.Fog(BG, 22, 64);
+    const pm = new THREE.PMREMGenerator(renderer), es = new THREE.Scene();
+    es.add(new THREE.Mesh(new THREE.BoxGeometry(60, 20, 60), new THREE.MeshBasicMaterial({ color: 0x24272c, side: THREE.BackSide })));
+    for (let i = -3; i <= 3; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 50), new THREE.MeshBasicMaterial({ color: new THREE.Color(5, 5, 5), side: THREE.DoubleSide })); m.position.set(i * 6, 9, 0); m.rotation.set(Math.PI / 2, 0, Math.PI / 2); es.add(m); }
+    scene.environment = pm.fromScene(es, 0.04).texture;
+
+    const LX = 50, LZ = 18, HX = LX / 2, HZ = LZ / 2, CH = 3.0, SW = 2.6, SD = 5.2, AZ = 3, N = 16, X0 = -20.8, HL = 10;
+    const sx = (j) => X0 + SW * (j + 0.5);
+    const mkC = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+    const FP = 64, WP = 80;
+    const fCv = mkC(LX * FP, LZ * FP), wA = mkC(LX * WP, CH * WP), wB = mkC(LX * WP, CH * WP);
+    const tex = (c) => { const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = renderer.capabilities.getMaxAnisotropy(); return t; };
+    const fT = tex(fCv), aT = tex(wA), bT = tex(wB);
+    let level = this.state.pkLevel || 1;
+    const units = (l) => { const f0 = l === 1 ? 2 : 10, L = 'ABCD', a = [], b = []; for (let j = 0; j < N; j++) { a.push((f0 + Math.floor(j / 4)) + L[j % 4]); b.push((f0 + 4 + Math.floor(j / 4)) + L[j % 4]); } return { a, b }; };
+    const FONT = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, sans-serif";
+    const draw = () => {
+      const u = units(level);
+      let g = fCv.getContext('2d'); const P = FP, cx = (x) => (x + HX) * P, cz = (z) => (z + HZ) * P;
+      g.fillStyle = '#5F646B'; g.fillRect(0, 0, fCv.width, fCv.height);
+      g.fillStyle = '#50545B'; g.fillRect(0, cz(-AZ), fCv.width, AZ * 2 * P);
+      g.fillStyle = 'rgba(201,241,93,0.9)'; g.fillRect(cx(sx(HL) - SW / 2) + 0.06 * P, cz(AZ), SW * P - 0.12 * P, SD * P);
+      g.fillStyle = '#ECEDEE';
+      for (let j = 0; j <= N; j++) { const x = cx(X0 + SW * j) - 0.06 * P; g.fillRect(x, cz(AZ), 0.12 * P, SD * P); g.fillRect(x, cz(-AZ - SD), 0.12 * P, SD * P); }
+      g.fillRect(cx(X0), cz(AZ + SD) - 0.06 * P, N * SW * P, 0.12 * P); g.fillRect(cx(X0), cz(-AZ - SD) - 0.06 * P, N * SW * P, 0.12 * P);
+      g.fillStyle = 'rgba(236,237,238,0.55)';
+      [-17, -5, 7, 19].forEach((x) => { g.beginPath(); g.moveTo(cx(x + 1.1), cz(0)); g.lineTo(cx(x - 0.4), cz(-0.9)); g.lineTo(cx(x - 0.4), cz(-0.45)); g.lineTo(cx(x - 1.4), cz(-0.45)); g.lineTo(cx(x - 1.4), cz(0.45)); g.lineTo(cx(x - 0.4), cz(0.45)); g.lineTo(cx(x - 0.4), cz(0.9)); g.closePath(); g.fill(); });
+      g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = '600 ' + Math.round(0.7 * P) + 'px ' + FONT;
+      for (let j = 0; j < N; j++) {
+        g.fillStyle = '#ECEDEE'; g.fillText(u.a[j], cx(sx(j)), cz(-AZ - 0.9));
+        g.save(); g.translate(cx(sx(j)), cz(AZ + 0.9)); g.rotate(Math.PI); g.fillStyle = j === HL ? '#1D1D1F' : '#ECEDEE'; g.fillText(u.b[j], 0, 0); g.restore();
+      }
+      fT.needsUpdate = true;
+      [[wA, u.a, (x) => (x + HX) * WP, aT], [wB, u.b, (x) => (HX - x) * WP, bT]].forEach(([c, list, px, t], side) => {
+        g = c.getContext('2d'); const H = c.height, yy = (h) => (CH - h) * WP;
+        g.fillStyle = '#D9D6CF'; g.fillRect(0, 0, c.width, H);
+        g.fillStyle = '#3B3F45'; g.fillRect(0, yy(1.0), c.width, 1.0 * WP);
+        g.fillStyle = '#C9F15D'; g.fillRect(0, yy(1.32), c.width, 0.22 * WP);
+        g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = '600 ' + Math.round(0.62 * WP) + 'px ' + FONT;
+        for (let j = 0; j < N; j++) {
+          const x = px(sx(j)), hl = side === 1 && j === HL;
+          if (hl) { g.fillStyle = '#C9F15D'; g.fillRect(x - 0.62 * WP, yy(2.42), 1.24 * WP, 0.76 * WP); }
+          g.fillStyle = '#1D1D1F'; g.fillText(list[j], x, yy(2.04));
+        }
+        g.fillStyle = 'rgba(29,29,31,0.5)'; g.font = '500 ' + Math.round(0.2 * WP) + 'px ' + FONT;
+        g.textAlign = 'left'; g.fillText('SUBSUELO ' + level + '  ·  1 PLAZA POR DEPARTAMENTO', px(side ? HX - 1 : -HX + 1) - (side ? 0 : 0), yy(2.7));
+        t.needsUpdate = true;
+      });
+    };
+    draw();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (!this.dead) draw(); });
+
+    const floorM = new THREE.MeshStandardMaterial({ map: fT, roughness: 0.32, metalness: 0, envMapIntensity: 0.9 });
+    const wallAM = new THREE.MeshStandardMaterial({ map: aT, roughness: 0.92 });
+    const wallBM = new THREE.MeshStandardMaterial({ map: bT, roughness: 0.92 });
+    const concM = new THREE.MeshStandardMaterial({ color: C('#CFCBC3'), roughness: 0.9 });
+    const ceilM = new THREE.MeshStandardMaterial({ color: C('#33363C'), roughness: 0.95 });
+    const lime = new THREE.MeshStandardMaterial({ color: C('#C9F15D'), emissive: C('#C9F15D'), emissiveIntensity: 0.35 });
+    const tube = new THREE.MeshStandardMaterial({ color: C('#ffffff'), emissive: C('#F4F2EC'), emissiveIntensity: 2.4 });
+    const pipeM = new THREE.MeshStandardMaterial({ color: C('#2B2E33'), metalness: 0.8, roughness: 0.4 });
+    const warm = new THREE.MeshStandardMaterial({ color: C('#ffffff'), emissive: C('#FFD9A0'), emissiveIntensity: 1.6 });
+    const carM = new THREE.MeshStandardMaterial({ color: C('#ffffff'), metalness: 0.6, roughness: 0.28, envMapIntensity: 1.2 });
+    const glassM = new THREE.MeshStandardMaterial({ color: C('#14181D'), metalness: 0.9, roughness: 0.08, envMapIntensity: 1.4 });
+    const tireM = new THREE.MeshStandardMaterial({ color: C('#16171A'), roughness: 0.8 });
+
+    const plane = (w, h, mat, p, rot) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat); m.position.set(p[0], p[1], p[2]); m.rotation.set(rot[0], rot[1], 0); scene.add(m); return m; };
+    plane(LX, LZ, floorM, [0, 0, 0], [-Math.PI / 2, 0]);
+    plane(LX, LZ, ceilM, [0, CH, 0], [Math.PI / 2, 0]);
+    plane(LX, CH, wallAM, [0, CH / 2, -HZ], [0, 0]);
+    plane(LX, CH, wallBM, [0, CH / 2, HZ], [0, Math.PI]);
+    plane(LZ, CH, concM, [-HX, CH / 2, 0], [0, Math.PI / 2]);
+    plane(LZ, CH, concM, [HX, CH / 2, 0], [0, -Math.PI / 2]);
+
+    const B = new THREE.BoxGeometry(1, 1, 1);
+    const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), pv = new THREE.Vector3(), sv = new THREE.Vector3();
+    const inst = (geo, mat, arr) => { const im = new THREE.InstancedMesh(geo, mat, Math.max(1, arr.length)); arr.forEach((a, i) => { m4.compose(pv.set(a[3], a[4], a[5]), q, sv.set(a[0], a[1], a[2])); im.setMatrixAt(i, m4); }); im.count = arr.length; im.instanceMatrix.needsUpdate = true; scene.add(im); return im; };
+    const cols = [], bands = [], beams = [], tubes = [];
+    for (let k = 0; k <= 4; k++) {
+      const x = X0 + SW * 4 * k;
+      [-1, 1].forEach((s) => { cols.push([0.6, CH, 0.6, x, CH / 2, s * (AZ + 0.3)]); bands.push([0.62, 0.24, 0.62, x, 1.2, s * (AZ + 0.3)]); });
+      beams.push([0.5, 0.45, LZ, x, CH - 0.225, 0]);
+    }
+    for (let x = -23.4; x <= 23.5; x += 2.6) tubes.push([1.4, 0.05, 0.14, x, CH - 0.03, 0]);
+    for (let j = 0; j < N; j += 2) [-1, 1].forEach((s) => tubes.push([1.4, 0.05, 0.14, sx(j) + SW / 2, CH - 0.03, s * (AZ + SD / 2)]));
+    inst(B, concM, cols); inst(B, lime, bands); inst(B, concM, beams); inst(B, tube, tubes);
+    const pg = new THREE.CylinderGeometry(0.08, 0.08, LX, 10); pg.rotateZ(Math.PI / 2);
+    [-1.8, 1.8].forEach((z) => { const p = new THREE.Mesh(pg, pipeM); p.position.set(0, CH - 0.32, z); scene.add(p); });
+    const door = new THREE.Mesh(new THREE.BoxGeometry(0.08, 2.4, 3.2), warm); door.position.set(HX - 0.05, 1.2, 0); scene.add(door);
+    [[0.12, 0.14, 3.6, HX - 0.08, 2.47, 0], [0.12, 2.54, 0.14, HX - 0.08, 1.27, -1.73], [0.12, 2.54, 0.14, HX - 0.08, 1.27, 1.73]].forEach((b) => { const m = new THREE.Mesh(B, lime); m.scale.set(b[0], b[1], b[2]); m.position.set(b[3], b[4], b[5]); scene.add(m); });
+
+    const bodyG = new THREE.BoxGeometry(1.84, 0.62, 4.4), cabG = new THREE.BoxGeometry(1.6, 0.56, 2.3), whG = new THREE.CylinderGeometry(0.33, 0.33, 0.24, 18); whG.rotateZ(Math.PI / 2);
+    const MAXC = N * 2;
+    const bodyM = new THREE.InstancedMesh(bodyG, carM, MAXC), cabM = new THREE.InstancedMesh(cabG, glassM, MAXC), whM = new THREE.InstancedMesh(whG, tireM, MAXC * 4);
+    scene.add(bodyM, cabM, whM);
+    const CARC = ['#E9EAEC', '#1C1E22', '#7C838C', '#3E4A5A', '#B9BEC4', '#6A3434', '#F5F5F7'].map(C);
+    const cars = () => {
+      let n = 0, w = 0;
+      [-1, 1].forEach((s) => { for (let j = 0; j < N; j++) {
+        if (s > 0 && j === HL) continue;
+        const h = Math.abs(Math.sin(j * 12.9898 + s * 4.1 + level * 7.7) * 43758.5) % 1;
+        if (h < 0.28) continue;
+        const x = sx(j), z = s * (AZ + SD / 2 + 0.15);
+        m4.compose(pv.set(x, 0.64, z), q, sv.set(1, 1, 1)); bodyM.setMatrixAt(n, m4); bodyM.setColorAt(n, CARC[Math.floor(h * 1000) % CARC.length]);
+        m4.compose(pv.set(x, 1.22, z + s * 0.25), q, sv.set(1, 1, 1)); cabM.setMatrixAt(n, m4);
+        [[-0.82, -1.38], [0.82, -1.38], [-0.82, 1.38], [0.82, 1.38]].forEach(([dx, dz]) => { m4.compose(pv.set(x + dx, 0.33, z + dz), q, sv.set(1, 1, 1)); whM.setMatrixAt(w++, m4); });
+        n++;
+      } });
+      bodyM.count = n; cabM.count = n; whM.count = w;
+      bodyM.instanceMatrix.needsUpdate = true; cabM.instanceMatrix.needsUpdate = true; whM.instanceMatrix.needsUpdate = true;
+      if (bodyM.instanceColor) bodyM.instanceColor.needsUpdate = true;
+    };
+    cars();
+
+    scene.add(new THREE.HemisphereLight(0xe6ecf2, 0x1a1c20, 1.1));
+    [-16, -4, 8, 20].forEach((x) => { const l = new THREE.PointLight(0xfff3e2, 38, 22, 2); l.position.set(x, 2.6, 0); scene.add(l); });
+    const hlL = new THREE.PointLight(0xdfff9a, 10, 8, 2); hlL.position.set(sx(HL), 2.4, AZ + SD / 2); scene.add(hlL);
+
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 120);
+    let w = 1, h = 1, narrow = false;
+    const resize = () => {
+      w = host.clientWidth; h = host.clientHeight; if (!w || !h) return;
+      renderer.setSize(w, h, false); camera.aspect = w / h; narrow = w < 700; camera.fov = narrow ? 64 : 50;
+      if (narrow) camera.clearViewOffset(); else camera.setViewOffset(w, h, -w * 0.18, 0, w, h);
+      camera.updateProjectionMatrix();
+    };
+    const ro = new ResizeObserver(resize); ro.observe(host); resize();
+    let visible = false;
+    const vio = new IntersectionObserver((e) => { visible = e[0].isIntersecting; }, { threshold: 0 }); vio.observe(host);
+    const sm = (a, b, x) => { let t = (x - a) / (b - a); t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); };
+    const tgt = new THREE.Vector3(), fwd = new THREE.Vector3(), hlT = new THREE.Vector3(sx(HL), 0.4, AZ + SD / 2);
+    let pp = this.pkP || 0, last = performance.now(), rafId = 0, shown = false;
+    const step = (dt) => {
+      pp += ((this.pkP || 0) - pp) * Math.min(1, dt * 4);
+      const qq = sm(0.06, 1, pp), k = sm(0.66, 0.92, pp);
+      const camX = -23 + 27 * qq;
+      camera.position.set(camX, 1.6 + k * 0.7, -0.4 * k);
+      fwd.set(camX + 10, 1.1, Math.sin(qq * Math.PI * 3) * 3.4);
+      tgt.copy(fwd).lerp(hlT, k);
+      camera.lookAt(tgt);
+      const fill = this.pkFillRef.current; if (fill) fill.style.transform = 'scaleY(' + pp.toFixed(4) + ')';
+      const chip = this.pkChipRef.current; if (chip) { const a = sm(0.78, 0.9, pp); chip.style.opacity = a.toFixed(3); chip.style.transform = 'translateY(' + ((1 - a) * 8).toFixed(1) + 'px)'; }
+      renderer.render(scene, camera);
+      if (!shown) { shown = true; cv.style.opacity = '1'; }
+    };
+    const tick = (now) => {
+      rafId = requestAnimationFrame(tick);
+      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      if (!visible || document.hidden || !this.pkOn) return;
+      step(dt);
+    };
+    rafId = requestAnimationFrame(tick);
+    step(0.016);
+    window.__pkDbg = (p) => { this.pkP = p; pp = p; step(0.016); };
+    this.park = {
+      setLevel: (l) => { level = l; draw(); cars(); },
+      dispose: () => { cancelAnimationFrame(rafId); ro.disconnect(); vio.disconnect(); renderer.dispose(); cv.remove(); }
+    };
+  }
+
+  async initCity() {
+    let THREE;
+    try { THREE = await this.loadThree(); }
+    catch (e) { console.warn('No se pudo cargar three.js', e); return; }
+    const host = this.cityRef.current;
+    if (!host || this.dead) return;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    const cv = renderer.domElement;
+    cv.style.cssText = 'display:block;width:100%;height:100%;opacity:0;transition:opacity 1.6s ease;touch-action:pan-y';
+    host.appendChild(cv);
+
+    const C = (h) => new THREE.Color(h);
+    const DAY = { bg: C('#E7E9EC'), bld: C('#F4F5F7'), gnd: C('#D9DCE1'), sky: C('#ffffff'), hgnd: C('#8f95a0'), sun: C('#ffffff') };
+    const NIGHT = { bg: C('#0A0C10'), bld: C('#5C6676'), gnd: C('#07080B'), sky: C('#7f90bd'), hgnd: C('#020305'), sun: C('#d2dcf7') };
+
+    const scene = new THREE.Scene();
+    scene.background = DAY.bg.clone();
+    scene.fog = new THREE.Fog(DAY.bg.clone(), 190, 430);
+    const camera = new THREE.PerspectiveCamera(30, 1, 1, 1000);
+
+    const hemi = new THREE.HemisphereLight(DAY.sky, DAY.hgnd, 1.35);
+    const sun = new THREE.DirectionalLight(DAY.sun, 2.6);
+    sun.position.set(-120, 130, 50);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(2048, 2048);
+    const sc = sun.shadow.camera;
+    sc.left = -175; sc.right = 175; sc.top = 175; sc.bottom = -175; sc.near = 10; sc.far = 460;
+    sun.shadow.bias = -0.0005; sun.shadow.normalBias = 0.4;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+    scene.add(hemi, sun);
+
+    const gMat = new THREE.MeshStandardMaterial({ color: DAY.gnd.clone(), roughness: 1 });
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(1600, 1600), gMat);
+    ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true;
+    scene.add(ground);
+
+    let seed = 20261016;
+    const rnd = () => { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const LOT = 6.2, PER = 3, ST = 4.2, BS = PER * LOT + ST, NB = 7;
+    const boxes = []; let bid = 0; const info = [];
+    for (let bx = -NB; bx <= NB; bx++) for (let bz = -NB; bz <= NB; bz++) {
+      const cx = bx * BS, cz = bz * BS, dc = Math.hypot(cx, cz);
+      if (dc > NB * BS * 0.98 + (rnd() - 0.5) * 30) continue;
+      if (dc > 24 && rnd() < 0.05) continue;
+      for (let i = 0; i < PER; i++) for (let j = 0; j < PER; j++) {
+        if (i === 1 && j === 1 && rnd() < 0.55) continue;
+        const x = cx + (i - 1) * LOT, z = cz + (j - 1) * LOT, d = Math.hypot(x, z);
+        const core = Math.exp(-Math.pow(d / 62, 2));
+        let h = 4 + core * 34 * (0.35 + rnd() * 0.95) + rnd() * 7;
+        if (rnd() < 0.05 + core * 0.12) h *= 1.4 + rnd() * 0.6;
+        const w = LOT * (0.74 + rnd() * 0.22), dd = LOT * (0.74 + rnd() * 0.22);
+        const id = bid++; info.push({ h, d });
+        boxes.push([x, z, w, h, dd, id]);
+        if (h > 20 && rnd() < 0.35) { const k = 0.52 + rnd() * 0.2; boxes.push([x, z, w * k, h + 3 + rnd() * h * 0.22, dd * k, id]); }
+      }
+    }
+    const n = boxes.length;
+    const geo = new THREE.BoxGeometry(1, 1, 1); geo.translate(0, 0.5, 0);
+    const glowAttr = new THREE.InstancedBufferAttribute(new Float32Array(n), 1);
+    glowAttr.setUsage(THREE.DynamicDrawUsage);
+    geo.setAttribute('aGlow', glowAttr);
+    const U = { uLime: { value: C('#C9F15D') }, uWin: { value: 0 }, uGlowK: { value: 0.35 } };
+    const mat = new THREE.MeshStandardMaterial({ color: DAY.bld.clone(), roughness: 0.92, metalness: 0 });
+    mat.onBeforeCompile = (sh) => {
+      Object.assign(sh.uniforms, U);
+      sh.vertexShader = sh.vertexShader
+        .replace('#include <common>', '#include <common>\nattribute float aGlow;\nvarying float vGlow;\nvarying vec3 vWPos;\nvarying vec3 vONrm;')
+        .replace('#include <begin_vertex>', '#include <begin_vertex>\nvGlow = aGlow; vONrm = objectNormal;\nvec4 wp_ = vec4(transformed, 1.0);\n#ifdef USE_INSTANCING\nwp_ = instanceMatrix * wp_;\n#endif\nwp_ = modelMatrix * wp_; vWPos = wp_.xyz;');
+      sh.fragmentShader = sh.fragmentShader
+        .replace('#include <common>', '#include <common>\nuniform vec3 uLime; uniform float uWin; uniform float uGlowK;\nvarying float vGlow; varying vec3 vWPos; varying vec3 vONrm;\nfloat h21_(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }')
+        .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb = mix(diffuseColor.rgb, uLime, vGlow);')
+        .replace('#include <emissivemap_fragment>', [
+          '#include <emissivemap_fragment>',
+          'float side_ = 1.0 - step(0.5, abs(vONrm.y));',
+          'bool xf_ = abs(vONrm.x) > 0.5;',
+          'vec2 q_ = vec2(xf_ ? vWPos.z : vWPos.x, vWPos.y) * vec2(0.75, 0.62);',
+          'vec2 c_ = floor(q_); vec2 f_ = fract(q_);',
+          'float w_ = step(0.22, f_.x) * step(f_.x, 0.78) * step(0.3, f_.y) * step(f_.y, 0.72);',
+          'float o_ = floor(xf_ ? vWPos.x : vWPos.z);',
+          'float r_ = h21_(c_ + vec2(o_ * 7.13, o_ * 3.7));',
+          'float lit_ = step(0.74, r_) * (0.4 + 0.6 * h21_(c_ * 1.7 + o_));',
+          'totalEmissiveRadiance += uWin * side_ * w_ * lit_ * step(1.2, vWPos.y) * vec3(1.0, 0.8, 0.52) * (1.0 - vGlow);',
+          'totalEmissiveRadiance += vGlow * uLime * uGlowK;'
+        ].join('\n'));
+    };
+    const mesh = new THREE.InstancedMesh(geo, mat, n);
+    mesh.castShadow = true; mesh.receiveShadow = true;
+    const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), pv = new THREE.Vector3(), sv = new THREE.Vector3();
+    const inst2b = new Int32Array(n); const b2i = Array.from({ length: bid }, () => []);
+    boxes.forEach((b, i) => { pv.set(b[0], 0, b[1]); sv.set(b[2], b[3], b[4]); m4.compose(pv, q, sv); mesh.setMatrixAt(i, m4); inst2b[i] = b[5]; b2i[b[5]].push(i); });
+    mesh.instanceMatrix.needsUpdate = true;
+    mesh.computeBoundingSphere();
+    scene.add(mesh);
+
+    
+    const glow = new Float32Array(bid); const active = new Set();
+    let hovered = -1;
+    const setHover = (b) => { if (b === hovered) return; hovered = b; if (b >= 0) active.add(b); cv.style.cursor = b >= 0 ? 'pointer' : 'default'; };
+
+    const ray = new THREE.Raycaster(); const ndc = new THREE.Vector2(); let ptr = false, ptrDirty = false;
+    const onMove = (e) => { const r = cv.getBoundingClientRect(); ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1); ptr = true; ptrDirty = true; };
+    const onLeave = () => { ptr = false; ptrDirty = true; };
+    const onClick = () => { if (hovered >= 0) window.location.href = 'Aquaterra%20Proyectos.dc.html'; };
+    cv.addEventListener('pointermove', onMove);
+    cv.addEventListener('pointerleave', onLeave);
+    cv.addEventListener('click', onClick);
+
+    let mt = this.mode() === 'noche' ? 1 : 0, mTarget = mt;
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const apply = () => {
+      scene.background.lerpColors(DAY.bg, NIGHT.bg, mt); scene.fog.color.copy(scene.background);
+      mat.color.lerpColors(DAY.bld, NIGHT.bld, mt); gMat.color.lerpColors(DAY.gnd, NIGHT.gnd, mt);
+      hemi.color.lerpColors(DAY.sky, NIGHT.sky, mt); hemi.groundColor.lerpColors(DAY.hgnd, NIGHT.hgnd, mt);
+      hemi.intensity = lerp(1.35, 0.7, mt);
+      sun.color.lerpColors(DAY.sun, NIGHT.sun, mt); sun.intensity = lerp(2.6, 2.7, mt);
+      U.uWin.value = mt * 0.95; U.uGlowK.value = lerp(0.35, 2.4, mt);
+    };
+    apply();
+
+    const resize = () => {
+      const w = host.clientWidth, h = host.clientHeight; if (!w || !h) return;
+      renderer.setSize(w, h, false); camera.aspect = w / h; camera.fov = w / h < 1 ? 50 : 32; camera.updateProjectionMatrix();
+    };
+    const ro = new ResizeObserver(resize); ro.observe(host); resize();
+    let visible = true;
+    const vio = new IntersectionObserver((es) => { visible = es[0].isIntersecting; }, { threshold: 0 });
+    vio.observe(host);
+
+    let ang = 0.7, px = 0, last = performance.now(), frame = 0, rafId = 0, shown = false;
+    const tick = (now) => {
+      rafId = requestAnimationFrame(tick);
+      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      if (!visible || document.hidden) return;
+      frame++;
+      const auto = this.props.autoRotar ?? true;
+      const speed = this.props.velocidad ?? 1;
+      if (auto) ang += dt * 0.035 * speed;
+      if (Math.abs(mTarget - mt) > 0.0005) { mt += (mTarget - mt) * Math.min(1, dt * 2.4); if (Math.abs(mTarget - mt) <= 0.0005) mt = mTarget; apply(); }
+      px += ((ptr ? ndc.x : 0) - px) * Math.min(1, dt * 1.2);
+      const a = ang + px * 0.05, R = 185, H = 118;
+      camera.position.set(Math.cos(a) * R, H, Math.sin(a) * R);
+      camera.lookAt(Math.cos(a) * 6, 4, Math.sin(a) * 6);
+      if (ptr && (ptrDirty || frame % 4 === 0)) {
+        ray.setFromCamera(ndc, camera);
+        const hit = ray.intersectObject(mesh, false)[0];
+        setHover(hit && hit.instanceId != null ? inst2b[hit.instanceId] : -1); ptrDirty = false;
+      } else if (!ptr && ptrDirty) { setHover(-1); ptrDirty = false; }
+      let dirty = false;
+      active.forEach((b) => {
+        const tg = b === hovered ? 1 : 0;
+        let v = glow[b] + (tg - glow[b]) * Math.min(1, dt * 7);
+        if (tg === 0 && v < 0.003) { v = 0; active.delete(b); }
+        if (v !== glow[b]) { glow[b] = v; const arr = b2i[b]; for (let k = 0; k < arr.length; k++) glowAttr.array[arr[k]] = v; dirty = true; }
+      });
+      if (dirty) glowAttr.needsUpdate = true;
+      renderer.render(scene, camera);
+      if (!shown) { shown = true; cv.style.opacity = '1'; }
+    };
+    rafId = requestAnimationFrame(tick);
+
+    this.city = {
+      setMode: (m) => { mTarget = m; },
+      dispose: () => {
+        cancelAnimationFrame(rafId); ro.disconnect(); vio.disconnect();
+        cv.removeEventListener('pointermove', onMove); cv.removeEventListener('pointerleave', onLeave); cv.removeEventListener('click', onClick);
+        geo.dispose(); mat.dispose(); gMat.dispose(); renderer.dispose(); cv.remove();
+      }
+    };
+    const m = this.mode(); if ((m === 'noche' ? 1 : 0) !== mTarget) mTarget = m === 'noche' ? 1 : 0;
+  }
+
+  renderVals() {
+    const s = this.state;
+    const night = this.mode() === 'noche';
+    const hdrDark = night;
+    const th = this.THEMES[night ? 'noche' : 'dia'];
+    const twS = (i) => (s.twStep === i ? { op: 1, dot: '#C9F15D' } : { op: 0.55, dot: 'rgba(245,245,247,0.3)' });
+    const dot = (i) => (s.tlOn >= i ? { bg: '#C9F15D', bd: th.ink } : { bg: th.bg, bd: th.line2 });
+    const setF = (k) => (e) => { const v = e.target.value; this.setState((st) => ({ f: { ...st.f, [k]: v } })); };
+    const chip = (key, label) => {
+      const on = s[key] === label;
+      return { label, bg: on ? '#0071E3' : th.input, ink: on ? '#FFFFFF' : th.ink, bd: 'transparent', pick: () => this.setState({ [key]: label }) };
+    };
+    const valid = s.nombre.trim().length > 1 && s.tel.trim().length > 5;
+    const goT = (dir) => () => {
+      this.setState({ tVis: false });
+      clearTimeout(this._tt);
+      this._tt = setTimeout(() => this.setState((st) => ({ ti: (st.ti + dir + this.TESTI.length) % this.TESTI.length, tVis: true })), 220);
+    };
+    return {
+      rootRef: this.rootRef, heroRef: this.heroRef, cityRef: this.cityRef, tlRef: this.tlRef,
+      th, themeName: night ? 'noche' : 'dia',
+      wide: s.w >= 900,
+      stickyPos: s.w >= 900 ? 'sticky' : 'static',
+      hdrBg: s.scrolled && !s.menu ? (night ? 'rgba(22,22,23,0.78)' : 'rgba(251,251,253,0.8)') : 'rgba(251,251,253,0)',
+      hdrBorder: s.scrolled && !s.menu ? (night ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)') : 'rgba(0,0,0,0)',
+      hdrBlur: s.scrolled && !s.menu ? 'saturate(180%) blur(20px)' : 'none',
+      narrowNav: s.w < 900, sheetNarrow: s.w < 640,
+      menu: !!s.menu,
+      toggleMenu: () => this.setState((st) => ({ menu: !st.menu })),
+      closeMenu: () => { if (this.state.menu) this.setState({ menu: false }); },
+      menuItems: [['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['#inversiones', 'Inversiones'], ['#edificio', 'El edificio'], ['#nosotros', 'Nosotros'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['#contacto', 'Contacto']].map(([href, label]) => ({ href, label })),
+      menuBg: night ? 'rgba(0,0,0,0.86)' : 'rgba(251,251,253,0.92)',
+      burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
+      burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
+      ctaLabel: s.w >= 520 ? 'Agende una asesoría' : 'Asesoría',
+      linkC: night ? '#2997FF' : '#0066CC',
+      segTrack: night ? 'rgba(118,118,128,0.32)' : 'rgba(118,118,128,0.16)',
+      knobBg: night ? '#636366' : '#FFFFFF',
+      shAlign: s.w < 640 ? 'flex-end' : 'center', shOuter: s.w < 640 ? '0' : '20px', shW: s.w < 640 ? '100%' : 'min(520px, 100%)',
+      shMaxH: s.w < 640 ? '92svh' : 'calc(100svh - 40px)', shRadius: s.w < 640 ? '22px 22px 0 0' : '22px',
+      shPad: s.w < 640 ? '20px 20px calc(24px + env(safe-area-inset-bottom))' : 'clamp(24px,4vw,32px)',
+      pkLayerRef: this.pkLayerRef, pkWide: s.w >= 700,
+      pkW: s.w >= 700 ? 'min(400px, 38vw)' : 'auto', pkRight: s.w >= 700 ? 'auto' : '20px',
+      pkPad: s.w >= 700 ? '0px' : 'calc(68px + env(safe-area-inset-top)) 0 calc(24px + env(safe-area-inset-bottom))',
+      pkJustify: s.w >= 700 ? 'center' : 'space-between',
+      pkGrad: s.w >= 700 ? 'linear-gradient(to right, rgba(13,15,18,0.94) 0%, rgba(13,15,18,0.66) 28%, rgba(13,15,18,0) 50%), linear-gradient(to bottom, rgba(13,15,18,0.75) 0%, rgba(13,15,18,0) 18%, rgba(13,15,18,0) 82%, rgba(13,15,18,0.85) 100%)' : 'linear-gradient(to bottom, rgba(13,15,18,0.94) 0%, rgba(13,15,18,0.6) 30%, rgba(13,15,18,0) 46%, rgba(13,15,18,0) 54%, rgba(13,15,18,0.72) 70%, rgba(13,15,18,0.96) 100%)',
+      hdrInk: hdrDark ? '#F5F5F7' : '#1D1D1F',
+      hdrSub: hdrDark ? 'rgba(245,245,247,0.78)' : '#3F434A',
+      ctaBg: hdrDark ? '#F5F5F7' : '#1D1D1F',
+      ctaInk: hdrDark ? '#1D1D1F' : '#FFFFFF',
+      heroBg: night ? '#0A0C10' : '#E7E9EC',
+      dayHaze: night ? 0 : 1,
+      nightHaze: night ? 1 : 0,
+      ink: night ? '#F5F5F7' : '#1D1D1F',
+      sub: night ? 'rgba(245,245,247,0.74)' : '#4A4E56',
+      limeText: night ? '#C9F15D' : '#9CC92E',
+      heroWide: s.w >= 600, heroCols: s.w >= 600 ? 'minmax(0,1fr) auto minmax(0,1fr)' : 'auto minmax(0,1fr)',
+      heroGlass: s.w < 700 ? 'rgba(0,0,0,0)' : (night ? 'rgba(10,12,16,0.25)' : 'rgba(245,245,247,0.25)'),
+      heroGlassBd: s.w < 700 ? 'rgba(0,0,0,0)' : (night ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.7)'),
+      heroBlur: s.w < 700 ? 'none' : 'saturate(140%) blur(7px)',
+      heroPad: s.w < 700 ? '0px' : 'clamp(10px,1.2vw,16px) clamp(12px,1.4vw,18px)',
+      cardBg: night ? 'rgba(44,44,46,0.6)' : 'rgba(29,29,31,0.86)',
+      cardBorder: night ? 'rgba(245,245,247,0.16)' : 'rgba(245,245,247,0)',
+      knobLeft: night ? '88px' : '2px',
+      dayInk: night ? 'rgba(245,245,247,0.75)' : '#1D1D1F',
+      nightInk: night ? '#FFFFFF' : 'rgba(29,29,31,0.7)',
+      toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { localStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
+      tlFill: s.tlY + 'px',
+      t1: dot(1), t2: dot(2), t3: dot(3), t4: dot(4), t5: dot(5), t6: dot(6),
+      parkSecRef: this.parkSecRef, parkRef: this.parkRef, twCurtRef: this.twCurtRef, twInfoRef: this.twInfoRef, pkCurtRef: this.pkCurtRef, pkFillRef: this.pkFillRef, pkChipRef: this.pkChipRef,
+      pk1Bg: (this.state.pkLevel || 1) === 1 ? '#636366' : 'rgba(99,99,102,0)', pk1Sh: (this.state.pkLevel || 1) === 1 ? '0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04)' : 'none',
+      pk2Bg: this.state.pkLevel === 2 ? '#636366' : 'rgba(99,99,102,0)', pk2Sh: this.state.pkLevel === 2 ? '0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04)' : 'none',
+      pkL1: () => this.setPark(1), pkL2: () => this.setPark(2),
+      pkCaption: this.state.pkLevel === 2 ? 'Subsuelo 2 · Departamentos de pisos 10 a 17' : 'Subsuelo 1 · Departamentos de pisos 2 a 9',
+      pkPlaza: this.state.pkLevel === 2 ? '16C' : '8C',
+      towerSecRef: this.towerSecRef, towerRef: this.towerRef, nodesRef: this.nodesRef, twFillRef: this.twFillRef, cardsRef: this.cardsRef, linesRef: this.linesRef,
+      twWide: s.w >= 1100,
+      tw: night ? { bg: '#06070A', cardBg: 'rgba(20,23,28,0.94)', cardBd: 'rgba(245,245,247,0.12)', cardInk: '#F5F5F7', cardMute: '#9CA1AA' } : { bg: '#131519', cardBg: '#FFFFFF', cardBd: 'rgba(255,255,255,0)', cardInk: '#1D1D1F', cardMute: '#565A62' },
+      twFloor: s.twFloor,
+      twInfoW: s.w >= 700 ? 'min(380px, 34vw)' : 'calc(100% - 40px)',
+      twInfoPad: s.w >= 700 ? '0px' : 'calc(68px + env(safe-area-inset-top)) 0 0',
+      twInfoJustify: s.w >= 700 ? 'center' : 'flex-start',
+      s1: twS(0), s2: twS(1), s3: twS(2), s4: twS(3), s5: twS(4),
+      tq: this.TESTI[s.ti],
+      tOp: s.tVis ? 1 : 0,
+      tCount: `0${s.ti + 1} / 0${this.TESTI.length}`,
+      prevT: goT(-1), nextT: goT(1),
+      modal: s.modal, sent: s.sent, notSent: !s.sent,
+      openModal: () => this.setState({ modal: true, sent: false, menu: false }),
+      closeModal: () => this.setState({ modal: false }),
+      stop: (e) => e.stopPropagation(),
+      nombre: s.nombre, tel: s.tel,
+      onNombre: (e) => this.setState({ nombre: e.target.value }),
+      onTel: (e) => this.setState({ tel: e.target.value }),
+      montoOpts: this.MONTOS.map((l) => chip('monto', l)),
+      objOpts: this.OBJS.map((l) => chip('obj', l)),
+      submitBg: valid ? '#0071E3' : th.fill,
+      submitInk: valid ? '#FFFFFF' : th.mute,
+      submitCursor: valid ? 'pointer' : 'not-allowed',
+      submit: () => { if (valid) this.setState({ sent: true }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

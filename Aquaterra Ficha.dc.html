@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5F5F7">
+<style>
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:#F5F5F7;color:#1D1D1F;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box}
+a{color:#0066CC;text-decoration:none}
+a:hover{color:#0077ED}
+[data-theme="noche"] a{color:#2997FF}
+button,a{touch-action:manipulation}
+button{-webkit-user-select:none;user-select:none}
+button{font-family:inherit}
+::selection{background:#C9F15D;color:#1D1D1F}
+</style>
+</helmet>
+<div data-theme="{{ themeName }}" style="min-height:100svh;background:{{ th.bg }};color:{{ th.ink }};font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;overflow-x:clip;transition:background .5s">
+
+<header style="position:fixed;top:0;left:0;right:0;z-index:50;padding-top:env(safe-area-inset-top);background:{{ hdrBg }};border-bottom:1px solid {{ th.line }};backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);transition:background .35s">
+  <div style="max-width:1120px;margin:0 auto;height:52px;padding:0 clamp(16px,3vw,24px);display:flex;align-items:center;justify-content:space-between;gap:20px">
+    <a href="Aquaterra%20Landing.dc.html" style="display:flex;align-items:center;gap:9px;min-height:44px;color:{{ th.ink }};font-weight:600;font-size:18px;letter-spacing:-0.02em">
+      <span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>
+      <span>Aquaterra</span>
+    </a>
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <nav style="display:flex;align-items:center;gap:clamp(18px,2.4vw,32px)">
+        <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
+          <a href="{{ n.href }}" style="font-size:13px;letter-spacing:-0.01em;color:{{ n.ink }};font-weight:{{ n.fw }}" style-hover="opacity:0.7">{{ n.label }}</a>
+        </sc-for>
+      </nav>
+    </sc-if>
+    <div style="display:flex;align-items:center;gap:8px">
+      <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ toggleMode }}" aria-label="Cambiar modo día / noche" style="position:relative;display:flex;align-items:center;padding:2px;border-radius:9px;border:0;background:{{ segTrack }};cursor:pointer">
+          <span style="position:absolute;top:2px;left:{{ knobLeft }};width:58px;height:28px;border-radius:7px;background:{{ knobBg }};box-shadow:0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);transition:left .35s cubic-bezier(.3,.7,.2,1), background .35s"></span>
+          <span style="position:relative;width:58px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:{{ dayInk }};transition:color .3s">Día</span>
+          <span style="position:relative;width:58px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:{{ nightInk }};transition:color .3s">Noche</span>
+        </button>
+      </sc-if>
+      <a href="Aquaterra%20Landing.dc.html#contacto" style="display:flex;align-items:center;height:32px;padding:0 15px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:13px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap" style-hover="background:#0077ED;color:#FFFFFF">{{ ctaLabel }}</a>
+      <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleMenu }}" aria-label="Menú" style="width:44px;height:44px;margin-right:-10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:0;background:transparent;cursor:pointer">
+          <span style="width:18px;height:1.5px;border-radius:1px;background:{{ th.ink }};transform:{{ burgerA }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
+          <span style="width:18px;height:1.5px;border-radius:1px;background:{{ th.ink }};transform:{{ burgerB }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
+        </button>
+      </sc-if>
+    </div>
+  </div>
+</header>
+<sc-if value="{{ menu }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:49;background:{{ menuBg }};backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);padding:calc(72px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom));display:flex;flex-direction:column;overflow:auto;overscroll-behavior:contain">
+    <sc-for list="{{ navItems }}" as="m" hint-placeholder-count="6">
+      <a href="{{ m.href }}" onClick="{{ closeMenu }}" style="display:flex;align-items:center;justify-content:space-between;min-height:60px;font-size:28px;font-weight:600;letter-spacing:-0.025em;color:{{ th.ink }};border-bottom:1px solid {{ th.line }}">{{ m.label }}<span style="font-size:24px;font-weight:400;color:{{ th.mute }}">›</span></a>
+    </sc-for>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:76px;border-bottom:1px solid {{ th.line }}">
+      <span style="font-size:17px;color:{{ th.mute2 }}">Apariencia</span>
+      <button onClick="{{ toggleMode }}" aria-label="Cambiar modo día / noche" style="position:relative;display:flex;align-items:center;padding:2px;border-radius:10px;border:0;background:{{ segTrack }};cursor:pointer">
+        <span style="position:absolute;top:2px;left:{{ knobLeftL }};width:84px;height:40px;border-radius:8px;background:{{ knobBg }};box-shadow:0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);transition:left .35s cubic-bezier(.3,.7,.2,1), background .35s"></span>
+        <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ dayInk }}">Día</span>
+        <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ nightInk }}">Noche</span>
+      </button>
+    </div>
+    <a href="Aquaterra%20Landing.dc.html#contacto" onClick="{{ closeMenu }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Agende una asesoría</a>
+  </div>
+</sc-if>
+
+<section data-screen-label="01 Encabezado" style="padding:calc(52px + env(safe-area-inset-top) + clamp(16px,3vw,40px)) clamp(20px,3.2vw,48px) 24px">
+  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:18px">
+    <a href="Aquaterra%20Proyectos.dc.html" style="align-self:flex-start;display:flex;align-items:center;gap:4px;min-height:44px;margin-left:-2px;font-size:17px;color:{{ linkC }}"><span style="font-size:24px;line-height:1">‹</span>Proyectos</a>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px 32px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+        <span style="align-self:flex-start;padding:5px 12px;border-radius:999px;font-size:13px;font-weight:600;background:{{ pr.tagBg }};color:{{ pr.tagInk }}">{{ pr.etapa }}</span>
+        <h1 style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">{{ pr.name }}</h1>
+        <span style="font-size:clamp(17px,1.6vw,21px);color:{{ th.mute2 }}">{{ pr.loc }}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Desde</span>
+        <span style="font-size:clamp(28px,3vw,40px);line-height:1;letter-spacing:-0.03em;font-weight:700">{{ pr.precioTxt }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="02 Medios" style="padding:0 clamp(20px,3.2vw,48px)">
+  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:12px">
+    <div style="position:relative;aspect-ratio:{{ mainAspect }};border-radius:26px;overflow:hidden;background:{{ th.ph }};display:flex;align-items:center;justify-content:center">
+      <span style="font-size:13px;color:{{ th.phInk }}">video 3D / render principal · {{ pr.name }}</span>
+      <span style="position:absolute;left:16px;bottom:16px;display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 16px 6px 6px;border-radius:999px;background:rgba(29,29,31,0.72);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);color:#FFFFFF;font-size:15px;font-weight:500"><span style="width:32px;height:32px;border-radius:50%;background:#C9F15D;display:flex;align-items:center;justify-content:center"><span style="width:0;height:0;border-left:9px solid #1D1D1F;border-top:6px solid transparent;border-bottom:6px solid transparent;margin-left:3px"></span></span>Recorrido 3D</span>
+    </div>
+    <div style="display:grid;grid-template-columns:{{ thumbCols }};gap:12px">
+      <div style="aspect-ratio:4/3;border-radius:18px;background:{{ th.ph }};display:flex;align-items:center;justify-content:center"><span style="font-size:13px;color:{{ th.phInk }}">fachada</span></div>
+      <div style="aspect-ratio:4/3;border-radius:18px;background:{{ th.ph }};display:flex;align-items:center;justify-content:center"><span style="font-size:13px;color:{{ th.phInk }}">interior</span></div>
+      <div style="aspect-ratio:4/3;border-radius:18px;background:{{ th.ph }};display:flex;align-items:center;justify-content:center"><span style="font-size:13px;color:{{ th.phInk }}">amenities</span></div>
+      <div style="aspect-ratio:4/3;border-radius:18px;background:{{ th.ph }};display:flex;align-items:center;justify-content:center"><span style="font-size:13px;color:{{ th.phInk }}">planos</span></div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="03 Detalle" style="padding:clamp(40px,6vw,72px) clamp(20px,3.2vw,48px) clamp(72px,10vw,120px)">
+  <div style="max-width:1120px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:flex-start;gap:clamp(32px,4vw,56px)">
+    <div style="flex:1 1 560px;min-width:0;display:flex;flex-direction:column;gap:clamp(48px,7vw,80px)">
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;border-radius:20px;overflow:hidden;background:{{ th.line }}">
+        <sc-for list="{{ facts }}" as="fc" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;gap:4px;padding:16px 18px;background:{{ th.card }}">
+            <span style="font-size:13px;color:{{ th.mute }}">{{ fc.k }}</span>
+            <span style="font-size:19px;letter-spacing:-0.02em;font-weight:600">{{ fc.v }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div id="avance" style="display:flex;flex-direction:column;gap:20px">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Avance de obra</span>
+            <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">Estado <span style="color:#86868B">actual.</span></h2>
+          </div>
+          <span style="font-size:clamp(36px,4vw,56px);line-height:1;letter-spacing:-0.04em;font-weight:700">{{ avanceTxt }}</span>
+        </div>
+        <div style="height:8px;border-radius:999px;background:{{ th.chip }};overflow:hidden"><div style="height:100%;width:{{ avanceTxt }};background:#C9F15D;border-radius:999px;transition:width .8s cubic-bezier(.2,.7,.2,1)"></div></div>
+        <div style="display:flex;flex-direction:column;padding:0 18px;border-radius:20px;background:{{ th.card }}">
+          <sc-for list="{{ hitos }}" as="hi" hint-placeholder-count="6">
+            <div style="display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:12px;min-height:52px;padding:10px 0;border-bottom:{{ hi.bd }}">
+              <span style="width:22px;height:22px;border-radius:50%;background:{{ hi.dotBg }};border:1.5px solid {{ hi.dotBd }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1D1D1F">{{ hi.mark }}</span>
+              <span style="font-size:16px;color:{{ hi.ink }}">{{ hi.t }}</span>
+              <span style="font-size:13px;color:{{ th.mute }}">{{ hi.st }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div id="pagos" style="display:flex;flex-direction:column;gap:24px">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Plan de pagos</span>
+          <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">Simule <span style="color:#86868B">sus cuotas.</span></h2>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:13px;color:{{ th.mute }}">Tipología</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ tipos }}" as="o" hint-placeholder-count="3">
+                <button onClick="{{ o.pick }}" style="min-height:44px;padding:0 16px;border-radius:999px;border:0;font-size:15px;cursor:pointer;background:{{ o.bg }};color:{{ o.ink }};transition:background .2s, color .2s">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:18px 32px">
+            <div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:13px;color:{{ th.mute }}">Anticipo</span>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <sc-for list="{{ antOpts }}" as="o" hint-placeholder-count="4">
+                  <button onClick="{{ o.pick }}" style="min-height:44px;min-width:56px;padding:0 14px;border-radius:999px;border:0;font-size:15px;cursor:pointer;background:{{ o.bg }};color:{{ o.ink }};transition:background .2s, color .2s">{{ o.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:13px;color:{{ th.mute }}">Cuotas mensuales</span>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <sc-for list="{{ cuoOpts }}" as="o" hint-placeholder-count="3">
+                  <button onClick="{{ o.pick }}" style="min-height:44px;min-width:56px;padding:0 14px;border-radius:999px;border:0;font-size:15px;cursor:pointer;background:{{ o.bg }};color:{{ o.ink }};transition:background .2s, color .2s">{{ o.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;border-radius:22px;overflow:hidden;background:rgba(255,255,255,0.08);color:#F5F5F7">
+          <div style="display:flex;flex-direction:column;gap:6px;padding:20px 22px;background:{{ th.panel }}"><span style="font-size:13px;color:rgba(245,245,247,0.62)">Anticipo</span><span style="font-size:26px;letter-spacing:-0.025em;font-weight:600">{{ calc.ant }}</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;padding:20px 22px;background:{{ th.panel }}"><span style="font-size:13px;color:#C9F15D">{{ calc.cuoLabel }}</span><span style="font-size:26px;letter-spacing:-0.025em;font-weight:600;color:#C9F15D">{{ calc.cuota }}</span></div>
+          <div style="display:flex;flex-direction:column;gap:6px;padding:20px 22px;background:{{ th.panel }}"><span style="font-size:13px;color:rgba(245,245,247,0.62)">Saldo a la entrega</span><span style="font-size:26px;letter-spacing:-0.025em;font-weight:600">{{ calc.saldo }}</span></div>
+        </div>
+        <span style="font-size:13px;line-height:1.5;color:{{ th.mute }}">Simulación orientativa en USD, sin intereses. Las condiciones finales se confirman en la asesoría.</span>
+      </div>
+
+      <div id="amenities" style="display:flex;flex-direction:column;gap:20px">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Amenities</span>
+          <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">Lo que <span style="color:#86868B">incluye.</span></h2>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:10px">
+          <sc-for list="{{ amen }}" as="am" hint-placeholder-count="6">
+            <div style="display:flex;align-items:center;gap:14px;min-height:56px;padding:14px 18px;border-radius:16px;background:{{ th.card }}">
+              <span style="width:10px;height:10px;flex:0 0 auto;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>
+              <span style="font-size:16px">{{ am }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div id="ubicacion" style="display:flex;flex-direction:column;gap:20px">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Ubicación</span>
+          <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">{{ pr.barrio }}, <span style="color:#86868B">{{ pr.ciudad }}</span></h2>
+        </div>
+        <div style="position:relative;aspect-ratio:{{ mapAspect }};border-radius:22px;background:{{ th.ph }};display:flex;align-items:center;justify-content:center">
+          <span style="font-size:13px;color:{{ th.phInk }}">mapa · {{ pr.loc }}</span>
+          <span style="position:absolute;left:50%;top:40%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:#C9F15D;box-shadow:0 0 0 8px rgba(201,241,93,0.28)"></span>
+        </div>
+        <div style="display:flex;flex-direction:column;padding:0 18px;border-radius:20px;background:{{ th.card }}">
+          <sc-for list="{{ cerca }}" as="ce" hint-placeholder-count="4">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:52px;border-bottom:{{ ce.bd }};font-size:16px"><span>{{ ce.t }}</span><span style="font-size:15px;color:{{ th.mute }}">{{ ce.d }}</span></div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <aside style="flex:0 1 340px;min-width:300px;position:sticky;top:calc(52px + 24px);display:flex;flex-direction:column;gap:16px;padding:24px;border-radius:24px;background:{{ th.card }}">
+        <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:22px;font-weight:700;letter-spacing:-0.02em">{{ pr.name }}</span><span style="font-size:15px;color:{{ th.mute }}">{{ pr.loc }}</span></div>
+        <div style="display:flex;flex-direction:column">
+          <div style="display:flex;justify-content:space-between;min-height:44px;align-items:center;border-bottom:1px solid {{ th.line }};font-size:15px"><span style="color:{{ th.mute }}">Desde</span><span style="font-weight:600">{{ pr.precioTxt }}</span></div>
+          <div style="display:flex;justify-content:space-between;min-height:44px;align-items:center;border-bottom:1px solid {{ th.line }};font-size:15px"><span style="color:{{ th.mute }}">Etapa</span><span>{{ pr.etapa }}</span></div>
+          <div style="display:flex;justify-content:space-between;min-height:44px;align-items:center;border-bottom:1px solid {{ th.line }};font-size:15px"><span style="color:{{ th.mute }}">Entrega</span><span>{{ pr.entrega }}</span></div>
+          <div style="display:flex;justify-content:space-between;min-height:44px;align-items:center;font-size:15px"><span style="color:{{ th.mute }}">Avance</span><span>{{ avanceTxt }}</span></div>
+        </div>
+        <a href="Aquaterra%20Landing.dc.html#contacto" style="display:flex;align-items:center;justify-content:center;height:50px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Agende una asesoría</a>
+        <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;justify-content:center;gap:4px;min-height:44px;font-size:15px;color:{{ linkC }}">Ver otros proyectos ›</a>
+      </aside>
+    </sc-if>
+  </div>
+</section>
+
+<footer data-screen-label="04 Footer" style="background:{{ th.foot }};color:#F5F5F7;padding:48px clamp(20px,3.2vw,48px) {{ footPad }}">
+  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px 24px">
+      <span style="display:flex;align-items:center;gap:9px;font-size:18px;font-weight:600;letter-spacing:-0.02em"><span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>Aquaterra</span>
+      <div style="display:flex;flex-wrap:wrap;gap:0 24px;font-size:14px">
+        <a href="Aquaterra%20Landing.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Inicio</a>
+        <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Proyectos</a>
+        <a href="Aquaterra%20Blog.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Blog</a>
+        <a href="Aquaterra%20Landing.dc.html#contacto" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Contacto</a>
+      </div>
+    </div>
+    <span style="font-size:13px;color:rgba(245,245,247,0.6)">© 2026 Aquaterra · Asunción, Paraguay</span>
+  </div>
+</footer>
+
+<sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;left:0;right:0;bottom:0;z-index:40;padding:10px 20px calc(10px + env(safe-area-inset-bottom));background:{{ hdrBg }};backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-top:1px solid {{ th.line }};display:flex;align-items:center;justify-content:space-between;gap:16px">
+    <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+      <span style="font-size:12px;color:{{ th.mute }}">Desde</span>
+      <span style="font-size:19px;font-weight:700;letter-spacing:-0.02em;white-space:nowrap">{{ pr.precioTxt }}</span>
+    </div>
+    <a href="Aquaterra%20Landing.dc.html#contacto" style="flex:0 0 auto;display:flex;align-items:center;height:46px;padding:0 22px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:16px;font-weight:500">Agende una asesoría</a>
+  </div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    mode: (() => { try { return localStorage.getItem('aquaterra-modo'); } catch (e) { return null; } })(),
+    w: typeof window !== 'undefined' ? window.innerWidth : 1280,
+    menu: false,
+    pi: (() => { try { const v = parseInt(new URLSearchParams(window.location.search).get('p'), 10); return isNaN(v) ? 0 : v; } catch (e) { return 0; } })(),
+    tip: 0, ant: 30, cuo: 36
+  };
+
+  PROJECTS = [
+    { name: 'Torre Lapacho', barrio: 'Villa Morra', ciudad: 'Asunción', tipo: 'Departamento', etapa: 'En pozo', precio: 68000 },
+    { name: 'Residencias Tajy', barrio: 'Carmelitas', ciudad: 'Asunción', tipo: 'Departamento', etapa: 'En obra', precio: 95000 },
+    { name: 'Centro Mburuvicha', barrio: 'Las Mercedes', ciudad: 'Asunción', tipo: 'Oficina', etapa: 'En pozo', precio: 85000 },
+    { name: 'Dúplex Yvoty', barrio: 'Fernando de la Mora', ciudad: 'Fernando de la Mora', tipo: 'Casa', etapa: 'En pozo', precio: 78000 },
+    { name: 'Casas Ñandutí', barrio: 'San Bernardino', ciudad: 'San Bernardino', tipo: 'Casa', etapa: 'En obra', precio: 140000 },
+    { name: 'Casa Guavirá', barrio: 'Lambaré', ciudad: 'Lambaré', tipo: 'Casa', etapa: 'Entregado', precio: 185000 },
+    { name: 'Lotes Yvága', barrio: 'Luque', ciudad: 'Luque', tipo: 'Lote', etapa: 'Entregado', precio: 22000 },
+    { name: 'Lotes Tape', barrio: 'Areguá', ciudad: 'Areguá', tipo: 'Lote', etapa: 'En obra', precio: 18000 },
+    { name: 'Costanera Ka\u2019aguy', barrio: 'Costanera', ciudad: 'Encarnación', tipo: 'Departamento', etapa: 'En pozo', precio: 54000 }
+  ];
+  TIPOS = {
+    Departamento: [['1 dormitorio', 1, '48 m²'], ['2 dormitorios', 1.38, '72 m²'], ['3 dormitorios', 1.9, '104 m²']],
+    Casa: [['3 dormitorios', 1, '160 m²'], ['4 dormitorios', 1.32, '210 m²']],
+    Lote: [['Lote 360 m²', 1, '360 m²'], ['Lote 450 m²', 1.25, '450 m²']],
+    Oficina: [['Oficina 45 m²', 1, '45 m²'], ['Oficina 80 m²', 1.7, '80 m²']]
+  };
+  AMEN = {
+    Departamento: ['Piscina', 'Gimnasio', 'Quincho', 'Cowork', 'Seguridad 24 h', 'Cocheras'],
+    Casa: ['Barrio cerrado', 'Seguridad 24 h', 'Áreas verdes', 'Club house'],
+    Lote: ['Barrio cerrado', 'Calles asfaltadas', 'Áreas verdes', 'Seguridad 24 h'],
+    Oficina: ['Recepción', 'Salas de reunión', 'Cocheras', 'Seguridad 24 h']
+  };
+  HITOS = [['Proyecto aprobado', 5], ['Excavación y fundaciones', 20], ['Estructura', 50], ['Cerramientos y fachada', 70], ['Terminaciones', 90], ['Entrega', 100]];
+  NAV = [['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['Aquaterra%20Landing.dc.html#inversiones', 'Inversiones'], ['Aquaterra%20Landing.dc.html#edificio', 'El edificio'], ['Aquaterra%20Landing.dc.html#nosotros', 'Nosotros'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['Aquaterra%20Landing.dc.html#contacto', 'Contacto']];
+  THEMES = {
+    dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' },
+    noche: { bg: '#000000', ink: '#F5F5F7', mute: '#98989D', mute2: '#C7C7CC', line: 'rgba(255,255,255,0.12)', card: '#1C1C1E', ph: '#2C2C2E', phInk: '#8E8E93', panel: '#1C1C1E', foot: '#000000', chip: 'rgba(118,118,128,0.24)' }
+  };
+
+  componentDidMount() {
+    this._onResize = () => this.setState((st) => ({ w: window.innerWidth, menu: window.innerWidth >= 980 ? false : st.menu }));
+    window.addEventListener('resize', this._onResize);
+    this._onKey = (e) => { if (e.key === 'Escape' && this.state.menu) this.setState({ menu: false }); };
+    window.addEventListener('keydown', this._onKey);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); }
+
+  mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
+
+  renderVals() {
+    const s = this.state;
+    const night = this.mode() === 'noche';
+    const th = this.THEMES[night ? 'noche' : 'dia'];
+    const wide = s.w >= 980, narrowM = s.w < 640;
+    const p = this.PROJECTS[Math.max(0, Math.min(this.PROJECTS.length - 1, s.pi))];
+    const usd = (v) => 'USD ' + Math.round(v).toLocaleString('es-PY');
+    const avance = p.etapa === 'En pozo' ? 12 : p.etapa === 'En obra' ? 58 : 100;
+    const entrega = p.etapa === 'En pozo' ? 'Dic. 2028' : p.etapa === 'En obra' ? 'Jun. 2027' : 'Inmediata';
+    const tipos = this.TIPOS[p.tipo];
+    const ti = Math.min(s.tip, tipos.length - 1);
+    const price = p.precio * tipos[ti][1];
+    const chip = (on, label, pick) => ({ label, pick, bg: on ? '#0071E3' : th.chip, ink: on ? '#FFFFFF' : th.ink });
+    const ant = price * s.ant / 100, saldo = price * 0.2, cuota = (price - ant - saldo) / s.cuo;
+    let cur = -1; this.HITOS.forEach((h, i) => { if (avance >= h[1]) cur = i; });
+    const cerca = [['Avenida principal', '2 min'], ['Centro comercial', '5 min'], ['Colegios y universidades', '8 min'], ['Aeropuerto', '25 min']];
+    return {
+      th, themeName: night ? 'noche' : 'dia',
+      wide, narrow: !wide, menu: s.menu,
+      toggleMenu: () => this.setState((st) => ({ menu: !st.menu })),
+      closeMenu: () => { if (this.state.menu) this.setState({ menu: false }); },
+      navItems: this.NAV.map(([href, label]) => ({ href, label, ink: label === 'Proyectos' ? th.ink : th.mute2, fw: label === 'Proyectos' ? '600' : '400' })),
+      hdrBg: night ? 'rgba(22,22,23,0.8)' : 'rgba(251,251,253,0.8)',
+      menuBg: night ? 'rgba(0,0,0,0.86)' : 'rgba(251,251,253,0.92)',
+      burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
+      burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
+      ctaLabel: s.w >= 520 ? 'Agende una asesoría' : 'Asesoría',
+      linkC: night ? '#2997FF' : '#0066CC',
+      segTrack: night ? 'rgba(118,118,128,0.32)' : 'rgba(118,118,128,0.16)',
+      knobBg: night ? '#636366' : '#FFFFFF',
+      knobLeft: night ? '60px' : '2px', knobLeftL: night ? '88px' : '2px',
+      dayInk: night ? 'rgba(245,245,247,0.7)' : '#1D1D1F',
+      nightInk: night ? '#FFFFFF' : '#6E6E73',
+      toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { localStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
+      mainAspect: narrowM ? '4/3' : '16/8',
+      mapAspect: narrowM ? '4/3' : '16/9',
+      thumbCols: narrowM ? 'repeat(2,minmax(0,1fr))' : 'repeat(4,minmax(0,1fr))',
+      footPad: wide ? 'calc(28px + env(safe-area-inset-bottom))' : 'calc(100px + env(safe-area-inset-bottom))',
+      pr: {
+        ...p, entrega,
+        loc: p.barrio === p.ciudad ? p.ciudad : `${p.barrio}, ${p.ciudad}`,
+        precioTxt: usd(p.precio),
+        tagBg: p.etapa === 'En pozo' ? '#C9F15D' : p.etapa === 'En obra' ? th.chip : (night ? '#F5F5F7' : '#1D1D1F'),
+        tagInk: p.etapa === 'En pozo' ? '#1D1D1F' : p.etapa === 'En obra' ? th.ink : (night ? '#1D1D1F' : '#FFFFFF')
+      },
+      facts: [
+        { k: 'Tipo', v: p.tipo },
+        { k: 'Superficie', v: tipos[0][2] + (tipos.length > 1 ? ' – ' + tipos[tipos.length - 1][2] : '') },
+        { k: 'Entrega', v: entrega },
+        { k: 'Etapa', v: p.etapa }
+      ],
+      avanceTxt: avance + '%',
+      hitos: this.HITOS.map((h, i) => {
+        const done = i <= cur, now = i === cur + 1;
+        return {
+          t: h[0], mark: done ? '✓' : '',
+          st: done ? 'Completado' : now ? 'En curso' : 'Pendiente',
+          dotBg: done ? '#C9F15D' : 'rgba(0,0,0,0)',
+          dotBd: done ? '#C9F15D' : now ? th.ink : th.mute,
+          ink: done || now ? th.ink : th.mute,
+          bd: i < this.HITOS.length - 1 ? '1px solid ' + th.line : '0'
+        };
+      }),
+      tipos: tipos.map((t, i) => chip(i === ti, `${t[0]} · ${usd(p.precio * t[1])}`, () => this.setState({ tip: i }))),
+      antOpts: [20, 30, 40, 50].map((v) => chip(v === s.ant, v + ' %', () => this.setState({ ant: v }))),
+      cuoOpts: [24, 36, 48].map((v) => chip(v === s.cuo, String(v), () => this.setState({ cuo: v }))),
+      calc: { ant: usd(ant), cuota: usd(cuota), saldo: usd(saldo), cuoLabel: `${s.cuo} cuotas de` },
+      amen: this.AMEN[p.tipo],
+      cerca: cerca.map(([t, d], i) => ({ t, d, bd: i < cerca.length - 1 ? '1px solid ' + th.line : '0' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

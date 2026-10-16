@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5F5F7">
+<style>
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:#F5F5F7;color:#1D1D1F;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box}
+a{color:#0066CC;text-decoration:none}
+a:hover{color:#0077ED}
+[data-theme="noche"] a{color:#2997FF}
+button,a{touch-action:manipulation}
+button{-webkit-user-select:none;user-select:none}
+button,select,input{font-family:inherit}
+::selection{background:#C9F15D;color:#1D1D1F}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" data-theme="{{ themeName }}" style="min-height:100svh;background:{{ th.bg }};color:{{ th.ink }};font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;overflow-x:clip;transition:background .5s">
+
+<header style="position:fixed;top:0;left:0;right:0;z-index:50;padding-top:env(safe-area-inset-top);background:{{ hdrBg }};border-bottom:1px solid {{ th.line }};backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);transition:background .35s">
+  <div style="max-width:1120px;margin:0 auto;height:52px;padding:0 clamp(16px,3vw,24px);display:flex;align-items:center;justify-content:space-between;gap:20px">
+    <a href="Aquaterra%20Landing.dc.html" style="display:flex;align-items:center;gap:9px;min-height:44px;color:{{ th.ink }};font-weight:600;font-size:18px;letter-spacing:-0.02em">
+      <span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>
+      <span>Aquaterra</span>
+    </a>
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <nav style="display:flex;align-items:center;gap:clamp(18px,2.4vw,32px)">
+        <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
+          <a href="{{ n.href }}" style="font-size:13px;letter-spacing:-0.01em;color:{{ n.ink }};font-weight:{{ n.fw }}" style-hover="opacity:0.7">{{ n.label }}</a>
+        </sc-for>
+      </nav>
+    </sc-if>
+    <div style="display:flex;align-items:center;gap:8px">
+      <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ toggleMode }}" aria-label="Cambiar modo día / noche" style="position:relative;display:flex;align-items:center;padding:2px;border-radius:9px;border:0;background:{{ segTrack }};cursor:pointer">
+          <span style="position:absolute;top:2px;left:{{ knobLeft }};width:58px;height:28px;border-radius:7px;background:{{ knobBg }};box-shadow:0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);transition:left .35s cubic-bezier(.3,.7,.2,1), background .35s"></span>
+          <span style="position:relative;width:58px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:{{ dayInk }};transition:color .3s">Día</span>
+          <span style="position:relative;width:58px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:{{ nightInk }};transition:color .3s">Noche</span>
+        </button>
+      </sc-if>
+      <a href="Aquaterra%20Landing.dc.html#contacto" style="display:flex;align-items:center;height:32px;padding:0 15px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:13px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap" style-hover="background:#0077ED;color:#FFFFFF">{{ ctaLabel }}</a>
+      <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleMenu }}" aria-label="Menú" style="width:44px;height:44px;margin-right:-10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:0;background:transparent;cursor:pointer">
+          <span style="width:18px;height:1.5px;border-radius:1px;background:{{ th.ink }};transform:{{ burgerA }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
+          <span style="width:18px;height:1.5px;border-radius:1px;background:{{ th.ink }};transform:{{ burgerB }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
+        </button>
+      </sc-if>
+    </div>
+  </div>
+</header>
+<sc-if value="{{ menu }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:49;background:{{ menuBg }};backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);padding:calc(72px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom));display:flex;flex-direction:column;overflow:auto;overscroll-behavior:contain">
+    <sc-for list="{{ navItems }}" as="m" hint-placeholder-count="6">
+      <a href="{{ m.href }}" onClick="{{ closeMenu }}" style="display:flex;align-items:center;justify-content:space-between;min-height:60px;font-size:28px;font-weight:600;letter-spacing:-0.025em;color:{{ th.ink }};border-bottom:1px solid {{ th.line }}">{{ m.label }}<span style="font-size:24px;font-weight:400;color:{{ th.mute }}">›</span></a>
+    </sc-for>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:76px;border-bottom:1px solid {{ th.line }}">
+      <span style="font-size:17px;color:{{ th.mute2 }}">Apariencia</span>
+      <button onClick="{{ toggleMode }}" aria-label="Cambiar modo día / noche" style="position:relative;display:flex;align-items:center;padding:2px;border-radius:10px;border:0;background:{{ segTrack }};cursor:pointer">
+        <span style="position:absolute;top:2px;left:{{ knobLeftL }};width:84px;height:40px;border-radius:8px;background:{{ knobBg }};box-shadow:0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);transition:left .35s cubic-bezier(.3,.7,.2,1), background .35s"></span>
+        <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ dayInk }}">Día</span>
+        <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ nightInk }}">Noche</span>
+      </button>
+    </div>
+    <a href="Aquaterra%20Landing.dc.html#contacto" onClick="{{ closeMenu }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Agende una asesoría</a>
+  </div>
+</sc-if>
+
+<section data-screen-label="01 Blog" style="padding:calc(52px + env(safe-area-inset-top) + clamp(40px,8vw,96px)) clamp(20px,3.2vw,48px) 28px">
+  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+    <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:{{ th.mute }}">Blog</span>
+    <h1 style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1.02;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">Información para <span style="color:#86868B">invertir mejor.</span></h1>
+    <p style="margin:0;max-width:560px;font-size:clamp(17px,1.6vw,21px);line-height:1.45;color:{{ th.mute2 }};text-wrap:pretty">Guías, datos de mercado y novedades legales para comprar con criterio en Paraguay.</p>
+  </div>
+</section>
+
+<div style="position:sticky;top:calc(52px + env(safe-area-inset-top));z-index:20;background:{{ barBg }};backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid {{ th.line }}">
+  <div style="max-width:1120px;margin:0 auto;padding:10px clamp(20px,3.2vw,48px);display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch">
+    <sc-for list="{{ cats }}" as="c" hint-placeholder-count="6">
+      <button onClick="{{ c.pick }}" style="flex:0 0 auto;height:40px;padding:0 16px;border-radius:999px;border:0;background:{{ c.bg }};color:{{ c.ink }};font-size:15px;font-weight:500;white-space:nowrap;cursor:pointer;transition:background .25s, color .25s">{{ c.label }}</button>
+    </sc-for>
+  </div>
+</div>
+
+<section data-screen-label="02 Artículos" style="padding:28px clamp(20px,3.2vw,48px) clamp(80px,10vw,140px)">
+  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+    <span style="font-size:14px;color:{{ th.mute }}">{{ countLabel }}</span>
+    <sc-if value="{{ hasFeat }}" hint-placeholder-val="{{ true }}">
+      <div data-card="">
+        <a href="#" style="display:grid;grid-template-columns:{{ featCols }};border-radius:28px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .45s cubic-bezier(.3,.7,.2,1), box-shadow .45s" style-hover="transform:scale(1.01);box-shadow:0 30px 60px -36px rgba(0,0,0,0.35);color:{{ th.ink }}">
+          <div style="min-height:240px;aspect-ratio:{{ featAspect }};background:{{ th.ph }};display:flex;align-items:center;justify-content:center">
+            <span style="font-size:13px;color:{{ th.phInk }}">imagen destacada</span>
+          </div>
+          <div style="padding:clamp(24px,3.4vw,44px);display:flex;flex-direction:column;justify-content:center;gap:14px">
+            <span style="font-size:13px;font-weight:600;color:{{ catInk }}">Destacado · {{ feat.cat }}</span>
+            <h2 style="margin:0;font-size:clamp(26px,3vw,40px);line-height:1.1;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">{{ feat.t }}</h2>
+            <p style="margin:0;font-size:17px;line-height:1.5;color:{{ th.mute2 }};text-wrap:pretty">{{ feat.ex }}</p>
+            <span style="font-size:14px;color:{{ th.mute }}">{{ feat.date }} · {{ feat.min }} de lectura</span>
+            <span style="font-size:17px;color:{{ linkC }}">Leer artículo ›</span>
+          </div>
+        </a>
+      </div>
+    </sc-if>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px">
+      <sc-for list="{{ posts }}" as="p" hint-placeholder-count="6">
+        <div data-card="" style="display:flex">
+          <a href="#" style="flex:1;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .4s cubic-bezier(.3,.7,.2,1), box-shadow .4s" style-hover="transform:scale(1.015);box-shadow:0 24px 48px -30px rgba(0,0,0,0.35);color:{{ th.ink }}">
+            <div style="aspect-ratio:16/10;background:{{ th.ph }};display:flex;align-items:center;justify-content:center">
+              <span style="font-size:13px;color:{{ th.phInk }}">imagen del artículo</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:10px;padding:20px 22px 24px">
+              <span style="font-size:13px;font-weight:600;color:{{ catInk }}">{{ p.cat }} · {{ p.min }}</span>
+              <h3 style="margin:0;font-size:21px;line-height:1.2;font-weight:600;letter-spacing:-0.02em;text-wrap:pretty">{{ p.t }}</h3>
+              <p style="margin:0;font-size:15px;line-height:1.5;color:{{ th.mute }};display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">{{ p.ex }}</p>
+              <span style="margin-top:auto;padding-top:6px;font-size:13px;color:{{ th.mute }}">{{ p.date }}</span>
+            </div>
+          </a>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<footer data-screen-label="03 Footer" style="background:{{ th.foot }};color:#F5F5F7;padding:48px clamp(20px,3.2vw,48px) calc(28px + env(safe-area-inset-bottom))">
+  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px 24px">
+      <span style="display:flex;align-items:center;gap:9px;font-size:18px;font-weight:600;letter-spacing:-0.02em"><span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>Aquaterra</span>
+      <div style="display:flex;flex-wrap:wrap;gap:0 24px;font-size:14px">
+        <a href="Aquaterra%20Landing.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Inicio</a>
+        <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Proyectos</a>
+        <a href="Aquaterra%20Landing.dc.html#nosotros" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Nosotros</a>
+        <a href="Aquaterra%20Landing.dc.html#contacto" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Contacto</a>
+      </div>
+    </div>
+    <span style="font-size:13px;color:rgba(245,245,247,0.6)">© 2026 Aquaterra · Asunción, Paraguay</span>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    mode: (() => { try { return localStorage.getItem('aquaterra-modo'); } catch (e) { return null; } })(),
+    w: typeof window !== 'undefined' ? window.innerWidth : 1280,
+    menu: false, cat: 'Todos'
+  };
+  rootRef = React.createRef();
+
+  CATS = ['Todos', 'Guías', 'Mercado', 'Impuestos', 'Legal', 'Obra'];
+  POSTS = [
+    { cat: 'Guías', t: 'Qué es comprar en pozo y cuándo conviene', ex: 'Ventajas de precio, riesgos a evaluar y cómo se estructura el pago durante la obra.', min: '6 min', date: '12 oct. 2026' },
+    { cat: 'Mercado', t: 'Barrios de Asunción con mayor demanda de alquiler', ex: 'Villa Morra, Carmelitas y Las Lomas concentran la demanda de profesionales y empresas.', min: '5 min', date: '3 oct. 2026' },
+    { cat: 'Impuestos', t: 'El sistema 10-10-10 explicado para inversores', ex: 'IVA, renta personal y renta empresarial: qué implica para quien compra y alquila.', min: '4 min', date: '24 sep. 2026' },
+    { cat: 'Guías', t: 'Cómo evaluar a una desarrolladora antes de invertir', ex: 'Obras entregadas, respaldo financiero y contratos: la lista que usamos en cada análisis.', min: '7 min', date: '15 sep. 2026' },
+    { cat: 'Mercado', t: 'Alquiler temporario o tradicional: qué rinde más', ex: 'Comparamos ocupación, gastos y rentabilidad neta en unidades de 1 y 2 dormitorios.', min: '6 min', date: '2 sep. 2026' },
+    { cat: 'Legal', t: 'Residencia en Paraguay para inversores extranjeros', ex: 'Requisitos, plazos y documentos para radicarse o tener base en el país.', min: '8 min', date: '20 ago. 2026' },
+    { cat: 'Obra', t: 'Qué revisar en un informe de avance de obra', ex: 'Certificaciones, fotos y cronograma: cómo leer el informe mensual de su unidad.', min: '5 min', date: '8 ago. 2026' },
+    { cat: 'Impuestos', t: 'Costos de escrituración y gastos al comprar', ex: 'Honorarios, tasas e impuestos que conviene prever antes de firmar.', min: '4 min', date: '25 jul. 2026' },
+    { cat: 'Guías', t: 'Plan de pagos en dólares: anticipo, cuotas y saldo', ex: 'Cómo se combinan las tres etapas y qué margen de negociación existe.', min: '5 min', date: '10 jul. 2026' }
+  ];
+  NAV = [['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['Aquaterra%20Landing.dc.html#inversiones', 'Inversiones'], ['Aquaterra%20Landing.dc.html#edificio', 'El edificio'], ['Aquaterra%20Landing.dc.html#nosotros', 'Nosotros'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['Aquaterra%20Landing.dc.html#contacto', 'Contacto']];
+  THEMES = {
+    dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', ph: '#E8E8ED', phInk: '#6E6E73', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' },
+    noche: { bg: '#000000', ink: '#F5F5F7', mute: '#98989D', mute2: '#C7C7CC', line: 'rgba(255,255,255,0.12)', card: '#1C1C1E', ph: '#2C2C2E', phInk: '#8E8E93', foot: '#000000', chip: 'rgba(118,118,128,0.24)' }
+  };
+
+  mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
+
+  componentDidMount() {
+    this._onResize = () => this.setState((st) => ({ w: window.innerWidth, menu: window.innerWidth >= 980 ? false : st.menu }));
+    window.addEventListener('resize', this._onResize);
+    this._onKey = (e) => { if (e.key === 'Escape' && this.state.menu) this.setState({ menu: false }); };
+    window.addEventListener('keydown', this._onKey);
+    this._lastCat = this.state.cat;
+    this.anim(false);
+  }
+  componentDidUpdate() {
+    const c = this.state.cat, reset = this._lastCat !== c;
+    this._lastCat = c;
+    this.anim(reset);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._onResize);
+    window.removeEventListener('keydown', this._onKey);
+    if (this.io) this.io.disconnect();
+  }
+
+  anim(reset) {
+    const root = this.rootRef.current;
+    if (!root || typeof IntersectionObserver === 'undefined') return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!this.io) this.io = new IntersectionObserver((es) => {
+      const ins = es.filter((e) => e.isIntersecting).sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top) || (a.boundingClientRect.left - b.boundingClientRect.left));
+      ins.forEach((e, k) => {
+        const el = e.target, d = Math.min(k, 6) * 90, ease = 'cubic-bezier(.2,.7,.2,1)';
+        this.io.unobserve(el);
+        el.style.transition = `opacity .7s ${ease} ${d}ms, transform .9s ${ease} ${d}ms, filter .7s ease ${d}ms`;
+        el.style.opacity = '1'; el.style.transform = 'none'; el.style.filter = 'none';
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    root.querySelectorAll('[data-card]').forEach((el) => {
+      if (el.dataset.in && !reset) return;
+      el.dataset.in = '1';
+      if (reduce) return;
+      this.io.unobserve(el);
+      el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(48px) scale(0.96)'; el.style.filter = 'blur(10px)';
+      void el.offsetWidth;
+      this.io.observe(el);
+    });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const night = this.mode() === 'noche';
+    const th = this.THEMES[night ? 'noche' : 'dia'];
+    const list = s.cat === 'Todos' ? this.POSTS : this.POSTS.filter((p) => p.cat === s.cat);
+    const feat = list[0] || this.POSTS[0];
+    return {
+      rootRef: this.rootRef, th, themeName: night ? 'noche' : 'dia',
+      wide: s.w >= 980, narrow: s.w < 980, menu: s.menu,
+      toggleMenu: () => this.setState((st) => ({ menu: !st.menu })),
+      closeMenu: () => { if (this.state.menu) this.setState({ menu: false }); },
+      navItems: this.NAV.map(([href, label]) => ({ href, label, ink: label === 'Blog' ? th.ink : th.mute2, fw: label === 'Blog' ? '600' : '400' })),
+      hdrBg: night ? 'rgba(22,22,23,0.8)' : 'rgba(251,251,253,0.8)',
+      menuBg: night ? 'rgba(0,0,0,0.86)' : 'rgba(251,251,253,0.92)',
+      barBg: night ? 'rgba(0,0,0,0.72)' : 'rgba(245,245,247,0.8)',
+      burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
+      burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
+      ctaLabel: s.w >= 520 ? 'Agende una asesoría' : 'Asesoría',
+      linkC: night ? '#2997FF' : '#0066CC',
+      catInk: night ? '#C9F15D' : '#4F7A0A',
+      segTrack: night ? 'rgba(118,118,128,0.32)' : 'rgba(118,118,128,0.16)',
+      knobBg: night ? '#636366' : '#FFFFFF',
+      knobLeft: night ? '60px' : '2px', knobLeftL: night ? '88px' : '2px',
+      dayInk: night ? 'rgba(245,245,247,0.7)' : '#1D1D1F',
+      nightInk: night ? '#FFFFFF' : '#6E6E73',
+      toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { localStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
+      cats: this.CATS.map((c) => ({ label: c, bg: c === s.cat ? th.ink : th.chip, ink: c === s.cat ? th.bg : th.ink, pick: () => this.setState({ cat: c }) })),
+      countLabel: list.length === 1 ? '1 artículo' : `${list.length} artículos`,
+      hasFeat: list.length > 0, feat,
+      featCols: s.w >= 820 ? 'minmax(0,1.35fr) minmax(0,1fr)' : 'minmax(0,1fr)',
+      featAspect: s.w >= 820 ? 'auto' : '16/10',
+      posts: list.slice(1)
+    };
+  }
+}
+</script>
+</body>
+</html>
