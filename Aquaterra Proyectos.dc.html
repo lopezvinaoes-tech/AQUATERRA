@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./marca.js"></script>
+<script src="./proyectos.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -28,9 +30,9 @@ select option{color:#1D1D1F;background:#FFFFFF}
 
 <header style="position:fixed;top:0;left:0;right:0;z-index:50;padding-top:env(safe-area-inset-top);background:{{ hdrBg }};border-bottom:1px solid {{ th.line }};backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);transition:background .35s">
   <div style="max-width:1120px;margin:0 auto;height:52px;padding:0 clamp(16px,3vw,24px);display:flex;align-items:center;justify-content:space-between;gap:20px">
-    <a href="Aquaterra%20Landing.dc.html" style="display:flex;align-items:center;gap:9px;min-height:44px;color:{{ th.ink }};font-weight:600;font-size:18px;letter-spacing:-0.02em">
+    <a href="index.html" style="display:flex;align-items:center;gap:9px;min-height:44px;color:{{ th.ink }};font-weight:600;font-size:18px;letter-spacing:-0.02em">
       <span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>
-      <span>Aquaterra</span>
+      <span>{{ marca }}</span>
     </a>
     <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
       <nav style="display:flex;align-items:center;gap:clamp(18px,2.4vw,32px)">
@@ -47,7 +49,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
           <span style="position:relative;width:58px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:{{ nightInk }};transition:color .3s">Noche</span>
         </button>
       </sc-if>
-      <a href="Aquaterra%20Landing.dc.html#contacto" style="display:flex;align-items:center;height:32px;padding:0 15px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:13px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap" style-hover="background:#0077ED;color:#FFFFFF">{{ ctaLabel }}</a>
+      <a href="index.html#contacto" style="display:flex;align-items:center;height:32px;padding:0 15px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:13px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap" style-hover="background:#0077ED;color:#FFFFFF">{{ ctaLabel }}</a>
       <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ toggleMenu }}" aria-label="Menú" style="width:44px;height:44px;margin-right:-10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:0;background:transparent;cursor:pointer">
           <span style="width:18px;height:1.5px;border-radius:1px;background:{{ th.ink }};transform:{{ burgerA }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
@@ -70,7 +72,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
         <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ nightInk }}">Noche</span>
       </button>
     </div>
-    <a href="Aquaterra%20Landing.dc.html#contacto" onClick="{{ closeMenu }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Agende una asesoría</a>
+    <a href="index.html#contacto" onClick="{{ closeMenu }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Agenda una asesoría</a>
   </div>
 </sc-if>
 
@@ -78,7 +80,8 @@ select option{color:#1D1D1F;background:#FFFFFF}
   <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
     <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:{{ th.mute }}">Catálogo</span>
     <h1 style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1.02;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">Proyectos para <span style="color:#86868B">invertir hoy.</span></h1>
-    <p style="margin:0;max-width:560px;font-size:clamp(17px,1.6vw,21px);line-height:1.45;color:{{ th.mute2 }};text-wrap:pretty">Casas, departamentos, lotes y desarrollos en pozo en Asunción y el interior del país.</p>
+    <p style="margin:0;max-width:560px;font-size:clamp(17px,1.6vw,21px);line-height:1.45;color:{{ th.mute2 }};text-wrap:pretty">Departamentos, barrios cerrados, countries, casas y lotes en Asunción y el interior del país.</p>
+    <p style="margin:0;max-width:620px;font-size:15px;line-height:1.5;color:{{ th.mute }};text-wrap:pretty">Por ahora mostramos proyectos reales de otras desarrolladoras como referencia del mercado. Cada uno indica de quién es, la fuente del dato y su fecha.</p>
   </div>
 </section>
 
@@ -108,16 +111,18 @@ select option{color:#1D1D1F;background:#FFFFFF}
       <sc-for list="{{ projects }}" as="p" hint-placeholder-count="9">
         <a href="{{ p.href }}" style="display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .4s cubic-bezier(.3,.7,.2,1), box-shadow .4s" style-hover="transform:scale(1.015);box-shadow:0 24px 48px -30px rgba(0,0,0,0.35);color:{{ th.ink }}">
           <div style="position:relative;aspect-ratio:4/3;background:{{ th.ph }};display:flex;align-items:center;justify-content:center">
-            <span style="font-size:13px;color:{{ th.phInk }}">render · {{ p.name }}</span>
+            <span style="font-size:clamp(22px,2.4vw,28px);font-weight:600;letter-spacing:-0.02em;color:{{ th.phInk }}">{{ p.tipo }}</span>
             <span style="position:absolute;top:12px;left:12px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600;background:{{ p.tagBg }};color:{{ p.tagInk }};backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)">{{ p.etapa }}</span>
           </div>
           <div style="padding:18px 20px 22px;display:flex;flex-direction:column;gap:4px">
             <h3 style="margin:0;font-size:21px;font-weight:600;letter-spacing:-0.02em">{{ p.name }}</h3>
             <span style="font-size:15px;color:{{ th.mute }}">{{ p.loc }}</span>
+            <span style="font-size:13px;color:{{ th.mute }}">{{ p.devTxt }}</span>
             <div style="margin-top:12px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px;font-size:14px;color:{{ th.mute }}">
               <span>{{ p.meta }}</span>
-              <span>Desde <span style="font-weight:600;color:{{ th.ink }}">{{ p.precioTxt }}</span></span>
+              <span>{{ p.precioPre }}<span style="font-weight:600;color:{{ th.ink }}">{{ p.precioTxt }}</span></span>
             </div>
+            <span style="margin-top:10px;padding-top:10px;border-top:1px solid {{ th.line }};font-size:12px;color:{{ th.mute }}">{{ p.fuenteTxt }}</span>
           </div>
         </a>
       </sc-for>
@@ -131,10 +136,10 @@ select option{color:#1D1D1F;background:#FFFFFF}
 
     <div style="margin-top:clamp(40px,6vw,72px);padding:clamp(28px,4vw,48px);border-radius:28px;background:{{ th.panel }};color:#F5F5F7;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px">
       <div style="display:flex;flex-direction:column;gap:10px;max-width:620px">
-        <span style="font-size:clamp(26px,3.2vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">¿No encuentra lo que busca? <span style="color:#86868B">Analicemos su caso.</span></span>
-        <span style="font-size:17px;line-height:1.5;color:rgba(245,245,247,0.72)">Le presentamos oportunidades a su medida, incluso fuera de catálogo.</span>
+        <span style="font-size:clamp(26px,3.2vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">¿No encuentras lo que buscas? <span style="color:#86868B">Analicemos tu caso.</span></span>
+        <span style="font-size:17px;line-height:1.5;color:rgba(245,245,247,0.72)">Te presentamos oportunidades a tu medida, incluso fuera de catálogo.</span>
       </div>
-      <a href="Aquaterra%20Landing.dc.html#contacto" style="display:flex;align-items:center;height:50px;padding:0 28px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Agende una asesoría</a>
+      <a href="index.html#contacto" style="display:flex;align-items:center;height:50px;padding:0 28px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Agenda una asesoría</a>
     </div>
   </div>
 </section>
@@ -142,15 +147,15 @@ select option{color:#1D1D1F;background:#FFFFFF}
 <footer data-screen-label="03 Footer" style="background:{{ th.foot }};color:#F5F5F7;padding:48px clamp(20px,3.2vw,48px) calc(28px + env(safe-area-inset-bottom))">
   <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px 24px">
-      <span style="display:flex;align-items:center;gap:9px;font-size:18px;font-weight:600;letter-spacing:-0.02em"><span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>Aquaterra</span>
+      <span style="display:flex;align-items:center;gap:9px;font-size:18px;font-weight:600;letter-spacing:-0.02em"><span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>{{ marca }}</span>
       <div style="display:flex;flex-wrap:wrap;gap:0 24px;font-size:14px">
-        <a href="Aquaterra%20Landing.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Inicio</a>
+        <a href="index.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Inicio</a>
         <a href="Aquaterra%20Blog.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Blog</a>
-        <a href="Aquaterra%20Landing.dc.html#nosotros" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Nosotros</a>
-        <a href="Aquaterra%20Landing.dc.html#contacto" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Contacto</a>
+        <a href="index.html#nosotros" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Nosotros</a>
+        <a href="index.html#contacto" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Contacto</a>
       </div>
     </div>
-    <span style="font-size:13px;color:rgba(245,245,247,0.6)">© 2026 Aquaterra · Asunción, Paraguay</span>
+    <span style="font-size:13px;color:rgba(245,245,247,0.6)">© 2026 {{ marca }} · Asunción, Paraguay</span>
   </div>
 </footer>
 
@@ -165,25 +170,15 @@ class Component extends DCLogic {
     f: { ciudad: '', tipo: '', etapa: '', rango: '', dorm: '' }
   };
 
-  PROJECTS = [
-    { name: 'Torre Lapacho', barrio: 'Villa Morra', ciudad: 'Asunción', tipo: 'Departamento', etapa: 'En pozo', precio: 68000, dmin: 1, dmax: 3 },
-    { name: 'Residencias Tajy', barrio: 'Carmelitas', ciudad: 'Asunción', tipo: 'Departamento', etapa: 'En obra', precio: 95000, dmin: 2, dmax: 3 },
-    { name: 'Centro Mburuvicha', barrio: 'Las Mercedes', ciudad: 'Asunción', tipo: 'Oficina', etapa: 'En pozo', precio: 85000, dmin: 0, dmax: 0 },
-    { name: 'Dúplex Yvoty', barrio: 'Fernando de la Mora', ciudad: 'Fernando de la Mora', tipo: 'Casa', etapa: 'En pozo', precio: 78000, dmin: 2, dmax: 3 },
-    { name: 'Casas Ñandutí', barrio: 'San Bernardino', ciudad: 'San Bernardino', tipo: 'Casa', etapa: 'En obra', precio: 140000, dmin: 3, dmax: 4 },
-    { name: 'Casa Guavirá', barrio: 'Lambaré', ciudad: 'Lambaré', tipo: 'Casa', etapa: 'Entregado', precio: 185000, dmin: 3, dmax: 4 },
-    { name: 'Lotes Yvága', barrio: 'Luque', ciudad: 'Luque', tipo: 'Lote', etapa: 'Entregado', precio: 22000, dmin: 0, dmax: 0 },
-    { name: 'Lotes Tape', barrio: 'Areguá', ciudad: 'Areguá', tipo: 'Lote', etapa: 'En obra', precio: 18000, dmin: 0, dmax: 0 },
-    { name: 'Costanera Ka\u2019aguy', barrio: 'Costanera', ciudad: 'Encarnación', tipo: 'Departamento', etapa: 'En pozo', precio: 54000, dmin: 1, dmax: 2 }
-  ];
+  PROJECTS = window.PROYECTOS || [];
   FILTERS = [
-    ['ciudad', 'Ciudad', [['', 'Todas las ciudades'], ['Asunción', 'Asunción'], ['Villa Morra', 'Villa Morra'], ['Carmelitas', 'Carmelitas'], ['Las Mercedes', 'Las Mercedes'], ['Lambaré', 'Lambaré'], ['Fernando de la Mora', 'Fernando de la Mora'], ['Luque', 'Luque'], ['Areguá', 'Areguá'], ['San Bernardino', 'San Bernardino'], ['Encarnación', 'Encarnación']]],
-    ['tipo', 'Tipo', [['', 'Todos los tipos'], ['Departamento', 'Departamento'], ['Casa', 'Casa'], ['Lote', 'Lote'], ['Oficina', 'Oficina']]],
-    ['etapa', 'Etapa', [['', 'Todas las etapas'], ['En pozo', 'En pozo'], ['En obra', 'En obra'], ['Entregado', 'Entregado']]],
+    ['ciudad', 'Ciudad', [['', 'Todas las ciudades'], ['Asunción', 'Asunción'], ['San Bernardino', 'San Bernardino'], ['Hernandarias', 'Hernandarias'], ['Itauguá', 'Itauguá']]],
+    ['tipo', 'Tipo', [['', 'Todos los tipos'], ['Departamento', 'Departamento'], ['Barrio cerrado', 'Barrio cerrado'], ['Country', 'Country'], ['Casa', 'Casa'], ['Lote', 'Lote']]],
+    ['etapa', 'Etapa', [['', 'Todas las etapas'], ['En pozo', 'En pozo'], ['Entregado', 'Entregado'], ['En venta', 'En venta'], ['A confirmar', 'A confirmar']]],
     ['rango', 'Inversión', [['', 'Cualquier monto'], ['0-50000', 'Hasta USD 50.000'], ['50000-100000', 'USD 50.000 – 100.000'], ['100000-200000', 'USD 100.000 – 200.000'], ['200000-', 'Más de USD 200.000']]],
     ['dorm', 'Dormitorios', [['', 'Indistinto'], ['1', '1 dormitorio'], ['2', '2 dormitorios'], ['3', '3 dormitorios'], ['4', '4 o más']]]
   ];
-  NAV = [['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['Aquaterra%20Landing.dc.html#inversiones', 'Inversiones'], ['Aquaterra%20Landing.dc.html#edificio', 'El edificio'], ['Aquaterra%20Landing.dc.html#nosotros', 'Nosotros'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['Aquaterra%20Landing.dc.html#contacto', 'Contacto']];
+  NAV = [['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#inversiones', 'Inversiones'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
   THEMES = {
     dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' },
     noche: { bg: '#000000', ink: '#F5F5F7', mute: '#98989D', mute2: '#C7C7CC', line: 'rgba(255,255,255,0.12)', card: '#1C1C1E', ph: '#2C2C2E', phInk: '#8E8E93', panel: '#1C1C1E', foot: '#000000', chip: 'rgba(118,118,128,0.24)' }
@@ -203,9 +198,9 @@ class Component extends DCLogic {
     const f = this.state.f;
     return this.PROJECTS.map((p, i) => ({ ...p, idx: i })).filter((p) => {
       if (f.ciudad && !(p.ciudad === f.ciudad || p.barrio === f.ciudad)) return false;
-      if (f.tipo && p.tipo !== f.tipo) return false;
+      if (f.tipo && p.tipo !== f.tipo && !(p.tambien || []).includes(f.tipo)) return false;
       if (f.etapa && p.etapa !== f.etapa) return false;
-      if (f.rango) { const [a, b] = f.rango.split('-'); if (p.precio < +a || (b && p.precio > +b)) return false; }
+      if (f.rango) { const [a, b] = f.rango.split('-'); const v = p.precio || p.precioFiltro; if (!v || v < +a || (b && v > +b)) return false; }
       if (f.dorm) { const d = +f.dorm; if (!p.dmax || p.dmax < d || (d < 4 && p.dmin > d)) return false; }
       return true;
     });
@@ -219,14 +214,18 @@ class Component extends DCLogic {
       ...p,
       href: 'Aquaterra%20Ficha.dc.html?p=' + p.idx,
       loc: p.barrio === p.ciudad ? p.ciudad : `${p.barrio}, ${p.ciudad}`,
-      meta: p.dmax ? `${p.tipo} · ${p.dmin === p.dmax ? p.dmin : p.dmin + '–' + p.dmax} dorm.` : p.tipo,
-      precioTxt: 'USD ' + p.precio.toLocaleString('es-PY'),
-      tagBg: p.etapa === 'En pozo' ? '#C9F15D' : p.etapa === 'En obra' ? 'rgba(255,255,255,0.88)' : 'rgba(29,29,31,0.82)',
+      meta: p.tipologia,
+      devTxt: p.dev ? 'Proyecto de ' + p.dev : 'Proyecto de terceros',
+      precioPre: p.precio || p.precioTxt ? 'Desde ' : '',
+      precioTxt: p.precio ? 'USD ' + p.precio.toLocaleString('es-PY') : p.precioTxt || 'Consultar precio',
+      fuenteTxt: 'Fuente: ' + p.fuentes.map((x) => `${x.nombre}, ${x.fecha}`).join(' · '),
+      tagBg: p.etapa === 'En pozo' ? '#C9F15D' : p.etapa === 'Entregado' ? 'rgba(29,29,31,0.82)' : 'rgba(255,255,255,0.88)',
       tagInk: p.etapa === 'Entregado' ? '#FFFFFF' : '#1D1D1F'
     }));
     const setF = (k) => (e) => { const v = e.target.value; this.setState((st) => ({ f: { ...st.f, [k]: v } })); };
     return {
       th, themeName: night ? 'noche' : 'dia',
+      marca: (window.MARCA && window.MARCA.nombre) || 'Aquaterra',
       wide: s.w >= 980, narrow: s.w < 980, menu: s.menu,
       toggleMenu: () => this.setState((st) => ({ menu: !st.menu })),
       closeMenu: () => { if (this.state.menu) this.setState({ menu: false }); },
@@ -236,7 +235,7 @@ class Component extends DCLogic {
       barBg: night ? 'rgba(0,0,0,0.72)' : 'rgba(245,245,247,0.8)',
       burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
       burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
-      ctaLabel: s.w >= 520 ? 'Agende una asesoría' : 'Asesoría',
+      ctaLabel: s.w >= 520 ? 'Agenda una asesoría' : 'Asesoría',
       linkC: night ? '#2997FF' : '#0066CC',
       segTrack: night ? 'rgba(118,118,128,0.32)' : 'rgba(118,118,128,0.16)',
       knobBg: night ? '#636366' : '#FFFFFF',
