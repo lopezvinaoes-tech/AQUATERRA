@@ -293,8 +293,23 @@ select option{color:#1D1D1F;background:#FFFFFF}
         </div>
       </div>
     </div>
-    <div data-reveal="" style="aspect-ratio:21/9;min-height:260px;border-radius:24px;background:{{ th.ph }};display:flex;align-items:center;justify-content:center">
-      <span style="font-size:13px;font-weight:500;color:{{ th.phInk }}">foto del equipo / oficina</span>
+    <div data-reveal="" style="display:flex;flex-direction:column;gap:28px">
+      <h3 style="margin:0;font-size:clamp(26px,2.6vw,36px);line-height:1.1;letter-spacing:-0.025em;font-weight:600">Nuestro <span style="color:#86868B">equipo</span></h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:20px">
+        <sc-for list="{{ equipo }}" as="pe" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="position:relative;aspect-ratio:4/5;border-radius:20px;overflow:hidden;background:{{ th.ph }};display:flex;align-items:center;justify-content:center">
+              <span style="font-size:44px;font-weight:600;letter-spacing:-0.03em;color:{{ th.phInk }}">{{ pe.ini }}</span>
+              <span role="img" aria-label="{{ pe.nombre }}" style="position:absolute;inset:0;background-image:{{ pe.bg }};background-size:cover;background-position:center top"></span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <span style="font-size:19px;font-weight:600;letter-spacing:-0.02em">{{ pe.nombre }}</span>
+              <span style="font-size:14px;color:{{ th.mute }}">{{ pe.rol }} · {{ pe.lugar }}</span>
+              <span style="margin-top:4px;font-size:15px;line-height:1.5;color:{{ th.mute2 }};text-wrap:pretty">{{ pe.texto }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
     </div>
   </div>
 </section>
@@ -445,6 +460,13 @@ class Component extends DCLogic {
   parkSecRef = React.createRef(); parkRef = React.createRef(); twCurtRef = React.createRef(); pkCurtRef = React.createRef(); pkFillRef = React.createRef(); pkChipRef = React.createRef(); twInfoRef = React.createRef(); pkLayerRef = React.createRef();
   setPark(l) { if (l === (this.state.pkLevel || 1)) return; this.setState({ pkLevel: l }); if (this.park) this.park.setLevel(l); }
 
+  // Equipo de La Dolce Casa (ladolcecasa.es/#equipo). Fotos servidas desde su web; sin foto se muestran las iniciales.
+  EQUIPO = [
+    { nombre: 'Bruno Sanmartín', rol: 'Fundador y director', lugar: 'Asunción', texto: 'Dirige la empresa y lidera su expansión.', foto: 'https://ladolcecasa.es/assets/equipo/02-bruno-800.webp', ini: 'BS' },
+    { nombre: 'Adrián Bernabéu', rol: 'Asesor estratégico', lugar: 'Asunción', texto: 'Analista de producto e inversiones en Paraguay.', foto: 'https://ladolcecasa.es/assets/equipo/01-adrian-800.webp', ini: 'AB' },
+    { nombre: 'Ángel García', rol: 'Gerente de ventas', lugar: 'Asunción', texto: 'Lleva las ventas y acompaña a cada inversor desde la primera consulta.', foto: '', ini: 'ÁG' },
+    { nombre: 'Doris Gordillo', rol: 'Gerente de marketing', lugar: 'Bogotá', texto: 'Dirige el marketing y abre nuevos mercados.', foto: '', ini: 'DG' }
+  ];
   // Sección oculta: estos textos son de muestra. Reemplazarlos por testimonios reales (con permiso) antes de activarla.
   MOSTRAR_TESTIMONIOS = false;
   TESTI = [
@@ -1254,6 +1276,7 @@ class Component extends DCLogic {
       th, themeName: night ? 'noche' : 'dia',
       marca: (window.MARCA && window.MARCA.nombre) || 'Aquaterra',
       mostrarTestimonios: this.MOSTRAR_TESTIMONIOS,
+      equipo: this.EQUIPO.map((pe) => ({ ...pe, bg: pe.foto ? `url("${pe.foto}")` : 'none' })),
       wide: s.w >= 900,
       stickyPos: s.w >= 900 ? 'sticky' : 'static',
       hdrBg: s.scrolled && !s.menu ? (night ? 'rgba(22,22,23,0.78)' : 'rgba(251,251,253,0.8)') : 'rgba(251,251,253,0)',
