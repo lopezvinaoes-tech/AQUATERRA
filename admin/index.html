@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Aquaterra · Leads</title>
+<script>
+// Modo día/noche: misma preferencia que la web (clave aquaterra-modo); sin preferencia, sigue al sistema.
+(function () { try { var m = localStorage.getItem('aquaterra-modo'); if (m) document.documentElement.setAttribute('data-theme', m === 'noche' ? 'dark' : 'light'); } catch (e) {} })();
+</script>
 <style>
 :root {
   color-scheme: light;
@@ -55,7 +59,9 @@ button { cursor: pointer; }
 /* App */
 .top { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--line); }
 .top-in { max-width: 1280px; margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.top .brand { margin-right: auto; }
+.sp { flex: 1; }
+.btn.icon { width: 40px; padding: 0; justify-content: center; }
+.btn.icon svg { width: 18px; height: 18px; }
 .brand small { font-size: 15px; font-weight: 500; color: var(--mute); letter-spacing: -0.01em; }
 .seg { display: inline-flex; background: var(--fill); border-radius: 10px; padding: 2px; }
 .seg button { border: 0; background: transparent; height: 32px; padding: 0 12px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--mute2); }
@@ -96,6 +102,20 @@ button { cursor: pointer; }
 .tip { position: fixed; z-index: 50; pointer-events: none; background: var(--card); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 8px 24px -8px rgba(0,0,0,0.3); border-radius: 10px; padding: 8px 10px; font-size: 13px; line-height: 1.35; opacity: 0; transition: opacity .12s; max-width: 240px; }
 .tip b { font-weight: 600; }
 .tip .m { color: var(--mute); }
+
+/* Line */
+.tl .ln { fill: none; stroke: var(--bar); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.tl .ar { fill: var(--bar); opacity: 0.1; }
+.tl .xh { stroke: var(--line2); stroke-dasharray: 3 3; }
+.tl .dot { fill: var(--bar); stroke: var(--card); stroke-width: 2; }
+
+/* Heatmap */
+.hm { display: grid; gap: 2px; font-size: 13px; }
+.hm .h { color: var(--mute); font-size: 12px; text-align: center; padding: 4px 2px; align-self: end; }
+.hm .r { color: var(--mute2); padding-right: 10px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hm .c { height: 40px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+.hm .c.z { color: var(--mute); font-weight: 400; }
+.hm-scroll { overflow-x: auto; }
 
 /* Table */
 .tbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
@@ -138,7 +158,10 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
 }
 @media (max-width: 640px) {
   .col-opt { display: none; }
-  .top .seg { order: 3; width: 100%; } .top .seg button { flex: 1; }
+  .top .seg.per { order: 3; width: 100%; } .top .seg button { flex: 1; }
+  .top { position: static; } .top .sp { display: none; } .top .tabs { order: 2; width: 100%; }
+  #btnReload { display: none; }
+  .hm .c { height: 34px; font-size: 12px; }
   .card { padding: 16px; } .tscroll { margin: 0 -16px; padding: 0 16px; }
 }
 </style>
@@ -159,14 +182,19 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
 <div id="app" class="hidden">
   <header class="top"><div class="top-in">
     <div class="brand"><i></i>Aquaterra <small>Leads</small></div>
-    <div class="seg" role="group" aria-label="Período">
+    <div class="seg tabs" role="tablist" aria-label="Sección">
+      <button role="tab" data-view="stats" aria-pressed="true">Estadísticas</button>
+      <button role="tab" data-view="leads" aria-pressed="false">Leads</button>
+    </div>
+    <span class="sp"></span>
+    <div class="seg per" role="group" aria-label="Período">
       <button data-days="7">7 días</button>
       <button data-days="30" aria-pressed="true">30 días</button>
       <button data-days="90">90 días</button>
       <button data-days="0">Todo</button>
     </div>
-    <button class="btn" id="btnCsv" title="Descargar los leads filtrados en CSV">Exportar CSV</button>
     <button class="btn" id="btnReload">Actualizar</button>
+    <button class="btn icon" id="btnTheme" aria-label="Cambiar a modo noche" title="Modo día / noche"></button>
     <button class="btn" id="btnOut">Salir</button>
   </div></header>
 
@@ -175,17 +203,22 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
 
     <section class="kpis" id="kpis"></section>
 
-    <section class="grid">
+    <section class="grid" id="vStats">
       <div class="card wide"><h2>Leads por día</h2><p class="desc" id="tlDesc"></p><div class="tl" id="tl"></div></div>
+      <div class="card wide"><h2>Crecimiento de la base de leads</h2><p class="desc">Total acumulado de leads a lo largo del período.</p><div class="tl" id="cum"></div></div>
       <div class="card"><h2>Embudo comercial</h2><p class="desc">Leads del período según en qué etapa están hoy.</p><div class="hb" id="chEstado"></div></div>
       <div class="card"><h2>Tipo de inversor</h2><p class="desc">Según el objetivo que eligieron en el formulario.</p><div class="hb" id="chPerfil"></div></div>
+      <div class="card wide"><h2>Tipo de inversor según monto</h2><p class="desc">Cuántos leads de cada tipo hay en cada rango de inversión. Más oscuro, más leads.</p><div class="hm" id="hmPerfil"></div></div>
+      <div class="card"><h2>Conversión por tipo de inversor</h2><p class="desc">Porcentaje de leads de cada tipo que ya son clientes.</p><div class="hb" id="chConv"></div></div>
+      <div class="card"><h2>Capital potencial por tipo de inversor</h2><p class="desc">Estimado con el punto medio del rango, sin descartados.</p><div class="hb" id="chCap"></div></div>
       <div class="card"><h2>Monto a invertir</h2><p class="desc">Rango declarado en el formulario.</p><div class="hb" id="chMonto"></div></div>
       <div class="card"><h2>País de origen</h2><p class="desc">Detectado por la conexión al enviar el formulario.</p><div class="hb" id="chPais"></div></div>
       <div class="card"><h2>Fuente de la visita</h2><p class="desc">Campaña (utm_source) o sitio de referencia.</p><div class="hb" id="chFuente"></div></div>
       <div class="card"><h2>Prioridad</h2><p class="desc">Alta desde USD 100.000, baja por debajo de USD 50.000.</p><div class="hb" id="chPrio"></div></div>
+      <div class="card wide"><h2>Cuándo llegan los leads</h2><p class="desc">Día y franja horaria (hora de España) en que se envió el formulario.</p><div class="hm" id="hmHora"></div></div>
     </section>
 
-    <section class="card">
+    <section class="card hidden" id="vLeads">
       <h2>Leads</h2>
       <p class="desc">Toca un lead para ver el detalle, cambiar su estado y dejar notas.</p>
       <div class="tbar">
@@ -193,6 +226,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
         <select class="input" id="fEstado" aria-label="Filtrar por estado"></select>
         <select class="input" id="fPerfil" aria-label="Filtrar por tipo de inversor"></select>
         <span class="count num" id="count"></span>
+        <button class="btn" id="btnCsv" title="Descargar los leads filtrados en CSV">Exportar CSV</button>
       </div>
       <div class="tscroll">
         <table>
@@ -222,7 +256,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
   var PAISES = { ES: 'España', PY: 'Paraguay', AR: 'Argentina', UY: 'Uruguay', BR: 'Brasil', US: 'Estados Unidos', FR: 'Francia', DE: 'Alemania', IT: 'Italia', GB: 'Reino Unido', CH: 'Suiza', MX: 'México', CL: 'Chile', PT: 'Portugal', AD: 'Andorra' };
   var DAY = 86400000;
 
-  var S = { leads: [], days: 30, demo: false, token: null, refresh: null, shown: 25, open: null };
+  var S = { leads: [], days: 30, demo: false, token: null, refresh: null, shown: 25, open: null, view: 'stats' };
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var fmtN = function (n) { return Number(n || 0).toLocaleString('es-ES'); };
@@ -339,15 +373,106 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
     var cur = S.leads.filter(function (l) { return inPeriod(l, p.from, p.to); });
     var prev = p.prevFrom != null ? S.leads.filter(function (l) { return inPeriod(l, p.prevFrom, p.from); }) : null;
     renderKpis(cur, prev);
+    if (S.view === 'stats') renderCharts(cur, p);
+    renderTable();
+  }
+  function renderCharts(cur, p) {
+    if (!cur) { p = period(); cur = S.leads.filter(function (l) { return inPeriod(l, p.from, p.to); }); }
+    var perfilDe = function (l) { return l.perfil || 'Explorador'; };
     renderTimeline(cur, p);
+    renderCumulative(cur, p);
     hbars($('chEstado'), countBy(cur, function (l) { return l.estado; }, ESTADOS.map(function (e) { return e[0]; })).map(function (r) { return [EST[r[0]] ? EST[r[0]].label : r[0], r[1]]; }), cur.length);
-    hbars($('chPerfil'), countBy(cur, function (l) { return l.perfil || 'Explorador'; }, PERFILES), cur.length);
+    hbars($('chPerfil'), countBy(cur, perfilDe, PERFILES), cur.length);
     hbars($('chMonto'), countBy(cur, function (l) { return l.monto || 'Sin dato'; }, MONTOS.concat('Sin dato')), cur.length);
     hbars($('chPais'), top(countBy(cur, function (l) { return pais(l.pais); }), 6), cur.length);
     hbars($('chFuente'), top(countBy(cur, fuente), 6), cur.length);
     hbars($('chPrio'), countBy(cur, function (l) { return l.prioridad || 'media'; }, ['alta', 'media', 'baja']).map(function (r) { return [r[0].charAt(0).toUpperCase() + r[0].slice(1), r[1]]; }), cur.length);
-    renderTable();
+
+    // Conversión y capital por tipo de inversor
+    var byP = PERFILES.map(function (pf) {
+      var ls = cur.filter(function (l) { return perfilDe(l) === pf; });
+      var cl = ls.filter(function (l) { return l.estado === 'cliente'; }).length;
+      var cap = ls.filter(function (l) { return l.estado !== 'descartado'; }).reduce(function (s, l) { return s + capital(l); }, 0);
+      return { pf: pf, n: ls.length, cl: cl, rate: ls.length ? cl / ls.length : 0, cap: cap };
+    }).filter(function (x) { return x.n; });
+    hbars($('chConv'), byP.map(function (x) { return [x.pf, x.rate * 100]; }), cur.length, {
+      val: function (r, i) { return (Math.round(r[1] * 10) / 10).toLocaleString('es-ES') + ' %<span>' + byP[i].cl + ' de ' + byP[i].n + '</span>'; },
+      tip: function (r, i) { return '<b>' + esc(r[0]) + '</b><br>' + byP[i].cl + ' clientes de ' + byP[i].n + ' leads'; }
+    });
+    hbars($('chCap'), byP.map(function (x) { return [x.pf, x.cap]; }), cur.length, {
+      val: function (r) { return fmtUSD(r[1]); },
+      tip: function (r, i) { return '<b>' + esc(r[0]) + '</b><br>' + fmtUSD(r[1]) + ' estimados en ' + byP[i].n + ' leads'; }
+    });
+
+    // Tipo de inversor × monto
+    var cols = MONTOS.slice(); if (cur.some(function (l) { return !l.monto; })) cols.push('Sin dato');
+    heatmap($('hmPerfil'), PERFILES, cols.map(function (c) { return c.replace('USD ', '').replace('Más de ', '+'); }), PERFILES.map(function (pf) {
+      return cols.map(function (c) { return cur.filter(function (l) { return perfilDe(l) === pf && (l.monto || 'Sin dato') === c; }).length; });
+    }), function (r, c, v) { return '<b>' + esc(PERFILES[r]) + '</b><br>' + esc(cols[c]) + ': ' + v + ' lead' + (v === 1 ? '' : 's'); });
+
+    // Día y franja horaria, en hora de España
+    var DIAS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'], DIAS_L = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+    var FR = [[0, 8, '0–8 h'], [8, 11, '8–11 h'], [11, 14, '11–14 h'], [14, 17, '14–17 h'], [17, 20, '17–20 h'], [20, 24, '20–24 h']];
+    var fmtTz = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Madrid', weekday: 'short', hour: 'numeric', hourCycle: 'h23' });
+    var WD = { Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6 };
+    var m = DIAS.map(function () { return FR.map(function () { return 0; }); });
+    cur.forEach(function (l) {
+      var parts = {}; fmtTz.formatToParts(new Date(l.created_at)).forEach(function (x) { parts[x.type] = x.value; });
+      var d = WD[parts.weekday], h = Number(parts.hour) % 24;
+      var f = FR.findIndex(function (x) { return h >= x[0] && h < x[1]; });
+      if (d != null && f >= 0) m[d][f]++;
+    });
+    heatmap($('hmHora'), DIAS, FR.map(function (x) { return x[2]; }), m, function (r, c, v) { return '<b>' + DIAS_L[r] + ', ' + FR[c][2] + '</b><br>' + v + ' lead' + (v === 1 ? '' : 's'); });
   }
+
+  function heatmap(el, rows, cols, m, tip) {
+    var max = Math.max(1, Math.max.apply(null, m.map(function (r) { return Math.max.apply(null, r); })));
+    var total = m.reduce(function (s, r) { return s + r.reduce(function (a, b) { return a + b; }, 0); }, 0);
+    if (!total) { el.innerHTML = '<div class="empty">Sin leads en este período.</div>'; el.style.gridTemplateColumns = ''; return; }
+    el.style.gridTemplateColumns = 'minmax(84px, auto) repeat(' + cols.length + ', minmax(40px, 1fr))';
+    var h = '<span></span>' + cols.map(function (c) { return '<span class="h">' + esc(c) + '</span>'; }).join('');
+    rows.forEach(function (r, i) {
+      h += '<span class="r">' + esc(r) + '</span>';
+      cols.forEach(function (c, j) {
+        var v = m[i][j], k = v ? 14 + Math.round(v / max * 86) : 0;
+        h += '<span class="c' + (v ? '' : ' z') + '" data-tip="' + tip(i, j, v) + '" style="background:' + (v ? 'color-mix(in srgb, var(--bar) ' + k + '%, var(--card))' : 'var(--fill)') + ';color:' + (k > 55 ? '#fff' : 'var(--ink)') + '">' + (v || '·') + '</span>';
+      });
+    });
+    el.innerHTML = h;
+  }
+
+  function renderCumulative(cur, p) {
+    var el = $('cum');
+    var first = S.leads.length ? Math.min.apply(null, S.leads.map(function (l) { return Date.parse(l.created_at); })) : Date.now();
+    var from = startOfDay(p.from || first);
+    var nDays = Math.max(1, Math.round((startOfDay(Date.now()) - from) / DAY) + 1);
+    var base = S.leads.filter(function (l) { return Date.parse(l.created_at) < from; }).length;
+    var daily = []; for (var i = 0; i < nDays; i++) daily.push(0);
+    cur.forEach(function (l) { var i = Math.round((startOfDay(Date.parse(l.created_at)) - from) / DAY); if (i >= 0 && i < nDays) daily[i]++; });
+    var pts = [], acc = base; daily.forEach(function (n, i) { acc += n; pts.push({ t: from + i * DAY, v: acc, n: n }); });
+
+    var W = Math.max(320, el.clientWidth || 800), H = 220, L = 36, R = 8, T = 10, B = 26;
+    var lo = base, hi = Math.max(base + 1, acc);
+    var tick = niceStep(hi - lo), y0 = Math.floor(lo / tick) * tick, y1 = Math.ceil(hi / tick) * tick;
+    var y = function (v) { return T + (H - T - B) * (1 - (v - y0) / (y1 - y0)); };
+    var x = function (i) { return L + (nDays === 1 ? (W - L - R) / 2 : i * (W - L - R) / (nDays - 1)); };
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Total acumulado de leads">';
+    for (var v = y0; v <= y1; v += tick) s += '<line class="gl" x1="' + L + '" x2="' + (W - R) + '" y1="' + y(v) + '" y2="' + y(v) + '"/><text class="axis num" x="' + (L - 6) + '" y="' + (y(v) + 4) + '" text-anchor="end">' + fmtN(v) + '</text>';
+    var d = pts.map(function (q, i) { return (i ? 'L' : 'M') + x(i).toFixed(1) + ',' + y(q.v).toFixed(1); }).join('');
+    s += '<path class="ar" d="' + d + 'L' + x(nDays - 1).toFixed(1) + ',' + (H - B) + 'L' + x(0).toFixed(1) + ',' + (H - B) + 'Z"/>';
+    s += '<line class="base" x1="' + L + '" x2="' + (W - R) + '" y1="' + (H - B) + '" y2="' + (H - B) + '"/>';
+    s += '<path class="ln" d="' + d + '"/>';
+    var every = Math.ceil(nDays / Math.max(2, Math.floor((W - L) / 64)));
+    pts.forEach(function (q, i) { if (i % every === 0) s += '<text class="axis" x="' + x(i) + '" y="' + (H - 8) + '" text-anchor="middle">' + fmtDate(q.t) + '</text>'; });
+    s += '<line class="xh hidden" id="cumX" y1="' + T + '" y2="' + (H - B) + '"/><circle class="dot hidden" id="cumD" r="5"/>';
+    var bw = (W - L - R) / Math.max(1, nDays - 1);
+    pts.forEach(function (q, i) {
+      s += '<rect x="' + (x(i) - bw / 2) + '" y="' + T + '" width="' + bw + '" height="' + (H - T - B) + '" fill="transparent" data-cx="' + x(i) + '" data-cy="' + y(q.v) +
+        '" data-tip="<b>' + esc(fmtDate(q.t)) + '</b><br>' + fmtN(q.v) + ' leads en total' + (q.n ? '<br><span class=&quot;m&quot;>+' + q.n + ' ese día</span>' : '') + '"/>';
+    });
+    el.innerHTML = s + '</svg>';
+  }
+
   function top(rows, n) {
     if (rows.length <= n) return rows;
     var rest = rows.slice(n - 1).reduce(function (s, r) { return s + r[1]; }, 0);
@@ -375,15 +500,18 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
     }).join('');
   }
 
-  function hbars(el, rows, total) {
+  function hbars(el, rows, total, o) {
+    o = o || {};
     if (!rows.length || !total) { el.innerHTML = '<div class="empty">Sin leads en este período.</div>'; return; }
-    var max = Math.max.apply(null, rows.map(function (r) { return r[1]; }));
-    el.innerHTML = rows.map(function (r) {
+    var max = Math.max.apply(null, rows.map(function (r) { return r[1]; })) || 1;
+    el.innerHTML = rows.map(function (r, i) {
       var pct = Math.round(r[1] / total * 100);
-      return '<div class="hb-row" data-tip="<b>' + esc(r[0]) + '</b><br>' + fmtN(r[1]) + ' leads · ' + pct + ' % del período">' +
+      var tip = o.tip ? o.tip(r, i) : '<b>' + esc(r[0]) + '</b><br>' + fmtN(r[1]) + ' leads · ' + pct + ' % del período';
+      var val = o.val ? o.val(r, i) : fmtN(r[1]) + '<span>' + pct + ' %</span>';
+      return '<div class="hb-row" data-tip="' + tip.replace(/"/g, '&quot;') + '">' +
         '<span class="hb-lab" title="' + esc(r[0]) + '">' + esc(r[0]) + '</span>' +
         '<span class="hb-track"><span class="hb-bar" style="width:' + (r[1] / max * 100).toFixed(1) + '%"></span></span>' +
-        '<span class="hb-val num">' + fmtN(r[1]) + '<span>' + pct + ' %</span></span></div>';
+        '<span class="hb-val num">' + val + '</span></div>';
     }).join('');
   }
 
@@ -525,9 +653,9 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
   // ---------- Events ----------
   $('fEstado').innerHTML = '<option value="">Todos los estados</option>' + ESTADOS.map(function (e) { return '<option value="' + e[0] + '">' + e[1] + '</option>'; }).join('');
   $('fPerfil').innerHTML = '<option value="">Todos los tipos</option>' + PERFILES.map(function (p) { return '<option>' + p + '</option>'; }).join('');
-  document.querySelectorAll('.seg button').forEach(function (b) {
+  document.querySelectorAll('.per button').forEach(function (b) {
     b.onclick = function () {
-      document.querySelectorAll('.seg button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      document.querySelectorAll('.per button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
       S.days = Number(b.dataset.days); S.shown = 25; render();
     };
   });
@@ -540,15 +668,42 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
   $('rows').addEventListener('keydown', function (e) { var tr = e.target.closest('tr[data-id]'); if (tr && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openDrawer(tr.dataset.id); } });
   $('scrim').onclick = closeDrawer;
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && S.open) closeDrawer(); });
-  var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { if (S.leads.length) renderTimeline(S.leads.filter(function (l) { var p = period(); return inPeriod(l, p.from, p.to); }), period()); }, 150); });
+  var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { if (S.leads.length && S.view === 'stats') renderCharts(); }, 150); });
+
+  // Pestañas Estadísticas / Leads
+  function setView(v) {
+    S.view = v; store.set('aq-admin-view', v);
+    document.querySelectorAll('.tabs button').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.view === v)); x.setAttribute('aria-selected', String(x.dataset.view === v)); });
+    $('vStats').classList.toggle('hidden', v !== 'stats'); $('vLeads').classList.toggle('hidden', v !== 'leads');
+    if (S.leads.length) render();
+  }
+  document.querySelectorAll('.tabs button').forEach(function (b) { b.onclick = function () { setView(b.dataset.view); }; });
+  setView(store.get('aq-admin-view') === 'leads' ? 'leads' : 'stats');
+
+  // Modo día / noche (comparte la preferencia con la web)
+  var SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  var MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>';
+  var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function isNight() { var t = document.documentElement.getAttribute('data-theme'); return t ? t === 'dark' : !!(mq && mq.matches); }
+  function paintThemeBtn() { var n = isNight(); $('btnTheme').innerHTML = n ? SUN : MOON; $('btnTheme').setAttribute('aria-label', n ? 'Cambiar a modo día' : 'Cambiar a modo noche'); }
+  $('btnTheme').onclick = function () {
+    var n = !isNight();
+    document.documentElement.setAttribute('data-theme', n ? 'dark' : 'light');
+    store.set('aquaterra-modo', n ? 'noche' : 'dia'); paintThemeBtn();
+  };
+  if (mq && mq.addEventListener) mq.addEventListener('change', paintThemeBtn);
+  paintThemeBtn();
 
   // Tooltip compartido
   var tip = $('tip'), lastHi = null;
   document.addEventListener('mousemove', function (e) {
     var t = e.target.closest && e.target.closest('[data-tip]');
     if (lastHi && lastHi !== t) { var pb = lastHi.previousElementSibling; if (pb && pb.classList.contains('b')) pb.classList.remove('on'); lastHi = null; }
-    if (!t) { tip.style.opacity = 0; return; }
+    if (!t) { tip.style.opacity = 0; if ($('cumX')) { $('cumX').classList.add('hidden'); $('cumD').classList.add('hidden'); } return; }
     if (t.tagName === 'rect') { var b = t.previousElementSibling; if (b && b.classList.contains('b')) b.classList.add('on'); lastHi = t; }
+    var cx = $('cumX'), cd = $('cumD');
+    if (cx) { var on = t.hasAttribute('data-cx'); cx.classList.toggle('hidden', !on); cd.classList.toggle('hidden', !on);
+      if (on) { cx.setAttribute('x1', t.dataset.cx); cx.setAttribute('x2', t.dataset.cx); cd.setAttribute('cx', t.dataset.cx); cd.setAttribute('cy', t.dataset.cy); } }
     tip.innerHTML = t.getAttribute('data-tip'); tip.style.opacity = 1;
     var x = e.clientX + 14, y = e.clientY + 14, r = tip.getBoundingClientRect();
     if (x + r.width > innerWidth - 8) x = e.clientX - r.width - 14;
