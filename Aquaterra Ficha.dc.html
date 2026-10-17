@@ -147,7 +147,10 @@ button{font-family:inherit}
         <sc-if value="{{ hayNota }}" hint-placeholder-val="{{ true }}">
           <p style="margin:0;max-width:620px;font-size:17px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">{{ pr.nota }}</p>
         </sc-if>
-        <a href="{{ mapaUrl }}" target="_blank" rel="noopener" style="align-self:flex-start;display:flex;align-items:center;gap:4px;min-height:44px;font-size:17px;color:{{ linkC }}">Ver en Google Maps ›</a>
+        <sc-if value="{{ hayMapa }}" hint-placeholder-val="{{ true }}">
+          <iframe src="{{ mapaEmbed }}" title="Mapa de {{ pr.name }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="width:100%;aspect-ratio:{{ mapAspect }};border:0;border-radius:22px;background:{{ th.ph }}"></iframe>
+          <a href="{{ mapaUrl }}" target="_blank" rel="noopener" style="align-self:flex-start;display:flex;align-items:center;gap:4px;min-height:44px;font-size:17px;color:{{ linkC }}">Abrir en Google Maps ›</a>
+        </sc-if>
       </div>
 
       <div id="fuentes" style="display:flex;flex-direction:column;gap:12px;padding:20px 22px;border-radius:20px;background:{{ th.card }}">
@@ -271,7 +274,10 @@ class Component extends DCLogic {
       facts: [{ k: 'Tipo', v: p.tipo }, { k: 'Etapa', v: p.etapa }].concat(p.facts.map(([k, v]) => ({ k, v }))),
       amen: p.amen,
       hayNota: !!p.nota,
-      mapaUrl: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(`${p.name}, ${p.ciudad}, Paraguay`),
+      hayMapa: !!p.mapa,
+      mapAspect: narrowM ? '4/3' : '16/9',
+      mapaEmbed: p.mapa ? 'https://www.google.com/maps?output=embed&q=' + encodeURIComponent(p.mapa) : '',
+      mapaUrl: p.mapa ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.mapa) : '',
       fuentes: p.fuentes
     };
   }

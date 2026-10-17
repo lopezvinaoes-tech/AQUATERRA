@@ -3,9 +3,10 @@
 // Cuando haya proyectos propios, se agregan aquí con dev: window.MARCA.nombre.
 // precio: USD publicado hoy en la fuente, o null para "Consultar precio".
 // precioFiltro: USD aproximado solo para el filtro de inversión.
+// mapa: dirección o lugar para Google Maps; sin mapa cuando no hay ubicación exacta publicada.
 window.PROYECTOS = [
   {
-    name: 'Aires Pacheco', dev: 'Realpy Desarrollos', tipo: 'Departamento', etapa: 'En pozo',
+    name: 'Aires Pacheco', mapa: 'Aires Pacheco, Asunción, Paraguay', dev: 'Realpy Desarrollos', tipo: 'Departamento', etapa: 'En pozo',
     barrio: 'Mariscal', ciudad: 'Asunción',
     precio: 48356, entrega: '2.º semestre 2029',
     tipologia: 'Monoambiente a 2 dormitorios', dmin: 0, dmax: 2,
@@ -18,7 +19,7 @@ window.PROYECTOS = [
     ]
   },
   {
-    name: 'First Mariscal', dev: null, tipo: 'Departamento', etapa: 'A confirmar',
+    name: 'First Mariscal', mapa: 'Quesada y Teniente Zotti, Asunción, Paraguay', dev: null, tipo: 'Departamento', etapa: 'A confirmar',
     barrio: 'Mariscal', ciudad: 'Asunción',
     precio: null, precioFiltro: 70720, entrega: 'Prevista para marzo de 2027',
     tipologia: '1 a 3 dormitorios', dmin: 1, dmax: 3,
@@ -31,7 +32,7 @@ window.PROYECTOS = [
     ]
   },
   {
-    name: 'Urban Carmelitas', dev: null, tipo: 'Departamento', etapa: 'Entregado',
+    name: 'Urban Carmelitas', mapa: 'Urban Carmelitas, Las Carmelitas, Asunción, Paraguay', dev: null, tipo: 'Departamento', etapa: 'Entregado',
     barrio: 'Las Carmelitas', ciudad: 'Asunción',
     precio: 74000, entrega: 'Entregado en 2021',
     tipologia: '1 y 2 dormitorios', dmin: 1, dmax: 2,
@@ -44,7 +45,7 @@ window.PROYECTOS = [
     ]
   },
   {
-    name: 'Highlands', dev: null, tipo: 'Barrio cerrado', tambien: ['Casa', 'Lote'], etapa: 'En venta',
+    name: 'Highlands', mapa: 'Highlands, San Bernardino, Paraguay', dev: null, tipo: 'Barrio cerrado', tambien: ['Casa', 'Lote'], etapa: 'En venta',
     barrio: 'Ruta 2', ciudad: 'San Bernardino',
     precio: null, precioFiltro: 74304, entrega: null,
     tipologia: 'Lotes, townhouses y departamentos',
@@ -57,7 +58,7 @@ window.PROYECTOS = [
     ]
   },
   {
-    name: 'Madre Selva', dev: 'Rodrigo Pena y Cristian Valente', tipo: 'Barrio cerrado', tambien: ['Lote'], etapa: 'En venta',
+    name: 'Madre Selva', mapa: 'Madre Selva, San Bernardino, Paraguay', dev: 'Rodrigo Pena y Cristian Valente', tipo: 'Barrio cerrado', tambien: ['Lote'], etapa: 'En venta',
     barrio: 'Ciervo Cuá', ciudad: 'San Bernardino',
     precio: null, precioFiltro: 60000, entrega: null,
     tipologia: 'Lotes de más de 1.000 m²',
@@ -70,7 +71,7 @@ window.PROYECTOS = [
     ]
   },
   {
-    name: 'Paraná Country Club', dev: null, tipo: 'Country', tambien: ['Casa', 'Lote'], etapa: 'En venta',
+    name: 'Paraná Country Club', mapa: 'Paraná Country Club, Hernandarias, Paraguay', dev: null, tipo: 'Country', tambien: ['Casa', 'Lote'], etapa: 'En venta',
     barrio: 'Paraná Country Club', ciudad: 'Hernandarias',
     precio: 210000, entrega: null,
     tipologia: 'Lotes y casas',
