@@ -15,7 +15,7 @@
    |---|---|
    | `SUPABASE_URL` | Supabase → Project Settings → API → Project URL |
    | `SUPABASE_ANON_KEY` | Supabase → Project Settings → API → `anon` `public` |
-   | `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API → `service_role` (secreta, nunca en el navegador) |
+   | `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API Keys → `service_role` o una secret key `sb_secret_...` (secreta, nunca en el navegador) |
    | `ADMIN_EMAILS` | Emails con acceso al panel, separados por comas |
 
 5. Volver a desplegar en Vercel. `/admin` pedirá login.

@@ -59,7 +59,7 @@ create table if not exists public.lead_eventos (
 );
 create index if not exists lead_eventos_lead_idx on public.lead_eventos (lead_id, created_at desc);
 
-create or replace function public.leads_touch() returns trigger language plpgsql as $$
+create or replace function public.leads_touch() returns trigger language plpgsql set search_path = '' as $$
 begin new.updated_at := now(); return new; end $$;
 drop trigger if exists leads_touch on public.leads;
 create trigger leads_touch before update on public.leads

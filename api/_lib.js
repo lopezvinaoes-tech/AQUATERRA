@@ -15,7 +15,8 @@ async function db(path, { method = 'GET', body, prefer } = {}) {
     method,
     headers: {
       apikey: SERVICE_KEY,
-      Authorization: `Bearer ${SERVICE_KEY}`,
+      // Las claves nuevas (sb_secret_...) van solo en apikey; las antiguas (JWT) también como Bearer.
+      ...(SERVICE_KEY.startsWith('eyJ') ? { Authorization: `Bearer ${SERVICE_KEY}` } : {}),
       'Content-Type': 'application/json',
       ...(prefer ? { Prefer: prefer } : {})
     },
