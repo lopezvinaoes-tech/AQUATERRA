@@ -293,11 +293,11 @@ select option{color:#1D1D1F;background:#FFFFFF}
         </div>
       </div>
     </div>
-    <div data-reveal="" style="display:flex;flex-direction:column;gap:28px">
-      <h3 style="margin:0;font-size:clamp(26px,2.6vw,36px);line-height:1.1;letter-spacing:-0.025em;font-weight:600">Nuestro <span style="color:#86868B">equipo</span></h3>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:20px">
+    <div data-reveal="" style="display:flex;flex-direction:column;align-items:center;gap:28px">
+      <h3 style="margin:0;text-align:center;font-size:clamp(26px,2.6vw,36px);line-height:1.1;letter-spacing:-0.025em;font-weight:600">Nuestro <span style="color:#86868B">equipo</span></h3>
+      <div style="width:100%;display:flex;flex-wrap:wrap;justify-content:center;gap:20px">
         <sc-for list="{{ equipo }}" as="pe" hint-placeholder-count="4">
-          <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="flex:0 1 280px;min-width:0;display:flex;flex-direction:column;gap:14px;text-align:center">
             <div style="position:relative;aspect-ratio:4/5;border-radius:20px;overflow:hidden;background:{{ th.ph }};display:flex;align-items:center;justify-content:center">
               <span style="font-size:44px;font-weight:600;letter-spacing:-0.03em;color:{{ th.phInk }}">{{ pe.ini }}</span>
               <span role="img" aria-label="{{ pe.nombre }}" style="position:absolute;inset:0;background-image:{{ pe.bg }};background-size:cover;background-position:center top"></span>
