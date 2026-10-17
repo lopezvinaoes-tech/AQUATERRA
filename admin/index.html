@@ -630,7 +630,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
     return '<div class="form">' + f('nombre', 'Nombre y apellido *', l.nombre, { full: true }) + f('email', 'Email', l.email, { type: 'email' }) + f('whatsapp', 'WhatsApp', l.whatsapp, { type: 'tel' }) +
       '<label class="field"><span>Monto</span><select class="input" id="f_monto">' + opts(MONTOS, l.monto, 'Sin dato') + '</select></label>' +
       '<label class="field"><span>Objetivo</span><select class="input" id="f_objetivo">' + opts(OBJS, l.objetivo, 'Sin dato') + '</select></label>' +
-      f('proyecto_interes', 'Proyecto de interés', l.proyecto_interes) + f('pais', 'País (código, p. ej. ES)', l.pais) +
+      f('proyecto_interes', 'Proyecto de interés', l.proyecto_interes) + '<label class="field"><span>País</span><select class="input" id="f_pais"><option value="">Sin dato</option>' + Object.keys(PAISES).map(function (c) { return '<option value="' + c + '"' + (c === l.pais ? ' selected' : '') + '>' + PAISES[c] + '</option>'; }).join('') + (l.pais && !PAISES[l.pais] ? '<option selected>' + esc(l.pais) + '</option>' : '') + '</select></label>' +
       '<label class="field full"><span>Mensaje</span><textarea class="input" id="f_mensaje" style="min-height:80px">' + esc(l.mensaje || '') + '</textarea></label></div>';
   }
   function readForm() {
