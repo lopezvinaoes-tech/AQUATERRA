@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="./marca.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -30,7 +31,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
   <div style="max-width:1120px;margin:0 auto;height:52px;padding:0 clamp(16px,3vw,24px);display:flex;align-items:center;justify-content:space-between;gap:20px">
     <a href="#inicio" onClick="{{ closeMenu }}" style="display:flex;align-items:center;gap:9px;min-height:44px;color:{{ hdrInk }};font-weight:600;font-size:18px;letter-spacing:-0.02em;transition:color .35s">
       <span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>
-      <span>Aquaterra</span>
+      <span>{{ marca }}</span>
     </a>
     <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
       <nav style="display:flex;align-items:center;gap:clamp(18px,2.4vw,32px)">
@@ -58,7 +59,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
     <sc-for list="{{ menuItems }}" as="m" hint-placeholder-count="6">
       <a href="{{ m.href }}" onClick="{{ closeMenu }}" style="display:flex;align-items:center;justify-content:space-between;min-height:60px;font-size:28px;font-weight:600;letter-spacing:-0.025em;color:{{ th.ink }};border-bottom:1px solid {{ th.line }}">{{ m.label }}<span style="font-size:24px;font-weight:400;color:{{ th.mute }}">›</span></a>
     </sc-for>
-    <button onClick="{{ openModal }}" style="margin-top:28px;height:50px;border-radius:14px;border:0;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500;cursor:pointer">Agende una asesoría</button>
+    <button onClick="{{ openModal }}" style="margin-top:28px;height:50px;border-radius:14px;border:0;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500;cursor:pointer">Agenda una asesoría</button>
   </div>
 </sc-if>
 
@@ -66,32 +67,24 @@ select option{color:#1D1D1F;background:#FFFFFF}
   <div ref="{{ cityRef }}" style="position:absolute;inset:0"></div>
   <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ dayHaze }};transition:opacity .9s;background:linear-gradient(to bottom, rgba(231,233,236,0.75) 0%, rgba(231,233,236,0) 16%), linear-gradient(to top, #E7E9EC 0%, rgba(231,233,236,0.94) 26%, rgba(231,233,236,0.45) 42%, rgba(231,233,236,0) 60%)"></div>
   <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ nightHaze }};transition:opacity .9s;background:linear-gradient(to bottom, rgba(10,12,16,0.8) 0%, rgba(10,12,16,0) 16%), linear-gradient(to top, #0A0C10 0%, rgba(10,12,16,0.92) 26%, rgba(10,12,16,0.42) 42%, rgba(10,12,16,0) 60%)"></div>
+  <div style="position:absolute;left:0;right:0;bottom:0;height:55%;pointer-events:none;background:{{ heroFade }};backdrop-filter:blur(14px) saturate(120%);-webkit-backdrop-filter:blur(14px) saturate(120%);-webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 45%);mask-image:linear-gradient(to bottom, transparent 0%, #000 45%);transition:background .9s"></div>
 
   <div style="position:absolute;left:0;right:0;bottom:0;padding:0 clamp(20px,3.2vw,48px) calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:clamp(24px,5vh,64px);pointer-events:none">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap">
       <div data-reveal="100" style="display:flex;flex-direction:column;gap:16px;max-width:760px;padding:{{ heroPad }};border-radius:20px;background:{{ heroGlass }};border:1px solid {{ heroGlassBd }};backdrop-filter:{{ heroBlur }};-webkit-backdrop-filter:{{ heroBlur }}">
         <span style="width:56px;height:2px;background:#C9F15D"></span>
         <div style="display:flex;align-items:flex-start;gap:clamp(20px,3vw,48px);flex-wrap:wrap">
-          <h1 style="margin:0;font-size:clamp(42px,5.8vw,88px);line-height:0.98;letter-spacing:-0.035em;font-weight:700;color:{{ ink }};transition:color .9s">Una <span style="color:{{ limeText }};transition:color .9s">Nueva</span> Dimensión<br>del <span style="color:#86868B">Real Estate</span></h1>
+          <h1 style="margin:0;font-size:clamp(34px,4.2vw,64px);line-height:1;letter-spacing:-0.035em;font-weight:700;color:{{ ink }};transition:color .9s">Una <span style="color:{{ limeText }};transition:color .9s">Nueva</span> Dimensión<br>del <span style="color:#86868B">Real Estate</span></h1>
           <span style="padding-top:14px;font-size:13px;font-weight:500;line-height:1.4;color:{{ sub }};transition:color .9s">Compras en pozo<br>e inversión inteligente</span>
         </div>
         <p style="margin:0;font-size:clamp(15px,1.2vw,18px);line-height:1.5;color:{{ sub }};transition:color .9s">El futuro de la inversión inmobiliaria en Paraguay empieza aquí.</p>
-      </div>
-      <div data-reveal="300">
-        <div style="width:184px;padding:16px 18px 18px;border-radius:20px;background:{{ cardBg }};border:1px solid {{ cardBorder }};backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);color:#FFFFFF;display:flex;flex-direction:column;gap:30px;transition:background .9s, border-color .9s">
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.72)">Inversores</span>
-            <span style="width:14px;height:14px;border:1.5px solid #C9F15D;border-radius:3px;transform:rotate(45deg);margin-right:3px"></span>
-          </div>
-          <span style="font-size:46px;line-height:1;letter-spacing:-0.05em;text-align:right">+10K</span>
-        </div>
       </div>
     </div>
 
     <div data-reveal="450" style="display:grid;grid-template-columns:{{ heroCols }};align-items:center;gap:20px">
       <sc-if value="{{ heroWide }}" hint-placeholder-val="{{ true }}">
       <div style="justify-self:start;display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding:6px 10px;border-radius:10px;background:{{ heroGlass }};border:1px solid {{ heroGlassBd }};backdrop-filter:{{ heroBlur }};-webkit-backdrop-filter:{{ heroBlur }}">
-        <span style="font-size:12px;font-weight:500;color:{{ sub }};transition:color .9s">Explore la ciudad</span>
+        <span style="font-size:12px;font-weight:500;color:{{ sub }};transition:color .9s">Explora la ciudad</span>
         <span style="width:72px;height:2px;background:#C9F15D"></span>
       </div>
       </sc-if>
@@ -118,7 +111,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
     <div data-reveal="" style="position:{{ stickyPos }};top:120px;align-self:start;display:flex;flex-direction:column;gap:22px">
       <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:{{ th.mute }}">Por qué Paraguay</span>
       <h2 style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Un mercado con <span style="color:#86868B">ventajas reales</span> para el inversor</h2>
-      <p style="margin:0;max-width:440px;font-size:17px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Lo que hace de Paraguay uno de los destinos más atractivos de la región para invertir en propiedades.</p>
+      <p style="margin:0;max-width:440px;font-size:17px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Lo que hace de Paraguay uno de los destinos más atractivos de la región para invertir en propiedades. Cada dato lleva su fuente.</p>
     </div>
     <div ref="{{ tlRef }}" style="position:relative;padding-left:64px">
       <span style="position:absolute;left:11px;top:12px;bottom:40px;width:2px;background:{{ th.line }}"></span>
@@ -127,38 +120,44 @@ select option{color:#1D1D1F;background:#FFFFFF}
       <div data-tl-item="" data-reveal="" style="position:relative;display:flex;flex-direction:column;gap:10px;padding-bottom:64px">
         <span style="position:absolute;left:-64px;top:0;width:24px;height:24px;border-radius:50%;background:{{ t1.bg }};border:2px solid {{ t1.bd }};transition:background .4s, border-color .4s"></span>
         <span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ th.mute }};line-height:24px">01</span>
-        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Régimen tributario simple</h3>
-        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">El conocido sistema 10-10-10: IVA, impuesto a la renta personal y a la renta empresarial con tasas del 10 %.</p>
+        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Grado de inversión</h3>
+        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Moody's (Baa3, 2024) y S&amp;P (BBB-, 2025) califican a Paraguay con grado de inversión.</p>
+        <a href="https://www.abc.com.py/economia/2025/12/17/luz-verde-de-sp-en-calificacion-y-paraguay-obtiene-segundo-grado-de-inversion/" target="_blank" rel="noopener" style="align-self:flex-start;font-size:13px;color:{{ th.mute }};text-decoration:underline;text-underline-offset:3px">Fuente: ABC Color</a>
       </div>
       <div data-tl-item="" data-reveal="" style="position:relative;display:flex;flex-direction:column;gap:10px;padding-bottom:64px">
         <span style="position:absolute;left:-64px;top:0;width:24px;height:24px;border-radius:50%;background:{{ t2.bg }};border:2px solid {{ t2.bd }};transition:background .4s, border-color .4s"></span>
         <span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ th.mute }};line-height:24px">02</span>
-        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Estabilidad macroeconómica</h3>
-        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Inflación controlada y una moneda estable que dan previsibilidad a las inversiones de mediano y largo plazo.</p>
+        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Tu renta, en dólares</h3>
+        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Los pisos se compran y se alquilan en USD. Uno bien ubicado en Asunción rinde entre un 6 % y un 8 % neto al año.</p>
+        <a href="https://www.lanacion.com.py/negocios/2025/08/12/mercado-inmobiliario-paraguayo-se-consolida-como-uno-de-los-mas-atractivos-de-la-region/" target="_blank" rel="noopener" style="align-self:flex-start;font-size:13px;color:{{ th.mute }};text-decoration:underline;text-underline-offset:3px">Fuente: La Nación</a>
       </div>
       <div data-tl-item="" data-reveal="" style="position:relative;display:flex;flex-direction:column;gap:10px;padding-bottom:64px">
         <span style="position:absolute;left:-64px;top:0;width:24px;height:24px;border-radius:50%;background:{{ t3.bg }};border:2px solid {{ t3.bd }};transition:background .4s, border-color .4s"></span>
         <span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ th.mute }};line-height:24px">03</span>
-        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Mercado en dólares</h3>
-        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Gran parte de las operaciones inmobiliarias se pactan en USD, lo que protege el valor de su capital.</p>
+        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Entrada baja, sin banco</h3>
+        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Reservas desde USD 1.000–5.000 y cuotas a la desarrolladora durante los 2 o 3 años de obra.</p>
+        <a href="https://www.riotimesonline.com/buying-property-paraguay-foreigners-2026/" target="_blank" rel="noopener" style="align-self:flex-start;font-size:13px;color:{{ th.mute }};text-decoration:underline;text-underline-offset:3px">Fuente: Rio Times</a>
       </div>
       <div data-tl-item="" data-reveal="" style="position:relative;display:flex;flex-direction:column;gap:10px;padding-bottom:64px">
         <span style="position:absolute;left:-64px;top:0;width:24px;height:24px;border-radius:50%;background:{{ t4.bg }};border:2px solid {{ t4.bd }};transition:background .4s, border-color .4s"></span>
         <span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ th.mute }};line-height:24px">04</span>
-        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Precio de entrada en pozo</h3>
-        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Comprar en etapa de pozo permite acceder a valores menores que los de una unidad terminada y pagar en cuotas durante la obra.</p>
+        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Precio de entrada</h3>
+        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">USD 1.817 por m² de media para un piso terminado en Asunción, según avisos de mayo de 2026.</p>
+        <a href="https://www.key-py.com/investigaciones/pozo-vs-entrega-inmediata-asuncion-mayo-2026" target="_blank" rel="noopener" style="align-self:flex-start;font-size:13px;color:{{ th.mute }};text-decoration:underline;text-underline-offset:3px">Fuente: Keypy</a>
       </div>
       <div data-tl-item="" data-reveal="" style="position:relative;display:flex;flex-direction:column;gap:10px;padding-bottom:64px">
         <span style="position:absolute;left:-64px;top:0;width:24px;height:24px;border-radius:50%;background:{{ t5.bg }};border:2px solid {{ t5.bd }};transition:background .4s, border-color .4s"></span>
         <span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ th.mute }};line-height:24px">05</span>
-        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Demanda de alquiler en Asunción</h3>
-        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Barrios como Villa Morra, Carmelitas y Las Lomas concentran la demanda de profesionales y empresas.</p>
+        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Impuestos bajos en Paraguay</h3>
+        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">IVA del 5 % en vivienda, IRP del 8 % sobre el 50 % del alquiler y sin impuesto al patrimonio. Si sigues siendo residente fiscal en España, el convenio de doble imposición evita que pagues dos veces.</p>
+        <a href="https://www.ultimahora.com/paraguay-ofrece-5-ventajas-impositivas-a-inversionistas" target="_blank" rel="noopener" style="align-self:flex-start;font-size:13px;color:{{ th.mute }};text-decoration:underline;text-underline-offset:3px">Fuente: Última Hora</a>
       </div>
       <div data-tl-item="" data-reveal="" style="position:relative;display:flex;flex-direction:column;gap:10px">
         <span style="position:absolute;left:-64px;top:0;width:24px;height:24px;border-radius:50%;background:{{ t6.bg }};border:2px solid {{ t6.bd }};transition:background .4s, border-color .4s"></span>
         <span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ th.mute }};line-height:24px">06</span>
-        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Residencia para extranjeros</h3>
-        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Procesos de radicación accesibles para inversores del exterior que deciden vivir o tener base en el país.</p>
+        <h3 style="margin:0;font-size:clamp(22px,2vw,28px);font-weight:600;letter-spacing:-0.025em">Compra a distancia</h3>
+        <p style="margin:0;max-width:520px;font-size:16px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Puedes comprar con tu pasaporte y un poder notarial, sin tener residencia en Paraguay.</p>
+        <a href="https://www.riotimesonline.com/buying-property-paraguay-foreigners-2026/" target="_blank" rel="noopener" style="align-self:flex-start;font-size:13px;color:{{ th.mute }};text-decoration:underline;text-underline-offset:3px">Fuente: Rio Times</a>
       </div>
     </div>
   </div>
@@ -188,10 +187,10 @@ select option{color:#1D1D1F;background:#FFFFFF}
 
     <div ref="{{ twInfoRef }}" style="position:absolute;left:clamp(20px,3.2vw,48px);top:0;bottom:0;width:{{ twInfoW }};padding:{{ twInfoPad }};display:flex;flex-direction:column;justify-content:{{ twInfoJustify }};gap:28px;color:#F5F5F7;pointer-events:none">
       <div style="display:flex;flex-direction:column;gap:18px">
-        <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:rgba(245,245,247,0.62)">El proyecto, piso por piso</span>
-        <h2 style="margin:0;font-size:clamp(30px,3.6vw,54px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Recorra una inversión <span style="color:#86868B">de arriba a abajo</span></h2>
+        <span style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:14px;font-weight:600;letter-spacing:-0.01em;color:rgba(245,245,247,0.62)">El proyecto, piso por piso <span style="padding:4px 10px;border-radius:999px;background:#C9F15D;color:#1D1D1F;font-size:12px;font-weight:600;letter-spacing:0">Ejemplo ilustrativo</span></span>
+        <h2 style="margin:0;font-size:clamp(30px,3.6vw,54px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Recorre una inversión <span style="color:#86868B">de arriba a abajo</span></h2>
         <sc-if value="{{ twWide }}" hint-placeholder-val="{{ true }}">
-          <p style="margin:0;max-width:380px;font-size:16px;line-height:1.6;color:rgba(245,245,247,0.72);text-wrap:pretty">Así analizamos cada desarrollo antes de recomendarlo: desde las amenities hasta la calle.</p>
+          <p style="margin:0;max-width:380px;font-size:16px;line-height:1.6;color:rgba(245,245,247,0.72);text-wrap:pretty">Así presentamos cada desarrollo, desde las amenities hasta la calle. Este edificio es un ejemplo ilustrativo, no un proyecto en venta.</p>
         </sc-if>
       </div>
       <div style="display:flex;align-items:baseline;gap:14px">
@@ -277,19 +276,19 @@ select option{color:#1D1D1F;background:#FFFFFF}
         <h2 style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Asesoramos inversiones con <span style="color:#86868B">criterio de largo plazo</span></h2>
       </div>
       <div data-reveal="150" style="display:flex;flex-direction:column;gap:36px;padding-top:8px">
-        <p style="margin:0;font-size:18px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">Aquaterra acompaña a inversores locales y del exterior en la compra de propiedades en Paraguay, con foco en desarrollos en pozo. Analizamos cada caso antes de recomendar un proyecto.</p>
+        <p style="margin:0;font-size:18px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">{{ marca }} acompaña a inversores locales y del exterior en la compra de propiedades en Paraguay, con foco en desarrollos en pozo. Analizamos cada caso antes de recomendar un proyecto.</p>
         <div style="display:flex;flex-direction:column">
           <div style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:22px 0;border-top:1px solid {{ th.line }}">
             <span style="font-variant-numeric:tabular-nums;font-size:12px;color:{{ th.mute }};padding-top:5px">01</span>
-            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:20px;font-weight:500;letter-spacing:-0.02em">Análisis de su perfil</span><span style="font-size:15px;line-height:1.55;color:{{ th.mute }}">Objetivo, plazo y monto: definimos juntos qué inversión tiene sentido para usted.</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:20px;font-weight:500;letter-spacing:-0.02em">Análisis de tu perfil</span><span style="font-size:15px;line-height:1.55;color:{{ th.mute }}">Objetivo, plazo y monto: definimos juntos qué inversión tiene sentido para ti.</span></div>
           </div>
           <div style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:22px 0;border-top:1px solid {{ th.line }}">
             <span style="font-variant-numeric:tabular-nums;font-size:12px;color:{{ th.mute }};padding-top:5px">02</span>
-            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:20px;font-weight:500;letter-spacing:-0.02em">Selección de proyectos</span><span style="font-size:15px;line-height:1.55;color:{{ th.mute }}">Evaluamos desarrolladora, ubicación y plan de pagos antes de presentarle opciones.</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:20px;font-weight:500;letter-spacing:-0.02em">Selección de proyectos</span><span style="font-size:15px;line-height:1.55;color:{{ th.mute }}">Evaluamos desarrolladora, ubicación y plan de pagos antes de presentarte opciones.</span></div>
           </div>
           <div style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:22px 0;border-top:1px solid {{ th.line }};border-bottom:1px solid {{ th.line }}">
             <span style="font-variant-numeric:tabular-nums;font-size:12px;color:{{ th.mute }};padding-top:5px">03</span>
-            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:20px;font-weight:500;letter-spacing:-0.02em">Acompañamiento hasta la entrega</span><span style="font-size:15px;line-height:1.55;color:{{ th.mute }}">Le informamos el avance de obra y lo asistimos hasta la entrega y la puesta en renta.</span></div>
+            <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:20px;font-weight:500;letter-spacing:-0.02em">Acompañamiento hasta la entrega</span><span style="font-size:15px;line-height:1.55;color:{{ th.mute }}">Te informamos el avance de obra y te acompañamos hasta la entrega y la puesta en renta.</span></div>
           </div>
         </div>
       </div>
@@ -300,6 +299,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
   </div>
 </section>
 
+<sc-if value="{{ mostrarTestimonios }}" hint-placeholder-val="{{ false }}">
 <section id="testimonios" data-screen-label="05 Testimonios" style="background:{{ th.dark }};transition:background .6s;color:#F5F5F7;padding:clamp(88px,11vw,150px) clamp(20px,3.2vw,48px)">
   <div style="max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;gap:clamp(48px,7vw,112px)">
     <div data-reveal="" style="flex:1 1 300px;display:flex;flex-direction:column;justify-content:space-between;gap:40px">
@@ -325,14 +325,15 @@ select option{color:#1D1D1F;background:#FFFFFF}
     </figure>
   </div>
 </section>
+</sc-if>
 
 <section id="contacto" data-screen-label="07 Asesoría" style="background:{{ th.bg2 }};transition:background .6s;padding:clamp(96px,13vw,180px) clamp(20px,3.2vw,48px)">
   <div data-reveal="" style="max-width:980px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:28px;text-align:center">
     <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:{{ th.mute }}">Asesoría personalizada</span>
-    <h2 style="margin:0;font-size:clamp(52px,8vw,124px);line-height:0.95;letter-spacing:-0.045em;font-weight:700">Analicemos <span style="color:#86868B">su caso</span>.</h2>
-    <p style="margin:0;max-width:560px;font-size:18px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">Cada inversión empieza con una conversación. Cuéntenos su objetivo y le presentaremos opciones a su medida.</p>
+    <h2 style="margin:0;font-size:clamp(52px,8vw,124px);line-height:0.95;letter-spacing:-0.045em;font-weight:700">Analicemos <span style="color:#86868B">tu caso</span>.</h2>
+    <p style="margin:0;max-width:560px;font-size:18px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">Cada inversión empieza con una conversación. Cuéntanos tu objetivo y te presentaremos opciones a tu medida.</p>
     <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:16px 28px;padding-top:8px">
-      <button onClick="{{ openModal }}" style="height:50px;padding:0 28px;border-radius:999px;border:0;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500;letter-spacing:-0.01em;cursor:pointer;transition:background .2s" style-hover="background:#0077ED">Agende una asesoría</button>
+      <button onClick="{{ openModal }}" style="height:50px;padding:0 28px;border-radius:999px;border:0;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500;letter-spacing:-0.01em;cursor:pointer;transition:background .2s" style-hover="background:#0077ED">Agenda una asesoría</button>
       <a href="#contacto" style="display:flex;align-items:center;gap:4px;min-height:44px;font-size:17px;color:{{ linkC }}" style-hover="text-decoration:underline">Escribir por WhatsApp <span>›</span></a>
     </div>
   </div>
@@ -342,7 +343,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
   <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(56px,8vw,96px)">
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:48px">
       <div style="flex:1 1 280px;display:flex;flex-direction:column;gap:16px;max-width:340px">
-        <span style="display:flex;align-items:center;gap:10px;font-size:20px;font-weight:600;letter-spacing:-0.035em"><span style="width:13px;height:13px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>Aquaterra</span>
+        <span style="display:flex;align-items:center;gap:10px;font-size:20px;font-weight:600;letter-spacing:-0.035em"><span style="width:13px;height:13px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>{{ marca }}</span>
         <span style="font-size:15px;line-height:1.6;color:rgba(245,245,247,0.65)">Inversión inmobiliaria en Paraguay. Asunción y el interior del país.</span>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:clamp(40px,6vw,88px)">
@@ -367,9 +368,9 @@ select option{color:#1D1D1F;background:#FFFFFF}
         </div>
       </div>
     </div>
-    <span style="font-size:clamp(72px,17vw,250px);line-height:0.8;letter-spacing:-0.05em;font-weight:700;color:#F5F5F7;margin-left:-0.04em">Aquaterra</span>
+    <span style="font-size:clamp(72px,17vw,250px);line-height:0.8;letter-spacing:-0.05em;font-weight:700;color:#F5F5F7;margin-left:-0.04em">{{ marca }}</span>
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-top:20px;border-top:1px solid rgba(245,245,247,0.12);font-size:13px;color:rgba(245,245,247,0.6)">
-      <span>© 2026 Aquaterra. Todos los derechos reservados.</span>
+      <span>© 2026 {{ marca }}. Todos los derechos reservados.</span>
       <span>Asunción, Paraguay</span>
     </div>
   </div>
@@ -383,8 +384,8 @@ select option{color:#1D1D1F;background:#FFFFFF}
       </sc-if>
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
         <div style="display:flex;flex-direction:column;gap:6px">
-          <span style="font-size:28px;line-height:1.1;letter-spacing:-0.025em;font-weight:700">Agende una asesoría</span>
-          <span style="font-size:15px;line-height:1.45;color:{{ th.mute }}">Unas preguntas para preparar su caso antes de la llamada.</span>
+          <span style="font-size:28px;line-height:1.1;letter-spacing:-0.025em;font-weight:700">Agenda una asesoría</span>
+          <span style="font-size:15px;line-height:1.45;color:{{ th.mute }}">Unas preguntas para preparar tu caso antes de la llamada.</span>
         </div>
         <button onClick="{{ closeModal }}" aria-label="Cerrar" style="width:44px;height:44px;flex:0 0 auto;margin:-6px -8px 0 0;display:flex;align-items:center;justify-content:center;border:0;background:transparent;cursor:pointer">
           <span style="width:30px;height:30px;border-radius:50%;background:{{ th.fill }};color:{{ th.mute }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">✕</span>
@@ -393,7 +394,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
       <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex;flex-direction:column;gap:22px">
           <div style="display:flex;flex-direction:column;gap:8px">
-            <span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Sus datos</span>
+            <span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Tus datos</span>
             <div style="display:flex;flex-direction:column;border-radius:12px;overflow:hidden;background:{{ th.input }}">
               <input value="{{ nombre }}" onChange="{{ onNombre }}" aria-label="Nombre y apellido" placeholder="Nombre y apellido" autocomplete="name" style="height:50px;padding:0 16px;border:0;background:transparent;font-size:17px;outline:none;color:{{ th.ink }}">
               <span style="height:1px;margin-left:16px;background:{{ th.line }}"></span>
@@ -420,8 +421,8 @@ select option{color:#1D1D1F;background:#FFFFFF}
       <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:12px 0 4px">
           <span style="width:56px;height:56px;border-radius:50%;background:#C9F15D;color:#1D1D1F;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700">✓</span>
-          <span style="font-size:22px;letter-spacing:-0.02em;font-weight:700">Recibimos su solicitud</span>
-          <span style="max-width:360px;font-size:15px;line-height:1.5;color:{{ th.mute }}">Un asesor de Aquaterra le contactará por WhatsApp a la brevedad para analizar su caso.</span>
+          <span style="font-size:22px;letter-spacing:-0.02em;font-weight:700">Recibimos tu solicitud</span>
+          <span style="max-width:360px;font-size:15px;line-height:1.5;color:{{ th.mute }}">Un asesor de {{ marca }} te contactará por WhatsApp a la brevedad para analizar tu caso.</span>
           <button onClick="{{ closeModal }}" style="align-self:stretch;margin-top:8px;height:50px;border-radius:14px;border:0;background:{{ th.fill }};font-size:17px;font-weight:600;cursor:pointer;color:#0071E3">Listo</button>
         </div>
       </sc-if>
@@ -444,6 +445,8 @@ class Component extends DCLogic {
   parkSecRef = React.createRef(); parkRef = React.createRef(); twCurtRef = React.createRef(); pkCurtRef = React.createRef(); pkFillRef = React.createRef(); pkChipRef = React.createRef(); twInfoRef = React.createRef(); pkLayerRef = React.createRef();
   setPark(l) { if (l === (this.state.pkLevel || 1)) return; this.setState({ pkLevel: l }); if (this.park) this.park.setLevel(l); }
 
+  // Sección oculta: estos textos son de muestra. Reemplazarlos por testimonios reales (con permiso) antes de activarla.
+  MOSTRAR_TESTIMONIOS = false;
   TESTI = [
     { text: 'Me explicaron cada etapa de la compra en pozo con números claros. Hoy tengo dos unidades alquiladas en Asunción.', name: 'María G.', role: 'Inversora · Buenos Aires', ini: 'MG' },
     { text: 'Buscaba diversificar fuera de mi país y necesitaba a alguien de confianza en el terreno. El seguimiento de obra fue impecable.', name: 'Rodrigo S.', role: 'Inversor · São Paulo', ini: 'RS' },
@@ -1249,6 +1252,8 @@ class Component extends DCLogic {
     return {
       rootRef: this.rootRef, heroRef: this.heroRef, cityRef: this.cityRef, tlRef: this.tlRef,
       th, themeName: night ? 'noche' : 'dia',
+      marca: (window.MARCA && window.MARCA.nombre) || 'Aquaterra',
+      mostrarTestimonios: this.MOSTRAR_TESTIMONIOS,
       wide: s.w >= 900,
       stickyPos: s.w >= 900 ? 'sticky' : 'static',
       hdrBg: s.scrolled && !s.menu ? (night ? 'rgba(22,22,23,0.78)' : 'rgba(251,251,253,0.8)') : 'rgba(251,251,253,0)',
@@ -1262,7 +1267,7 @@ class Component extends DCLogic {
       menuBg: night ? 'rgba(0,0,0,0.86)' : 'rgba(251,251,253,0.92)',
       burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
       burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
-      ctaLabel: s.w >= 520 ? 'Agende una asesoría' : 'Asesoría',
+      ctaLabel: s.w >= 520 ? 'Agenda una asesoría' : 'Asesoría',
       linkC: night ? '#2997FF' : '#0066CC',
       segTrack: night ? 'rgba(118,118,128,0.32)' : 'rgba(118,118,128,0.16)',
       knobBg: night ? '#636366' : '#FFFFFF',
@@ -1285,10 +1290,11 @@ class Component extends DCLogic {
       sub: night ? 'rgba(245,245,247,0.74)' : '#4A4E56',
       limeText: night ? '#C9F15D' : '#9CC92E',
       heroWide: s.w >= 600, heroCols: s.w >= 600 ? 'minmax(0,1fr) auto minmax(0,1fr)' : 'auto minmax(0,1fr)',
-      heroGlass: s.w < 700 ? 'rgba(0,0,0,0)' : (night ? 'rgba(10,12,16,0.25)' : 'rgba(245,245,247,0.25)'),
-      heroGlassBd: s.w < 700 ? 'rgba(0,0,0,0)' : (night ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.7)'),
-      heroBlur: s.w < 700 ? 'none' : 'saturate(140%) blur(7px)',
-      heroPad: s.w < 700 ? '0px' : 'clamp(10px,1.2vw,16px) clamp(12px,1.4vw,18px)',
+      heroGlass: 'rgba(0,0,0,0)',
+      heroGlassBd: 'rgba(0,0,0,0)',
+      heroBlur: 'none',
+      heroPad: '0px',
+      heroFade: night ? 'linear-gradient(to bottom, rgba(10,12,16,0.35), rgba(10,12,16,0.7))' : 'linear-gradient(to bottom, rgba(231,233,236,0.4), rgba(231,233,236,0.75))',
       cardBg: night ? 'rgba(44,44,46,0.6)' : 'rgba(29,29,31,0.86)',
       cardBorder: night ? 'rgba(245,245,247,0.16)' : 'rgba(245,245,247,0)',
       knobLeft: night ? '88px' : '2px',
