@@ -67,13 +67,14 @@ select option{color:#1D1D1F;background:#FFFFFF}
   <div ref="{{ cityRef }}" style="position:absolute;inset:0"></div>
   <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ dayHaze }};transition:opacity .9s;background:linear-gradient(to bottom, rgba(231,233,236,0.75) 0%, rgba(231,233,236,0) 16%), linear-gradient(to top, #E7E9EC 0%, rgba(231,233,236,0.94) 26%, rgba(231,233,236,0.45) 42%, rgba(231,233,236,0) 60%)"></div>
   <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ nightHaze }};transition:opacity .9s;background:linear-gradient(to bottom, rgba(10,12,16,0.8) 0%, rgba(10,12,16,0) 16%), linear-gradient(to top, #0A0C10 0%, rgba(10,12,16,0.92) 26%, rgba(10,12,16,0.42) 42%, rgba(10,12,16,0) 60%)"></div>
+  <div style="position:absolute;left:0;right:0;bottom:0;height:55%;pointer-events:none;background:{{ heroFade }};backdrop-filter:blur(14px) saturate(120%);-webkit-backdrop-filter:blur(14px) saturate(120%);-webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 45%);mask-image:linear-gradient(to bottom, transparent 0%, #000 45%);transition:background .9s"></div>
 
   <div style="position:absolute;left:0;right:0;bottom:0;padding:0 clamp(20px,3.2vw,48px) calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:clamp(24px,5vh,64px);pointer-events:none">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap">
       <div data-reveal="100" style="display:flex;flex-direction:column;gap:16px;max-width:760px;padding:{{ heroPad }};border-radius:20px;background:{{ heroGlass }};border:1px solid {{ heroGlassBd }};backdrop-filter:{{ heroBlur }};-webkit-backdrop-filter:{{ heroBlur }}">
         <span style="width:56px;height:2px;background:#C9F15D"></span>
         <div style="display:flex;align-items:flex-start;gap:clamp(20px,3vw,48px);flex-wrap:wrap">
-          <h1 style="margin:0;font-size:clamp(42px,5.8vw,88px);line-height:0.98;letter-spacing:-0.035em;font-weight:700;color:{{ ink }};transition:color .9s">Una <span style="color:{{ limeText }};transition:color .9s">Nueva</span> Dimensión<br>del <span style="color:#86868B">Real Estate</span></h1>
+          <h1 style="margin:0;font-size:clamp(34px,4.2vw,64px);line-height:1;letter-spacing:-0.035em;font-weight:700;color:{{ ink }};transition:color .9s">Una <span style="color:{{ limeText }};transition:color .9s">Nueva</span> Dimensión<br>del <span style="color:#86868B">Real Estate</span></h1>
           <span style="padding-top:14px;font-size:13px;font-weight:500;line-height:1.4;color:{{ sub }};transition:color .9s">Compras en pozo<br>e inversión inteligente</span>
         </div>
         <p style="margin:0;font-size:clamp(15px,1.2vw,18px);line-height:1.5;color:{{ sub }};transition:color .9s">El futuro de la inversión inmobiliaria en Paraguay empieza aquí.</p>
@@ -1289,10 +1290,11 @@ class Component extends DCLogic {
       sub: night ? 'rgba(245,245,247,0.74)' : '#4A4E56',
       limeText: night ? '#C9F15D' : '#9CC92E',
       heroWide: s.w >= 600, heroCols: s.w >= 600 ? 'minmax(0,1fr) auto minmax(0,1fr)' : 'auto minmax(0,1fr)',
-      heroGlass: s.w < 700 ? 'rgba(0,0,0,0)' : (night ? 'rgba(10,12,16,0.25)' : 'rgba(245,245,247,0.25)'),
-      heroGlassBd: s.w < 700 ? 'rgba(0,0,0,0)' : (night ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.7)'),
-      heroBlur: s.w < 700 ? 'none' : 'saturate(140%) blur(7px)',
-      heroPad: s.w < 700 ? '0px' : 'clamp(10px,1.2vw,16px) clamp(12px,1.4vw,18px)',
+      heroGlass: 'rgba(0,0,0,0)',
+      heroGlassBd: 'rgba(0,0,0,0)',
+      heroBlur: 'none',
+      heroPad: '0px',
+      heroFade: night ? 'linear-gradient(to bottom, rgba(10,12,16,0.35), rgba(10,12,16,0.7))' : 'linear-gradient(to bottom, rgba(231,233,236,0.4), rgba(231,233,236,0.75))',
       cardBg: night ? 'rgba(44,44,46,0.6)' : 'rgba(29,29,31,0.86)',
       cardBorder: night ? 'rgba(245,245,247,0.16)' : 'rgba(245,245,247,0)',
       knobLeft: night ? '88px' : '2px',
