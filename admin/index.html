@@ -99,6 +99,12 @@ button { cursor: pointer; }
 .tl .base { stroke: var(--line2); }
 .tl .b { fill: var(--bar); }
 .tl .b.on { fill: var(--bar-hi); }
+.toast { position: fixed; z-index: 60; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: var(--ink); color: var(--bg); border-radius: 999px; padding: 12px 20px; font-size: 14px; font-weight: 500; box-shadow: 0 12px 32px -12px rgba(0,0,0,0.5); transition: opacity .25s, transform .25s; max-width: calc(100% - 32px); }
+.toast.on { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; cursor: pointer; }
+.live { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--mute); }
+.live i { width: 7px; height: 7px; border-radius: 50%; background: var(--good); animation: pulse 2s infinite; }
+@keyframes pulse { 50% { opacity: .35; } }
+tbody tr.fresh td { background: color-mix(in srgb, var(--lime) 28%, transparent); transition: background 1.5s; }
 .tip { position: fixed; z-index: 50; pointer-events: none; background: var(--card); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 8px 24px -8px rgba(0,0,0,0.3); border-radius: 10px; padding: 8px 10px; font-size: 13px; line-height: 1.35; opacity: 0; transition: opacity .12s; max-width: 240px; }
 .tip b { font-weight: 600; }
 .tip .m { color: var(--mute); }
@@ -210,6 +216,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
       <button data-days="90">90 días</button>
       <button data-days="0">Todo</button>
     </div>
+    <span class="live hidden" id="live" title="El panel se actualiza solo cada 15 segundos"><i></i>En vivo</span>
     <button class="btn" id="btnReload">Actualizar</button>
     <button class="btn icon" id="btnTheme" aria-label="Cambiar a modo noche" title="Modo día / noche"></button>
     <span class="who" id="who"></span>
@@ -276,6 +283,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
 <div class="scrim hidden" id="scrim"></div>
 <aside class="drawer hidden" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dName"></aside>
 <div class="tip" id="tip" role="tooltip"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (function () {
@@ -608,7 +616,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
     var list = filtered();
     $('count').textContent = fmtN(list.length) + ' lead' + (list.length === 1 ? '' : 's');
     $('rows').innerHTML = list.slice(0, S.shown).map(function (l) {
-      return '<tr data-id="' + esc(l.id) + '" tabindex="0">' +
+      return '<tr data-id="' + esc(l.id) + '" tabindex="0"' + (freshIds && freshIds[l.id] ? ' class="fresh"' : '') + '>' +
         '<td class="num c" style="white-space:nowrap">' + fmtDate(l.created_at) + '</td>' +
         '<td><div class="n">' + esc(l.nombre) + '</div><div class="c">' + esc(l.whatsapp || l.email || '') + '</div></td>' +
         '<td class="col-opt">' + esc(l.perfil || 'Explorador') + '</td>' +
@@ -817,6 +825,40 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
   }
   function showApp() { $('login').classList.add('hidden'); $('app').classList.remove('hidden'); load(); }
 
+  // ---------- Actualización automática ----------
+  // Cada 15 s (solo con la pestaña visible) trae los leads y avisa de los nuevos sin perder lo que se está viendo.
+  var POLL_MS = 15000, polling = false, baseTitle = document.title, unseen = 0, freshIds = {};
+  function poll() {
+    if (S.demo || !S.token || polling || document.hidden || $('app').classList.contains('hidden')) return;
+    polling = true;
+    api('/api/admin/leads').then(function (j) {
+      var prev = {}; S.leads.forEach(function (l) { prev[l.id] = l; });
+      var nuevos = [];
+      S.leads = (j.leads || []).map(function (l) {
+        if (prev[l.id]) return Object.assign(prev[l.id], l); // mantiene la referencia del lead abierto
+        nuevos.push(l); return l;
+      });
+      if (S.open && S.open !== 'new' && !S.leads.some(function (l) { return l.id === S.open; })) closeDrawer();
+      nuevos.forEach(function (l) { freshIds[l.id] = true; });
+      render();
+      if (nuevos.length) avisar(nuevos);
+    }).catch(function () {}).then(function () { polling = false; });
+  }
+  function avisar(nuevos) {
+    unseen += nuevos.length;
+    document.title = '(' + unseen + ') ' + baseTitle;
+    var t = $('toast');
+    t.textContent = nuevos.length === 1 ? 'Nuevo lead: ' + nuevos[0].nombre + (nuevos[0].monto ? ' · ' + nuevos[0].monto : '') : nuevos.length + ' leads nuevos';
+    t.classList.add('on');
+    t.onclick = function () { t.classList.remove('on'); if (nuevos.length === 1) { setView('leads'); openDrawer(nuevos[0].id); } else setView('leads'); };
+    clearTimeout(avisar._t); avisar._t = setTimeout(function () { t.classList.remove('on'); }, 8000);
+    setTimeout(function () { nuevos.forEach(function (l) { delete freshIds[l.id]; }); renderTable(); }, 12000);
+  }
+  function verVisto() { if (!document.hidden && unseen) { unseen = 0; document.title = baseTitle; } }
+  setInterval(poll, POLL_MS);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) { poll(); setTimeout(verVisto, 3000); } });
+  window.addEventListener('focus', function () { setTimeout(verVisto, 3000); });
+
   // ---------- Events ----------
   $('fEstado').innerHTML = '<option value="">Todos los estados</option>' + ESTADOS.map(function (e) { return '<option value="' + e[0] + '">' + e[1] + '</option>'; }).join('');
   $('fPerfil').innerHTML = '<option value="">Todos los tipos</option>' + PERFILES.map(function (p) { return '<option>' + p + '</option>'; }).join('');
@@ -901,6 +943,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
     .then(function (st) {
       if (!st.configured) { S.demo = true; S.yo = { email: 'demo@aquaterra.com', rol: 'admin' }; $('demo').classList.remove('hidden'); $('btnOut').classList.add('hidden'); return showApp(); }
       S.token = store.get('aq-admin-token'); S.refresh = store.get('aq-admin-refresh');
+      $('live').classList.remove('hidden');
       if (S.token) showApp(); else $('login').classList.remove('hidden');
     });
 })();
