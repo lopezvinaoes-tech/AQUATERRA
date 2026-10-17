@@ -136,6 +136,20 @@ td .c { color: var(--mute); font-size: 13px; }
 .pr.alta { color: var(--good); } .pr.media { color: var(--warn); } .pr.baja { color: var(--mute); }
 .more { display: flex; justify-content: center; margin-top: 12px; }
 
+/* Formularios y equipo */
+.form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form .full { grid-column: 1 / -1; }
+.btn.danger { color: var(--bad); }
+.who { font-size: 13px; color: var(--mute); text-align: right; line-height: 1.25; }
+.who b { display: block; color: var(--ink); font-weight: 500; }
+.role { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--fill); color: var(--mute2); }
+.role.admin { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
+.team-form { display: grid; grid-template-columns: 1.2fr 1.4fr 0.9fr 1.2fr auto; gap: 10px; align-items: end; }
+.demo-as { display: inline-flex; gap: 6px; align-items: center; margin-left: 8px; }
+.demo-as button { border: 0; border-radius: 999px; height: 28px; padding: 0 12px; font-size: 13px; background: rgba(0,0,0,0.08); color: var(--ink); }
+.demo-as button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.note { font-size: 13px; color: var(--mute); }
+
 /* Drawer */
 .scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 40; }
 .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(460px, 100%); background: var(--bg); z-index: 41; overflow-y: auto; overscroll-behavior: contain; padding: 20px 20px 40px; display: flex; flex-direction: column; gap: 16px; box-shadow: -20px 0 60px -20px rgba(0,0,0,0.35); }
@@ -162,6 +176,8 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
   .top { position: static; } .top .sp { display: none; } .top .tabs { order: 2; width: 100%; }
   #btnReload { display: none; }
   .hm .c { height: 34px; font-size: 12px; }
+  .who { display: none; }
+  .form, .team-form { grid-template-columns: 1fr; }
   .card { padding: 16px; } .tscroll { margin: 0 -16px; padding: 0 16px; }
 }
 </style>
@@ -171,7 +187,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
 <div id="login" class="login hidden">
   <form id="loginForm" autocomplete="on">
     <div class="brand"><i></i>Aquaterra <small>Leads</small></div>
-    <p style="margin:0;color:var(--mute);font-size:14px">Panel de administración. Entra con tu cuenta de administrador.</p>
+    <p style="margin:0;color:var(--mute);font-size:14px">Panel interno. Entra con la cuenta que te dio un administrador.</p>
     <label class="field"><span>Email</span><input class="input" type="email" name="email" autocomplete="username" required></label>
     <label class="field"><span>Contraseña</span><input class="input" type="password" name="password" autocomplete="current-password" required></label>
     <div class="err" id="loginErr" role="alert"></div>
@@ -185,6 +201,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
     <div class="seg tabs" role="tablist" aria-label="Sección">
       <button role="tab" data-view="stats" aria-pressed="true">Estadísticas</button>
       <button role="tab" data-view="leads" aria-pressed="false">Leads</button>
+      <button role="tab" data-view="team" aria-pressed="false" class="hidden" id="tabTeam">Equipo</button>
     </div>
     <span class="sp"></span>
     <div class="seg per" role="group" aria-label="Período">
@@ -195,13 +212,29 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
     </div>
     <button class="btn" id="btnReload">Actualizar</button>
     <button class="btn icon" id="btnTheme" aria-label="Cambiar a modo noche" title="Modo día / noche"></button>
+    <span class="who" id="who"></span>
     <button class="btn" id="btnOut">Salir</button>
   </div></header>
 
   <main class="wrap">
-    <div class="banner hidden" id="demo"><b>Modo demostración.</b> Estos leads son de ejemplo y los cambios no se guardan. El panel se conecta solo a la base real en cuanto esté configurada.</div>
+    <div class="banner hidden" id="demo"><b>Modo demostración.</b> Estos leads son de ejemplo y los cambios no se guardan. El panel se conecta solo a la base real en cuanto esté configurada.
+      <span class="demo-as">Ver como: <button data-as="admin" aria-pressed="true">Administrador</button><button data-as="asesor" aria-pressed="false">Asesor</button></span></div>
 
     <section class="kpis" id="kpis"></section>
+
+    <section class="card hidden" id="vTeam">
+      <h2>Equipo</h2>
+      <p class="desc">Quién puede entrar al panel. <b>Administrador</b>: todo, incluido agregar, editar y eliminar leads y gestionar el equipo. <b>Asesor</b>: ve los leads, cambia su estado y deja notas.</p>
+      <form class="team-form" id="teamForm">
+        <label class="field"><span>Nombre</span><input class="input" name="nombre" placeholder="Nombre y apellido"></label>
+        <label class="field"><span>Email</span><input class="input" name="email" type="email" required placeholder="persona@empresa.com"></label>
+        <label class="field"><span>Rol</span><select class="input" name="rol"><option value="asesor">Asesor</option><option value="admin">Administrador</option></select></label>
+        <label class="field"><span>Contraseña inicial</span><input class="input" name="password" required minlength="8" placeholder="Mínimo 8 caracteres"></label>
+        <button class="btn primary" type="submit" style="height:44px">Agregar</button>
+      </form>
+      <p class="note" id="teamMsg" role="status" style="min-height:20px"></p>
+      <div class="tscroll"><table><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acceso</th><th></th></tr></thead><tbody id="teamRows"></tbody></table></div>
+    </section>
 
     <section class="grid" id="vStats">
       <div class="card wide"><h2>Leads por día</h2><p class="desc" id="tlDesc"></p><div class="tl" id="tl"></div></div>
@@ -227,6 +260,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
         <select class="input" id="fPerfil" aria-label="Filtrar por tipo de inversor"></select>
         <span class="count num" id="count"></span>
         <button class="btn" id="btnCsv" title="Descargar los leads filtrados en CSV">Exportar CSV</button>
+        <button class="btn primary hidden" id="btnNew">Nuevo lead</button>
       </div>
       <div class="tscroll">
         <table>
@@ -256,7 +290,19 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
   var PAISES = { ES: 'España', PY: 'Paraguay', AR: 'Argentina', UY: 'Uruguay', BR: 'Brasil', US: 'Estados Unidos', FR: 'Francia', DE: 'Alemania', IT: 'Italia', GB: 'Reino Unido', CH: 'Suiza', MX: 'México', CL: 'Chile', PT: 'Portugal', AD: 'Andorra' };
   var DAY = 86400000;
 
-  var S = { leads: [], days: 30, demo: false, token: null, refresh: null, shown: 25, open: null, view: 'stats' };
+  var S = { leads: [], days: 30, demo: false, token: null, refresh: null, shown: 25, open: null, view: 'stats', yo: null, team: [] };
+  var OBJS = ['Renta por alquiler', 'Revalorización', 'Vivienda propia', 'Aún no lo sé'];
+  var isAdmin = function () { return !!(S.yo && S.yo.rol === 'admin'); };
+  // Mismas reglas que el servidor, para el modo demostración.
+  function perfilJS(o) { o = (o || '').toLowerCase(); return /renta|alquiler/.test(o) ? 'Rentista' : /revalor|plusval/.test(o) ? 'Inversor de plusvalía' : /vivienda|propia/.test(o) ? 'Comprador final' : 'Explorador'; }
+  function montoJS(m) {
+    var n = (String(m || '').match(/\d[\d.,]*/g) || []).map(function (x) { return parseInt(x.replace(/[.,]/g, ''), 10); });
+    if (!n.length) return [null, null];
+    if (/^\s*hasta/i.test(m)) return [0, n[0]];
+    if (/m[aá]s de/i.test(m)) return [n[0], null];
+    return [n[0], n.length > 1 ? n[1] : n[0]];
+  }
+  function prioJS(min) { return min == null ? 'media' : min >= 100000 ? 'alta' : min >= 50000 ? 'media' : 'baja'; }
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var fmtN = function (n) { return Number(n || 0).toLocaleString('es-ES'); };
@@ -304,7 +350,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
       .catch(function () { return false; });
   }
   function logout() {
-    S.token = S.refresh = null; store.set('aq-admin-token', null); store.set('aq-admin-refresh', null);
+    S.token = S.refresh = S.yo = null; store.set('aq-admin-token', null); store.set('aq-admin-refresh', null);
     if (!S.demo) { $('app').classList.add('hidden'); closeDrawer(); $('login').classList.remove('hidden'); }
   }
 
@@ -575,32 +621,93 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
   }
 
   // ---------- Drawer ----------
-  function openDrawer(id) {
+  function opts(list, val, empty) {
+    return (empty ? '<option value="">' + empty + '</option>' : '') + list.map(function (o) { return '<option' + (o === val ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('') +
+      (val && list.indexOf(val) < 0 ? '<option selected>' + esc(val) + '</option>' : '');
+  }
+  function leadForm(l) {
+    var f = function (id, label, val, extra) { return '<label class="field' + (extra && extra.full ? ' full' : '') + '"><span>' + label + '</span><input class="input" id="f_' + id + '" value="' + esc(val || '') + '"' + (extra && extra.type ? ' type="' + extra.type + '"' : '') + '></label>'; };
+    return '<div class="form">' + f('nombre', 'Nombre y apellido *', l.nombre, { full: true }) + f('email', 'Email', l.email, { type: 'email' }) + f('whatsapp', 'WhatsApp', l.whatsapp, { type: 'tel' }) +
+      '<label class="field"><span>Monto</span><select class="input" id="f_monto">' + opts(MONTOS, l.monto, 'Sin dato') + '</select></label>' +
+      '<label class="field"><span>Objetivo</span><select class="input" id="f_objetivo">' + opts(OBJS, l.objetivo, 'Sin dato') + '</select></label>' +
+      f('proyecto_interes', 'Proyecto de interés', l.proyecto_interes) + f('pais', 'País (código, p. ej. ES)', l.pais) +
+      '<label class="field full"><span>Mensaje</span><textarea class="input" id="f_mensaje" style="min-height:80px">' + esc(l.mensaje || '') + '</textarea></label></div>';
+  }
+  function readForm() {
+    var o = {}; ['nombre', 'email', 'whatsapp', 'monto', 'objetivo', 'proyecto_interes', 'pais', 'mensaje'].forEach(function (k) { o[k] = $('f_' + k).value.trim(); });
+    return o;
+  }
+  function showDrawer(html) {
+    $('drawer').innerHTML = html;
+    $('scrim').classList.remove('hidden'); $('drawer').classList.remove('hidden'); document.body.style.overflow = 'hidden';
+    $('dClose').onclick = closeDrawer; $('dClose').focus();
+  }
+  function flash(msg, bad) { var el = $('dSaved'); if (!el) return; el.style.color = bad ? 'var(--bad)' : ''; el.textContent = msg; if (!bad) setTimeout(function () { if ($('dSaved') === el) el.textContent = ''; }, 2000); }
+
+  function openDrawer(id, editing) {
     var l = S.leads.find(function (x) { return x.id === id; }); if (!l) return;
     S.open = id;
+    var admin = isAdmin();
     var wa = (l.whatsapp || '').replace(/\D/g, '');
     var rows = [
       ['Recibido', fmtDate(l.created_at, true)], ['Email', l.email], ['WhatsApp', l.whatsapp], ['Tipo de inversor', l.perfil],
       ['Objetivo', l.objetivo], ['Monto', l.monto], ['Proyecto', l.proyecto_interes], ['Prioridad', l.prioridad && l.prioridad.charAt(0).toUpperCase() + l.prioridad.slice(1)],
       ['País', l.pais ? pais(l.pais) + (l.ciudad ? ' · ' + l.ciudad : '') : null], ['Fuente', fuente(l) + (l.utm_campaign ? ' · ' + l.utm_campaign : '')],
-      ['Formulario', l.origen], ['Página', l.pagina]
+      ['Asignado a', admin ? null : l.asignado], ['Formulario', l.origen], ['Página', l.pagina]
     ].filter(function (r) { return r[1]; });
-    $('drawer').innerHTML =
-      '<div class="hd"><h3 id="dName">' + esc(l.nombre) + '</h3><button class="x" id="dClose" aria-label="Cerrar">✕</button></div>' +
-      '<div class="acts">' + (wa ? '<a class="btn primary" target="_blank" rel="noopener" href="https://wa.me/' + wa + '">Escribir por WhatsApp</a>' : '') +
-      (l.email ? '<a class="btn" href="mailto:' + esc(l.email) + '">Enviar email</a>' : '') + '</div>' +
-      (l.mensaje ? '<div class="card" style="padding:14px 16px"><div style="font-size:12px;color:var(--mute);margin-bottom:4px">Mensaje</div>' + esc(l.mensaje).replace(/\n/g, '<br>') + '</div>' : '') +
-      '<dl class="dl">' + rows.map(function (r) { return '<dt>' + r[0] + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('') + '</dl>' +
-      '<label class="field"><span>Estado</span><select class="input" id="dEstado">' + ESTADOS.map(function (e) { return '<option value="' + e[0] + '"' + (e[0] === l.estado ? ' selected' : '') + '>' + e[1] + '</option>'; }).join('') + '</select></label>' +
-      '<label class="field"><span>Asignado a</span><input class="input" id="dAsig" value="' + esc(l.asignado || '') + '" placeholder="Nombre del asesor"></label>' +
-      '<label class="field"><span>Notas internas</span><textarea class="input" id="dNotas" placeholder="Qué se habló, próximos pasos…">' + esc(l.notas || '') + '</textarea></label>' +
-      '<div style="display:flex;align-items:center;gap:12px"><button class="btn primary" id="dSave">Guardar notas</button><span class="saved" id="dSaved" role="status"></span></div>' +
-      '<div><div style="font-size:13px;color:var(--mute);margin-bottom:8px">Historial</div><ul class="hist" id="dHist"><li class="w">Cargando…</li></ul></div>';
-    $('scrim').classList.remove('hidden'); $('drawer').classList.remove('hidden'); document.body.style.overflow = 'hidden';
-    $('dClose').onclick = closeDrawer; $('dClose').focus();
+    var body = editing
+      ? leadForm(l) + '<div class="acts"><button class="btn primary" id="dEditSave">Guardar cambios</button><button class="btn" id="dEditCancel">Cancelar</button><span class="saved" id="dSaved" role="status"></span></div>'
+      : (l.mensaje ? '<div class="card" style="padding:14px 16px"><div style="font-size:12px;color:var(--mute);margin-bottom:4px">Mensaje</div>' + esc(l.mensaje).replace(/\n/g, '<br>') + '</div>' : '') +
+        '<dl class="dl">' + rows.map(function (r) { return '<dt>' + r[0] + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('') + '</dl>' +
+        '<label class="field"><span>Estado</span><select class="input" id="dEstado">' + ESTADOS.map(function (e) { return '<option value="' + e[0] + '"' + (e[0] === l.estado ? ' selected' : '') + '>' + e[1] + '</option>'; }).join('') + '</select></label>' +
+        (admin ? '<label class="field"><span>Asignado a</span><input class="input" id="dAsig" value="' + esc(l.asignado || '') + '" placeholder="Nombre del asesor"></label>' : '') +
+        '<label class="field"><span>Notas internas</span><textarea class="input" id="dNotas" placeholder="Qué se habló, próximos pasos…">' + esc(l.notas || '') + '</textarea></label>' +
+        '<div style="display:flex;align-items:center;gap:12px"><button class="btn primary" id="dSave">Guardar notas</button><span class="saved" id="dSaved" role="status"></span></div>' +
+        (admin ? '<div class="acts"><button class="btn" id="dEdit">Editar datos</button><button class="btn danger" id="dDel">Eliminar lead</button></div>' : '') +
+        '<div><div style="font-size:13px;color:var(--mute);margin-bottom:8px">Historial</div><ul class="hist" id="dHist"><li class="w">Cargando…</li></ul></div>';
+    showDrawer('<div class="hd"><h3 id="dName">' + esc(editing ? 'Editar lead' : l.nombre) + '</h3><button class="x" id="dClose" aria-label="Cerrar">✕</button></div>' +
+      (editing ? '' : '<div class="acts">' + (wa ? '<a class="btn primary" target="_blank" rel="noopener" href="https://wa.me/' + wa + '">Escribir por WhatsApp</a>' : '') +
+      (l.email ? '<a class="btn" href="mailto:' + esc(l.email) + '">Enviar email</a>' : '') + '</div>') + body);
+    if (editing) {
+      $('dEditCancel').onclick = function () { openDrawer(id); };
+      $('dEditSave').onclick = function () {
+        var d = readForm(); if (!d.nombre) return flash('Falta el nombre', true);
+        update(l, d, 'Guardado', function () { openDrawer(id); });
+      };
+      return;
+    }
     $('dEstado').onchange = function () { update(l, { estado: this.value }, 'Estado actualizado'); };
-    $('dSave').onclick = function () { update(l, { notas: $('dNotas').value, asignado: $('dAsig').value }, 'Guardado'); };
+    $('dSave').onclick = function () { var c = { notas: $('dNotas').value }; if (admin) c.asignado = $('dAsig').value; update(l, c, 'Guardado'); };
+    if (admin) {
+      $('dEdit').onclick = function () { openDrawer(id, true); };
+      $('dDel').onclick = function () { removeLead(l); };
+    }
     loadHist(l);
+  }
+  function openNew() {
+    S.open = 'new';
+    showDrawer('<div class="hd"><h3 id="dName">Nuevo lead</h3><button class="x" id="dClose" aria-label="Cerrar">✕</button></div>' +
+      '<p class="note" style="margin:0">Para contactos que llegaron por otro medio: WhatsApp, llamada, ferias, referidos…</p>' + leadForm({}) +
+      '<label class="field"><span>Origen</span><input class="input" id="f_origen" placeholder="Ej.: WhatsApp, referido, feria" value="Carga manual"></label>' +
+      '<div class="acts"><button class="btn primary" id="dCreate">Crear lead</button><span class="saved" id="dSaved" role="status"></span></div>');
+    $('dCreate').onclick = function () {
+      var d = readForm(); d.origen = $('f_origen').value.trim() || 'Carga manual';
+      if (!d.nombre) return flash('Falta el nombre', true);
+      var done = function (lead) { S.leads.unshift(lead); render(); openDrawer(lead.id); };
+      if (S.demo) {
+        var mm = montoJS(d.monto);
+        return done(Object.assign({ id: 'demo-n' + Date.now(), created_at: new Date().toISOString(), estado: 'nuevo', perfil: perfilJS(d.objetivo), monto_min: mm[0], monto_max: mm[1], prioridad: prioJS(mm[0]) }, d));
+      }
+      $('dCreate').disabled = true;
+      api('/api/admin/leads', { method: 'POST', body: d }).then(function (j) { done(j.lead); })
+        .catch(function (e) { $('dCreate').disabled = false; flash(e.message, true); });
+    };
+  }
+  function removeLead(l) {
+    if (!window.confirm('¿Eliminar a ' + l.nombre + '? Se borran también sus notas e historial y no se puede deshacer.')) return;
+    var done = function () { S.leads = S.leads.filter(function (x) { return x.id !== l.id; }); closeDrawer(); render(); };
+    if (S.demo) return done();
+    api('/api/admin/leads?id=' + encodeURIComponent(l.id), { method: 'DELETE' }).then(done).catch(function (e) { flash(e.message, true); });
   }
   function closeDrawer() { S.open = null; $('scrim').classList.add('hidden'); $('drawer').classList.add('hidden'); document.body.style.overflow = ''; }
   function loadHist(l) {
@@ -609,25 +716,85 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
       el.innerHTML = ev.map(function (e) {
         var d = e.detalle || {}, t = e.tipo === 'creado' ? 'Llegó desde ' + (d.origen || 'la web')
           : e.tipo === 'estado' ? 'Estado: ' + ((EST[d.de] || {}).label || d.de) + ' → ' + ((EST[d.a] || {}).label || d.a)
-          : e.tipo === 'nota' ? 'Nota actualizada' : e.tipo === 'asignado' ? 'Asignado a ' + (d.a || 'nadie') : e.tipo;
+          : e.tipo === 'nota' ? 'Nota actualizada' : e.tipo === 'asignado' ? 'Asignado a ' + (d.a || 'nadie')
+          : e.tipo === 'editado' ? 'Datos editados' + (d.campos ? ' (' + d.campos.join(', ') + ')' : '') : e.tipo;
         return '<li><span>' + esc(t) + '</span><span class="w">' + fmtDate(e.created_at, true) + (e.autor ? ' · ' + esc(e.autor) : '') + '</span></li>';
       }).join('') || '<li class="w">Sin movimientos.</li>';
     };
     if (S.demo) return show((l._ev || []).concat([{ tipo: 'creado', created_at: l.created_at, detalle: { origen: l.origen } }]));
     api('/api/admin/leads?id=' + encodeURIComponent(l.id)).then(function (j) { show(j.eventos); }).catch(function () { show([]); });
   }
-  function update(l, cambios, msg) {
+  function update(l, cambios, msg, after) {
     var done = function (lead) {
       Object.assign(l, lead); render();
-      if (S.open === l.id) { $('dSaved').textContent = msg; setTimeout(function () { if ($('dSaved')) $('dSaved').textContent = ''; }, 2000); loadHist(l); }
+      if (after) return after();
+      if (S.open === l.id) { flash(msg); loadHist(l); }
     };
     if (S.demo) {
       l._ev = l._ev || [];
-      if (cambios.estado && cambios.estado !== l.estado) l._ev.unshift({ tipo: 'estado', created_at: new Date().toISOString(), detalle: { de: l.estado, a: cambios.estado }, autor: 'demo' });
-      return done(cambios);
+      var now = new Date().toISOString(), c = Object.assign({}, cambios);
+      if (c.estado && c.estado !== l.estado) l._ev.unshift({ tipo: 'estado', created_at: now, detalle: { de: l.estado, a: c.estado }, autor: S.yo.email });
+      if ('monto' in c) { var mm = montoJS(c.monto); c.monto_min = mm[0]; c.monto_max = mm[1]; c.prioridad = prioJS(mm[0]); }
+      if ('objetivo' in c) { c.perfil = perfilJS(c.objetivo); l._ev.unshift({ tipo: 'editado', created_at: now, detalle: {}, autor: S.yo.email }); }
+      return done(c);
     }
     api('/api/admin/leads', { method: 'PATCH', body: Object.assign({ id: l.id }, cambios) }).then(function (j) { done(j.lead); })
-      .catch(function (e) { if ($('dSaved')) { $('dSaved').style.color = 'var(--bad)'; $('dSaved').textContent = e.message; } });
+      .catch(function (e) { flash(e.message, true); });
+  }
+
+  // ---------- Equipo ----------
+  function loadTeam() {
+    if (S.demo) { if (!S.team.length) S.team = [{ email: 'demo@aquaterra.com', nombre: 'Tú (demo)', rol: 'admin', activo: true, fijo: true }, { email: 'asesora@aquaterra.com', nombre: 'Asesora de ejemplo', rol: 'asesor', activo: true }]; return renderTeam(); }
+    $('teamRows').innerHTML = '<tr><td colspan="5" class="empty">Cargando…</td></tr>';
+    api('/api/admin/usuarios').then(function (j) { S.team = j.equipo || []; renderTeam(); })
+      .catch(function (e) { $('teamRows').innerHTML = '<tr><td colspan="5" class="empty">' + esc(e.message) + '</td></tr>'; });
+  }
+  function renderTeam() {
+    $('teamRows').innerHTML = S.team.map(function (m, i) {
+      var me = S.yo && m.email === S.yo.email, lock = m.fijo || me;
+      return '<tr style="cursor:default"><td><div class="n">' + esc(m.nombre || '—') + '</div></td><td class="c">' + esc(m.email) + (me ? ' (tú)' : '') + '</td>' +
+        '<td>' + (lock ? '<span class="role ' + m.rol + '">' + (m.rol === 'admin' ? 'Administrador' : 'Asesor') + '</span>'
+          : '<select class="input" data-i="' + i + '" data-act="rol" style="height:34px;font-size:13px;width:auto"><option value="asesor"' + (m.rol === 'asesor' ? ' selected' : '') + '>Asesor</option><option value="admin"' + (m.rol === 'admin' ? ' selected' : '') + '>Administrador</option></select>') + '</td>' +
+        '<td>' + (lock ? '<span class="c">Activo</span>' : '<button class="btn" data-i="' + i + '" data-act="activo" style="height:32px">' + (m.activo ? 'Activo · pausar' : 'Pausado · activar') + '</button>') + '</td>' +
+        '<td style="white-space:nowrap"><button class="btn" data-i="' + i + '" data-act="pass" style="height:32px">Contraseña</button>' + (lock ? '' : ' <button class="btn danger" data-i="' + i + '" data-act="del" style="height:32px">Quitar</button>') + '</td></tr>';
+    }).join('') || '<tr><td colspan="5" class="empty">Todavía no hay nadie más en el equipo.</td></tr>';
+  }
+  function teamCall(method, body, okMsg) {
+    var msg = $('teamMsg'); msg.style.color = ''; msg.textContent = 'Guardando…';
+    if (S.demo) { msg.textContent = okMsg + ' (demo: no se guarda)'; return Promise.resolve(); }
+    var url = '/api/admin/usuarios' + (method === 'DELETE' ? '?email=' + encodeURIComponent(body.email) : '');
+    return api(url, { method: method, body: method === 'DELETE' ? undefined : body })
+      .then(function () { msg.textContent = okMsg; loadTeam(); })
+      .catch(function (e) { msg.style.color = 'var(--bad)'; msg.textContent = e.message; throw e; });
+  }
+  $('teamRows').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-act]'); if (!b) return;
+    var m = S.team[Number(b.dataset.i)];
+    if (b.dataset.act === 'activo') { var v = !m.activo; teamCall('PATCH', { email: m.email, activo: v }, v ? 'Acceso activado' : 'Acceso pausado').then(function () { if (S.demo) { m.activo = v; renderTeam(); } }); }
+    if (b.dataset.act === 'pass') { var p = window.prompt('Nueva contraseña para ' + m.email + ' (mínimo 8 caracteres):'); if (p) teamCall('PATCH', { email: m.email, password: p }, 'Contraseña cambiada'); }
+    if (b.dataset.act === 'del' && window.confirm('¿Quitar el acceso al panel a ' + m.email + '?')) teamCall('DELETE', { email: m.email }, 'Acceso quitado').then(function () { if (S.demo) { S.team.splice(Number(b.dataset.i), 1); renderTeam(); } });
+  });
+  $('teamRows').addEventListener('change', function (e) {
+    var sel = e.target.closest('select[data-act="rol"]'); if (!sel) return;
+    var m = S.team[Number(sel.dataset.i)]; var rol = sel.value;
+    teamCall('PATCH', { email: m.email, rol: rol }, 'Rol actualizado').then(function () { if (S.demo) { m.rol = rol; renderTeam(); } }).catch(function () { sel.value = m.rol; });
+  });
+  $('teamForm').onsubmit = function (e) {
+    e.preventDefault(); var f = e.target;
+    var d = { nombre: f.nombre.value.trim(), email: f.email.value.trim().toLowerCase(), rol: f.rol.value, password: f.password.value };
+    teamCall('POST', d, 'Listo. Pásale a ' + d.email + ' su contraseña inicial para que entre.').then(function () {
+      if (S.demo) { S.team.push({ email: d.email, nombre: d.nombre, rol: d.rol, activo: true }); renderTeam(); }
+      f.reset();
+    }).catch(function () {});
+  };
+
+  // ---------- Rol ----------
+  function applyRole() {
+    var admin = isAdmin();
+    $('tabTeam').classList.toggle('hidden', !admin);
+    $('btnNew').classList.toggle('hidden', !admin);
+    $('who').innerHTML = S.yo ? '<b>' + esc(S.yo.email) + '</b>' + (admin ? 'Administrador' : 'Asesor') : '';
+    if (!admin && S.view === 'team') setView('stats');
   }
 
   // ---------- CSV ----------
@@ -643,9 +810,9 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
 
   // ---------- Load ----------
   function load() {
-    if (S.demo) { S.leads = S.leads.length ? S.leads : demoLeads(); render(); return Promise.resolve(); }
+    if (S.demo) { S.leads = S.leads.length ? S.leads : demoLeads(); applyRole(); render(); if (S.view === 'team') loadTeam(); return Promise.resolve(); }
     $('rows').innerHTML = '<tr><td colspan="7" class="empty">Cargando…</td></tr>';
-    return api('/api/admin/leads').then(function (j) { S.leads = j.leads || []; render(); })
+    return api('/api/admin/leads').then(function (j) { S.leads = j.leads || []; S.yo = j.yo || S.yo; applyRole(); render(); if (S.view === 'team') loadTeam(); })
       .catch(function (e) { $('rows').innerHTML = '<tr><td colspan="7" class="empty">' + esc(e.message) + '</td></tr>'; });
   }
   function showApp() { $('login').classList.add('hidden'); $('app').classList.remove('hidden'); load(); }
@@ -674,11 +841,20 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
   function setView(v) {
     S.view = v; store.set('aq-admin-view', v);
     document.querySelectorAll('.tabs button').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.view === v)); x.setAttribute('aria-selected', String(x.dataset.view === v)); });
-    $('vStats').classList.toggle('hidden', v !== 'stats'); $('vLeads').classList.toggle('hidden', v !== 'leads');
+    $('vStats').classList.toggle('hidden', v !== 'stats'); $('vLeads').classList.toggle('hidden', v !== 'leads'); $('vTeam').classList.toggle('hidden', v !== 'team');
+    $('kpis').classList.toggle('hidden', v === 'team'); document.querySelector('.top .per').style.visibility = v === 'team' ? 'hidden' : '';
+    if (v === 'team' && S.yo) loadTeam();
     if (S.leads.length) render();
   }
   document.querySelectorAll('.tabs button').forEach(function (b) { b.onclick = function () { setView(b.dataset.view); }; });
-  setView(store.get('aq-admin-view') === 'leads' ? 'leads' : 'stats');
+  var v0 = store.get('aq-admin-view'); setView(v0 === 'leads' || v0 === 'team' ? v0 : 'stats');
+  $('btnNew').onclick = openNew;
+  document.querySelectorAll('.demo-as button').forEach(function (b) {
+    b.onclick = function () {
+      document.querySelectorAll('.demo-as button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      S.yo = { email: 'demo@aquaterra.com', rol: b.dataset.as }; closeDrawer(); applyRole(); render();
+    };
+  });
 
   // Modo día / noche (comparte la preferencia con la web)
   var SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
@@ -716,14 +892,14 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
     var f = e.target;
     fetch('/api/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: f.email.value, password: f.password.value }) })
       .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'No se pudo entrar'); return j; }); })
-      .then(function (j) { saveSession(j); f.password.value = ''; showApp(); })
+      .then(function (j) { saveSession(j); S.yo = { email: j.email, rol: j.rol }; f.password.value = ''; showApp(); })
       .catch(function (err) { $('loginErr').textContent = err.message; });
   };
 
   // Arranque: si la API no está configurada (o no existe, como al abrir el archivo en local), modo demo.
   fetch('/api/admin/login').then(function (r) { return r.ok ? r.json() : { configured: false }; }).catch(function () { return { configured: false }; })
     .then(function (st) {
-      if (!st.configured) { S.demo = true; $('demo').classList.remove('hidden'); $('btnOut').classList.add('hidden'); return showApp(); }
+      if (!st.configured) { S.demo = true; S.yo = { email: 'demo@aquaterra.com', rol: 'admin' }; $('demo').classList.remove('hidden'); $('btnOut').classList.add('hidden'); return showApp(); }
       S.token = store.get('aq-admin-token'); S.refresh = store.get('aq-admin-refresh');
       if (S.token) showApp(); else $('login').classList.remove('hidden');
     });

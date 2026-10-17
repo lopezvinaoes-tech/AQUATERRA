@@ -16,9 +16,18 @@
    | `SUPABASE_URL` | Supabase → Project Settings → API → Project URL |
    | `SUPABASE_ANON_KEY` | Supabase → Project Settings → API → `anon` `public` |
    | `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Project Settings → API Keys → `service_role` o una secret key `sb_secret_...` (secreta, nunca en el navegador) |
-   | `ADMIN_EMAILS` | Emails con acceso al panel, separados por comas |
+   | `ADMIN_EMAILS` | (Opcional) Emails que siempre son administradores, separados por comas |
 
 5. Volver a desplegar en Vercel. `/admin` pedirá login.
+
+## Usuarios y permisos
+
+El panel tiene dos roles, guardados en la tabla `equipo`:
+
+- **Administrador**: ve todo, agrega leads a mano, edita sus datos, los elimina, asigna asesores y gestiona el equipo (pestaña **Equipo**).
+- **Asesor**: ve los leads y las estadísticas, cambia el estado y deja notas.
+
+Un administrador da de alta a cada persona desde la pestaña Equipo con una contraseña inicial; el panel crea su usuario en Supabase.
 
 ## Conectar el formulario
 
@@ -35,5 +44,5 @@ window.enviarLead({ nombre, email, whatsapp, monto, objetivo, mensaje, proyecto 
 ## Seguridad
 
 - Las tablas tienen RLS activado y ninguna política: con la clave pública no se puede leer ni escribir nada. Solo la API de Vercel accede, con la clave `service_role`.
-- El panel solo acepta cuentas de Supabase cuyo email esté en `ADMIN_EMAILS`.
+- El panel solo acepta cuentas activas de la tabla `equipo` (o de `ADMIN_EMAILS`), y el servidor comprueba el rol en cada acción.
 - La API limita a 5 envíos por IP cada 10 minutos y descarta bots con un campo trampa (`empresa_web`). La IP no se guarda, solo un hash.

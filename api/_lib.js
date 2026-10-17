@@ -74,17 +74,43 @@ function send(res, status, data) {
   res.end(JSON.stringify(data));
 }
 
-// Devuelve el email del administrador si el token es válido y está autorizado; si no, null.
-async function adminFromRequest(req) {
+const bootstrapAdmins = () => (process.env.ADMIN_EMAILS || '').split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
+
+// Rol de un email en el panel: 'admin', 'asesor' o null si no tiene acceso.
+async function rolDe(email) {
+  email = (email || '').toLowerCase();
+  if (!email) return null;
+  if (bootstrapAdmins().includes(email)) return 'admin';
+  const [m] = await db(`equipo?email=eq.${encodeURIComponent(email)}&activo=is.true&select=rol`);
+  return m ? m.rol : null;
+}
+
+// Devuelve { email, rol } si el token es de alguien del equipo; si no, null.
+async function memberFromRequest(req) {
   const auth = req.headers.authorization || '';
   const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
   if (!token) return null;
   const r = await fetch(`${SUPABASE_URL}/auth/v1/user`, { headers: { apikey: ANON_KEY, Authorization: `Bearer ${token}` } });
   if (!r.ok) return null;
   const user = await r.json();
-  const allowed = (process.env.ADMIN_EMAILS || '').split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
   const email = (user.email || '').toLowerCase();
-  return email && allowed.includes(email) ? email : null;
+  const rol = await rolDe(email);
+  return rol ? { email, rol } : null;
 }
 
-module.exports = { SUPABASE_URL, ANON_KEY, configured, ESTADOS, db, parseMonto, perfilDe, prioridadDe, hashIp, readBody, send, adminFromRequest };
+// Llamada a la API de administración de Supabase Auth (crear usuarios, etc.).
+async function authAdmin(path, { method = 'GET', body } = {}) {
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/admin/${path}`, {
+    method,
+    headers: {
+      apikey: SERVICE_KEY,
+      ...(SERVICE_KEY.startsWith('eyJ') ? { Authorization: `Bearer ${SERVICE_KEY}` } : {}),
+      'Content-Type': 'application/json'
+    },
+    body: body === undefined ? undefined : JSON.stringify(body)
+  });
+  const data = await res.json().catch(() => ({}));
+  return { ok: res.ok, status: res.status, data };
+}
+
+module.exports = { SUPABASE_URL, ANON_KEY, configured, ESTADOS, db, parseMonto, perfilDe, prioridadDe, hashIp, readBody, send, rolDe, memberFromRequest, authAdmin, bootstrapAdmins };

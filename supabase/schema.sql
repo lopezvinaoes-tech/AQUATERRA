@@ -69,3 +69,17 @@ create trigger leads_touch before update on public.leads
 -- clave pública; solo la API de la web (clave service_role, guardada en Vercel).
 alter table public.leads        enable row level security;
 alter table public.lead_eventos enable row level security;
+
+-- Equipo con acceso al panel y su rol.
+--   admin:  ve todo, crea, edita y elimina leads, y gestiona el equipo.
+--   asesor: ve los leads, cambia su estado y deja notas.
+-- Los emails de la variable ADMIN_EMAILS en Vercel son siempre administradores.
+create table if not exists public.equipo (
+  email      text primary key check (email = lower(email)),
+  nombre     text,
+  rol        text not null default 'asesor' check (rol in ('admin','asesor')),
+  activo     boolean not null default true,
+  created_at timestamptz not null default now(),
+  creado_por text
+);
+alter table public.equipo enable row level security;
