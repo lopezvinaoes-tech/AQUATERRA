@@ -3,9 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ficha de proyecto | Aquaterra</title>
+<meta name="description" content="Ficha de un proyecto inmobiliario en Paraguay: precio publicado, etapa, entrega, amenities, ubicación y fuente del dato. Consulta sin compromiso con un asesor.">
 <script src="./marca.js"></script>
 <script src="./proyectos.js"></script>
 <script src="./support.js"></script>
+<script src="./leads.js"></script>
 </head>
 <body>
 <x-dc>
@@ -21,7 +24,8 @@ a:hover{color:#0077ED}
 [data-theme="noche"] a{color:#2997FF}
 button,a{touch-action:manipulation}
 button{-webkit-user-select:none;user-select:none}
-button{font-family:inherit}
+button,input,textarea{font-family:inherit}
+input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
 ::selection{background:#C9F15D;color:#1D1D1F}
 </style>
 </helmet>
@@ -48,7 +52,7 @@ button{font-family:inherit}
           <span style="position:relative;width:58px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:{{ nightInk }};transition:color .3s">Noche</span>
         </button>
       </sc-if>
-      <a href="index.html#contacto" style="display:flex;align-items:center;height:32px;padding:0 15px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:13px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap" style-hover="background:#0077ED;color:#FFFFFF">{{ ctaLabel }}</a>
+      <a href="#consulta" style="display:flex;align-items:center;height:32px;padding:0 15px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:13px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap" style-hover="background:#0077ED;color:#FFFFFF">{{ ctaLabel }}</a>
       <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ toggleMenu }}" aria-label="Menú" style="width:44px;height:44px;margin-right:-10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:0;background:transparent;cursor:pointer">
           <span style="width:18px;height:1.5px;border-radius:1px;background:{{ th.ink }};transform:{{ burgerA }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
@@ -71,7 +75,7 @@ button{font-family:inherit}
         <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ nightInk }}">Noche</span>
       </button>
     </div>
-    <a href="index.html#contacto" onClick="{{ closeMenu }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Agenda una asesoría</a>
+    <a href="#consulta" onClick="{{ closeMenu }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Consultar por este proyecto</a>
   </div>
 </sc-if>
 
@@ -80,7 +84,12 @@ button{font-family:inherit}
     <a href="Aquaterra%20Proyectos.dc.html" style="align-self:flex-start;display:flex;align-items:center;gap:4px;min-height:44px;margin-left:-2px;font-size:17px;color:{{ linkC }}"><span style="font-size:24px;line-height:1">‹</span>Proyectos</a>
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px 32px;flex-wrap:wrap">
       <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
-        <span style="align-self:flex-start;padding:5px 12px;border-radius:999px;font-size:13px;font-weight:600;background:{{ pr.tagBg }};color:{{ pr.tagInk }}">{{ pr.etapa }}</span>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+          <span style="padding:6px 13px;border-radius:999px;font-size:13px;font-weight:600;background:{{ pr.tagBg }};border:1px solid {{ pr.tagBd }};color:{{ pr.tagInk }};backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%)">{{ pr.etapa }}</span>
+          <sc-if value="{{ hayDev }}" hint-placeholder-val="{{ true }}">
+            <span style="padding:6px 13px;border-radius:999px;font-size:13px;font-weight:500;background:{{ th.chip }};color:{{ th.mute2 }}">Proyecto de terceros</span>
+          </sc-if>
+        </div>
         <h1 style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">{{ pr.name }}</h1>
         <span style="font-size:clamp(17px,1.6vw,21px);color:{{ th.mute2 }}">{{ pr.loc }}</span>
         <span style="font-size:15px;color:{{ th.mute }}">{{ pr.devTxt }}</span>
@@ -93,12 +102,27 @@ button{font-family:inherit}
   </div>
 </section>
 
-<section data-screen-label="02 Medios" style="padding:0 clamp(20px,3.2vw,48px)">
+<section data-screen-label="02 Portada" style="padding:0 clamp(20px,3.2vw,48px)">
   <div style="max-width:1120px;margin:0 auto">
-    <div style="aspect-ratio:{{ mainAspect }};border-radius:26px;background:{{ th.ph }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center">
-      <span style="font-size:clamp(28px,3.4vw,44px);font-weight:600;letter-spacing:-0.03em;color:{{ th.phInk }}">{{ pr.tipo }}</span>
-      <span style="max-width:420px;font-size:15px;line-height:1.5;color:{{ th.phInk }}">Las imágenes de este proyecto pertenecen a su desarrolladora. Puedes verlas en la fuente.</span>
-      <a href="{{ pr.fuenteUrl }}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:4px;min-height:44px;font-size:17px;color:{{ linkC }}">Ver en {{ pr.fuenteNombre }} ›</a>
+    <div style="position:relative;overflow:hidden;min-height:{{ coverMinH }};border-radius:28px;background:{{ cvBg }};color:#F5F5F7;padding:clamp(22px,3.6vw,48px);display:flex;flex-direction:column;justify-content:space-between;gap:clamp(32px,5vw,56px)">
+      <span aria-hidden="true" style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,0.035) 0 1px,transparent 1px 72px);pointer-events:none"></span>
+      <span aria-hidden="true" style="position:absolute;left:clamp(16px,3vw,40px);top:46%;transform:translateY(-100%);font-size:clamp(84px,14vw,210px);line-height:1;font-weight:700;letter-spacing:-0.055em;white-space:nowrap;color:rgba(255,255,255,0.045);pointer-events:none">{{ pr.tipo }}</span>
+      <div style="position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
+        <span style="display:flex;align-items:center;gap:10px;font-size:14px;color:rgba(245,245,247,0.75)"><span style="width:9px;height:9px;flex:0 0 auto;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>{{ pr.loc }}</span>
+        <span style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,247,0.62)">{{ pr.tipo }}</span>
+      </div>
+      <div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:clamp(18px,3vw,32px)">
+        <sc-for list="{{ keyFigs }}" as="kf" hint-placeholder-count="3">
+          <div style="display:flex;flex-direction:column;gap:8px;padding-left:16px;border-left:1px solid rgba(201,241,93,0.38);min-width:0">
+            <span style="font-size:13px;font-weight:500;color:rgba(245,245,247,0.6)">{{ kf.k }}</span>
+            <span style="font-size:clamp(24px,2.8vw,36px);line-height:1.08;font-weight:700;letter-spacing:-0.03em;overflow-wrap:anywhere;text-wrap:balance">{{ kf.v }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.12)">
+        <span style="max-width:520px;font-size:14px;line-height:1.5;color:rgba(245,245,247,0.68)">Las imágenes de este proyecto pertenecen a su desarrolladora. Puedes verlas en la fuente.</span>
+        <a href="{{ pr.fuenteUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 18px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.22);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#F5F5F7;font-size:15px;font-weight:500;white-space:nowrap" style-hover="background:rgba(255,255,255,0.14);color:#FFFFFF">Ver imágenes en {{ pr.fuenteNombre }} ›</a>
+      </div>
     </div>
   </div>
 </section>
@@ -107,11 +131,11 @@ button{font-family:inherit}
   <div style="max-width:1120px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:flex-start;gap:clamp(32px,4vw,56px)">
     <div style="flex:1 1 560px;min-width:0;display:flex;flex-direction:column;gap:clamp(48px,7vw,80px)">
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;border-radius:20px;overflow:hidden;background:{{ th.line }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(calc(50% - 5px),190px),1fr));gap:10px">
         <sc-for list="{{ facts }}" as="fc" hint-placeholder-count="4">
-          <div style="display:flex;flex-direction:column;gap:4px;padding:16px 18px;background:{{ th.card }}">
-            <span style="font-size:13px;color:{{ th.mute }}">{{ fc.k }}</span>
-            <span style="font-size:19px;letter-spacing:-0.02em;font-weight:600">{{ fc.v }}</span>
+          <div style="display:flex;flex-direction:column;gap:6px;min-width:0;padding:16px 18px;border-radius:18px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
+            <span style="font-size:13px;line-height:1.35;color:{{ th.mute }}">{{ fc.k }}</span>
+            <span style="font-size:17px;line-height:1.3;letter-spacing:-0.015em;font-weight:600;overflow-wrap:anywhere;hyphens:auto">{{ fc.v }}</span>
           </div>
         </sc-for>
       </div>
@@ -171,17 +195,97 @@ button{font-family:inherit}
           <div style="display:flex;justify-content:space-between;min-height:44px;align-items:center;border-bottom:1px solid {{ th.line }};font-size:15px"><span style="color:{{ th.mute }}">Entrega</span><span style="text-align:right">{{ pr.entregaTxt }}</span></div>
           <div style="display:flex;justify-content:space-between;gap:12px;min-height:44px;align-items:center;font-size:15px"><span style="color:{{ th.mute }}">Desarrolladora</span><span style="text-align:right">{{ pr.devCorto }}</span></div>
         </div>
-        <a href="index.html#contacto" style="display:flex;align-items:center;justify-content:center;height:50px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Agenda una asesoría</a>
+        <a href="#consulta" style="display:flex;align-items:center;justify-content:center;height:50px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Consultar por este proyecto</a>
+        <span style="font-size:12px;line-height:1.5;color:{{ th.mute }};text-align:center">Te ayudamos a confirmar precio y condiciones actuales.</span>
         <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;justify-content:center;gap:4px;min-height:44px;font-size:15px;color:{{ linkC }}">Ver otros proyectos ›</a>
       </aside>
     </sc-if>
   </div>
 </section>
 
-<footer data-screen-label="04 Footer" style="background:{{ th.foot }};color:#F5F5F7;padding:48px clamp(20px,3.2vw,48px) {{ footPad }}">
+<section id="consulta" data-screen-label="04 Consulta" style="scroll-margin-top:calc(52px + env(safe-area-inset-top) + 12px);padding:0 clamp(20px,3.2vw,48px) clamp(64px,9vw,112px)">
+  <div style="position:relative;overflow:hidden;max-width:1120px;margin:0 auto;border-radius:32px;background:#0B0C0F;color:#F5F5F7;padding:clamp(28px,5vw,64px)">
+    <span aria-hidden="true" style="position:absolute;left:-10%;top:-30%;width:70%;height:520px;background:radial-gradient(closest-side,rgba(201,241,93,0.16),rgba(201,241,93,0));pointer-events:none"></span>
+    <div style="position:relative;display:flex;flex-wrap:wrap;align-items:flex-start;gap:clamp(32px,5vw,64px)">
+      <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:20px">
+        <span style="align-self:flex-start;padding:7px 16px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase">Consulta personalizada</span>
+        <h2 style="margin:0;font-size:clamp(34px,4.4vw,56px);line-height:1.04;letter-spacing:-0.04em;font-weight:700;text-wrap:balance">Consultar por <span style="color:#E4F7B0">{{ pr.name }}.</span></h2>
+        <p style="margin:0;max-width:440px;font-size:17px;line-height:1.6;color:rgba(245,245,247,0.78);text-wrap:pretty">Te ayudamos a confirmar con la desarrolladora el precio, la disponibilidad y las condiciones actuales, y a valorar si encaja con tu inversión.</p>
+        <div style="display:flex;flex-direction:column;border-top:1px solid rgba(245,245,247,0.12)">
+          <div style="display:flex;justify-content:space-between;gap:16px;min-height:46px;align-items:center;border-bottom:1px solid rgba(245,245,247,0.12);font-size:15px"><span style="color:rgba(245,245,247,0.6)">{{ pr.precioLbl }}</span><span style="font-weight:600;text-align:right">{{ pr.precioTxt }}</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;min-height:46px;align-items:center;border-bottom:1px solid rgba(245,245,247,0.12);font-size:15px"><span style="color:rgba(245,245,247,0.6)">Ubicación</span><span style="text-align:right">{{ pr.loc }}</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;min-height:46px;align-items:center;border-bottom:1px solid rgba(245,245,247,0.12);font-size:15px"><span style="color:rgba(245,245,247,0.6)">Etapa</span><span style="text-align:right">{{ pr.etapa }}</span></div>
+        </div>
+      </div>
+      <div style="flex:1 1 400px;min-width:0;display:flex;flex-direction:column;gap:18px;padding:clamp(22px,3vw,36px);border-radius:26px;background:rgba(255,255,255,0.045);border:1px solid rgba(245,245,247,0.12);box-shadow:0 40px 120px -40px rgba(201,241,93,0.18)">
+        <sc-if value="{{ cfNotSent }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Nombre y apellido<input name="nombre" value="{{ cfNombre }}" onChange="{{ onCf.nombre }}" autocomplete="name" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></label>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px">
+              <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Email<input name="email" value="{{ cfEmail }}" onChange="{{ onCf.email }}" type="email" autocomplete="email" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></label>
+              <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">WhatsApp<input name="whatsapp" value="{{ cfTel }}" onChange="{{ onCf.tel }}" type="tel" inputmode="tel" autocomplete="tel" placeholder="+34 6xx xxx xxx" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></label>
+            </div>
+            <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Mensaje (opcional)<textarea name="mensaje" value="{{ cfMsg }}" onChange="{{ onCf.msg }}" rows="3" placeholder="{{ cfPh }}" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none;height:auto;min-height:104px;padding:14px 16px;resize:vertical;line-height:1.5"></textarea></label>
+            <div aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden"><label>Empresa web<input name="empresa_web" tabindex="-1" autocomplete="off" value="{{ cfHp }}" onChange="{{ onCf.empresa_web }}"></label></div>
+            <button onClick="{{ cfSubmit }}" style="height:56px;border-radius:999px;border:1px solid {{ cfBtnBd }};background:{{ cfBtnBg }};color:{{ cfBtnInk }};backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font-size:17px;font-weight:600;cursor:{{ cfBtnCursor }};transition:background .25s, color .25s, border-color .25s">{{ cfBtnTxt }}</button>
+            <span role="status" aria-live="polite" style="text-align:center;font-size:13px;line-height:1.5;color:{{ cfHintInk }}">{{ cfHint }}</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ cfSent }}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:36px 0">
+            <span style="width:56px;height:56px;border-radius:50%;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700">✓</span>
+            <span style="font-size:24px;letter-spacing:-0.02em;font-weight:700">Recibimos tu consulta</span>
+            <span style="max-width:380px;font-size:15px;line-height:1.5;color:rgba(245,245,247,0.72)">Un asesor de {{ marca }} te contactará para hablar de {{ pr.name }}.</span>
+            <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;min-height:44px;font-size:15px;color:#E4F7B0">Ver otros proyectos ›</a>
+          </div>
+        </sc-if>
+        <sc-if value="{{ hayWa }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ waHref }}" target="_blank" rel="noopener" style="align-self:center;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(245,245,247,0.2);color:#F5F5F7;font-size:14px;font-weight:500" style-hover="background:rgba(245,245,247,0.08);color:#F5F5F7">Prefiero escribir por WhatsApp</a>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="05 Otros proyectos" style="padding:0 clamp(20px,3.2vw,48px) clamp(72px,10vw,120px)">
   <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
-    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px 24px">
-      <span style="display:flex;align-items:center;gap:9px;font-size:18px;font-weight:600;letter-spacing:-0.02em"><span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>{{ marca }}</span>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Catálogo</span>
+        <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">Otros <span style="color:#86868B">proyectos.</span></h2>
+      </div>
+      <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;min-height:44px;font-size:17px;color:{{ linkC }}">Ver todos ›</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:20px">
+      <sc-for list="{{ otros }}" as="o" hint-placeholder-count="3">
+        <a href="{{ o.href }}" aria-label="Ver ficha de {{ o.name }}" style="display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};box-shadow:{{ th.cardSh }};transition:transform .45s cubic-bezier(.3,.7,.2,1), box-shadow .45s" style-hover="transform:translateY(-6px);box-shadow:0 30px 60px -28px rgba(0,0,0,0.45);color:{{ th.ink }}">
+          <div style="position:relative;overflow:hidden;aspect-ratio:16/9;background:{{ o.cvBg }};color:#F5F5F7;padding:16px 18px 18px;display:flex;flex-direction:column;justify-content:space-between">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <span style="padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600;background:{{ o.tagBg }};border:1px solid {{ o.tagBd }};color:{{ o.tagInk }};backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)">{{ o.etapa }}</span>
+              <span style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,247,0.62)">{{ o.tipo }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <span style="font-size:12px;color:rgba(245,245,247,0.55)">{{ o.kf.k }}</span>
+              <span style="font-size:24px;line-height:1.1;font-weight:700;letter-spacing:-0.03em">{{ o.kf.v }}</span>
+            </div>
+          </div>
+          <div style="padding:16px 18px 18px;display:flex;flex-direction:column;gap:4px">
+            <span style="font-size:19px;font-weight:600;letter-spacing:-0.02em">{{ o.name }}</span>
+            <span style="font-size:14px;color:{{ th.mute }}">{{ o.loc }}</span>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<footer data-screen-label="06 Footer" style="background:{{ th.foot }};color:#F5F5F7;padding:56px clamp(20px,3.2vw,48px) {{ footPad }}">
+  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:28px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:20px 32px">
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:360px">
+        <span style="display:flex;align-items:center;gap:9px;font-size:18px;font-weight:600;letter-spacing:-0.02em"><span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>{{ marca }}</span>
+        <span style="font-size:14px;line-height:1.55;color:rgba(245,245,247,0.72)">Inversión inmobiliaria en Paraguay. Asunción y el interior del país.</span>
+      </div>
       <div style="display:flex;flex-wrap:wrap;gap:0 24px;font-size:14px">
         <a href="index.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Inicio</a>
         <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Proyectos</a>
@@ -189,7 +293,10 @@ button{font-family:inherit}
         <a href="index.html#contacto" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Contacto</a>
       </div>
     </div>
-    <span style="font-size:13px;color:rgba(245,245,247,0.6)">© 2026 {{ marca }} · Asunción, Paraguay</span>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;padding-top:20px;border-top:1px solid rgba(245,245,247,0.12);font-size:13px;line-height:1.5;color:rgba(245,245,247,0.6)">
+      <span style="max-width:640px">Los proyectos del catálogo son de otras desarrolladoras. Indicamos la fuente y la fecha de cada dato; pueden haber cambiado.</span>
+      <span>© 2026 {{ marca }} · Asunción, Paraguay</span>
+    </div>
   </div>
 </footer>
 
@@ -199,7 +306,7 @@ button{font-family:inherit}
       <span style="font-size:12px;color:{{ th.mute }}">{{ pr.precioLbl }}</span>
       <span style="font-size:19px;font-weight:700;letter-spacing:-0.02em;white-space:nowrap">{{ pr.precioTxt }}</span>
     </div>
-    <a href="index.html#contacto" style="flex:0 0 auto;display:flex;align-items:center;height:46px;padding:0 22px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:16px;font-weight:500">Agenda una asesoría</a>
+    <a href="#consulta" style="flex:0 0 auto;display:flex;align-items:center;height:46px;padding:0 22px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:16px;font-weight:500">Consultar</a>
   </div>
 </sc-if>
 
@@ -211,14 +318,16 @@ class Component extends DCLogic {
     mode: (() => { try { return localStorage.getItem('aquaterra-modo'); } catch (e) { return null; } })(),
     w: typeof window !== 'undefined' ? window.innerWidth : 1280,
     menu: false,
+    cf: { nombre: '', email: '', tel: '', msg: '', empresa_web: '' },
+    cfSending: false, cfSent: false, cfErr: '',
     pi: (() => { try { const v = parseInt(new URLSearchParams(window.location.search).get('p'), 10); return isNaN(v) ? 0 : v; } catch (e) { return 0; } })()
   };
 
   PROJECTS = window.PROYECTOS || [];
   NAV = [['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#inversiones', 'Inversiones'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
   THEMES = {
-    dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' },
-    noche: { bg: '#000000', ink: '#F5F5F7', mute: '#98989D', mute2: '#C7C7CC', line: 'rgba(255,255,255,0.12)', card: '#1C1C1E', ph: '#2C2C2E', phInk: '#8E8E93', panel: '#1C1C1E', foot: '#000000', chip: 'rgba(118,118,128,0.24)' }
+    dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', cardSh: '0 1px 2px rgba(0,0,0,0.04), 0 12px 32px -24px rgba(0,0,0,0.25)', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' },
+    noche: { bg: '#000000', ink: '#F5F5F7', mute: '#98989D', mute2: '#C7C7CC', line: 'rgba(255,255,255,0.12)', card: '#1C1C1E', cardSh: 'inset 0 0 0 1px rgba(255,255,255,0.06)', ph: '#2C2C2E', phInk: '#8E8E93', panel: '#1C1C1E', foot: '#0B0C0F', chip: 'rgba(118,118,128,0.24)' }
   };
 
   componentDidMount() {
@@ -226,6 +335,63 @@ class Component extends DCLogic {
     window.addEventListener('resize', this._onResize);
     this._onKey = (e) => { if (e.key === 'Escape' && this.state.menu) this.setState({ menu: false }); };
     window.addEventListener('keydown', this._onKey);
+    this.setMeta();
+  }
+
+  proyecto() { return this.PROJECTS[Math.max(0, Math.min(this.PROJECTS.length - 1, this.state.pi))]; }
+  locTxt(p) { return p.barrio === p.ciudad ? p.ciudad : `${p.barrio}, ${p.ciudad}`; }
+
+  // Título y descripción de la pestaña con el nombre del proyecto.
+  setMeta() {
+    const p = this.proyecto();
+    if (!p) return;
+    const marca = (window.MARCA && window.MARCA.nombre) || 'Aquaterra';
+    document.title = `${p.name} · ${p.tipo} en ${p.ciudad} | ${marca}`;
+    const d = document.querySelector('meta[name="description"]');
+    if (d) d.setAttribute('content', `${p.name}: ${p.tipologia} en ${this.locTxt(p)}. ${p.dev ? 'Proyecto de ' + p.dev : 'Proyecto de terceros'}, con datos de ${p.fuentes[0].nombre}. Consulta precio y condiciones con un asesor de ${marca}.`);
+  }
+
+  // Portada tipográfica (igual que en el catálogo).
+  coverBg(tipo) {
+    const tint = { 'Departamento': '41,151,255', 'Barrio cerrado': '201,241,93', 'Country': '52,199,149', 'Casa': '255,149,110', 'Lote': '255,190,80' }[tipo] || '142,142,147';
+    return `radial-gradient(120% 95% at 100% 0%, rgba(${tint},0.30), rgba(${tint},0) 62%), radial-gradient(90% 70% at 0% 100%, rgba(${tint},0.10), rgba(${tint},0) 70%), #0B0C0F`;
+  }
+  keyFigure(p) {
+    if (p.precio) return { k: 'Desde', v: 'USD ' + p.precio.toLocaleString('es-PY') };
+    if (p.precioTxt) return { k: 'Desde', v: p.precioTxt };
+    if (p.entrega) return { k: 'Entrega', v: p.entrega };
+    const f = (p.facts || [])[0];
+    return f ? { k: f[0], v: f[1] } : { k: 'Precio', v: 'Consultar' };
+  }
+  // Hasta tres datos publicados para la portada de la ficha.
+  keyFigures(p) {
+    const out = [];
+    const pv = p.precio ? 'USD ' + p.precio.toLocaleString('es-PY') : p.precioTxt;
+    if (pv) out.push({ k: 'Desde', v: pv });
+    if (p.entrega) out.push({ k: 'Entrega', v: p.entrega });
+    (p.facts || []).forEach(([k, v]) => {
+      if (out.length >= 3 || v.length > 26 || /^Entrega$/.test(k) || (pv && v.includes(pv)) || out.some((o) => o.v === v)) return;
+      out.push({ k, v });
+    });
+    return out;
+  }
+  glass(etapa) {
+    const lime = etapa === 'En pozo';
+    return { tagBg: lime ? 'rgba(201,241,93,0.14)' : 'rgba(255,255,255,0.08)', tagBd: lime ? 'rgba(201,241,93,0.38)' : 'rgba(255,255,255,0.2)', tagInk: lime ? '#E4F7B0' : '#F5F5F7' };
+  }
+
+  // Envío de la consulta a la base de leads (leads.js -> /api/leads).
+  enviarConsulta() {
+    const s = this.state, p = this.proyecto();
+    if (s.cfSending) return;
+    this.setState({ cfSending: true, cfErr: '' });
+    const d = { nombre: s.cf.nombre.trim(), email: s.cf.email.trim(), whatsapp: s.cf.tel.trim(), mensaje: s.cf.msg.trim(), proyecto: p.name, origen: 'Ficha de proyecto', empresa_web: s.cf.empresa_web };
+    const envio = typeof window.enviarLead === 'function'
+      ? Promise.resolve().then(() => window.enviarLead(d))
+      : Promise.reject(new Error('No pudimos enviar tu solicitud. Escríbenos por WhatsApp.'));
+    envio
+      .then(() => this.setState({ cfSent: true, cfSending: false }))
+      .catch((e) => this.setState({ cfSending: false, cfErr: (e && e.message) || 'No pudimos enviar tu solicitud. Escríbenos por WhatsApp.' }));
   }
   componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); }
 
@@ -236,7 +402,11 @@ class Component extends DCLogic {
     const night = this.mode() === 'noche';
     const th = this.THEMES[night ? 'noche' : 'dia'];
     const wide = s.w >= 980, narrowM = s.w < 640;
-    const p = this.PROJECTS[Math.max(0, Math.min(this.PROJECTS.length - 1, s.pi))];
+    const p = this.proyecto();
+    const pIdx = this.PROJECTS.indexOf(p);
+    const cfOk = s.cf.nombre.trim().length > 1 && (s.cf.tel.replace(/\D/g, '').length > 5 || /\S+@\S+\.\S+/.test(s.cf.email));
+    const wa = String((window.MARCA && window.MARCA.whatsapp) || '').replace(/\D/g, '');
+    const lime = p.etapa === 'En pozo';
     const usd = (v) => 'USD ' + Math.round(v).toLocaleString('es-PY');
     return {
       th, themeName: night ? 'noche' : 'dia',
@@ -249,7 +419,7 @@ class Component extends DCLogic {
       menuBg: night ? 'rgba(0,0,0,0.86)' : 'rgba(251,251,253,0.92)',
       burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
       burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
-      ctaLabel: s.w >= 520 ? 'Agenda una asesoría' : 'Asesoría',
+      ctaLabel: s.w >= 520 ? 'Consultar este proyecto' : 'Consultar',
       linkC: night ? '#2997FF' : '#0066CC',
       segTrack: night ? 'rgba(118,118,128,0.32)' : 'rgba(118,118,128,0.16)',
       knobBg: night ? '#636366' : '#FFFFFF',
@@ -257,20 +427,46 @@ class Component extends DCLogic {
       dayInk: night ? 'rgba(245,245,247,0.7)' : '#1D1D1F',
       nightInk: night ? '#FFFFFF' : '#6E6E73',
       toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { localStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
-      mainAspect: narrowM ? '4/3' : '16/8',
+      coverMinH: narrowM ? '440px' : '460px',
+      cvBg: this.coverBg(p.tipo),
+      keyFigs: this.keyFigures(p),
       footPad: wide ? 'calc(28px + env(safe-area-inset-bottom))' : 'calc(100px + env(safe-area-inset-bottom))',
       pr: {
         ...p,
-        loc: p.barrio === p.ciudad ? p.ciudad : `${p.barrio}, ${p.ciudad}`,
+        loc: this.locTxt(p),
         devTxt: p.dev ? 'Proyecto de ' + p.dev : 'Proyecto de terceros',
         devCorto: p.dev || 'Sin dato publicado',
         precioLbl: p.precio || p.precioTxt ? 'Desde' : 'Precio',
         precioTxt: p.precio ? usd(p.precio) : p.precioTxt || 'Consultar precio',
         entregaTxt: p.entrega || 'No aplica',
         fuenteUrl: p.fuentes[0].url, fuenteNombre: p.fuentes[0].nombre,
-        tagBg: p.etapa === 'En pozo' ? '#C9F15D' : p.etapa === 'Entregado' ? (night ? '#F5F5F7' : '#1D1D1F') : th.chip,
-        tagInk: p.etapa === 'En pozo' ? '#1D1D1F' : p.etapa === 'Entregado' ? (night ? '#1D1D1F' : '#FFFFFF') : th.ink
+        tagBg: lime ? (night ? 'rgba(201,241,93,0.14)' : 'rgba(201,241,93,0.3)') : th.chip,
+        tagBd: lime ? (night ? 'rgba(201,241,93,0.38)' : 'rgba(140,180,30,0.55)') : th.line,
+        tagInk: lime ? (night ? '#E4F7B0' : '#3D5300') : th.ink
       },
+      otros: this.PROJECTS.map((o, i) => ({ o, i }))
+        .filter((x) => x.i !== pIdx)
+        .sort((a, b) => (b.o.ciudad === p.ciudad) - (a.o.ciudad === p.ciudad) || a.i - b.i)
+        .slice(0, 3)
+        .map(({ o, i }) => ({ ...o, ...this.glass(o.etapa), href: 'Aquaterra%20Ficha.dc.html?p=' + i, loc: this.locTxt(o), kf: this.keyFigure(o), cvBg: this.coverBg(o.tipo) })),
+      cfNombre: s.cf.nombre, cfEmail: s.cf.email, cfTel: s.cf.tel, cfMsg: s.cf.msg, cfHp: s.cf.empresa_web,
+      onCf: Object.fromEntries(['nombre', 'email', 'tel', 'msg', 'empresa_web'].map((k) => [k, (e) => { const v = e.target.value; this.setState((st) => ({ cf: { ...st.cf, [k]: v }, cfErr: '' })); }])),
+      cfPh: '¿Qué te gustaría saber de ' + p.name + '?',
+      cfSent: s.cfSent, cfNotSent: !s.cfSent,
+      cfHint: s.cfErr || (s.cfSending ? 'Enviando…' : 'Necesitamos tu nombre y un email o WhatsApp para responderte.'),
+      cfHintInk: s.cfErr ? '#FF9F8F' : 'rgba(245,245,247,0.6)',
+      cfBtnTxt: s.cfSending ? 'Enviando…' : 'Enviar consulta',
+      cfBtnBg: cfOk ? 'rgba(201,241,93,0.22)' : 'rgba(245,245,247,0.08)',
+      cfBtnBd: cfOk ? 'rgba(201,241,93,0.55)' : 'rgba(245,245,247,0.12)',
+      cfBtnInk: cfOk ? '#E4F7B0' : 'rgba(245,245,247,0.5)',
+      cfBtnCursor: cfOk && !s.cfSending ? 'pointer' : 'not-allowed',
+      cfSubmit: () => {
+        if (cfOk) this.enviarConsulta();
+        else this.setState({ cfErr: 'Necesitamos tu nombre y un email o WhatsApp para responderte.' });
+      },
+      hayDev: !!p.dev,
+      hayWa: !!wa,
+      waHref: wa ? 'https://wa.me/' + wa + '?text=' + encodeURIComponent('Hola, me interesa ' + p.name + ' (' + this.locTxt(p) + ').') : '',
       facts: [{ k: 'Tipo', v: p.tipo }, { k: 'Etapa', v: p.etapa }].concat(p.facts.map(([k, v]) => ({ k, v }))),
       amen: p.amen,
       hayNota: !!p.nota,
