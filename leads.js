@@ -2,6 +2,8 @@
 //   window.enviarLead({ nombre, email, whatsapp, monto, objetivo, mensaje, proyecto })
 // Devuelve una promesa: { ok: true } o lanza un Error con un mensaje para mostrar.
 // Agrega por su cuenta la página, el referrer y los utm_* de la visita.
+// Recuerda en este navegador el nombre y contacto enviados: window.contactoGuardado() los devuelve
+// para precompletar otros formularios (y que el servidor sume todo al mismo perfil de lead).
 (function () {
   var KEY = 'aquaterra-utm';
   var utm = {};
@@ -12,6 +14,11 @@
     else utm = JSON.parse(sessionStorage.getItem(KEY) || '{}');
   } catch (e) {}
 
+  var CKEY = 'aquaterra-contacto';
+  window.contactoGuardado = function () {
+    try { return JSON.parse(localStorage.getItem(CKEY) || 'null') || {}; } catch (e) { return {}; }
+  };
+
   window.enviarLead = function (datos) {
     var body = Object.assign({}, utm, {
       pagina: location.pathname + location.search,
@@ -21,6 +28,12 @@
       .then(function (r) {
         return r.json().catch(function () { return {}; }).then(function (j) {
           if (!r.ok) throw new Error(j.error || 'No pudimos enviar tu solicitud. Escríbenos por WhatsApp.');
+          try {
+            var prev = window.contactoGuardado();
+            localStorage.setItem(CKEY, JSON.stringify({
+              nombre: body.nombre || prev.nombre || '', email: body.email || prev.email || '', whatsapp: body.whatsapp || body.tel || prev.whatsapp || ''
+            }));
+          } catch (e) {}
           return j;
         });
       });

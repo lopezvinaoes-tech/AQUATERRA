@@ -17,7 +17,9 @@
   var abierto = false;
   var root, tray, modal, toastEl, toastT;
   // Pedido de la comparación a un asesor (se guarda como lead con origen "Comparador").
-  var lf = { nombre: '', contacto: '', ck: false }, lEstado = '', lErr = '';
+  var lf = { nombre: '', contacto: '', monto: '', objetivo: '', ck: false }, lEstado = '', lErr = '';
+  var MONTOS = ['Hasta USD 50.000', 'USD 50.000 – 100.000', 'USD 100.000 – 250.000', 'Más de USD 250.000'];
+  var OBJS = ['Renta por alquiler', 'Revalorización', 'Vivienda propia', 'Aún no lo sé'];
 
   function leer() {
     try {
@@ -228,6 +230,18 @@
     return n.length > 1 ? n.slice(0, -1).join(', ') + ' y ' + n[n.length - 1] : n[0];
   }
 
+  function selOpts(list, v, ph) {
+    return '<option value="">' + esc(ph) + '</option>' + list.map(function (o) { return '<option' + (o === v ? ' selected' : '') + '>' + esc(o) + '</option>'; }).join('');
+  }
+
+  // Si ya dejó sus datos en otro formulario de la web, se precompletan.
+  function precompletar() {
+    if (lf.nombre || lf.contacto || typeof window.contactoGuardado !== 'function') return;
+    var c = window.contactoGuardado();
+    lf.nombre = c.nombre || '';
+    lf.contacto = c.email || c.whatsapp || '';
+  }
+
   function htmlPedido() {
     if (lEstado === 'ok') {
       return '<div class="aqv-lead" role="status"><i class="aqv-lead-ok" aria-hidden="true"></i><div class="aqv-lead-tx"><b>Listo, ' + esc(lf.nombre.split(' ')[0]) + '.</b><span>Te escribimos con nuestro análisis de ' + esc(nombresSel()) + '.</span></div></div>';
@@ -235,6 +249,8 @@
     return '<form class="aqv-lead" novalidate><div class="aqv-lead-tx"><b>¿Te la enviamos con nuestro análisis?</b><span>Un asesor revisa estos proyectos para tu caso y te escribe por email o WhatsApp.</span></div>' +
       '<div class="aqv-lead-f"><input class="aqv-in" name="nombre" autocomplete="name" placeholder="Tu nombre" aria-label="Tu nombre" value="' + esc(lf.nombre) + '">' +
       '<input class="aqv-in" name="contacto" autocomplete="email" placeholder="Email o WhatsApp" aria-label="Email o WhatsApp" value="' + esc(lf.contacto) + '">' +
+      '<select class="aqv-in" name="monto" aria-label="Presupuesto">' + selOpts(MONTOS, lf.monto, 'Presupuesto') + '</select>' +
+      '<select class="aqv-in" name="objetivo" aria-label="Objetivo">' + selOpts(OBJS, lf.objetivo, 'Objetivo') + '</select>' +
       '<button type="submit" class="aqv-b aqv-b1"' + (lEstado === 'enviando' ? ' disabled' : '') + '>' + (lEstado === 'enviando' ? 'Enviando…' : 'Enviármela') + '</button></div>' +
       '<label class="aqv-ck"><input type="checkbox" name="ck"' + (lf.ck ? ' checked' : '') + '> Acepto que me contacten sobre estos proyectos.</label>' +
       '<input class="aqv-hp" name="empresa_web" tabindex="-1" autocomplete="off" aria-hidden="true">' +
@@ -245,6 +261,8 @@
     lf.nombre = form.elements.nombre.value.trim();
     lf.contacto = form.elements.contacto.value.trim();
     lf.ck = form.elements.ck.checked;
+    lf.monto = form.elements.monto.value;
+    lf.objetivo = form.elements.objetivo.value;
     var email = /@/.test(lf.contacto) ? lf.contacto : '';
     var wa = email ? '' : lf.contacto;
     lErr = lf.nombre.length < 2 ? 'Escribe tu nombre.'
@@ -255,6 +273,7 @@
     lEstado = 'enviando'; render();
     window.enviarLead({
       nombre: lf.nombre, email: email || null, whatsapp: wa || null,
+      monto: lf.monto || null, objetivo: lf.objetivo || null,
       proyecto: sel.map(function (i) { return P[i].name; }).join(' / '),
       mensaje: 'Pidió que le envíen la comparación de ' + nombresSel() + ' con un análisis para su caso.',
       origen: 'Comparador', consentimiento: true, empresa_web: form.elements.empresa_web.value
@@ -283,6 +302,7 @@
 
   function abrir() {
     abierto = true;
+    precompletar();
     cargarCambio();
     if (toastEl) toastEl.removeAttribute('data-on');
     modal.setAttribute('data-open', '');
@@ -344,10 +364,11 @@
     // Lo que se escribe en el pedido se guarda al vuelo para no perderlo si la vista se redibuja.
     root.addEventListener('input', function (e) {
       var n = e.target.name;
-      if (n === 'nombre' || n === 'contacto') lf[n] = e.target.value;
+      if (n === 'nombre' || n === 'contacto' || n === 'monto' || n === 'objetivo') lf[n] = e.target.value;
       else if (n === 'ck') lf.ck = e.target.checked;
     });
     root.addEventListener('change', function (e) {
+      if (e.target.name === 'monto' || e.target.name === 'objetivo') { lf[e.target.name] = e.target.value; return; }
       if (e.target.name !== 'ck') return;
       lf.ck = e.target.checked;
       var er = root.querySelector('.aqv-lead .aqv-err');

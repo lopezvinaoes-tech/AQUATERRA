@@ -139,6 +139,7 @@ td .c { color: var(--mute); font-size: 13px; }
 .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px 3px 8px; border-radius: 999px; background: var(--fill); font-size: 12px; font-weight: 500; white-space: nowrap; }
 .pill i { width: 7px; height: 7px; border-radius: 50%; background: var(--mute); }
 .pr { font-size: 12px; font-weight: 600; white-space: nowrap; }
+.vuelve { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; background: color-mix(in srgb, var(--lime) 30%, transparent); font-size: 11px; font-weight: 600; vertical-align: 1px; white-space: nowrap; }
 .pr.alta { color: var(--good); } .pr.media { color: var(--warn); } .pr.baja { color: var(--mute); }
 .more { display: flex; justify-content: center; margin-top: 12px; }
 
@@ -604,7 +605,8 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
   function filtered() {
     var p = period(), q = $('q').value.trim().toLowerCase(), fe = $('fEstado').value, fp = $('fPerfil').value;
     return S.leads.filter(function (l) {
-      if (!inPeriod(l, p.from, p.to)) return false;
+      // En la tabla cuenta la última actividad: un lead que volvió a escribir aparece en el período.
+      if (!inPeriod({ created_at: l.ultimo_contacto || l.created_at }, p.from, p.to)) return false;
       if (fe && l.estado !== fe) return false;
       if (fp && (l.perfil || 'Explorador') !== fp) return false;
       if (q && [l.nombre, l.email, l.whatsapp, l.mensaje, l.notas].join(' ').toLowerCase().indexOf(q) < 0) return false;
@@ -617,8 +619,8 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
     $('count').textContent = fmtN(list.length) + ' lead' + (list.length === 1 ? '' : 's');
     $('rows').innerHTML = list.slice(0, S.shown).map(function (l) {
       return '<tr data-id="' + esc(l.id) + '" tabindex="0"' + (freshIds && freshIds[l.id] ? ' class="fresh"' : '') + '>' +
-        '<td class="num c" style="white-space:nowrap">' + fmtDate(l.created_at) + '</td>' +
-        '<td><div class="n">' + esc(l.nombre) + '</div><div class="c">' + esc(l.whatsapp || l.email || '') + '</div></td>' +
+        '<td class="num c" style="white-space:nowrap">' + fmtDate(l.ultimo_contacto || l.created_at) + '</td>' +
+        '<td><div class="n">' + esc(l.nombre) + (l.contactos > 1 ? '<span class="vuelve" title="Escribió ' + l.contactos + ' veces">' + l.contactos + ' contactos</span>' : '') + '</div><div class="c">' + esc(l.whatsapp || l.email || '') + '</div></td>' +
         '<td class="col-opt">' + esc(l.perfil || 'Explorador') + '</td>' +
         '<td class="col-opt c">' + esc(l.monto || '—') + '</td>' +
         '<td class="col-opt c">' + esc(pais(l.pais)) + '</td>' +
@@ -658,7 +660,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
     var admin = isAdmin();
     var wa = (l.whatsapp || '').replace(/\D/g, '');
     var rows = [
-      ['Recibido', fmtDate(l.created_at, true)], ['Email', l.email], ['WhatsApp', l.whatsapp], ['Tipo de inversor', l.perfil],
+      ['Recibido', fmtDate(l.created_at, true)], ['Contactos', l.contactos > 1 ? l.contactos + ' · el último ' + fmtDate(l.ultimo_contacto, true) : null], ['Email', l.email], ['WhatsApp', l.whatsapp], ['Tipo de inversor', l.perfil],
       ['Objetivo', l.objetivo], ['Monto', l.monto], ['Proyecto', l.proyecto_interes], ['Prioridad', l.prioridad && l.prioridad.charAt(0).toUpperCase() + l.prioridad.slice(1)],
       ['País', l.pais ? pais(l.pais) + (l.ciudad ? ' · ' + l.ciudad : '') : null], ['Fuente', fuente(l) + (l.utm_campaign ? ' · ' + l.utm_campaign : '')],
       ['Asignado a', admin ? null : l.asignado], ['Formulario', l.origen], ['Página', l.pagina]
@@ -727,7 +729,8 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
         var d = e.detalle || {}, t = e.tipo === 'creado' ? 'Llegó desde ' + (d.origen || 'la web')
           : e.tipo === 'estado' ? 'Estado: ' + ((EST[d.de] || {}).label || d.de) + ' → ' + ((EST[d.a] || {}).label || d.a)
           : e.tipo === 'nota' ? 'Nota actualizada' : e.tipo === 'asignado' ? 'Asignado a ' + (d.a || 'nadie')
-          : e.tipo === 'editado' ? 'Datos editados' + (d.campos ? ' (' + d.campos.join(', ') + ')' : '') : e.tipo;
+          : e.tipo === 'editado' ? 'Datos editados' + (d.campos ? ' (' + d.campos.join(', ') + ')' : '')
+          : e.tipo === 'contacto' ? 'Volvió a escribir desde ' + (d.origen || 'la web') + (d.proyecto_interes ? ' · ' + d.proyecto_interes : '') + (d.monto ? ' · ' + d.monto : '') + (d.mensaje ? ': «' + d.mensaje + '»' : '') : e.tipo;
         return '<li><span>' + esc(t) + '</span><span class="w">' + fmtDate(e.created_at, true) + (e.autor ? ' · ' + esc(e.autor) : '') + '</span></li>';
       }).join('') || '<li class="w">Sin movimientos.</li>';
     };
@@ -837,9 +840,15 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
       var prev = {}; S.leads.forEach(function (l) { prev[l.id] = l; });
       var nuevos = [];
       S.leads = (j.leads || []).map(function (l) {
-        if (prev[l.id]) return Object.assign(prev[l.id], l); // mantiene la referencia del lead abierto
+        var p = prev[l.id];
+        if (p) {
+          // Un lead que ya existía y volvió a escribir también se avisa.
+          if (l.ultimo_contacto && p.ultimo_contacto && l.ultimo_contacto !== p.ultimo_contacto) nuevos.push(Object.assign(l, { _vuelve: true }));
+          return Object.assign(p, l); // mantiene la referencia del lead abierto
+        }
         nuevos.push(l); return l;
       });
+      if (S.open && nuevos.some(function (l) { return l.id === S.open && l._vuelve; })) { var abierto = S.leads.find(function (x) { return x.id === S.open; }); if (abierto) loadHist(abierto); }
       if (S.open && S.open !== 'new' && !S.leads.some(function (l) { return l.id === S.open; })) closeDrawer();
       nuevos.forEach(function (l) { freshIds[l.id] = true; });
       render();
@@ -850,7 +859,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
     unseen += nuevos.length;
     document.title = '(' + unseen + ') ' + baseTitle;
     var t = $('toast');
-    t.textContent = nuevos.length === 1 ? 'Nuevo lead: ' + nuevos[0].nombre + (nuevos[0].monto ? ' · ' + nuevos[0].monto : '') : nuevos.length + ' leads nuevos';
+    t.textContent = nuevos.length === 1 ? (nuevos[0]._vuelve ? 'Volvió a escribir: ' : 'Nuevo lead: ') + nuevos[0].nombre + (nuevos[0].monto ? ' · ' + nuevos[0].monto : '') : nuevos.length + ' leads con actividad nueva';
     t.classList.add('on');
     t.onclick = function () { t.classList.remove('on'); if (nuevos.length === 1) { setView('leads'); openDrawer(nuevos[0].id); } else setView('leads'); };
     clearTimeout(avisar._t); avisar._t = setTimeout(function () { t.classList.remove('on'); }, 8000);

@@ -46,6 +46,19 @@ module.exports = async (req, res) => {
         return send(res, 200, { eventos: await db(`lead_eventos?lead_id=eq.${id}&order=created_at.desc`) });
       }
       const leads = await db('leads?select=*&order=created_at.desc&limit=5000');
+      // Cuántas veces volvió a escribir cada lead y cuándo fue la última, para ordenar por actividad.
+      const contactos = await db('lead_eventos?tipo=eq.contacto&select=lead_id,created_at&order=created_at.desc&limit=10000').catch(() => []);
+      const porLead = {};
+      for (const e of contactos) {
+        const p = porLead[e.lead_id] || (porLead[e.lead_id] = { n: 0, ultimo: e.created_at });
+        p.n++;
+      }
+      for (const l of leads) {
+        const p = porLead[l.id];
+        l.contactos = 1 + (p ? p.n : 0);
+        l.ultimo_contacto = p ? p.ultimo : l.created_at;
+      }
+      leads.sort((a, b) => (a.ultimo_contacto < b.ultimo_contacto ? 1 : -1));
       return send(res, 200, { leads, yo });
     }
 
