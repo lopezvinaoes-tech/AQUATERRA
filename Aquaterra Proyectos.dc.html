@@ -11,6 +11,8 @@
 <script src="./fx.js" defer></script>
 <script src="./chat.js" defer></script>
 <script src="./comparador.js" defer></script>
+<script src="./leads.js"></script>
+<script src="./alertas.js" defer></script>
 </head>
 <body>
 <x-dc>
@@ -152,6 +154,8 @@ select option{color:#1D1D1F;background:#FFFFFF}
     <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
       <div style="padding:56px 24px;border-radius:22px;background:{{ th.card }};display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
         <span style="font-size:19px;font-weight:600;letter-spacing:-0.02em">No hay propiedades con estos filtros.</span>
+        <span style="max-width:420px;font-size:15px;line-height:1.5;color:{{ th.mute }}">Déjanos tu contacto y te avisamos cuando entre un proyecto así.</span>
+        <button onClick="{{ openAlerta }}" style="margin-top:4px;height:46px;padding:0 22px;border:0;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:16px;font-weight:500;cursor:pointer">Avísame cuando haya</button>
         <button onClick="{{ clearF }}" style="min-height:44px;padding:0 12px;border:0;background:transparent;font-size:17px;cursor:pointer;color:{{ linkC }}">Limpiar filtros</button>
       </div>
     </sc-if>
@@ -161,7 +165,10 @@ select option{color:#1D1D1F;background:#FFFFFF}
         <span style="font-size:clamp(26px,3.2vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">¿No encuentras lo que buscas? <span data-accent="" style="color:#86868B">Analicemos tu caso.</span></span>
         <span style="font-size:17px;line-height:1.5;color:rgba(245,245,247,0.72)">Te presentamos oportunidades a tu medida, incluso fuera de catálogo.</span>
       </div>
-      <a href="index.html#contacto" style="display:flex;align-items:center;height:50px;padding:0 28px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Agenda una asesoría</a>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <button onClick="{{ openAlerta }}" style="display:flex;align-items:center;gap:8px;height:50px;padding:0 24px;border-radius:999px;border:1px solid rgba(245,245,247,0.28);background:transparent;color:#F5F5F7;font-size:17px;font-weight:500;cursor:pointer"><span style="width:8px;height:8px;background:#C9F15D;transform:rotate(45deg);border-radius:1px"></span>Avísame de proyectos nuevos</button>
+        <a href="index.html#contacto" style="display:flex;align-items:center;height:50px;padding:0 28px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Agenda una asesoría</a>
+      </div>
     </div>
   </div>
 </section>
@@ -313,6 +320,11 @@ class Component extends DCLogic {
       anyF: Object.values(s.f).some(Boolean),
       clearF: () => this.setState({ f: { ciudad: '', tipo: '', etapa: '', rango: '', dorm: '' } }),
       projects,
+      openAlerta: () => {
+        if (!window.AQAlertas) return;
+        const lbl = (k) => { const fl = this.FILTERS.find((x) => x[0] === k); const o = fl && fl[2].find((x) => x[0] === s.f[k]); return s.f[k] && o ? o[1] : ''; };
+        window.AQAlertas.abrir({ ciudad: s.f.ciudad, tipo: s.f.tipo, monto: lbl('rango'), dorm: lbl('dorm') });
+      },
       openCmp: () => { if (window.AQComparar) window.AQComparar.abrir(); },
       cmpLabel: nCmp ? `Comparar (${nCmp})` : 'Comparar proyectos',
       noResults: projects.length === 0,
