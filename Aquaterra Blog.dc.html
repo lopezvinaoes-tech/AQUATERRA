@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog · Aquaterra: invertir en Paraguay desde España</title>
+<meta name="description" content="Guías con datos y fuentes para invertir en inmuebles en Paraguay desde España: comprar sobre plano, impuestos, compra a distancia, rentabilidad del alquiler en Asunción y precio de lotes.">
 <script src="./marca.js"></script>
+<script src="./articulos.js"></script>
 <script src="./support.js"></script>
 <script src="./chat.js" defer></script>
 </head>
@@ -75,62 +78,223 @@ button,select,input{font-family:inherit}
   </div>
 </sc-if>
 
-<section data-screen-label="01 Blog" style="padding:calc(52px + env(safe-area-inset-top) + clamp(40px,8vw,96px)) clamp(20px,3.2vw,48px) 28px">
+<sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+<section data-screen-label="01 Blog" style="padding:calc(52px + env(safe-area-inset-top) + clamp(40px,8vw,96px)) clamp(16px,3.2vw,48px) 28px">
   <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
     <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:{{ th.mute }}">Blog</span>
     <h1 style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1.02;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">Información para <span style="color:#86868B">invertir mejor.</span></h1>
-    <p style="margin:0;max-width:560px;font-size:clamp(17px,1.6vw,21px);line-height:1.45;color:{{ th.mute2 }};text-wrap:pretty">Guías, datos de mercado y novedades legales para comprar con criterio en Paraguay.</p>
+    <p style="margin:0;max-width:600px;font-size:clamp(17px,1.6vw,21px);line-height:1.45;color:{{ th.mute2 }};text-wrap:pretty">Guías, datos de mercado y fiscalidad para invertir en Paraguay desde España. Cada cifra lleva su fuente enlazada.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
+      <span style="display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;border-radius:999px;background:{{ glassBg }};border:1px solid {{ glassLine }};color:{{ glassInk }};font-size:13px;font-weight:500"><span style="width:7px;height:7px;border-radius:2px;transform:rotate(45deg);background:{{ glassInk }}"></span>Datos con fuente pública</span>
+      <span style="display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:999px;background:{{ th.chip }};color:{{ th.mute2 }};font-size:13px;font-weight:500">Actualizado en octubre de 2026</span>
+    </div>
   </div>
 </section>
 
 <div style="position:sticky;top:calc(52px + env(safe-area-inset-top));z-index:20;background:{{ barBg }};backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid {{ th.line }}">
-  <div style="max-width:1120px;margin:0 auto;padding:10px clamp(20px,3.2vw,48px);display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch">
-    <sc-for list="{{ cats }}" as="c" hint-placeholder-count="6">
-      <button onClick="{{ c.pick }}" style="flex:0 0 auto;height:40px;padding:0 16px;border-radius:999px;border:0;background:{{ c.bg }};color:{{ c.ink }};font-size:15px;font-weight:500;white-space:nowrap;cursor:pointer;transition:background .25s, color .25s">{{ c.label }}</button>
+  <div style="max-width:calc(1120px + 2 * clamp(16px,3.2vw,48px));margin:0 auto;padding:10px clamp(16px,3.2vw,48px);display:flex;align-items:center;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch">
+    <sc-for list="{{ cats }}" as="c" hint-placeholder-count="5">
+      <button onClick="{{ c.pick }}" aria-pressed="{{ c.on }}" style="flex:0 0 auto;height:40px;padding:0 16px;border-radius:999px;border:0;background:{{ c.bg }};color:{{ c.ink }};font-size:15px;font-weight:500;white-space:nowrap;cursor:pointer;transition:background .25s, color .25s">{{ c.label }}<span style="margin-left:6px;opacity:0.55;font-size:13px">{{ c.n }}</span></button>
     </sc-for>
   </div>
 </div>
 
-<section data-screen-label="02 Artículos" style="padding:28px clamp(20px,3.2vw,48px) clamp(80px,10vw,140px)">
+<section data-screen-label="02 Artículos" style="padding:28px clamp(16px,3.2vw,48px) clamp(80px,10vw,140px)">
   <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
     <span style="font-size:14px;color:{{ th.mute }}">{{ countLabel }}</span>
     <sc-if value="{{ hasFeat }}" hint-placeholder-val="{{ true }}">
       <div data-card="">
-        <a href="#" style="display:grid;grid-template-columns:{{ featCols }};border-radius:28px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .45s cubic-bezier(.3,.7,.2,1), box-shadow .45s" style-hover="transform:scale(1.01);box-shadow:0 30px 60px -36px rgba(0,0,0,0.35);color:{{ th.ink }}">
-          <div style="min-height:240px;aspect-ratio:{{ featAspect }};background:{{ th.ph }};display:flex;align-items:center;justify-content:center">
-            <span style="font-size:13px;color:{{ th.phInk }}">imagen destacada</span>
+        <a href="{{ feat.href }}" style="display:grid;grid-template-columns:{{ featCols }};border-radius:28px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .45s cubic-bezier(.3,.7,.2,1), box-shadow .45s" style-hover="transform:scale(1.01);box-shadow:0 30px 60px -36px rgba(0,0,0,0.35);color:{{ th.ink }}">
+          <div style="position:relative;min-height:{{ featMinH }};container-type:inline-size;background:{{ feat.cov.bg }};overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(20px,3vw,32px)">
+            <span style="position:absolute;right:-9%;top:-14%;width:46%;aspect-ratio:1;transform:rotate(45deg);border-radius:12%;border:1px solid rgba(201,241,93,0.22);background:rgba(201,241,93,0.05)"></span>
+            <span style="position:absolute;right:6%;top:9%;width:13%;aspect-ratio:1;transform:rotate(45deg);border-radius:14%;border:1px solid rgba(201,241,93,0.38);background:rgba(201,241,93,0.14)"></span>
+            <span style="position:relative;align-self:flex-start;display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:#E4F7B0;font-size:12px;font-weight:600;letter-spacing:0.02em">{{ feat.cat }}</span>
+            <div style="position:relative;display:flex;flex-direction:column;gap:10px">
+              <span style="font-size:{{ feat.cov.fsBig }};line-height:0.95;font-weight:700;letter-spacing:-0.045em;color:#E4F7B0;white-space:nowrap">{{ feat.portada.cifra }}</span>
+              <span style="max-width:30ch;font-size:clamp(13px,1.3vw,15px);line-height:1.4;color:rgba(245,245,247,0.72)">{{ feat.portada.pie }}</span>
+            </div>
           </div>
           <div style="padding:clamp(24px,3.4vw,44px);display:flex;flex-direction:column;justify-content:center;gap:14px">
             <span style="font-size:13px;font-weight:600;color:{{ catInk }}">Destacado · {{ feat.cat }}</span>
-            <h2 style="margin:0;font-size:clamp(26px,3vw,40px);line-height:1.1;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">{{ feat.t }}</h2>
+            <h2 style="margin:0;font-size:clamp(26px,3vw,38px);line-height:1.1;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">{{ feat.t }}</h2>
             <p style="margin:0;font-size:17px;line-height:1.5;color:{{ th.mute2 }};text-wrap:pretty">{{ feat.ex }}</p>
-            <span style="font-size:14px;color:{{ th.mute }}">{{ feat.date }} · {{ feat.min }} de lectura</span>
+            <span style="font-size:14px;color:{{ th.mute }}">{{ feat.fecha }} · {{ feat.min }} de lectura · {{ feat.nf }} fuentes</span>
             <span style="font-size:17px;color:{{ linkC }}">Leer artículo ›</span>
           </div>
         </a>
       </div>
     </sc-if>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px">
-      <sc-for list="{{ posts }}" as="p" hint-placeholder-count="6">
+      <sc-for list="{{ posts }}" as="p" hint-placeholder-count="5">
         <div data-card="" style="display:flex">
-          <a href="#" style="flex:1;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .4s cubic-bezier(.3,.7,.2,1), box-shadow .4s" style-hover="transform:scale(1.015);box-shadow:0 24px 48px -30px rgba(0,0,0,0.35);color:{{ th.ink }}">
-            <div style="aspect-ratio:16/10;background:{{ th.ph }};display:flex;align-items:center;justify-content:center">
-              <span style="font-size:13px;color:{{ th.phInk }}">imagen del artículo</span>
+          <a href="{{ p.href }}" style="flex:1;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .4s cubic-bezier(.3,.7,.2,1), box-shadow .4s" style-hover="transform:scale(1.015);box-shadow:0 24px 48px -30px rgba(0,0,0,0.35);color:{{ th.ink }}">
+            <div style="position:relative;aspect-ratio:16/10;container-type:inline-size;background:{{ p.cov.bg }};overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:18px 20px">
+              <span style="position:absolute;right:-12%;top:-20%;width:50%;aspect-ratio:1;transform:rotate(45deg);border-radius:12%;border:1px solid rgba(201,241,93,0.2);background:rgba(201,241,93,0.05)"></span>
+              <span style="position:relative;align-self:flex-start;display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:#E4F7B0;font-size:12px;font-weight:600;letter-spacing:0.02em">{{ p.cat }}</span>
+              <div style="position:relative;display:flex;flex-direction:column;gap:6px">
+                <span style="font-size:{{ p.cov.fs }};line-height:0.95;font-weight:700;letter-spacing:-0.045em;color:#E4F7B0;white-space:nowrap">{{ p.portada.cifra }}</span>
+                <span style="max-width:34ch;font-size:13px;line-height:1.35;color:rgba(245,245,247,0.7)">{{ p.portada.pie }}</span>
+              </div>
             </div>
             <div style="flex:1;display:flex;flex-direction:column;gap:10px;padding:20px 22px 24px">
               <span style="font-size:13px;font-weight:600;color:{{ catInk }}">{{ p.cat }} · {{ p.min }}</span>
               <h3 style="margin:0;font-size:21px;line-height:1.2;font-weight:600;letter-spacing:-0.02em;text-wrap:pretty">{{ p.t }}</h3>
               <p style="margin:0;font-size:15px;line-height:1.5;color:{{ th.mute }};display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">{{ p.ex }}</p>
-              <span style="margin-top:auto;padding-top:6px;font-size:13px;color:{{ th.mute }}">{{ p.date }}</span>
+              <span style="margin-top:auto;padding-top:6px;font-size:13px;color:{{ th.mute }}">{{ p.fecha }} · {{ p.nf }} fuentes</span>
             </div>
           </a>
         </div>
       </sc-for>
     </div>
+    <div data-card="" style="margin-top:clamp(20px,4vw,40px);border-radius:28px;background:#0B0C0F;color:#F5F5F7;padding:clamp(28px,4.4vw,56px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px">
+      <div style="flex:1 1 320px;display:flex;flex-direction:column;gap:10px;max-width:620px">
+        <span style="font-size:13px;font-weight:600;color:#E4F7B0">Asesoría sin compromiso</span>
+        <h2 style="margin:0;font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">¿Quieres aplicar estos datos a tu caso?</h2>
+        <p style="margin:0;font-size:17px;line-height:1.5;color:rgba(245,245,247,0.75);text-wrap:pretty">Cuéntanos tu presupuesto y tu objetivo, y te ayudamos a hacer los números con cifras reales.</p>
+      </div>
+      <a href="index.html#contacto" style="flex:0 0 auto;display:flex;align-items:center;height:50px;padding:0 24px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Habla con un asesor</a>
+    </div>
   </div>
 </section>
+</sc-if>
 
-<footer data-screen-label="03 Footer" style="background:{{ th.foot }};color:#F5F5F7;padding:48px clamp(20px,3.2vw,48px) calc(28px + env(safe-area-inset-bottom))">
+<sc-if value="{{ isArt }}" hint-placeholder-val="{{ false }}">
+<article data-screen-label="01 Artículo" style="padding:calc(52px + env(safe-area-inset-top) + clamp(28px,5vw,64px)) clamp(16px,3.2vw,48px) 0">
+  <div style="max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:18px">
+    <a href="Aquaterra%20Blog.dc.html" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:15px;color:{{ linkC }}" style-hover="opacity:0.75">‹ Todos los artículos</a>
+    <span style="font-size:14px;font-weight:600;color:{{ catInk }}">{{ art.cat }}</span>
+    <h1 style="margin:0;font-size:clamp(34px,5.2vw,60px);line-height:1.05;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">{{ art.t }}</h1>
+    <p style="margin:0;font-size:clamp(18px,1.8vw,22px);line-height:1.45;color:{{ th.mute2 }};text-wrap:pretty">{{ art.ex }}</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;font-size:14px;color:{{ th.mute }}">
+      <span>{{ art.fecha }}</span><span style="opacity:0.5">·</span><span>{{ art.min }} de lectura</span><span style="opacity:0.5">·</span><a href="#fuentes" style="color:{{ linkC }}">{{ art.nf }} fuentes citadas</a>
+    </div>
+  </div>
+  <div style="max-width:1120px;margin:clamp(28px,4vw,48px) auto 0">
+    <div style="position:relative;container-type:inline-size;aspect-ratio:{{ heroAspect }};border-radius:clamp(20px,2.6vw,32px);background:{{ art.cov.bg }};overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(22px,4vw,56px)">
+      <span style="position:absolute;right:-6%;top:-30%;width:42%;aspect-ratio:1;transform:rotate(45deg);border-radius:12%;border:1px solid rgba(201,241,93,0.2);background:rgba(201,241,93,0.05)"></span>
+      <span style="position:absolute;right:9%;top:12%;width:9%;aspect-ratio:1;transform:rotate(45deg);border-radius:14%;border:1px solid rgba(201,241,93,0.38);background:rgba(201,241,93,0.14)"></span>
+      <span style="position:relative;align-self:flex-start;display:inline-flex;align-items:center;height:30px;padding:0 13px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:#E4F7B0;font-size:13px;font-weight:600;letter-spacing:0.02em">{{ art.cat }}</span>
+      <div style="position:relative;display:flex;flex-direction:column;gap:12px">
+        <span style="font-size:{{ art.cov.fsHero }};line-height:0.92;font-weight:700;letter-spacing:-0.05em;color:#E4F7B0;white-space:nowrap">{{ art.portada.cifra }}</span>
+        <span style="max-width:36ch;font-size:clamp(14px,1.6vw,19px);line-height:1.4;color:rgba(245,245,247,0.75)">{{ art.portada.pie }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:700px;margin:0 auto;padding:clamp(36px,5vw,64px) 0 0;display:flex;flex-direction:column">
+    <sc-for list="{{ bloques }}" as="b" hint-placeholder-count="6">
+      <sc-if value="{{ b.isH2 }}">
+        <h2 style="margin:36px 0 14px;font-size:clamp(24px,2.6vw,30px);line-height:1.15;letter-spacing:-0.025em;font-weight:700;text-wrap:balance">{{ b.x }}</h2>
+      </sc-if>
+      <sc-if value="{{ b.isP }}">
+        <p style="margin:0 0 18px;font-size:clamp(17px,1.5vw,19px);line-height:1.65;color:{{ th.body }};text-wrap:pretty">{{ b.x }}</p>
+      </sc-if>
+      <sc-if value="{{ b.isList }}">
+        <div style="margin:2px 0 22px;display:flex;flex-direction:column;gap:12px">
+          <sc-for list="{{ b.items }}" as="li">
+            <div style="display:flex;gap:14px;align-items:flex-start;font-size:clamp(17px,1.5vw,19px);line-height:1.6;color:{{ th.body }}">
+              <span style="flex:0 0 auto;margin-top:0.62em;width:8px;height:8px;border-radius:2px;transform:rotate(45deg);background:{{ bullet }}"></span>
+              <span style="text-wrap:pretty">{{ li }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ b.isDato }}">
+        <div style="margin:14px 0 30px;border-radius:24px;background:#0B0C0F;color:#F5F5F7;padding:clamp(22px,3.4vw,34px);display:flex;flex-direction:column;gap:12px;border:1px solid {{ datoLine }}">
+          <span style="align-self:flex-start;display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:#E4F7B0;font-size:12px;font-weight:600;letter-spacing:0.02em">Dato destacado</span>
+          <span style="font-size:clamp(38px,6vw,60px);line-height:1;font-weight:700;letter-spacing:-0.04em;color:#E4F7B0">{{ b.v }}</span>
+          <span style="font-size:17px;line-height:1.55;color:rgba(245,245,247,0.82);text-wrap:pretty">{{ b.x }}</span>
+          <a href="{{ b.f.url }}" target="_blank" rel="noopener" style="align-self:flex-start;font-size:14px;color:rgba(228,247,176,0.85);border-bottom:1px solid rgba(228,247,176,0.35)" style-hover="color:#E4F7B0">Fuente: {{ b.f.nombre }} ↗</a>
+        </div>
+      </sc-if>
+      <sc-if value="{{ b.isTabla }}">
+        <div style="margin:6px 0 26px;border-radius:20px;background:{{ th.card }};border:1px solid {{ th.line }};overflow:hidden">
+          <sc-if value="{{ tablaWide }}">
+            <div style="display:grid;grid-template-columns:{{ b.cols }};gap:0 16px;padding:12px 18px;background:{{ th.chip }};font-size:13px;font-weight:600;color:{{ th.mute2 }}">
+              <sc-for list="{{ b.cab }}" as="hc"><span>{{ hc }}</span></sc-for>
+            </div>
+            <sc-for list="{{ b.rows }}" as="r">
+              <div style="display:grid;grid-template-columns:{{ b.cols }};gap:0 16px;padding:12px 18px;border-top:1px solid {{ th.line }};font-size:15px;line-height:1.45;color:{{ th.body }}">
+                <span style="font-weight:600;color:{{ th.ink }}">{{ r.head }}</span>
+                <sc-for list="{{ r.cells }}" as="ce"><span>{{ ce.v }}</span></sc-for>
+              </div>
+            </sc-for>
+          </sc-if>
+          <sc-if value="{{ tablaNarrow }}">
+            <sc-for list="{{ b.rows }}" as="r">
+              <div style="padding:14px 18px;border-top:{{ r.topLine }};display:flex;flex-direction:column;gap:6px">
+                <span style="font-size:16px;font-weight:600;color:{{ th.ink }}">{{ r.head }}</span>
+                <sc-for list="{{ r.cells }}" as="ce">
+                  <div style="display:flex;justify-content:space-between;gap:16px;font-size:14px;line-height:1.4">
+                    <span style="color:{{ th.mute }}">{{ ce.k }}</span>
+                    <span style="text-align:right;color:{{ th.body }}">{{ ce.v }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </sc-if>
+        </div>
+      </sc-if>
+    </sc-for>
+
+    <div id="fuentes" style="scroll-margin-top:72px;margin-top:30px;border-radius:22px;background:{{ th.card }};border:1px solid {{ th.line }};padding:clamp(20px,3vw,28px);display:flex;flex-direction:column;gap:14px">
+      <span style="font-size:13px;font-weight:600;color:{{ catInk }}">Fuentes</span>
+      <div style="display:flex;flex-direction:column">
+        <sc-for list="{{ art.fuentes }}" as="fu">
+          <a href="{{ fu.url }}" target="_blank" rel="noopener" style="display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:44px;padding:8px 0;border-top:1px solid {{ th.line }};font-size:15px;line-height:1.4;color:{{ linkC }}" style-hover="opacity:0.75">
+            <span>{{ fu.nombre }}</span><span style="flex:0 0 auto">↗</span>
+          </a>
+        </sc-for>
+      </div>
+      <span style="font-size:13px;line-height:1.5;color:{{ th.mute }}">Contenido informativo con datos públicos. Las cifras de mercado son medias y estimaciones, no garantías de rentabilidad. Valida impuestos y trámites con un asesor fiscal o un escribano antes de decidir.</span>
+    </div>
+
+    <div style="margin-top:28px;border-radius:24px;background:#0B0C0F;color:#F5F5F7;padding:clamp(24px,3.6vw,36px);display:flex;flex-direction:column;gap:14px">
+      <span style="align-self:flex-start;display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:#E4F7B0;font-size:12px;font-weight:600">Siguiente paso</span>
+      <h2 style="margin:0;font-size:clamp(24px,2.8vw,32px);line-height:1.12;letter-spacing:-0.025em;font-weight:700;text-wrap:balance">{{ art.ctaT }}</h2>
+      <p style="margin:0;font-size:17px;line-height:1.55;color:rgba(245,245,247,0.78)">Cuéntanos tu presupuesto, tu residencia fiscal y lo que buscas. Un asesor te responde con números reales para tu caso, sin compromiso.</p>
+      <a href="index.html#contacto" style="align-self:flex-start;display:flex;align-items:center;height:48px;padding:0 22px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Habla con un asesor</a>
+    </div>
+  </div>
+
+  <section style="max-width:1120px;margin:0 auto;padding:clamp(64px,8vw,104px) 0 clamp(80px,10vw,140px);display:flex;flex-direction:column;gap:22px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <h2 style="margin:0;font-size:clamp(26px,3vw,36px);letter-spacing:-0.03em;font-weight:700">Sigue leyendo</h2>
+      <a href="Aquaterra%20Blog.dc.html" style="font-size:15px;color:{{ linkC }}" style-hover="opacity:0.75">Ver todos ›</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:20px">
+      <sc-for list="{{ related }}" as="p" hint-placeholder-count="3">
+        <div data-card="" style="display:flex">
+          <a href="{{ p.href }}" style="flex:1;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .4s cubic-bezier(.3,.7,.2,1), box-shadow .4s" style-hover="transform:scale(1.015);box-shadow:0 24px 48px -30px rgba(0,0,0,0.35);color:{{ th.ink }}">
+            <div style="position:relative;aspect-ratio:16/9;container-type:inline-size;background:{{ p.cov.bg }};overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:16px 18px">
+              <span style="position:absolute;right:-12%;top:-22%;width:48%;aspect-ratio:1;transform:rotate(45deg);border-radius:12%;border:1px solid rgba(201,241,93,0.2);background:rgba(201,241,93,0.05)"></span>
+              <span style="position:relative;align-self:flex-start;display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:#E4F7B0;font-size:12px;font-weight:600">{{ p.cat }}</span>
+              <span style="position:relative;font-size:{{ p.cov.fs }};line-height:0.95;font-weight:700;letter-spacing:-0.045em;color:#E4F7B0;white-space:nowrap">{{ p.portada.cifra }}</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:8px;padding:18px 20px 22px">
+              <span style="font-size:13px;font-weight:600;color:{{ catInk }}">{{ p.cat }} · {{ p.min }}</span>
+              <h3 style="margin:0;font-size:19px;line-height:1.25;font-weight:600;letter-spacing:-0.02em;text-wrap:pretty">{{ p.t }}</h3>
+            </div>
+          </a>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+</article>
+</sc-if>
+
+<sc-if value="{{ notFound }}" hint-placeholder-val="{{ false }}">
+<section style="min-height:70svh;padding:calc(52px + env(safe-area-inset-top) + 96px) clamp(16px,3.2vw,48px) 96px">
+  <div style="max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+    <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Blog</span>
+    <h1 style="margin:0;font-size:clamp(34px,5vw,56px);line-height:1.05;letter-spacing:-0.035em;font-weight:700">No encontramos este artículo.</h1>
+    <p style="margin:0;font-size:19px;line-height:1.5;color:{{ th.mute2 }}">Puede que el enlace haya cambiado. Echa un vistazo al resto de artículos.</p>
+    <a href="Aquaterra%20Blog.dc.html" style="align-self:flex-start;display:flex;align-items:center;height:48px;padding:0 22px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Ver todos los artículos</a>
+  </div>
+</section>
+</sc-if>
+
+<footer data-screen-label="03 Footer" style="background:{{ th.foot }};color:#F5F5F7;padding:48px clamp(16px,3.2vw,48px) calc(28px + env(safe-area-inset-bottom))">
   <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px 24px">
       <span style="display:flex;align-items:center;gap:9px;font-size:18px;font-weight:600;letter-spacing:-0.02em"><span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>{{ marca }}</span>
@@ -138,9 +302,11 @@ button,select,input{font-family:inherit}
         <a href="index.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Inicio</a>
         <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Proyectos</a>
         <a href="index.html#nosotros" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Nosotros</a>
+        <a href="Aquaterra%20Blog.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Blog</a>
         <a href="index.html#contacto" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Contacto</a>
       </div>
     </div>
+    <span style="font-size:13px;line-height:1.5;color:rgba(245,245,247,0.6)">Contenido informativo con fuentes públicas enlazadas; no constituye asesoramiento fiscal ni legal.</span>
     <span style="font-size:13px;color:rgba(245,245,247,0.6)">© 2026 {{ marca }} · Asunción, Paraguay</span>
   </div>
 </footer>
@@ -152,29 +318,50 @@ class Component extends DCLogic {
   state = {
     mode: (() => { try { return localStorage.getItem('aquaterra-modo'); } catch (e) { return null; } })(),
     w: typeof window !== 'undefined' ? window.innerWidth : 1280,
-    menu: false, cat: 'Todos'
+    menu: false,
+    cat: (() => { try { return new URLSearchParams(window.location.search).get('cat') || 'Todos'; } catch (e) { return 'Todos'; } })(),
+    slug: (() => { try { return new URLSearchParams(window.location.search).get('a') || ''; } catch (e) { return ''; } })()
   };
   rootRef = React.createRef();
 
-  CATS = ['Todos', 'Guías', 'Mercado', 'Impuestos', 'Legal', 'Obra'];
-  POSTS = [
-    { cat: 'Guías', t: 'Qué es comprar en pozo y cuándo conviene', ex: 'Ventajas de precio, riesgos a evaluar y cómo se estructura el pago durante la obra.', min: '6 min', date: '12 oct. 2026' },
-    { cat: 'Mercado', t: 'Barrios de Asunción con mayor demanda de alquiler', ex: 'Villa Morra, Carmelitas y Las Lomas concentran la demanda de profesionales y empresas.', min: '5 min', date: '3 oct. 2026' },
-    { cat: 'Impuestos', t: 'El sistema 10-10-10 explicado para inversores', ex: 'IVA, renta personal y renta empresarial: qué implica para quien compra y alquila.', min: '4 min', date: '24 sep. 2026' },
-    { cat: 'Guías', t: 'Cómo evaluar a una desarrolladora antes de invertir', ex: 'Obras entregadas, respaldo financiero y contratos: la lista que usamos en cada análisis.', min: '7 min', date: '15 sep. 2026' },
-    { cat: 'Mercado', t: 'Alquiler temporario o tradicional: qué rinde más', ex: 'Comparamos ocupación, gastos y rentabilidad neta en unidades de 1 y 2 dormitorios.', min: '6 min', date: '2 sep. 2026' },
-    { cat: 'Legal', t: 'Residencia en Paraguay para inversores extranjeros', ex: 'Requisitos, plazos y documentos para radicarse o tener base en el país.', min: '8 min', date: '20 ago. 2026' },
-    { cat: 'Obra', t: 'Qué revisar en un informe de avance de obra', ex: 'Certificaciones, fotos y cronograma: cómo leer el informe mensual de tu unidad.', min: '5 min', date: '8 ago. 2026' },
-    { cat: 'Impuestos', t: 'Costos de escrituración y gastos al comprar', ex: 'Honorarios, tasas e impuestos que conviene prever antes de firmar.', min: '4 min', date: '25 jul. 2026' },
-    { cat: 'Guías', t: 'Plan de pagos en dólares: anticipo, cuotas y saldo', ex: 'Cómo se combinan las tres etapas y qué margen de negociación existe.', min: '5 min', date: '10 jul. 2026' }
-  ];
+  CATS = ['Todos', 'Guías', 'Mercado', 'Impuestos', 'Legal'];
+  GLOWS = ['18% 110%', '92% 100%', '10% 0%', '80% 115%', '50% 120%', '0% 60%'];
   NAV = [['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#inversiones', 'Inversiones'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  CTAS = {
+    'Guías': '¿Te ayudamos a elegir la opción que encaja contigo?',
+    'Mercado': '¿Quieres hacer estos números con tu presupuesto?',
+    'Impuestos': '¿Quieres saber cómo tributaría tu inversión?',
+    'Legal': '¿Te acompañamos en la compra a distancia?'
+  };
   THEMES = {
-    dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', ph: '#E8E8ED', phInk: '#6E6E73', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' },
-    noche: { bg: '#000000', ink: '#F5F5F7', mute: '#98989D', mute2: '#C7C7CC', line: 'rgba(255,255,255,0.12)', card: '#1C1C1E', ph: '#2C2C2E', phInk: '#8E8E93', foot: '#000000', chip: 'rgba(118,118,128,0.24)' }
+    dia: { bg: '#F5F5F7', ink: '#1D1D1F', body: '#2C2C2E', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' },
+    noche: { bg: '#000000', ink: '#F5F5F7', body: '#D1D1D6', mute: '#98989D', mute2: '#C7C7CC', line: 'rgba(255,255,255,0.12)', card: '#1C1C1E', foot: '#000000', chip: 'rgba(118,118,128,0.24)' }
   };
 
   mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
+
+  // Artículos con los campos derivados que usa la plantilla (enlace, minutos, portada).
+  posts() {
+    if (this._posts) return this._posts;
+    const src = (typeof window !== 'undefined' && window.ARTICULOS) || [];
+    this._posts = src.map((a, i) => {
+      const words = JSON.stringify(a.cuerpo).split(/\s+/).length;
+      const len = String(a.portada.cifra).length;
+      const fit = (base, k) => Math.min(base, k / Math.max(len, 1)).toFixed(1) + 'cqi';
+      return Object.assign({}, a, {
+        href: 'Aquaterra%20Blog.dc.html?a=' + encodeURIComponent(a.slug),
+        min: Math.max(2, Math.ceil(words / 170)) + ' min',
+        nf: a.fuentes.length,
+        ctaT: this.CTAS[a.cat] || '¿Hablamos de tu inversión?',
+        cov: {
+          bg: `radial-gradient(120% 95% at ${this.GLOWS[i % this.GLOWS.length]}, rgba(201,241,93,0.20), rgba(201,241,93,0) 58%), linear-gradient(160deg, #15171C 0%, #0B0C0F 70%)`,
+          fs: fit(19, 112), fsBig: fit(17, 100), fsHero: fit(15, 92)
+        }
+      });
+    });
+    return this._posts;
+  }
+  current() { return this.state.slug ? this.posts().find((p) => p.slug === this.state.slug) : null; }
 
   componentDidMount() {
     this._onResize = () => this.setState((st) => ({ w: window.innerWidth, menu: window.innerWidth >= 980 ? false : st.menu }));
@@ -182,6 +369,7 @@ class Component extends DCLogic {
     this._onKey = (e) => { if (e.key === 'Escape' && this.state.menu) this.setState({ menu: false }); };
     window.addEventListener('keydown', this._onKey);
     this._lastCat = this.state.cat;
+    this.setMeta();
     this.anim(false);
   }
   componentDidUpdate() {
@@ -193,6 +381,27 @@ class Component extends DCLogic {
     window.removeEventListener('resize', this._onResize);
     window.removeEventListener('keydown', this._onKey);
     if (this.io) this.io.disconnect();
+  }
+
+  setMeta() {
+    const marca = (window.MARCA && window.MARCA.nombre) || 'Aquaterra';
+    const a = this.current();
+    const title = a ? `${a.t} · Blog ${marca}` : this.state.slug ? `Artículo no encontrado · Blog ${marca}` : `Blog · ${marca}: invertir en Paraguay desde España`;
+    document.title = title;
+    if (a) {
+      let m = document.querySelector('meta[name="description"]');
+      if (!m) { m = document.createElement('meta'); m.setAttribute('name', 'description'); document.head.appendChild(m); }
+      m.setAttribute('content', a.ex);
+    }
+  }
+
+  pickCat(c) {
+    this.setState({ cat: c });
+    try {
+      const u = new URL(window.location.href);
+      if (c === 'Todos') u.searchParams.delete('cat'); else u.searchParams.set('cat', c);
+      window.history.replaceState(null, '', u.pathname + u.search);
+    } catch (e) {}
   }
 
   anim(reset) {
@@ -219,12 +428,35 @@ class Component extends DCLogic {
     });
   }
 
+  blocks(a, wideTable) {
+    return a.cuerpo.map((b) => {
+      const o = { isH2: b.t === 'h2', isP: b.t === 'p', isList: b.t === 'list', isDato: b.t === 'dato', isTabla: b.t === 'tabla', x: b.x, v: b.v, f: b.f || { nombre: '', url: '#' }, items: b.items || [] };
+      if (o.isTabla) {
+        const n = b.cab.length;
+        o.cab = b.cab;
+        o.cols = n === 3 ? 'minmax(0,1.3fr) minmax(0,1.6fr) minmax(0,1fr)' : `minmax(0,1.4fr) repeat(${n - 1},minmax(0,1fr))`;
+        o.rows = b.filas.map((r, i) => ({ head: r[0], topLine: i === 0 ? '0' : '1px solid ' + this.th.line, cells: r.slice(1).map((v, j) => ({ k: b.cab[j + 1], v })) }));
+      }
+      return o;
+    });
+  }
+
   renderVals() {
     const s = this.state;
     const night = this.mode() === 'noche';
     const th = this.THEMES[night ? 'noche' : 'dia'];
-    const list = s.cat === 'Todos' ? this.POSTS : this.POSTS.filter((p) => p.cat === s.cat);
-    const feat = list[0] || this.POSTS[0];
+    this.th = th;
+    const all = this.posts();
+    const art = this.current();
+    const isArt = !!art, notFound = !!s.slug && !art, isList = !s.slug;
+    const cat = this.CATS.indexOf(s.cat) >= 0 ? s.cat : 'Todos';
+    const list = cat === 'Todos' ? all : all.filter((p) => p.cat === cat);
+    const feat = list[0] || all[0] || {};
+    let related = [];
+    if (art) {
+      const others = all.filter((p) => p.slug !== art.slug);
+      related = others.filter((p) => p.cat === art.cat).concat(others.filter((p) => p.cat !== art.cat)).slice(0, 3);
+    }
     return {
       rootRef: this.rootRef, th, themeName: night ? 'noche' : 'dia',
       marca: (window.MARCA && window.MARCA.nombre) || 'Aquaterra',
@@ -240,18 +472,29 @@ class Component extends DCLogic {
       ctaLabel: s.w >= 520 ? 'Agenda una asesoría' : 'Asesoría',
       linkC: night ? '#2997FF' : '#0066CC',
       catInk: night ? '#C9F15D' : '#4F7A0A',
+      bullet: night ? 'rgba(201,241,93,0.75)' : '#6F9A1F',
+      glassBg: night ? 'rgba(201,241,93,0.14)' : 'rgba(111,154,31,0.10)',
+      glassLine: night ? 'rgba(201,241,93,0.38)' : 'rgba(111,154,31,0.32)',
+      glassInk: night ? '#E4F7B0' : '#3F6206',
+      datoLine: night ? 'rgba(201,241,93,0.22)' : 'transparent',
       segTrack: night ? 'rgba(118,118,128,0.32)' : 'rgba(118,118,128,0.16)',
       knobBg: night ? '#636366' : '#FFFFFF',
       knobLeft: night ? '60px' : '2px', knobLeftL: night ? '88px' : '2px',
       dayInk: night ? 'rgba(245,245,247,0.7)' : '#1D1D1F',
       nightInk: night ? '#FFFFFF' : '#6E6E73',
       toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { localStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
-      cats: this.CATS.map((c) => ({ label: c, bg: c === s.cat ? th.ink : th.chip, ink: c === s.cat ? th.bg : th.ink, pick: () => this.setState({ cat: c }) })),
+      isList, isArt, notFound,
+      cats: this.CATS.map((c) => ({ label: c, n: c === 'Todos' ? all.length : all.filter((p) => p.cat === c).length, on: c === cat ? 'true' : 'false', bg: c === cat ? th.ink : th.chip, ink: c === cat ? th.bg : th.ink, pick: () => this.pickCat(c) })),
       countLabel: list.length === 1 ? '1 artículo' : `${list.length} artículos`,
       hasFeat: list.length > 0, feat,
-      featCols: s.w >= 820 ? 'minmax(0,1.35fr) minmax(0,1fr)' : 'minmax(0,1fr)',
-      featAspect: s.w >= 820 ? 'auto' : '16/10',
-      posts: list.slice(1)
+      featCols: s.w >= 820 ? 'minmax(0,1.2fr) minmax(0,1fr)' : 'minmax(0,1fr)',
+      featMinH: s.w >= 820 ? '380px' : '260px',
+      posts: list.slice(1),
+      art: art || { cat: '', t: '', ex: '', fecha: '', min: '', nf: 0, fuentes: [], portada: { cifra: '', pie: '' }, cov: { bg: '#0B0C0F', fsHero: '10cqi' }, ctaT: '' },
+      heroAspect: s.w >= 720 ? '21/8' : '4/3',
+      tablaWide: s.w >= 640, tablaNarrow: s.w < 640,
+      bloques: art ? this.blocks(art) : [],
+      related
     };
   }
 }

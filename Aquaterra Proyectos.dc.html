@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proyectos para invertir en Paraguay | Aquaterra</title>
+<meta name="description" content="Departamentos, barrios cerrados, countries y lotes en Asunción y el interior de Paraguay. Proyectos reales de otras desarrolladoras, con fuente y fecha de cada dato.">
 <script src="./marca.js"></script>
 <script src="./proyectos.js"></script>
 <script src="./support.js"></script>
@@ -110,20 +112,31 @@ select option{color:#1D1D1F;background:#FFFFFF}
     <span style="font-size:14px;color:{{ th.mute }}">{{ countLabel }}</span>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px">
       <sc-for list="{{ projects }}" as="p" hint-placeholder-count="9">
-        <a href="{{ p.href }}" style="display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .4s cubic-bezier(.3,.7,.2,1), box-shadow .4s" style-hover="transform:scale(1.015);box-shadow:0 24px 48px -30px rgba(0,0,0,0.35);color:{{ th.ink }}">
-          <div style="position:relative;aspect-ratio:4/3;background:{{ th.ph }};display:flex;align-items:center;justify-content:center">
-            <span style="font-size:clamp(22px,2.4vw,28px);font-weight:600;letter-spacing:-0.02em;color:{{ th.phInk }}">{{ p.tipo }}</span>
-            <span style="position:absolute;top:12px;left:12px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600;background:{{ p.tagBg }};color:{{ p.tagInk }};backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)">{{ p.etapa }}</span>
-          </div>
-          <div style="padding:18px 20px 22px;display:flex;flex-direction:column;gap:4px">
-            <h3 style="margin:0;font-size:21px;font-weight:600;letter-spacing:-0.02em">{{ p.name }}</h3>
-            <span style="font-size:15px;color:{{ th.mute }}">{{ p.loc }}</span>
-            <span style="font-size:13px;color:{{ th.mute }}">{{ p.devTxt }}</span>
-            <div style="margin-top:12px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px;font-size:14px;color:{{ th.mute }}">
-              <span>{{ p.meta }}</span>
-              <span>{{ p.precioPre }}<span style="font-weight:600;color:{{ th.ink }}">{{ p.precioTxt }}</span></span>
+        <a href="{{ p.href }}" aria-label="Ver ficha de {{ p.name }}" style="display:flex;flex-direction:column;border-radius:24px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};box-shadow:{{ th.cardSh }};transition:transform .45s cubic-bezier(.3,.7,.2,1), box-shadow .45s" style-hover="transform:translateY(-6px);box-shadow:0 30px 60px -28px rgba(0,0,0,0.45);color:{{ th.ink }}">
+          <div style="position:relative;aspect-ratio:4/3;overflow:hidden;background:{{ p.cvBg }};color:#F5F5F7;padding:18px 20px 22px;display:flex;flex-direction:column;justify-content:space-between">
+            <span aria-hidden="true" style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,0.035) 0 1px,transparent 1px 56px);pointer-events:none"></span>
+            <span aria-hidden="true" style="position:absolute;left:18px;right:-40px;top:30%;transform:translateY(-50%);font-size:clamp(56px,6vw,76px);line-height:1;font-weight:700;letter-spacing:-0.05em;white-space:nowrap;color:rgba(255,255,255,0.05);pointer-events:none">{{ p.tipo }}</span>
+            <div style="position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <span style="padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:0.01em;background:{{ p.tagBg }};border:1px solid {{ p.tagBd }};color:{{ p.tagInk }};backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%)">{{ p.etapa }}</span>
+              <span style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,247,0.62);text-align:right">{{ p.tipo }}</span>
             </div>
-            <span style="margin-top:10px;padding-top:10px;border-top:1px solid {{ th.line }};font-size:12px;color:{{ th.mute }}">{{ p.fuenteTxt }}</span>
+            <div style="position:relative;display:flex;flex-direction:column;gap:6px;min-width:0">
+              <span style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(245,245,247,0.7)"><span style="width:7px;height:7px;flex:0 0 auto;background:#C9F15D;transform:rotate(45deg);border-radius:1px"></span>{{ p.loc }}</span>
+              <span style="font-size:12px;font-weight:500;letter-spacing:0.02em;color:rgba(245,245,247,0.55)">{{ p.kf.k }}</span>
+              <span style="font-size:clamp(25px,2.4vw,30px);line-height:1.08;font-weight:700;letter-spacing:-0.03em;text-wrap:balance">{{ p.kf.v }}</span>
+            </div>
+          </div>
+          <div style="flex:1;padding:18px 20px 20px;display:flex;flex-direction:column;gap:4px">
+            <h3 style="margin:0;font-size:21px;font-weight:600;letter-spacing:-0.02em">{{ p.name }}</h3>
+            <span style="font-size:15px;color:{{ th.mute2 }}">{{ p.meta }}</span>
+            <span style="font-size:13px;color:{{ th.mute }}">{{ p.devTxt }}</span>
+            <sc-if value="{{ p.extra }}" hint-placeholder-val="{{ true }}">
+              <span style="margin-top:8px;align-self:flex-start;padding:4px 10px;border-radius:8px;background:{{ th.chip }};font-size:13px;font-weight:500;color:{{ th.mute2 }}">{{ p.extra }}</span>
+            </sc-if>
+            <div style="margin-top:auto;padding-top:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <span style="font-size:12px;line-height:1.4;color:{{ th.mute }}">{{ p.fuenteTxt }}</span>
+              <span style="flex:0 0 auto;font-size:14px;font-weight:500;color:{{ linkC }}">Ver ficha ›</span>
+            </div>
           </div>
         </a>
       </sc-for>
@@ -145,10 +158,13 @@ select option{color:#1D1D1F;background:#FFFFFF}
   </div>
 </section>
 
-<footer data-screen-label="03 Footer" style="background:{{ th.foot }};color:#F5F5F7;padding:48px clamp(20px,3.2vw,48px) calc(28px + env(safe-area-inset-bottom))">
-  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
-    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px 24px">
-      <span style="display:flex;align-items:center;gap:9px;font-size:18px;font-weight:600;letter-spacing:-0.02em"><span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>{{ marca }}</span>
+<footer data-screen-label="03 Footer" style="background:{{ th.foot }};color:#F5F5F7;padding:56px clamp(20px,3.2vw,48px) calc(28px + env(safe-area-inset-bottom))">
+  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:28px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:20px 32px">
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:360px">
+        <span style="display:flex;align-items:center;gap:9px;font-size:18px;font-weight:600;letter-spacing:-0.02em"><span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>{{ marca }}</span>
+        <span style="font-size:14px;line-height:1.55;color:rgba(245,245,247,0.72)">Inversión inmobiliaria en Paraguay. Asunción y el interior del país.</span>
+      </div>
       <div style="display:flex;flex-wrap:wrap;gap:0 24px;font-size:14px">
         <a href="index.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Inicio</a>
         <a href="Aquaterra%20Blog.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Blog</a>
@@ -156,7 +172,10 @@ select option{color:#1D1D1F;background:#FFFFFF}
         <a href="index.html#contacto" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Contacto</a>
       </div>
     </div>
-    <span style="font-size:13px;color:rgba(245,245,247,0.6)">© 2026 {{ marca }} · Asunción, Paraguay</span>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;padding-top:20px;border-top:1px solid rgba(245,245,247,0.12);font-size:13px;line-height:1.5;color:rgba(245,245,247,0.6)">
+      <span style="max-width:640px">Los proyectos del catálogo son de otras desarrolladoras. Indicamos la fuente y la fecha de cada dato; pueden haber cambiado.</span>
+      <span>© 2026 {{ marca }} · Asunción, Paraguay</span>
+    </div>
   </div>
 </footer>
 
@@ -181,8 +200,8 @@ class Component extends DCLogic {
   ];
   NAV = [['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#inversiones', 'Inversiones'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
   THEMES = {
-    dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' },
-    noche: { bg: '#000000', ink: '#F5F5F7', mute: '#98989D', mute2: '#C7C7CC', line: 'rgba(255,255,255,0.12)', card: '#1C1C1E', ph: '#2C2C2E', phInk: '#8E8E93', panel: '#1C1C1E', foot: '#000000', chip: 'rgba(118,118,128,0.24)' }
+    dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', cardSh: '0 1px 2px rgba(0,0,0,0.04), 0 12px 32px -24px rgba(0,0,0,0.25)', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' },
+    noche: { bg: '#000000', ink: '#F5F5F7', mute: '#98989D', mute2: '#C7C7CC', line: 'rgba(255,255,255,0.12)', card: '#1C1C1E', cardSh: 'inset 0 0 0 1px rgba(255,255,255,0.06)', ph: '#2C2C2E', phInk: '#8E8E93', panel: '#1C1C1E', foot: '#0B0C0F', chip: 'rgba(118,118,128,0.24)' }
   };
 
   componentDidMount() {
@@ -207,6 +226,21 @@ class Component extends DCLogic {
     });
   }
 
+  // Portada tipográfica: fondo oscuro con un tono suave según el tipo de propiedad.
+  coverBg(tipo) {
+    const tint = { 'Departamento': '41,151,255', 'Barrio cerrado': '201,241,93', 'Country': '52,199,149', 'Casa': '255,149,110', 'Lote': '255,190,80' }[tipo] || '142,142,147';
+    return `radial-gradient(120% 95% at 100% 0%, rgba(${tint},0.30), rgba(${tint},0) 62%), radial-gradient(90% 70% at 0% 100%, rgba(${tint},0.10), rgba(${tint},0) 70%), #0B0C0F`;
+  }
+
+  // Un dato real y destacado de la fuente para la portada: precio, entrega o el primer dato publicado.
+  keyFigure(p) {
+    if (p.precio) return { k: 'Desde', v: 'USD ' + p.precio.toLocaleString('es-PY') };
+    if (p.precioTxt) return { k: 'Desde', v: p.precioTxt };
+    if (p.entrega) return { k: 'Entrega', v: p.entrega };
+    const f = (p.facts || [])[0];
+    return f ? { k: f[0], v: f[1] } : { k: 'Precio', v: 'Consultar' };
+  }
+
   renderVals() {
     const s = this.state;
     const night = this.mode() === 'noche';
@@ -220,8 +254,12 @@ class Component extends DCLogic {
       precioPre: p.precio || p.precioTxt ? 'Desde ' : '',
       precioTxt: p.precio ? 'USD ' + p.precio.toLocaleString('es-PY') : p.precioTxt || 'Consultar precio',
       fuenteTxt: 'Fuente: ' + p.fuentes.map((x) => `${x.nombre}, ${x.fecha}`).join(' · '),
-      tagBg: p.etapa === 'En pozo' ? '#C9F15D' : p.etapa === 'Entregado' ? 'rgba(29,29,31,0.82)' : 'rgba(255,255,255,0.88)',
-      tagInk: p.etapa === 'Entregado' ? '#FFFFFF' : '#1D1D1F'
+      kf: this.keyFigure(p),
+      extra: (p.precio || p.precioTxt) ? (p.entrega ? (/^Entregado/.test(p.entrega) ? p.entrega : 'Entrega: ' + p.entrega) : '') : 'Consultar precio',
+      cvBg: this.coverBg(p.tipo),
+      tagBg: p.etapa === 'En pozo' ? 'rgba(201,241,93,0.14)' : 'rgba(255,255,255,0.08)',
+      tagBd: p.etapa === 'En pozo' ? 'rgba(201,241,93,0.38)' : 'rgba(255,255,255,0.2)',
+      tagInk: p.etapa === 'En pozo' ? '#E4F7B0' : '#F5F5F7'
     }));
     const setF = (k) => (e) => { const v = e.target.value; this.setState((st) => ({ f: { ...st.f, [k]: v } })); };
     return {
