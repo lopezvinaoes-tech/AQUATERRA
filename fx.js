@@ -57,16 +57,30 @@
     '#aq-intro i{width:22px;height:22px;border-radius:3px;background:rgba(201,241,93,.2);border:1.5px solid #C9F15D;animation:aq-spin 1s ' + ease + ' both}',
     '#aq-intro b{font:700 clamp(28px,5vw,44px)/1 "Bricolage Grotesque",-apple-system,sans-serif;letter-spacing:-.03em;animation:aq-rise .9s ' + ease + ' .1s both}',
     '@keyframes aq-spin{from{transform:rotate(-135deg) scale(.4);opacity:0}to{transform:rotate(45deg) scale(1);opacity:1}}',
-    '@keyframes aq-rise{from{transform:translateY(24px);opacity:0;filter:blur(8px)}}'
+    '@keyframes aq-rise{from{transform:translateY(24px);opacity:0;filter:blur(8px)}}',
+    '[data-aurora]{position:relative;isolation:isolate}',
+    '[data-aurora]::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;background:radial-gradient(38% 46% at 18% 22%,rgba(201,241,93,.16),transparent 70%),radial-gradient(34% 40% at 82% 78%,rgba(120,205,190,.11),transparent 70%),radial-gradient(30% 34% at 62% 18%,rgba(201,241,93,.08),transparent 70%);background-size:170% 170%;animation:aq-aurora 26s ease-in-out infinite alternate}',
+    '@keyframes aq-aurora{0%{background-position:0% 0%}50%{background-position:70% 40%}100%{background-position:30% 100%}}',
+    'input[data-range]{-webkit-appearance:none;appearance:none;background:transparent}',
+    'input[data-range]:focus-visible{outline:2px solid rgba(201,241,93,.6);outline-offset:6px;border-radius:999px}',
+    'input[data-range]::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:linear-gradient(90deg,rgba(201,241,93,.55),#C9F15D var(--p,50%),rgba(255,255,255,.12) var(--p,50%))}',
+    'input[data-range]::-moz-range-track{height:6px;border-radius:999px;background:rgba(255,255,255,.12)}',
+    'input[data-range]::-moz-range-progress{height:6px;border-radius:999px;background:linear-gradient(90deg,rgba(201,241,93,.55),#C9F15D)}',
+    'input[data-range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-10px;border-radius:50%;background:#F5F5F7;border:6px solid #C9F15D;box-shadow:0 0 0 7px rgba(201,241,93,.16),0 8px 18px rgba(0,0,0,.45);transition:transform .25s ' + ease + ',box-shadow .25s}',
+    'input[data-range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#F5F5F7;border:6px solid #C9F15D;box-shadow:0 0 0 7px rgba(201,241,93,.16),0 8px 18px rgba(0,0,0,.45)}',
+    'input[data-range]:hover::-webkit-slider-thumb{box-shadow:0 0 0 10px rgba(201,241,93,.2),0 8px 18px rgba(0,0,0,.45)}',
+    'input[data-range]:active::-webkit-slider-thumb{transform:scale(1.14)}',
+    '@media (hover:hover){[data-tilt]::before{content:"";position:absolute;inset:0;z-index:3;border-radius:inherit;pointer-events:none;background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.13) 48%,rgba(201,241,93,.10) 52%,transparent 62%);background-size:260% 100%;background-repeat:no-repeat;background-position:130% 0}[data-tilt]:hover::before{background-position:-40% 0;transition:background-position 1.2s ' + ease + '}}'
   ];
   if (!reduce) {
     css.push('[data-fx]:not([data-in]){opacity:0;filter:blur(14px);transform:translateY(28px);clip-path:inset(0 0 35% 0)}');
     css.push('@keyframes aq-up{from{opacity:0;transform:translateY(26px) scale(.985)}}');
     css.push('[data-stagger]:not([data-in])>*{opacity:0}');
     css.push('[data-stagger][data-in]>*{animation:aq-up .9s ' + ease + ' backwards;animation-delay:calc(var(--i,0) * 80ms)}');
+    css.push('@supports (animation-timeline:scroll()){@keyframes aq-drift{to{transform:translateY(-9vh);opacity:.2}}[data-drift]{animation:aq-drift linear both;animation-timeline:scroll(root);animation-range:5vh 100vh}}');
     css.push('[data-fx]{transition:opacity 1s ' + ease + ',filter 1.1s ' + ease + ',transform 1.2s ' + ease + ',clip-path 1.2s ' + ease + '}');
   } else {
-    css.push('[data-marquee],[data-float]{animation:none}');
+    css.push('[data-marquee],[data-float],[data-aurora]::after{animation:none}');
   }
   var st = document.createElement('style');
   st.textContent = css.join('\n');

@@ -80,7 +80,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
   <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ nightHaze }};transition:opacity .9s;background:linear-gradient(to bottom, rgba(20,23,29,0.8) 0%, rgba(20,23,29,0) 16%), linear-gradient(to top, #14171D 0%, rgba(20,23,29,0.92) 26%, rgba(20,23,29,0.42) 42%, rgba(20,23,29,0) 60%)"></div>
   <div style="position:absolute;left:0;right:0;bottom:0;height:55%;pointer-events:none;background:{{ heroFade }};backdrop-filter:blur(14px) saturate(120%);-webkit-backdrop-filter:blur(14px) saturate(120%);-webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 45%);mask-image:linear-gradient(to bottom, transparent 0%, #000 45%);transition:background .9s"></div>
 
-  <div style="position:absolute;left:0;right:0;bottom:0;padding:0 clamp(20px,3.2vw,48px) calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:clamp(24px,5vh,64px);pointer-events:none">
+  <div data-drift="" style="position:absolute;left:0;right:0;bottom:0;padding:0 clamp(20px,3.2vw,48px) calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:clamp(24px,5vh,64px);pointer-events:none">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap">
       <div data-reveal="100" style="display:flex;flex-direction:column;gap:16px;max-width:760px;padding:{{ heroPad }};border-radius:20px;background:{{ heroGlass }};border:1px solid {{ heroGlassBd }};backdrop-filter:{{ heroBlur }};-webkit-backdrop-filter:{{ heroBlur }}">
         <span style="width:56px;height:2px;background:#C9F15D"></span>
@@ -130,7 +130,8 @@ select option{color:#1D1D1F;background:#FFFFFF}
     </div>
     <div ref="{{ tlRef }}" style="position:relative;padding-left:64px">
       <span style="position:absolute;left:11px;top:12px;bottom:40px;width:2px;background:{{ th.line }}"></span>
-      <span style="position:absolute;left:11px;top:0;width:2px;height:{{ tlFill }};background:{{ th.ink }}"></span>
+      <span style="position:absolute;left:11px;top:0;width:2px;height:{{ tlFill }};border-radius:2px;background:linear-gradient(180deg,rgba(201,241,93,0),{{ tlLime }} 22%,{{ tlLime }})"></span>
+      <span aria-hidden="true" style="position:absolute;left:6px;top:{{ tlFill }};width:12px;height:12px;margin-top:-6px;border-radius:50%;background:#C9F15D;border:2px solid {{ th.ink }};box-shadow:0 0 0 5px rgba(201,241,93,0.22), 0 0 22px 4px rgba(201,241,93,0.55);opacity:{{ tlTip }};transition:opacity .4s;pointer-events:none"></span>
 
       <div data-tl-item="" data-reveal="" style="position:relative;display:flex;flex-direction:column;gap:10px;padding-bottom:64px">
         <span style="position:absolute;left:-64px;top:0;width:24px;height:24px;border-radius:50%;background:{{ t1.bg }};border:2px solid {{ t1.bd }};transition:background .4s, border-color .4s"></span>
@@ -324,7 +325,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
 </section>
 
 <section id="simulador" data-screen-label="05 Simulador" style="background:{{ th.bg }};transition:background .6s;padding:clamp(24px,4vw,56px) clamp(20px,3.2vw,48px) clamp(88px,12vw,160px)">
-  <div data-reveal="" data-grain="" style="max-width:1280px;margin:0 auto;border-radius:clamp(28px,3vw,40px);background:{{ th.deep }};color:{{ th.deepInk }};overflow:hidden;display:flex;flex-wrap:wrap">
+  <div data-reveal="" data-grain="" data-aurora="" style="max-width:1280px;margin:0 auto;border-radius:clamp(28px,3vw,40px);background:{{ th.deep }};color:{{ th.deepInk }};overflow:hidden;display:flex;flex-wrap:wrap">
     <div style="flex:1 1 440px;display:flex;flex-direction:column;gap:28px;padding:clamp(28px,4vw,56px)">
       <div style="display:flex;flex-direction:column;gap:16px">
         <span data-mono="" style="align-self:flex-start;padding:6px 14px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;font-size:13px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase">Simulador</span>
@@ -336,7 +337,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
           <span style="font-size:14px;color:rgba(245,245,247,0.7)">Monto a invertir</span>
           <span style="font-size:clamp(28px,3vw,40px);font-weight:700;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">{{ simMontoTxt }}</span>
         </div>
-        <input type="range" min="30000" max="300000" step="5000" value="{{ simMonto }}" onChange="{{ onSimMonto }}" onInput="{{ onSimMonto }}" aria-label="Monto a invertir en dólares" style="width:100%;accent-color:#C9F15D;height:28px;cursor:pointer">
+        <input type="range" min="30000" max="300000" step="5000" value="{{ simMonto }}" onChange="{{ onSimMonto }}" onInput="{{ onSimMonto }}" aria-label="Monto a invertir en dólares" data-range="" style="--p:{{ simPct }};width:100%;accent-color:#C9F15D;height:28px;cursor:pointer">
         <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(245,245,247,0.5)"><span>USD 30.000</span><span>USD 300.000</span></div>
       </div>
       <div role="group" aria-label="Tipo de compra" style="display:flex;padding:4px;border-radius:14px;background:rgba(255,255,255,0.06);border:1px solid rgba(245,245,247,0.1)">
@@ -523,7 +524,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
   </div>
 </section>
 
-<footer data-screen-label="08 Footer" data-grain="" style="background:{{ th.deep }};transition:background .6s;color:#F5F5F7;padding:clamp(64px,8vw,104px) clamp(20px,3.2vw,48px) calc(28px + env(safe-area-inset-bottom));overflow:hidden">
+<footer data-screen-label="08 Footer" data-grain="" data-aurora="" style="background:{{ th.deep }};transition:background .6s;color:#F5F5F7;padding:clamp(64px,8vw,104px) clamp(20px,3.2vw,48px) calc(28px + env(safe-area-inset-bottom));overflow:hidden">
   <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(56px,8vw,96px)">
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:48px">
       <div style="flex:1 1 280px;display:flex;flex-direction:column;gap:16px;max-width:340px">
@@ -1552,7 +1553,7 @@ class Component extends DCLogic {
         ];
         const bucket = m <= 50000 ? 0 : m <= 100000 ? 1 : m <= 250000 ? 2 : 3;
         return {
-          simMonto: m, simMontoTxt: 'USD ' + fmt(m),
+          simMonto: m, simMontoTxt: 'USD ' + fmt(m), simPct: ((m - 30000) / 2700).toFixed(2) + '%',
           onSimMonto: (e) => this.setState({ simMonto: +e.target.value }),
           simModos: [['Terminado', false], ['En pozo', true]].map(([label, v]) => { const on = s.simPozo === v; return { label, on: String(on),
             bg: on ? 'rgba(201,241,93,0.2)' : 'transparent', bd: on ? 'rgba(201,241,93,0.5)' : 'transparent', ink: on ? '#E4F7B0' : 'rgba(245,245,247,0.7)',
@@ -1604,7 +1605,7 @@ class Component extends DCLogic {
       dayInk: night ? 'rgba(245,245,247,0.75)' : '#1D1D1F',
       nightInk: night ? '#ECECEE' : 'rgba(29,29,31,0.7)',
       toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { localStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
-      tlFill: s.tlY + 'px',
+      tlFill: s.tlY + 'px', tlTip: s.tlY > 4 ? 1 : 0, tlLime: night ? '#C9F15D' : '#9BC734',
       t1: dot(1), t2: dot(2), t3: dot(3), t4: dot(4), t5: dot(5), t6: dot(6),
       parkSecRef: this.parkSecRef, parkRef: this.parkRef, twCurtRef: this.twCurtRef, twInfoRef: this.twInfoRef, pkCurtRef: this.pkCurtRef, pkFillRef: this.pkFillRef, pkChipRef: this.pkChipRef,
       pk1Bg: (this.state.pkLevel || 1) === 1 ? '#636366' : 'rgba(99,99,102,0)', pk1Sh: (this.state.pkLevel || 1) === 1 ? '0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04)' : 'none',
