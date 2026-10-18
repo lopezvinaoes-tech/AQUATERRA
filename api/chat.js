@@ -1,14 +1,17 @@
-// POST /api/chat: asistente con IA de la web (Claude). Responde dudas de inversión
-// y, si la persona acepta, guarda sus datos como lead en la misma base del panel.
+// POST /api/chat: asistente con IA de la web. Responde dudas de inversión y, si la
+// persona acepta, guarda sus datos como lead en la misma base del panel.
+// Proveedor: Google Gemini (plan gratis) si está GEMINI_API_KEY; si no, Claude con ANTHROPIC_API_KEY.
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const { configured, db, parseMonto, perfilDe, prioridadDe, hashIp, readBody, send } = require('./_lib');
 
-const API_KEY = process.env.ANTHROPIC_API_KEY || '';
-// Modelo configurable desde Vercel; por defecto Claude Haiku 5.5 (el más económico).
-const MODEL = process.env.CHAT_MODEL || 'claude-haiku-5-5';
+const GEMINI_KEY = process.env.GEMINI_API_KEY || '';
+const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY || '';
+const PROVEEDOR = GEMINI_KEY ? 'gemini' : ANTHROPIC_KEY ? 'claude' : null;
+// Modelo configurable desde Vercel (CHAT_MODEL).
+const MODEL = process.env.CHAT_MODEL || (PROVEEDOR === 'gemini' ? 'gemini-3.8-flash' : 'claude-haiku-5-5');
 const POR_IP_HORA = parseInt(process.env.CHAT_LIMITE_IP_HORA || '40', 10);
 const POR_DIA = parseInt(process.env.CHAT_LIMITE_DIARIO || '3000', 10);
 const MAX_MENSAJES = 40;
@@ -103,6 +106,28 @@ const HERRAMIENTAS = [{
   }
 }];
 
+// La misma herramienta en el formato de Gemini (subconjunto de OpenAPI: sin null ni additionalProperties).
+const GEMINI_HERRAMIENTAS = [{
+  functionDeclarations: [{
+    name: 'guardar_contacto',
+    description: HERRAMIENTAS[0].description,
+    parameters: {
+      type: 'object',
+      required: ['nombre', 'resumen', 'consentimiento'],
+      properties: {
+        nombre: { type: 'string', description: 'Nombre y apellido' },
+        email: { type: 'string', description: 'Email, si lo dio' },
+        whatsapp: { type: 'string', description: 'WhatsApp con prefijo de país, si lo dio' },
+        monto: { type: 'string', enum: ['Hasta USD 50.000', 'USD 50.000 – 100.000', 'USD 100.000 – 250.000', 'Más de USD 250.000'], description: 'Rango de inversión, si se sabe' },
+        objetivo: { type: 'string', enum: ['Renta por alquiler', 'Revalorización', 'Vivienda propia'], description: 'Objetivo principal, si se sabe' },
+        proyecto_interes: { type: 'string', description: 'Proyecto del catálogo que le interesa, si hay uno' },
+        resumen: { type: 'string', description: 'Resumen de 2 a 4 frases para el asesor: qué busca, plazo, dudas y siguiente paso' },
+        consentimiento: { type: 'boolean', description: 'true solo si la persona aceptó explícitamente ser contactada' }
+      }
+    }
+  }]
+}];
+
 // Firma del id del lead para que solo esta conversación pueda actualizarlo.
 const firmar = (id) => `${id}.${crypto.createHmac('sha256', process.env.SUPABASE_SERVICE_ROLE_KEY || 'x').update(String(id)).digest('hex').slice(0, 24)}`;
 function verificar(token) {
@@ -166,15 +191,65 @@ async function guardarContacto(input, ctx) {
   return { ok: true, id: creado.id };
 }
 
-async function claude(body) {
-  const r = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-    body: JSON.stringify(body)
-  });
+async function pedir(url, headers, body) {
+  const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) });
   const data = await r.json().catch(() => ({}));
-  if (!r.ok) throw Object.assign(new Error((data.error && data.error.message) || `Anthropic ${r.status}`), { status: r.status });
+  if (!r.ok) throw Object.assign(new Error((data.error && data.error.message) || `${PROVEEDOR} ${r.status}`), { status: r.status });
   return data;
+}
+
+// Cada proveedor expone el mismo par de funciones:
+//   turno() -> { texto } o { llamadas: [{ id, name, input }] } o { rechazo: true }
+//   responder(llamadas, resultados) añade los resultados de las herramientas a la conversación.
+function proveedorClaude(sistema, mensajes) {
+  const historial = mensajes.map((m) => ({ role: m.role, content: m.content }));
+  const base = {
+    model: MODEL,
+    max_tokens: 2048,
+    system: [{ type: 'text', text: sistema, cache_control: { type: 'ephemeral' } }],
+    tools: HERRAMIENTAS,
+    output_config: { effort: 'low' }
+  };
+  return {
+    async turno() {
+      const r = await pedir('https://api.anthropic.com/v1/messages', { 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' }, { ...base, messages: historial });
+      if (r.stop_reason === 'refusal') return { rechazo: true };
+      const usos = (r.content || []).filter((c) => c.type === 'tool_use');
+      if (r.stop_reason !== 'tool_use' || !usos.length) return { texto: (r.content || []).filter((c) => c.type === 'text').map((c) => c.text).join('\n').trim() };
+      // Se devuelve el contenido tal cual (incluidos los bloques de razonamiento) antes de los resultados.
+      historial.push({ role: 'assistant', content: r.content });
+      return { llamadas: usos.map((u) => ({ id: u.id, name: u.name, input: u.input || {} })) };
+    },
+    responder(llamadas, resultados) {
+      historial.push({ role: 'user', content: llamadas.map((l, i) => ({ type: 'tool_result', tool_use_id: l.id, content: JSON.stringify(resultados[i]), is_error: !resultados[i].ok })) });
+    }
+  };
+}
+
+function proveedorGemini(sistema, mensajes) {
+  const contents = mensajes.map((m) => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.content }] }));
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(MODEL)}:generateContent`;
+  return {
+    async turno() {
+      const r = await pedir(url, { 'x-goog-api-key': GEMINI_KEY }, {
+        systemInstruction: { parts: [{ text: sistema }] },
+        contents,
+        tools: GEMINI_HERRAMIENTAS,
+        generationConfig: { maxOutputTokens: 2048 }
+      });
+      const cand = (r.candidates || [])[0];
+      if (!cand || !cand.content) return (r.promptFeedback && r.promptFeedback.blockReason) || (cand && cand.finishReason === 'SAFETY') ? { rechazo: true } : { texto: '' };
+      const parts = cand.content.parts || [];
+      const llamadas = parts.filter((p) => p.functionCall).map((p) => ({ id: p.functionCall.id, name: p.functionCall.name, input: p.functionCall.args || {} }));
+      if (!llamadas.length) return { texto: parts.filter((p) => p.text && !p.thought).map((p) => p.text).join('').trim() };
+      // Se devuelve el turno del modelo tal cual (con sus firmas de razonamiento) antes de los resultados.
+      contents.push(cand.content);
+      return { llamadas };
+    },
+    responder(llamadas, resultados) {
+      contents.push({ role: 'user', parts: llamadas.map((l, i) => ({ functionResponse: { ...(l.id ? { id: l.id } : {}), name: l.name, response: resultados[i] } })) });
+    }
+  };
 }
 
 // Límite por IP y diario. Si la tabla no existe todavía, no bloquea el chat.
@@ -197,9 +272,9 @@ async function dentroDelLimite(ipHash) {
 
 module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') return send(res, 204, {});
-  if (req.method === 'GET') return send(res, 200, { ok: true, activo: Boolean(API_KEY) });
+  if (req.method === 'GET') return send(res, 200, { ok: true, activo: Boolean(PROVEEDOR), proveedor: PROVEEDOR, modelo: PROVEEDOR ? MODEL : null });
   if (req.method !== 'POST') return send(res, 405, { error: 'Método no permitido' });
-  if (!API_KEY) return send(res, 503, { error: 'El asistente todavía no está activado. Escríbenos por WhatsApp o deja tus datos en el formulario.' });
+  if (!PROVEEDOR) return send(res, 503, { error: 'El asistente todavía no está activado. Escríbenos por WhatsApp o deja tus datos en el formulario.' });
 
   const b = await readBody(req);
   // Historial en texto plano que guarda el navegador; empieza siempre por un mensaje del visitante.
@@ -224,46 +299,36 @@ module.exports = async (req, res) => {
   }
 
   const ctx = { req, ipHash, mensajes, leadToken: b.lead, pagina: b.pagina };
-  const conversacion = mensajes.map((m) => ({ role: m.role, content: m.content }));
-  const base = {
-    model: MODEL,
-    max_tokens: 2048,
-    system: [{ type: 'text', text: SISTEMA.replace('{{CATALOGO}}', catalogo()), cache_control: { type: 'ephemeral' } }],
-    tools: HERRAMIENTAS,
-    output_config: { effort: 'low' }
-  };
+  const sistema = SISTEMA.replace('{{CATALOGO}}', catalogo());
+  const ia = PROVEEDOR === 'gemini' ? proveedorGemini(sistema, mensajes) : proveedorClaude(sistema, mensajes);
 
   let lead = null;
   try {
     for (let vuelta = 0; vuelta < 3; vuelta++) {
-      const r = await claude({ ...base, messages: conversacion });
-      if (r.stop_reason === 'refusal') {
-        return send(res, 200, { respuesta: 'Prefiero no responder a eso. ¿Te ayudo con alguna duda sobre invertir en Paraguay?', lead: lead && firmar(lead) });
+      const r = await ia.turno();
+      if (r.rechazo) {
+        return send(res, 200, { respuesta: 'Prefiero no responder a eso. ¿Te ayudo con alguna duda sobre invertir en Paraguay?', lead: lead ? firmar(lead) : undefined });
       }
-      const usos = (r.content || []).filter((c) => c.type === 'tool_use');
-      if (r.stop_reason !== 'tool_use' || !usos.length) {
-        const texto = (r.content || []).filter((c) => c.type === 'text').map((c) => c.text).join('\n').trim();
+      if (!r.llamadas) {
         return send(res, 200, {
-          respuesta: texto || 'Perdona, no te he entendido. ¿Me lo cuentas de otra forma?',
+          respuesta: r.texto || 'Perdona, no te he entendido. ¿Me lo cuentas de otra forma?',
           lead: lead ? firmar(lead) : undefined,
           guardado: Boolean(lead)
         });
       }
-      // Se devuelve el contenido tal cual (incluidos los bloques de razonamiento) antes de los resultados.
-      conversacion.push({ role: 'assistant', content: r.content });
       const resultados = [];
-      for (const u of usos) {
+      for (const u of r.llamadas) {
         let out;
         try {
-          out = u.name === 'guardar_contacto' ? await guardarContacto(u.input || {}, ctx) : { error: 'Herramienta desconocida' };
+          out = u.name === 'guardar_contacto' ? await guardarContacto(u.input, ctx) : { error: 'Herramienta desconocida' };
         } catch (e) {
           console.error('chat guardar', e);
           out = { error: 'No se pudo guardar ahora; ofrece WhatsApp o el formulario de asesoría.' };
         }
         if (out.ok) { lead = out.id; ctx.leadToken = firmar(out.id); }
-        resultados.push({ type: 'tool_result', tool_use_id: u.id, content: JSON.stringify(out.ok ? { ok: true } : out), is_error: !out.ok });
+        resultados.push(out.ok ? { ok: true } : out);
       }
-      conversacion.push({ role: 'user', content: resultados });
+      ia.responder(r.llamadas, resultados);
     }
     return send(res, 200, { respuesta: 'Listo. ¿Hay algo más en lo que te pueda ayudar?', lead: lead ? firmar(lead) : undefined, guardado: Boolean(lead) });
   } catch (e) {
