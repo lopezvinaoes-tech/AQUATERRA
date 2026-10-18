@@ -1,20 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aquaterra · Inversión inmobiliaria en Paraguay</title>
 <meta name="description" content="Invierte en propiedades en Paraguay desde España: proyectos en Asunción y el interior, renta en dólares, impuestos bajos y acompañamiento de principio a fin.">
+<link rel="canonical" href="https://aquaterra-beta.vercel.app/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#F5F5F7">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <meta property="og:title" content="Aquaterra · Inversión inmobiliaria en Paraguay">
 <meta property="og:description" content="Proyectos en Asunción y el interior, renta en dólares e impuestos bajos. Te acompañamos desde España.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_ES">
-<script src="./marca.js"></script>
-<script src="./proyectos.js"></script>
-<script src="./support.js"></script>
+<meta property="og:site_name" content="Aquaterra">
+<meta property="og:url" content="https://aquaterra-beta.vercel.app/">
+<meta property="og:image" content="https://aquaterra-beta.vercel.app/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Aquaterra: ciudad en 3D y el titular Una Nueva Dimensión del Real Estate">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"RealEstateAgent","@id":"https://aquaterra-beta.vercel.app/#empresa","name":"Aquaterra","url":"https://aquaterra-beta.vercel.app/","logo":"https://aquaterra-beta.vercel.app/icon-512.png","image":"https://aquaterra-beta.vercel.app/og.jpg","description":"Inversión inmobiliaria en Paraguay para inversores en España: proyectos en Asunción y el interior, compras en pozo y acompañamiento de principio a fin.","address":{"@type":"PostalAddress","addressLocality":"Asunción","addressCountry":"PY"},"areaServed":[{"@type":"Country","name":"Paraguay"},{"@type":"Country","name":"España"}],"knowsLanguage":"es"},
+{"@type":"WebSite","@id":"https://aquaterra-beta.vercel.app/#web","url":"https://aquaterra-beta.vercel.app/","name":"Aquaterra","inLanguage":"es","publisher":{"@id":"https://aquaterra-beta.vercel.app/#empresa"}}
+]}
+</script>
+<style>x-dc{display:none}</style>
+<!-- Carga: React se sirve desde /vendor y todos los scripts van con defer, en orden, para no frenar el primer pintado. -->
+<script>window.__resources = {};</script>
+<script src="./marca.js" defer></script>
+<script src="./proyectos.js" defer></script>
+<script src="./leads.js" defer></script>
+<script src="./prefijos.js" defer></script>
+<script src="/vendor/react.production.min.js" defer></script>
+<script src="/vendor/react-dom.production.min.js" defer></script>
+<script src="./arranque.js" defer></script>
+<script src="./support.js" defer></script>
 <script src="./fx.js" defer></script>
-<script src="./leads.js"></script>
-<script src="./prefijos.js"></script>
 <script src="./chat.js" defer></script>
 </head>
 <body>
@@ -34,6 +60,14 @@ button{-webkit-user-select:none;user-select:none}
 button,select,input{font-family:inherit}
 select option{color:#1D1D1F;background:#FFFFFF}
 ::selection{background:#C9F15D;color:#1D1D1F}
+/* Entrada del inicio: solo CSS y visible desde el primer pintado, sin esperar a ningún script. */
+@keyframes aq-hero{from{opacity:.01;transform:translateY(18px)}}
+@keyframes aq-hero-t{from{opacity:.01;filter:blur(14px);transform:translateY(28px);clip-path:inset(0 0 35% 0)}to{clip-path:inset(0 0 -20% 0)}}
+[data-hero]{animation:aq-hero .9s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--d,0ms)}
+[data-hero-t]{animation:aq-hero-t 1.2s cubic-bezier(.16,1,.3,1) .15s both}
+@media (prefers-reduced-motion:reduce){[data-hero],[data-hero-t]{animation:none}}
+/* Las secciones de abajo no se maquetan ni pintan hasta que se acercan a la pantalla. */
+#proyectos,#simulador,#nosotros,#testimonios,#preguntas,#contacto,footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 900px}
 </style>
 </helmet>
 <div ref="{{ rootRef }}" data-theme="{{ themeName }}" style="background:{{ th.bg }};color:{{ th.ink }};transition:background .6s;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;overflow-x:clip">
@@ -83,10 +117,10 @@ select option{color:#1D1D1F;background:#FFFFFF}
 
   <div data-drift="" style="position:absolute;left:0;right:0;bottom:0;padding:0 clamp(20px,3.2vw,48px) calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:clamp(24px,5vh,64px);pointer-events:none">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap">
-      <div data-reveal="100" style="display:flex;flex-direction:column;gap:16px;max-width:760px;padding:{{ heroPad }};border-radius:20px;background:{{ heroGlass }};border:1px solid {{ heroGlassBd }};backdrop-filter:{{ heroBlur }};-webkit-backdrop-filter:{{ heroBlur }}">
+      <div data-hero="" style="--d:100ms;display:flex;flex-direction:column;gap:16px;max-width:760px;padding:{{ heroPad }};border-radius:20px;background:{{ heroGlass }};border:1px solid {{ heroGlassBd }};backdrop-filter:{{ heroBlur }};-webkit-backdrop-filter:{{ heroBlur }}">
         <span style="width:56px;height:2px;background:#C9F15D"></span>
         <div style="display:flex;align-items:flex-start;gap:clamp(20px,3vw,48px);flex-wrap:wrap">
-          <h1 data-fx="" style="margin:0;font-size:clamp(34px,4.2vw,64px);line-height:1;letter-spacing:-0.035em;font-weight:700;color:{{ ink }};transition:color .9s">Una <span data-accent="" style="color:{{ limeText }};transition:color .9s">Nueva</span> Dimensión<br>del <span data-accent="" style="color:#86868B">Real Estate</span></h1>
+          <h1 data-hero-t="" style="margin:0;font-size:clamp(34px,4.2vw,64px);line-height:1;letter-spacing:-0.035em;font-weight:700;color:{{ ink }};transition:color .9s">Una <span data-accent="" style="color:{{ limeText }};transition:color .9s">Nueva</span> Dimensión<br>del <span data-accent="" style="color:#86868B">Real Estate</span></h1>
           <span style="padding-top:14px;font-size:13px;font-weight:500;line-height:1.4;color:{{ sub }};transition:color .9s">Compras en pozo<br>e inversión inteligente</span>
         </div>
         <p style="margin:0;font-size:clamp(15px,1.2vw,18px);line-height:1.5;color:{{ sub }};transition:color .9s">El futuro de la inversión inmobiliaria en Paraguay empieza aquí.</p>
@@ -97,7 +131,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
       </div>
     </div>
 
-    <div data-reveal="450" style="display:grid;grid-template-columns:{{ heroCols }};align-items:center;gap:20px;margin-bottom:{{ heroRowMb }}">
+    <div data-hero="" style="--d:450ms;display:grid;grid-template-columns:{{ heroCols }};align-items:center;gap:20px;margin-bottom:{{ heroRowMb }}">
       <sc-if value="{{ heroWide }}" hint-placeholder-val="{{ true }}">
       <div style="justify-self:start;display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding:6px 10px;border-radius:10px;background:{{ heroGlass }};border:1px solid {{ heroGlassBd }};backdrop-filter:{{ heroBlur }};-webkit-backdrop-filter:{{ heroBlur }}">
         <span style="font-size:12px;font-weight:500;color:{{ sub }};transition:color .9s">Explora la ciudad</span>
@@ -131,8 +165,8 @@ select option{color:#1D1D1F;background:#FFFFFF}
     </div>
     <div ref="{{ tlRef }}" style="position:relative;padding-left:64px">
       <span style="position:absolute;left:11px;top:12px;bottom:40px;width:2px;background:{{ th.line }}"></span>
-      <span style="position:absolute;left:11px;top:0;width:2px;height:{{ tlFill }};border-radius:2px;background:linear-gradient(180deg,rgba(201,241,93,0),{{ tlLime }} 22%,{{ tlLime }})"></span>
-      <span aria-hidden="true" style="position:absolute;left:6px;top:{{ tlFill }};width:12px;height:12px;margin-top:-6px;border-radius:50%;background:#C9F15D;border:2px solid {{ th.ink }};box-shadow:0 0 0 5px rgba(201,241,93,0.22), 0 0 22px 4px rgba(201,241,93,0.55);opacity:{{ tlTip }};transition:opacity .4s;pointer-events:none"></span>
+      <span ref="{{ tlFillRef }}" style="position:absolute;left:11px;top:0;bottom:40px;width:2px;border-radius:2px;transform-origin:50% 0;transform:scaleY(0);will-change:transform;background:linear-gradient(180deg,rgba(201,241,93,0),{{ tlLime }} 22%,{{ tlLime }})"></span>
+      <span ref="{{ tlTipRef }}" aria-hidden="true" style="position:absolute;left:6px;top:0;transform:translateY(0);will-change:transform;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:#C9F15D;border:2px solid {{ th.ink }};box-shadow:0 0 0 5px rgba(201,241,93,0.22), 0 0 22px 4px rgba(201,241,93,0.55);opacity:0;transition:opacity .4s;pointer-events:none"></span>
 
       <div data-tl-item="" data-reveal="" style="position:relative;display:flex;flex-direction:column;gap:10px;padding-bottom:64px">
         <span style="position:absolute;left:-64px;top:0;width:24px;height:24px;border-radius:50%;background:{{ t1.bg }};border:2px solid {{ t1.bd }};transition:background .4s, border-color .4s"></span>
@@ -211,7 +245,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
         </sc-if>
       </div>
       <div style="display:flex;align-items:baseline;gap:14px">
-        <span style="font-size:clamp(36px,4vw,60px);line-height:1;letter-spacing:-0.045em;font-weight:500;color:#C9F15D">{{ twFloor }}</span>
+        <span style="font-size:clamp(36px,4vw,60px);line-height:1;letter-spacing:-0.045em;font-weight:500;color:#C9F15D" ref="{{ twFloorRef }}">{{ twFloor }}</span>
         <span style="font-size:12px;font-weight:500;color:rgba(245,245,247,0.62)">Nivel actual</span>
       </div>
       <div ref="{{ cardsRef }}" style="position:relative;height:176px;max-width:340px">
@@ -412,7 +446,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
       <div data-reveal="" style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding-bottom:18px;border-bottom:1px solid {{ th.line }}">
         <h3 style="margin:0;font-size:clamp(30px,3.4vw,48px);line-height:1.1;letter-spacing:-0.025em;font-weight:600">Nuestro <span data-accent="" data-mark="" style="color:{{ th.ink }};background:linear-gradient(transparent 60%,{{ th.mark }} 60%,{{ th.mark }} 92%,transparent 92%);padding:0 .06em">equipo</span></h3>
       </div>
-      <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(calc(50% - 7px),250px),1fr));gap:14px">
+      <div ref="{{ equipoRef }}" data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(calc(50% - 7px),250px),1fr));gap:14px">
         <sc-for list="{{ equipo }}" as="pe" hint-placeholder-count="4">
           <div style="position:relative;min-width:0;display:flex;flex-direction:column;border-radius:28px;overflow:hidden;background:radial-gradient(110% 70% at 50% 0%,rgba(201,241,93,0.18),transparent 62%),linear-gradient(180deg,{{ th.deep2 }},{{ th.deep }});color:#F5F5F7;isolation:isolate;transition:transform .5s cubic-bezier(.16,1,.3,1)" style-hover="transform:translateY(-4px)">
             <span role="img" aria-label="{{ pe.nombre }}" style="position:absolute;inset:0;z-index:1;background-image:{{ pe.bg }};background-size:cover;background-position:center top"></span>
@@ -625,9 +659,10 @@ class Component extends DCLogic {
     ti: 0, tVis: true, modal: false, sent: false, nombre: '', tel: '', telPre: (window.AQPrefijos ? window.AQPrefijos.porDefecto() : 'ES'), monto: '', obj: '',
     simMonto: 80000, simPozo: false, faqOpen: 0,
     cf: { nombre: '', email: '', tel: '', pre: (window.AQPrefijos ? window.AQPrefijos.porDefecto() : 'ES'), monto: '', obj: '', msg: '' }, cfSent: false, cfSending: false, cfErr: '',
-    tlY: 0, tlOn: 0
+    tlOn: 0
   };
-  rootRef = React.createRef(); heroRef = React.createRef(); cityRef = React.createRef();
+  rootRef = React.createRef(); heroRef = React.createRef(); cityRef = React.createRef(); equipoRef = React.createRef();
+  tlFillRef = React.createRef(); tlTipRef = React.createRef(); twFloorRef = React.createRef();
   ctaRef = React.createRef(); ctaPanelRef = React.createRef(); ctaTitleRef = React.createRef(); ctaGlowRef = React.createRef();
   tlRef = React.createRef(); towerSecRef = React.createRef(); towerRef = React.createRef(); nodesRef = React.createRef(); twFillRef = React.createRef(); cardsRef = React.createRef(); linesRef = React.createRef();
 
@@ -679,9 +714,49 @@ class Component extends DCLogic {
     this.scanReveal();
     this.initCtaTitle();
     this.onScroll();
-    this.initCity();
-    this.initTower();
-    this.initParking();
+    // Las escenas 3D no se crean al cargar: la ciudad arranca con el primer gesto del visitante (o sola, unos segundos después)
+    // y el edificio y el parking cuando su sección se acerca a la pantalla. Así la carga inicial no se traba.
+    this.startCityWhenIdle();
+    this.whenNear(this.towerSecRef, () => { this.initTower(); this.initParking(); });
+    // Las fotos del equipo se piden cuando su sección se acerca, no durante la carga inicial.
+    this.whenNear(this.equipoRef, () => this.setState({ verEquipo: true }));
+  }
+
+  // Nitidez adaptable del 3D: si el equipo no sostiene unos 40 fps, se baja la resolución del lienzo para que el movimiento siga fluido.
+  fitDpr(renderer) {
+    let dpr = Math.min(window.devicePixelRatio || 1, 2), sum = 0, n = 0;
+    renderer.setPixelRatio(dpr);
+    return (ms) => {
+      if (ms > 250) return;
+      sum += ms; n++;
+      if (n < 40) return;
+      const avg = sum / n; sum = 0; n = 0;
+      if (avg > 25 && dpr > 1) { dpr = Math.max(1, dpr - 0.25); renderer.setPixelRatio(dpr); }
+    };
+  }
+
+  whenNear(ref, fn) {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') { fn(); return; }
+    const io = new IntersectionObserver((es) => {
+      if (!es.some((e) => e.isIntersecting)) return;
+      io.disconnect(); if (!this.dead) fn();
+    }, { rootMargin: '150% 0px' });
+    io.observe(el);
+    (this._lazyIo = this._lazyIo || []).push(io);
+  }
+
+  startCityWhenIdle() {
+    const evs = ['pointerdown', 'pointermove', 'touchstart', 'wheel', 'keydown', 'scroll'], opt = { passive: true, capture: true };
+    let done = false, t = 0;
+    const go = () => {
+      if (done) return; done = true; clearTimeout(t);
+      evs.forEach((e) => window.removeEventListener(e, go, opt));
+      if (!this.dead) this.initCity();
+    };
+    evs.forEach((e) => window.addEventListener(e, go, opt));
+    const later = () => { t = setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(go, { timeout: 1500 }) : go()), 5000); };
+    if (document.readyState === 'complete') later(); else window.addEventListener('load', later, { once: true });
   }
 
   componentDidUpdate(pp) {
@@ -698,6 +773,7 @@ class Component extends DCLogic {
     window.removeEventListener('keydown', this._onKey);
     if (this.io) this.io.disconnect();
     if (this.ctaIo) this.ctaIo.disconnect();
+    if (this._lazyIo) this._lazyIo.forEach((io) => io.disconnect());
     if (this.city) this.city.dispose();
     if (this.tower) this.tower.dispose();
     if (this.park) this.park.dispose();
@@ -786,8 +862,14 @@ class Component extends DCLogic {
         const y = Math.max(0, Math.min(r.height - 40, window.innerHeight * 0.55 - r.top));
         let on = 0;
         tl.querySelectorAll('[data-tl-item]').forEach((el) => { if (el.offsetTop + 12 <= y) on++; });
+        // La línea y su punto se mueven con transform, sin volver a pintar toda la página en cada fotograma.
         const yy = Math.round(y);
-        if (yy !== this.state.tlY) upd.tlY = yy;
+        if (yy !== this._tlY) {
+          this._tlY = yy;
+          const fill = this.tlFillRef.current, tip = this.tlTipRef.current;
+          if (fill) fill.style.transform = `scaleY(${(yy / Math.max(1, r.height - 40)).toFixed(4)})`;
+          if (tip) { tip.style.transform = `translateY(${yy}px)`; tip.style.opacity = yy > 4 ? '1' : '0'; }
+        }
         if (on !== this.state.tlOn) upd.tlOn = on;
       }
       const ts = this.towerSecRef.current;
@@ -819,7 +901,7 @@ class Component extends DCLogic {
   }
 
   loadThree() {
-    if (!this._three) this._three = import('https://unpkg.com/three@0.160.0/build/three.module.js');
+    if (!this._three) this._three = import('/vendor/three.min.js');
     return this._three;
   }
 
@@ -828,8 +910,8 @@ class Component extends DCLogic {
     try { THREE = await this.loadThree(); } catch (e) { return; }
     const host = this.towerRef.current;
     if (!host || this.dead) return;
-    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    const fit = this.fitDpr(renderer);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -1089,8 +1171,9 @@ class Component extends DCLogic {
     let pp = this.twP || 0, last = performance.now(), rafId = 0, shown = false;
     const tick = (now) => {
       rafId = requestAnimationFrame(tick);
-      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      const raw = now - last, dt = Math.min(0.05, raw / 1000); last = now;
       if (!visible || document.hidden || this.twOff) return;
+      fit(raw);
       step(now, dt);
     };
     const step = (now, dt) => {
@@ -1138,7 +1221,9 @@ class Component extends DCLogic {
       if (cy > TOP + 1.6) lab = 'Rooftop';
       else { const f = Math.floor((cy - 1.5 - PB) / FH) + 1; lab = f < 1 ? 'PB' : 'Piso ' + Math.min(NF, f); }
       let st = 0; PCS.forEach((pc, i) => { if (pp >= pc - 0.095) st = i; });
-      if (lab !== this.state.twFloor || st !== this.state.twStep) this.setState({ twFloor: lab, twStep: st });
+      // El piso se escribe directo en su texto; React solo vuelve a pintar cuando cambia la etapa del recorrido.
+      if (lab !== this._twLab) { this._twLab = lab; const fl = this.twFloorRef.current, tn = fl && document.createTreeWalker(fl, NodeFilter.SHOW_TEXT).nextNode(); if (tn) tn.nodeValue = lab; }
+      if (st !== this.state.twStep) this.setState({ twStep: st });
       renderer.render(scene, camera);
       if (!shown) { shown = true; cv.style.opacity = '1'; }
     };
@@ -1157,8 +1242,8 @@ class Component extends DCLogic {
     try { THREE = await this.loadThree(); } catch (e) { return; }
     const host = this.parkRef.current;
     if (!host || this.dead) return;
-    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    const fit = this.fitDpr(renderer);
     renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
     const cv = renderer.domElement;
     cv.style.cssText = 'display:block;width:100%;height:100%';
@@ -1311,8 +1396,9 @@ class Component extends DCLogic {
     };
     const tick = (now) => {
       rafId = requestAnimationFrame(tick);
-      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      const raw = now - last, dt = Math.min(0.05, raw / 1000); last = now;
       if (!visible || document.hidden || !this.pkOn) return;
+      fit(raw);
       step(dt);
     };
     rafId = requestAnimationFrame(tick);
@@ -1331,8 +1417,8 @@ class Component extends DCLogic {
     const host = this.cityRef.current;
     if (!host || this.dead) return;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    const fit = this.fitDpr(renderer);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     const cv = renderer.domElement;
@@ -1459,8 +1545,9 @@ class Component extends DCLogic {
     let ang = 0.7, px = 0, last = performance.now(), frame = 0, rafId = 0, shown = false;
     const tick = (now) => {
       rafId = requestAnimationFrame(tick);
-      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      const raw = now - last, dt = Math.min(0.05, raw / 1000); last = now;
       if (!visible || document.hidden) return;
+      fit(raw);
       frame++;
       const auto = this.props.autoRotar ?? true;
       const speed = this.props.velocidad ?? 1;
@@ -1519,11 +1606,11 @@ class Component extends DCLogic {
       this._tt = setTimeout(() => this.setState((st) => ({ ti: (st.ti + dir + this.TESTI.length) % this.TESTI.length, tVis: true })), 220);
     };
     return {
-      rootRef: this.rootRef, heroRef: this.heroRef, cityRef: this.cityRef, tlRef: this.tlRef,
+      rootRef: this.rootRef, heroRef: this.heroRef, cityRef: this.cityRef, equipoRef: this.equipoRef, tlFillRef: this.tlFillRef, tlTipRef: this.tlTipRef, twFloorRef: this.twFloorRef, tlRef: this.tlRef,
       th, themeName: night ? 'noche' : 'dia',
       marca: (window.MARCA && window.MARCA.nombre) || 'Aquaterra',
       mostrarTestimonios: this.MOSTRAR_TESTIMONIOS,
-      equipo: this.EQUIPO.map((pe) => ({ ...pe, bg: pe.foto ? `url("${pe.foto}")` : 'none' })),
+      equipo: this.EQUIPO.map((pe) => ({ ...pe, bg: pe.foto && s.verEquipo ? `url("${pe.foto}")` : 'none' })),
       wide: s.w >= 900,
       stickyPos: s.w >= 900 ? 'sticky' : 'static',
       hdrBg: s.scrolled && !s.menu ? (night ? 'rgba(28,30,36,0.8)' : 'rgba(251,251,253,0.8)') : 'rgba(251,251,253,0)',
@@ -1611,7 +1698,7 @@ class Component extends DCLogic {
       dayInk: night ? 'rgba(245,245,247,0.75)' : '#1D1D1F',
       nightInk: night ? '#ECECEE' : 'rgba(29,29,31,0.7)',
       toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { localStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
-      tlFill: s.tlY + 'px', tlTip: s.tlY > 4 ? 1 : 0, tlLime: night ? '#C9F15D' : '#9BC734',
+      tlLime: night ? '#C9F15D' : '#9BC734',
       t1: dot(1), t2: dot(2), t3: dot(3), t4: dot(4), t5: dot(5), t6: dot(6),
       parkSecRef: this.parkSecRef, parkRef: this.parkRef, twCurtRef: this.twCurtRef, twInfoRef: this.twInfoRef, pkCurtRef: this.pkCurtRef, pkFillRef: this.pkFillRef, pkChipRef: this.pkChipRef,
       pk1Bg: (this.state.pkLevel || 1) === 1 ? '#636366' : 'rgba(99,99,102,0)', pk1Sh: (this.state.pkLevel || 1) === 1 ? '0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04)' : 'none',

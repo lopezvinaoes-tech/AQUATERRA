@@ -14,13 +14,10 @@
   var fine = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   // Tipografías: Bricolage Grotesque para titulares, Instrument Serif para acentos, JetBrains Mono para datos.
-  var pre = document.createElement('link');
-  pre.rel = 'preconnect'; pre.href = 'https://fonts.gstatic.com'; pre.crossOrigin = '';
-  var fonts = document.createElement('link');
-  fonts.rel = 'stylesheet';
-  fonts.href = 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap';
-  document.head.appendChild(pre);
-  document.head.appendChild(fonts);
+  // Se sirven desde /fonts (sin pedirlas a Google) y se piden después del primer pintado: el texto aparece enseguida
+  // con la fuente del sistema y cambia a la definitiva en cuanto llega, sin retrasar la carga.
+  var FONTS = [['Bricolage Grotesque', 'bricolage-grotesque', '200 800'], ['Instrument Serif', 'instrument-serif-italic', '400', 'italic'],
+    ['JetBrains Mono', 'jetbrains-mono-400', '400'], ['JetBrains Mono', 'jetbrains-mono-500', '500']];
 
   var ease = 'cubic-bezier(.16,1,.3,1)';
   var css = [
@@ -78,6 +75,8 @@
     css.push('[data-stagger]:not([data-in])>*{opacity:0}');
     css.push('[data-stagger][data-in]>*{animation:aq-up .9s ' + ease + ' backwards;animation-delay:calc(var(--i,0) * 80ms)}');
     css.push('@supports (animation-timeline:scroll()){@keyframes aq-drift{to{transform:translateY(-9vh);opacity:.2}}[data-drift]{animation:aq-drift linear both;animation-timeline:scroll(root);animation-range:5vh 100vh}}');
+    css.push('@keyframes aq-fx-now{from{opacity:.01;filter:blur(14px);transform:translateY(28px);clip-path:inset(0 0 35% 0)}to{clip-path:inset(0 0 0 0)}}');
+    css.push('[data-fx][data-fx-now]{animation:aq-fx-now 1.2s ' + ease + ' backwards}');
     css.push('[data-fx]{transition:opacity 1s ' + ease + ',filter 1.1s ' + ease + ',transform 1.2s ' + ease + ',clip-path 1.2s ' + ease + '}');
   } else {
     css.push('[data-marquee],[data-float],[data-aurora]::after{animation:none}');
@@ -170,22 +169,53 @@
   }
 
   // La página la pinta React después de cargar: se revisan los elementos nuevos a medida que aparecen.
+  // Nunca se toca la plantilla <x-dc> (oculta) que React lee para pintar la página: solo lo ya pintado.
+  function live(sel) {
+    return Array.prototype.filter.call(document.querySelectorAll(sel), function (el) { return !el.closest('x-dc'); });
+  }
+
   function scan() {
-    document.querySelectorAll('[data-fx]:not([data-fxo]),[data-accent][data-mark]:not([data-fxo])').forEach(function (el) {
-      el.setAttribute('data-fxo', '');
-      if (io && !reduce) io.observe(el); else el.setAttribute('data-in', '');
+    var nuevos = live('[data-fx]:not([data-fxo]),[data-accent][data-mark]:not([data-fxo])');
+    // Los títulos que ya están en pantalla al aparecer entran con una animación CSS que arranca visible,
+    // así se pintan en el primer fotograma (no esperan al observador) y la carga se percibe más rápida.
+    var yaVisibles = reduce ? [] : nuevos.filter(function (el) {
+      if (!el.hasAttribute('data-fx') || (el.checkVisibility && !el.checkVisibility({ contentVisibilityAuto: true }))) return false;
+      var r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < window.innerHeight;
     });
-    document.querySelectorAll('[data-stagger]').forEach(function (el) {
+    nuevos.forEach(function (el) {
+      el.setAttribute('data-fxo', '');
+      if (yaVisibles.indexOf(el) >= 0) { el.setAttribute('data-fx-now', ''); el.setAttribute('data-in', ''); }
+      else if (io && !reduce) io.observe(el); else el.setAttribute('data-in', '');
+    });
+    live('[data-stagger]').forEach(function (el) {
       if (!el.hasAttribute('data-fxo')) { el.setAttribute('data-fxo', ''); if (io2 && !reduce) io2.observe(el); else el.setAttribute('data-in', ''); }
       for (var i = 0, k = 0; i < el.children.length; i++) el.children[i].style.setProperty('--i', Math.min(k++, 8));
     });
     if (fine) {
-      document.querySelectorAll('[data-tilt]:not([data-fxt])').forEach(function (el) { el.setAttribute('data-fxt', ''); tilt(el); });
-      if (!reduce) document.querySelectorAll('[data-magnet]:not([data-fxm])').forEach(function (el) { el.setAttribute('data-fxm', ''); magnet(el); });
+      live('[data-tilt]:not([data-fxt])').forEach(function (el) { el.setAttribute('data-fxt', ''); tilt(el); });
+      if (!reduce) live('[data-magnet]:not([data-fxm])').forEach(function (el) { el.setAttribute('data-fxm', ''); magnet(el); });
     }
   }
 
+  // Las fuentes se añaden al documento ya descargadas y todas juntas: la página se recoloca una sola vez.
+  var fontsOn = false;
+  function addFonts() {
+    if (fontsOn) return;
+    fontsOn = true;
+    if (!window.FontFace || !document.fonts) return;
+    Promise.all(FONTS.map(function (f) {
+      var face = new FontFace(f[0], 'url(/fonts/' + f[1] + '.woff2) format("woff2")', { weight: f[2], style: f[3] || 'normal', display: 'swap' });
+      return face.load().then(function () { return face; }, function () { return null; });
+    })).then(function (faces) { faces.forEach(function (f) { if (f) document.fonts.add(f); }); });
+  }
+  function fontsAfterPaint() {
+    var root = document.getElementById('dc-root');
+    if (root && root.firstChild) requestAnimationFrame(function () { setTimeout(addFonts, 0); });
+  }
+
   function start() {
+    setTimeout(addFonts, 2500);
+    fontsAfterPaint();
     if (!bar.isConnected) document.body.appendChild(bar);
     if (fine && !reduce) cursor();
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -196,7 +226,7 @@
     new MutationObserver(function () {
       if (pending) return;
       pending = true;
-      requestAnimationFrame(function () { pending = false; scan(); onScroll(); });
+      requestAnimationFrame(function () { pending = false; scan(); onScroll(); if (!fontsOn) fontsAfterPaint(); });
     }).observe(document.documentElement, { childList: true, subtree: true });
     // Red de seguridad: si algo impide la animación, el contenido nunca queda oculto.
     var tries = 0;
@@ -205,10 +235,14 @@
       if (++tries > 8) clearInterval(iv);
     }, 400);
     setTimeout(function () {
-      document.querySelectorAll('[data-fx]:not([data-in]),[data-accent][data-mark]:not([data-in]),[data-stagger]:not([data-in])').forEach(function (el) {
-        var r = el.getBoundingClientRect();
-        if (r.top < window.innerHeight && r.bottom > 0) el.setAttribute('data-in', '');
-      });
+      // Primero se leen todas las posiciones y después se marcan, para no forzar una maquetación por elemento.
+      var els = live('[data-fx]:not([data-in]),[data-accent][data-mark]:not([data-in]),[data-stagger]:not([data-in])');
+      // Las secciones que aún no se maquetaron (content-visibility) se saltan: no están en pantalla.
+      els.filter(function (el) {
+        if (el.checkVisibility && !el.checkVisibility({ contentVisibilityAuto: true })) return false;
+        var r = el.getBoundingClientRect(); return r.top < window.innerHeight && r.bottom > 0;
+      })
+        .forEach(function (el) { el.setAttribute('data-in', ''); });
     }, 2500);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
