@@ -11,6 +11,7 @@
   var OBJS = ['Renta por alquiler', 'Revalorización', 'Vivienda propia', 'Aún no lo sé'];
   var root, ov, pn, abierto = false, enviando = false, enviado = false, error = '';
   var f = {};
+  var P = function () { return window.AQPrefijos; };
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
@@ -36,6 +37,10 @@
     '.aqa-l{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--mute);min-width:0}',
     '.aqa-l.full{grid-column:1/-1}',
     '.aqa-i{width:100%;height:46px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--field);color:var(--ink);font-size:16px;font-weight:400;font-family:inherit;outline:none;-webkit-appearance:none;appearance:none}',
+    '.aqa-tel{display:flex;gap:8px}',
+    '.aqa-tel .aqa-i{flex:1;min-width:0}',
+    '.aqa-pre{height:46px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--field);color:var(--ink);font-size:15px;font-weight:400}',
+    '.aqa-pre:focus-within{border-color:#C9F15D;box-shadow:0 0 0 3px rgba(201,241,93,.3)}',
     '.aqa-i:focus{border-color:#C9F15D;box-shadow:0 0 0 3px rgba(201,241,93,.3)}',
     'select.aqa-i{background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 18px) 20px,calc(100% - 13px) 20px;background-size:5px 5px;background-repeat:no-repeat;padding-right:32px}',
     '.aqa-ck{grid-column:1/-1;display:flex;align-items:flex-start;gap:10px;font-size:13px;line-height:1.45;color:var(--mute);cursor:pointer}',
@@ -67,7 +72,8 @@
       '<form class="aqa-g" novalidate>' +
       '<label class="aqa-l full">Nombre<input class="aqa-i" name="nombre" autocomplete="name" value="' + esc(f.nombre) + '" required></label>' +
       '<label class="aqa-l">Email<input class="aqa-i" name="email" type="email" inputmode="email" autocomplete="email" value="' + esc(f.email) + '"></label>' +
-      '<label class="aqa-l">WhatsApp<input class="aqa-i" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="+34 …" value="' + esc(f.whatsapp) + '"></label>' +
+      '<label class="aqa-l">WhatsApp<span class="aqa-tel">' + (P() ? P().html({ name: 'pre', valor: f.pre, cls: 'aqa-pre' }) : '') +
+      '<input class="aqa-i" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="Número" value="' + esc(f.whatsapp) + '"></span></label>' +
       '<label class="aqa-l">Zona<select class="aqa-i" name="ciudad">' + opts(CIUDADES, f.ciudad) + '</select></label>' +
       '<label class="aqa-l">Tipo<select class="aqa-i" name="tipo">' + opts(TIPOS, f.tipo) + '</select></label>' +
       '<label class="aqa-l">Presupuesto<select class="aqa-i" name="monto">' + opts(MONTOS, f.monto, 'Elige un rango') + '</select></label>' +
@@ -87,6 +93,7 @@
 
   function leerForm(form) {
     ['nombre', 'email', 'whatsapp', 'ciudad', 'tipo', 'monto', 'objetivo'].forEach(function (k) { f[k] = (form.elements[k].value || '').trim(); });
+    if (form.elements.pre) f.pre = form.elements.pre.value;
     f.consentimiento = form.elements.consentimiento.checked;
     f.empresa_web = form.elements.empresa_web.value;
   }
@@ -113,7 +120,7 @@
       f.dorm ? 'Dormitorios: ' + f.dorm : null
     ].filter(Boolean).join(' · ');
     window.enviarLead({
-      nombre: f.nombre, email: f.email || null, whatsapp: f.whatsapp || null,
+      nombre: f.nombre, email: f.email || null, whatsapp: (P() ? P().unir(f.pre, f.whatsapp) : f.whatsapp) || null,
       monto: f.monto || null, objetivo: f.objetivo || null,
       mensaje: 'Quiere recibir avisos de proyectos nuevos. ' + busca,
       origen: 'Alerta de proyectos', consentimiento: true, empresa_web: f.empresa_web
@@ -136,6 +143,7 @@
     if (!f.nombre && !f.email && !f.whatsapp && typeof window.contactoGuardado === 'function') {
       var c = window.contactoGuardado();
       f.nombre = c.nombre || ''; f.email = c.email || ''; f.whatsapp = c.whatsapp || '';
+      if (P() && f.whatsapp) { var t = P().separar(f.whatsapp); f.pre = t.c; f.whatsapp = t.num; }
     }
     abierto = true; error = '';
     render();

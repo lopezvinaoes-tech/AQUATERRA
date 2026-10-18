@@ -17,7 +17,8 @@
   var abierto = false;
   var root, tray, modal, toastEl, toastT;
   // Pedido de la comparación a un asesor (se guarda como lead con origen "Comparador").
-  var lf = { nombre: '', contacto: '', monto: '', objetivo: '', ck: false }, lEstado = '', lErr = '';
+  var lf = { nombre: '', email: '', whatsapp: '', pre: '', monto: '', objetivo: '', ck: false }, lEstado = '', lErr = '';
+  var PF = function () { return window.AQPrefijos; };
   var MONTOS = ['Hasta USD 50.000', 'USD 50.000 – 100.000', 'USD 100.000 – 250.000', 'Más de USD 250.000'];
   var OBJS = ['Renta por alquiler', 'Revalorización', 'Vivienda propia', 'Aún no lo sé'];
 
@@ -130,6 +131,10 @@
     '.aqv-lead-tx{flex:1 1 260px;display:flex;flex-direction:column;gap:4px;font-size:14px;line-height:1.45;color:var(--mute)}',
     '.aqv-lead-tx b{font-size:17px;font-weight:600;letter-spacing:-0.01em;color:var(--ink)}',
     '.aqv-lead-f{flex:2 1 420px;display:flex;flex-wrap:wrap;gap:10px}',
+    '.aqv-tel{flex:1 1 220px;min-width:0;display:flex;gap:8px}',
+    '.aqv-tel .aqv-in{flex:1 1 0;width:0}',
+    '.aqv-pre{height:46px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:15px}',
+    '.aqv-pre:focus-within{border-color:#C9F15D;box-shadow:0 0 0 3px rgba(201,241,93,.3)}',
     '.aqv-in{flex:1 1 150px;min-width:0;height:46px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:16px;font-family:inherit;outline:none}',
     '.aqv-in:focus{border-color:#C9F15D;box-shadow:0 0 0 3px rgba(201,241,93,.3)}',
     '.aqv-ck{flex:1 1 100%;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);cursor:pointer}',
@@ -236,10 +241,12 @@
 
   // Si ya dejó sus datos en otro formulario de la web, se precompletan.
   function precompletar() {
-    if (lf.nombre || lf.contacto || typeof window.contactoGuardado !== 'function') return;
+    if (lf.nombre || lf.email || lf.whatsapp || typeof window.contactoGuardado !== 'function') return;
     var c = window.contactoGuardado();
     lf.nombre = c.nombre || '';
-    lf.contacto = c.email || c.whatsapp || '';
+    lf.email = c.email || '';
+    lf.whatsapp = c.whatsapp || '';
+    if (PF() && lf.whatsapp) { var t = PF().separar(lf.whatsapp); lf.pre = t.c; lf.whatsapp = t.num; }
   }
 
   function htmlPedido() {
@@ -248,7 +255,9 @@
     }
     return '<form class="aqv-lead" novalidate><div class="aqv-lead-tx"><b>¿Te la enviamos con nuestro análisis?</b><span>Un asesor revisa estos proyectos para tu caso y te escribe por email o WhatsApp.</span></div>' +
       '<div class="aqv-lead-f"><input class="aqv-in" name="nombre" autocomplete="name" placeholder="Tu nombre" aria-label="Tu nombre" value="' + esc(lf.nombre) + '">' +
-      '<input class="aqv-in" name="contacto" autocomplete="email" placeholder="Email o WhatsApp" aria-label="Email o WhatsApp" value="' + esc(lf.contacto) + '">' +
+      '<input class="aqv-in" name="email" type="email" inputmode="email" autocomplete="email" placeholder="Email" aria-label="Email" value="' + esc(lf.email) + '">' +
+      '<span class="aqv-tel">' + (PF() ? PF().html({ name: 'pre', valor: lf.pre, cls: 'aqv-pre' }) : '') +
+      '<input class="aqv-in" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="WhatsApp" aria-label="WhatsApp" value="' + esc(lf.whatsapp) + '"></span>' +
       '<select class="aqv-in" name="monto" aria-label="Presupuesto">' + selOpts(MONTOS, lf.monto, 'Presupuesto') + '</select>' +
       '<select class="aqv-in" name="objetivo" aria-label="Objetivo">' + selOpts(OBJS, lf.objetivo, 'Objetivo') + '</select>' +
       '<button type="submit" class="aqv-b aqv-b1"' + (lEstado === 'enviando' ? ' disabled' : '') + '>' + (lEstado === 'enviando' ? 'Enviando…' : 'Enviármela') + '</button></div>' +
@@ -259,15 +268,18 @@
 
   function enviarPedido(form) {
     lf.nombre = form.elements.nombre.value.trim();
-    lf.contacto = form.elements.contacto.value.trim();
+    lf.email = form.elements.email.value.trim();
+    lf.whatsapp = form.elements.whatsapp.value.trim();
+    if (form.elements.pre) lf.pre = form.elements.pre.value;
     lf.ck = form.elements.ck.checked;
     lf.monto = form.elements.monto.value;
     lf.objetivo = form.elements.objetivo.value;
-    var email = /@/.test(lf.contacto) ? lf.contacto : '';
-    var wa = email ? '' : lf.contacto;
+    var email = lf.email;
+    var wa = PF() ? PF().unir(lf.pre, lf.whatsapp) : lf.whatsapp;
     lErr = lf.nombre.length < 2 ? 'Escribe tu nombre.'
       : email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? 'El email no parece válido.'
       : !email && wa.replace(/\D/g, '').length < 6 ? 'Déjanos un email o un WhatsApp.'
+      : lf.whatsapp && lf.whatsapp.replace(/\D/g, '').length < 6 ? 'El WhatsApp no parece válido.'
       : !lf.ck ? 'Marca la casilla para que podamos escribirte.' : '';
     if (lErr) { render(); return; }
     lEstado = 'enviando'; render();
@@ -364,11 +376,11 @@
     // Lo que se escribe en el pedido se guarda al vuelo para no perderlo si la vista se redibuja.
     root.addEventListener('input', function (e) {
       var n = e.target.name;
-      if (n === 'nombre' || n === 'contacto' || n === 'monto' || n === 'objetivo') lf[n] = e.target.value;
+      if (n === 'nombre' || n === 'email' || n === 'whatsapp' || n === 'monto' || n === 'objetivo') lf[n] = e.target.value;
       else if (n === 'ck') lf.ck = e.target.checked;
     });
     root.addEventListener('change', function (e) {
-      if (e.target.name === 'monto' || e.target.name === 'objetivo') { lf[e.target.name] = e.target.value; return; }
+      if (e.target.name === 'monto' || e.target.name === 'objetivo' || e.target.name === 'pre') { lf[e.target.name] = e.target.value; return; }
       if (e.target.name !== 'ck') return;
       lf.ck = e.target.checked;
       var er = root.querySelector('.aqv-lead .aqv-err');
