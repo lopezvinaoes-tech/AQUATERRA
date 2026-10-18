@@ -14,6 +14,7 @@
 <script src="./support.js"></script>
 <script src="./fx.js" defer></script>
 <script src="./leads.js"></script>
+<script src="./prefijos.js"></script>
 <script src="./chat.js" defer></script>
 </head>
 <body>
@@ -500,7 +501,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px">
               <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Nombre y apellido<input value="{{ cfNombre }}" onChange="{{ onCf.nombre }}" autocomplete="name" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></label>
               <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Email<input value="{{ cfEmail }}" onChange="{{ onCf.email }}" type="email" autocomplete="email" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></label>
-              <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">WhatsApp<input value="{{ cfTel }}" onChange="{{ onCf.tel }}" type="tel" inputmode="tel" autocomplete="tel" placeholder="+34 6xx xxx xxx" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></label>
+              <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)"><span>WhatsApp</span><div style="display:flex;gap:8px"><span class="aqp" style="height:52px;padding:0 14px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:15px;font-weight:400"><span>{{ cfPreTxt }}</span><select data-aqp value="{{ cfPre }}" onChange="{{ onCf.pre }}" aria-label="Prefijo del teléfono"><sc-for list="{{ preOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.c }}">{{ o.t }}</option></sc-for></select></span><input value="{{ cfTel }}" onChange="{{ onCf.tel }}" type="tel" inputmode="tel" autocomplete="tel-national" aria-label="Número de WhatsApp" placeholder="Número" style="flex:1;min-width:0;width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></div></div>
               <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Monto aproximado<select value="{{ cfMonto }}" onChange="{{ onCf.monto }}" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none;cursor:pointer"><sc-for list="{{ cfMontoOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.t }}</option></sc-for></select></label>
             </div>
             <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Objetivo<select value="{{ cfObj }}" onChange="{{ onCf.obj }}" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none;cursor:pointer"><sc-for list="{{ cfObjOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.t }}</option></sc-for></select></label>
@@ -583,7 +584,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
             <div style="display:flex;flex-direction:column;border-radius:12px;overflow:hidden;background:{{ th.input }}">
               <input value="{{ nombre }}" onChange="{{ onNombre }}" aria-label="Nombre y apellido" placeholder="Nombre y apellido" autocomplete="name" style="height:50px;padding:0 16px;border:0;background:transparent;font-size:17px;outline:none;color:{{ th.ink }}">
               <span style="height:1px;margin-left:16px;background:{{ th.line }}"></span>
-              <input value="{{ tel }}" onChange="{{ onTel }}" aria-label="WhatsApp" placeholder="WhatsApp · +595 9xx xxx xxx" type="tel" inputmode="tel" autocomplete="tel" style="height:50px;padding:0 16px;border:0;background:transparent;font-size:17px;outline:none;color:{{ th.ink }}">
+              <div style="display:flex;align-items:center"><span class="aqp" style="height:50px;padding:0 2px 0 16px;font-size:17px;color:{{ th.ink }}"><span>{{ telPreTxt }}</span><select data-aqp value="{{ telPre }}" onChange="{{ onTelPre }}" aria-label="Prefijo del teléfono"><sc-for list="{{ preOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.c }}">{{ o.t }}</option></sc-for></select></span><span style="width:1px;height:24px;margin-left:12px;background:{{ th.line }}"></span><input value="{{ tel }}" onChange="{{ onTel }}" aria-label="WhatsApp" placeholder="WhatsApp" type="tel" inputmode="tel" autocomplete="tel-national" style="flex:1;min-width:0;height:50px;padding:0 16px 0 12px;border:0;background:transparent;font-size:17px;outline:none;color:{{ th.ink }}"></div>
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:10px"><span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Monto aproximado a invertir</span>
@@ -621,9 +622,9 @@ select option{color:#1D1D1F;background:#FFFFFF}
 class Component extends DCLogic {
   state = {
     mode: (() => { try { return localStorage.getItem('aquaterra-modo'); } catch (e) { return null; } })(), scrolled: false, twFloor: 'Rooftop', twStep: 0, w: typeof window !== 'undefined' ? window.innerWidth : 1280,
-    ti: 0, tVis: true, modal: false, sent: false, nombre: '', tel: '', monto: '', obj: '',
+    ti: 0, tVis: true, modal: false, sent: false, nombre: '', tel: '', telPre: (window.AQPrefijos ? window.AQPrefijos.porDefecto() : 'ES'), monto: '', obj: '',
     simMonto: 80000, simPozo: false, faqOpen: 0,
-    cf: { nombre: '', email: '', tel: '', monto: '', obj: '', msg: '' }, cfSent: false, cfSending: false, cfErr: '',
+    cf: { nombre: '', email: '', tel: '', pre: (window.AQPrefijos ? window.AQPrefijos.porDefecto() : 'ES'), monto: '', obj: '', msg: '' }, cfSent: false, cfSending: false, cfErr: '',
     tlY: 0, tlOn: 0
   };
   rootRef = React.createRef(); heroRef = React.createRef(); cityRef = React.createRef();
@@ -731,7 +732,7 @@ class Component extends DCLogic {
   enviarConsulta(datos) {
     if (this.state.cfSending) return;
     this.setState({ cfSending: true, cfErr: '' });
-    this.guardarLead({ nombre: datos.nombre, email: datos.email, whatsapp: datos.tel, monto: datos.monto, objetivo: datos.obj, mensaje: datos.msg, origen: 'Asesoría personalizada' })
+    this.guardarLead({ nombre: datos.nombre, email: datos.email, whatsapp: this.unirTel(datos.pre, datos.tel), monto: datos.monto, objetivo: datos.obj, mensaje: datos.msg, origen: 'Asesoría personalizada' })
       .then(() => this.setState({ cfSent: true, cfSending: false }))
       .catch((e) => this.setState({ cfSending: false, cfErr: e.message }));
   }
@@ -740,9 +741,14 @@ class Component extends DCLogic {
   enviarAgenda() {
     if (this.state.sending) return;
     this.setState({ sending: true });
-    this.guardarLead({ nombre: this.state.nombre, whatsapp: this.state.tel, monto: this.state.monto, objetivo: this.state.obj, origen: 'Agenda una asesoría' })
+    this.guardarLead({ nombre: this.state.nombre, whatsapp: this.unirTel(this.state.telPre, this.state.tel), monto: this.state.monto, objetivo: this.state.obj, origen: 'Agenda una asesoría' })
       .then(() => this.setState({ sent: true, sending: false }))
       .catch((e) => { this.setState({ sending: false }); window.alert(e.message); });
+  }
+
+  // Prefijo elegido + número (prefijos.js); si escribió el número con +, se respeta.
+  unirTel(pre, tel) {
+    return window.AQPrefijos ? window.AQPrefijos.unir(pre, tel) : tel;
   }
 
   guardarLead(d) {
@@ -1632,6 +1638,9 @@ class Component extends DCLogic {
       nombre: s.nombre, tel: s.tel,
       onNombre: (e) => this.setState({ nombre: e.target.value }),
       onTel: (e) => this.setState({ tel: e.target.value }),
+      telPre: s.telPre, telPreTxt: window.AQPrefijos ? window.AQPrefijos.corto(s.telPre) : '',
+      onTelPre: (e) => this.setState({ telPre: e.target.value }),
+      preOpts: window.AQPrefijos ? window.AQPrefijos.opciones : [],
       montoOpts: this.MONTOS.map((l) => chip('monto', l)),
       objOpts: this.OBJS.map((l) => chip('obj', l)),
       submitBg: valid ? '#0071E3' : th.fill,
@@ -1640,8 +1649,8 @@ class Component extends DCLogic {
       submit: () => { if (valid) this.enviarAgenda(); },
       ctaRef: this.ctaRef, ctaPanelRef: this.ctaPanelRef, ctaTitleRef: this.ctaTitleRef, ctaGlowRef: this.ctaGlowRef,
       waHref: 'https://wa.me/' + String((window.MARCA && window.MARCA.whatsapp) || '').replace(/\D/g, ''),
-      cfNombre: s.cf.nombre, cfEmail: s.cf.email, cfTel: s.cf.tel, cfMonto: s.cf.monto, cfObj: s.cf.obj, cfMsg: s.cf.msg,
-      onCf: Object.fromEntries(['nombre', 'email', 'tel', 'monto', 'obj', 'msg'].map((k) => [k, (e) => { const v = e.target.value; this.setState((st) => ({ cf: { ...st.cf, [k]: v } })); }])),
+      cfNombre: s.cf.nombre, cfEmail: s.cf.email, cfTel: s.cf.tel, cfPre: s.cf.pre, cfPreTxt: window.AQPrefijos ? window.AQPrefijos.corto(s.cf.pre) : '', cfMonto: s.cf.monto, cfObj: s.cf.obj, cfMsg: s.cf.msg,
+      onCf: Object.fromEntries(['nombre', 'email', 'tel', 'pre', 'monto', 'obj', 'msg'].map((k) => [k, (e) => { const v = e.target.value; this.setState((st) => ({ cf: { ...st.cf, [k]: v } })); }])),
       cfMontoOpts: [{ v: '', t: 'Elige una opción' }, ...this.MONTOS.map((t) => ({ v: t, t }))],
       cfObjOpts: [{ v: '', t: 'Elige una opción' }, ...this.OBJS.map((t) => ({ v: t, t }))],
       cfSent: s.cfSent, cfNotSent: !s.cfSent,
