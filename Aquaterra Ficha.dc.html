@@ -1,18 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ficha de proyecto | Aquaterra</title>
 <meta name="description" content="Ficha de un proyecto inmobiliario en Paraguay: precio publicado, etapa, entrega, amenities, ubicación y fuente del dato. Consulta sin compromiso con un asesor.">
-<script src="./marca.js"></script>
-<script src="./proyectos.js"></script>
-<script src="./support.js"></script>
+<meta name="theme-color" content="#F5F5F7">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:title" content="Ficha de proyecto | Aquaterra">
+<meta property="og:description" content="Ficha de un proyecto inmobiliario en Paraguay: precio publicado, etapa, entrega, amenities, ubicación y fuente del dato. Consulta sin compromiso con un asesor.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="Aquaterra">
+<meta property="og:image" content="https://aquaterra-beta.vercel.app/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>x-dc{display:none}</style>
+<!-- Carga: React se sirve desde /vendor y todos los scripts van con defer, en orden, para no frenar el primer pintado. -->
+<script>window.__resources = {};</script>
+<script src="./marca.js" defer></script>
+<script src="./proyectos.js" defer></script>
+<script src="./leads.js" defer></script>
+<script src="./prefijos.js" defer></script>
+<script src="/vendor/react.production.min.js" defer></script>
+<script src="/vendor/react-dom.production.min.js" defer></script>
+<script src="./arranque.js" defer></script>
+<script src="./support.js" defer></script>
 <script src="./fx.js" defer></script>
-<script src="./leads.js"></script>
-<script src="./prefijos.js"></script>
 <script src="./chat.js" data-offset="72" defer></script>
 <script src="./comparador.js" data-offset="72" defer></script>
+<script src="./seo.js" defer></script>
 </head>
 <body>
 <x-dc>
@@ -101,9 +120,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
       <div style="display:flex;flex-direction:column;gap:4px">
         <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">{{ pr.precioLbl }}</span>
         <span style="font-size:clamp(28px,3vw,40px);line-height:1;letter-spacing:-0.03em;font-weight:700">{{ pr.precioTxt }}</span>
-        <sc-if value="{{ eurTxt }}" hint-placeholder-val="{{ false }}">
-          <span style="font-size:14px;color:{{ th.mute }}">{{ eurTxt }}</span>
-        </sc-if>
+        <span style="min-height:{{ eurH }};font-size:14px;color:{{ th.mute }}">{{ eurTxt }}</span>
       </div>
     </div>
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px">
@@ -355,7 +372,8 @@ class Component extends DCLogic {
     window.addEventListener('aq-comparar', this._onCmp);
     const conCmp = () => {
       this._onCmp();
-      if (window.AQComparar && window.AQComparar.cambio) window.AQComparar.cambio().then((r) => { if (r) this.setState({ eur: r }); });
+      // El cambio a euros se pide cuando la ficha ya está pintada, para no competir con la carga inicial.
+      if (window.AQComparar && window.AQComparar.cambio) setTimeout(() => window.AQComparar.cambio().then((r) => { if (r) this.setState({ eur: r }); }), 1200);
     };
     if (window.AQComparar) conCmp(); else window.addEventListener('DOMContentLoaded', conCmp, { once: true });
   }
@@ -446,6 +464,7 @@ class Component extends DCLogic {
     const cmpOn = !!(C && C.has(pIdx));
     const nCmp = C ? C.lista().length : 0;
     return {
+      eurH: p.precio ? '1.45em' : '0px',
       eurTxt: p.precio && s.eur ? '≈ ' + Math.round(p.precio * s.eur).toLocaleString('es-ES') + ' € al cambio de hoy' : '',
       cmpOn: cmpOn ? 'true' : 'false',
       cmpTxt: cmpOn ? '✓ En tu comparación' : '+ Comparar',
@@ -474,7 +493,7 @@ class Component extends DCLogic {
       knobBg: night ? '#636366' : '#FFFFFF',
       knobLeft: night ? '60px' : '2px', knobLeftL: night ? '88px' : '2px',
       dayInk: night ? 'rgba(236,236,238,0.72)' : '#1D1D1F',
-      nightInk: night ? '#ECECEE' : '#6E6E73',
+      nightInk: night ? '#ECECEE' : '#636368',
       toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { localStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
       coverMinH: narrowM ? '440px' : '460px',
       cvBg: this.coverBg(p.tipo),

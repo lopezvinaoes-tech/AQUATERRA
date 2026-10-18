@@ -86,7 +86,7 @@
     root.innerHTML =
       '<button class="aqc-btn" type="button" aria-label="Abrir el asistente virtual"><span class="aqc-dot">' + ICON_CHAT + '</span>' +
       (estado.mensajes.length ? '' : '<span class="aqc-pulse"></span>') + '<span>¿Dudas? Pregúntame</span></button>' +
-      '<section class="aqc-win" role="dialog" aria-label="Asistente virtual de ' + esc(marca) + '" aria-hidden="true">' +
+      '<section class="aqc-win" role="dialog" aria-label="Asistente virtual de ' + esc(marca) + '" aria-hidden="true" inert>' +
         '<header class="aqc-head"><span class="aqc-dot">' + ICON_CHAT + '</span><div><b>Asistente ' + esc(marca) + '</b><small>Asistente con IA · responde al momento</small></div>' +
         '<button class="aqc-x" type="button" aria-label="Cerrar">✕</button></header>' +
         '<div class="aqc-body" aria-live="polite"></div>' +
@@ -133,6 +133,7 @@
       estado.abierto = v; guardar();
       root.classList.toggle('aqc-open', v);
       win.setAttribute('aria-hidden', v ? 'false' : 'true');
+      win.inert = !v;
       var p = root.querySelector('.aqc-pulse'); if (p && v) p.remove();
       if (v) { render(); if (window.matchMedia('(min-width:561px)').matches) setTimeout(function () { input.focus(); }, 200); }
       else btn.focus({ preventScroll: true });

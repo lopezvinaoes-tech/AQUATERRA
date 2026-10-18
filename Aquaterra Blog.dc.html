@@ -1,15 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Blog · Aquaterra: invertir en Paraguay desde España</title>
 <meta name="description" content="Guías con datos y fuentes para invertir en inmuebles en Paraguay desde España: comprar sobre plano, impuestos, compra a distancia, rentabilidad del alquiler en Asunción y precio de lotes.">
-<script src="./marca.js"></script>
-<script src="./articulos.js"></script>
-<script src="./support.js"></script>
+<meta name="theme-color" content="#F5F5F7">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:title" content="Blog · Aquaterra: invertir en Paraguay desde España">
+<meta property="og:description" content="Guías con datos y fuentes para invertir en inmuebles en Paraguay desde España: comprar sobre plano, impuestos, compra a distancia, rentabilidad del alquiler en Asunción y precio de lotes.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="Aquaterra">
+<meta property="og:image" content="https://aquaterra-beta.vercel.app/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>x-dc{display:none}</style>
+<!-- Carga: React se sirve desde /vendor y todos los scripts van con defer, en orden, para no frenar el primer pintado. -->
+<script>window.__resources = {};</script>
+<script src="./marca.js" defer></script>
+<script src="./articulos.js" defer></script>
+<script src="/vendor/react.production.min.js" defer></script>
+<script src="/vendor/react-dom.production.min.js" defer></script>
+<script src="./arranque.js" defer></script>
+<script src="./support.js" defer></script>
 <script src="./fx.js" defer></script>
 <script src="./chat.js" defer></script>
+<script src="./seo.js" defer></script>
 </head>
 <body>
 <x-dc>
@@ -496,7 +515,7 @@ class Component extends DCLogic {
       knobBg: night ? '#636366' : '#FFFFFF',
       knobLeft: night ? '60px' : '2px', knobLeftL: night ? '88px' : '2px',
       dayInk: night ? 'rgba(236,236,238,0.72)' : '#1D1D1F',
-      nightInk: night ? '#ECECEE' : '#6E6E73',
+      nightInk: night ? '#ECECEE' : '#636368',
       toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { localStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
       isList, isArt, notFound,
       cats: this.CATS.map((c) => ({ label: c, n: c === 'Todos' ? all.length : all.filter((p) => p.cat === c).length, on: c === cat ? 'true' : 'false', bg: c === cat ? th.ink : th.chip, ink: c === cat ? th.bg : th.ink, pick: () => this.pickCat(c) })),
