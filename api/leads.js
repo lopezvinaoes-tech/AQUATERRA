@@ -1,5 +1,5 @@
 // POST /api/leads: recibe el formulario de asesoría y guarda el lead.
-const { configured, db, parseMonto, perfilDe, prioridadDe, hashIp, readBody, send } = require('./_lib');
+const { configured, db, parseMonto, perfilDe, prioridadDe, buscarLeadExistente, sumarContacto, hashIp, readBody, send } = require('./_lib');
 
 const clip = (v, n) => (v == null ? null : String(v).trim().slice(0, n) || null);
 
@@ -52,6 +52,12 @@ module.exports = async (req, res) => {
       user_agent: clip(h['user-agent'], 300),
       ip_hash
     };
+    // Misma persona (email o WhatsApp) que ya escribió antes: se suma a su perfil.
+    const previo = await buscarLeadExistente(email, whatsapp);
+    if (previo) {
+      const id = await sumarContacto(previo, lead, { origen: lead.origen });
+      return send(res, 200, { ok: true, id, existente: true });
+    }
     const [creado] = await db('leads', { method: 'POST', body: lead, prefer: 'return=representation' });
     await db('lead_eventos', { method: 'POST', body: { lead_id: creado.id, tipo: 'creado', detalle: { origen: lead.origen } } });
     return send(res, 201, { ok: true, id: creado.id });

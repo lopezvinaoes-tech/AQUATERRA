@@ -133,6 +133,10 @@
       if (MONTOS.indexOf(pref.monto) !== -1) f.monto = pref.monto;
       f.dorm = pref.dorm || '';
     }
+    if (!f.nombre && !f.email && !f.whatsapp && typeof window.contactoGuardado === 'function') {
+      var c = window.contactoGuardado();
+      f.nombre = c.nombre || ''; f.email = c.email || ''; f.whatsapp = c.whatsapp || '';
+    }
     abierto = true; error = '';
     render();
     ov.setAttribute('data-open', '');

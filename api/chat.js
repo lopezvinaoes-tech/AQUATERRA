@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-const { configured, db, parseMonto, perfilDe, prioridadDe, hashIp, readBody, send } = require('./_lib');
+const { configured, db, parseMonto, perfilDe, prioridadDe, buscarLeadExistente, sumarContacto, hashIp, readBody, send } = require('./_lib');
 
 const GEMINI_KEY = process.env.GEMINI_API_KEY || '';
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY || '';
@@ -186,6 +186,9 @@ async function guardarContacto(input, ctx) {
     user_agent: clip(h['user-agent'], 300),
     ip_hash: ctx.ipHash
   });
+  // Si ya dejó sus datos antes (formulario, comparador u otro chat), se suma a su perfil.
+  const existente = await buscarLeadExistente(email, whatsapp);
+  if (existente) return { ok: true, id: await sumarContacto(existente, lead, { origen: 'Chat IA', autor: 'Asistente IA' }) };
   const [creado] = await db('leads', { method: 'POST', body: lead, prefer: 'return=representation' });
   await db('lead_eventos', { method: 'POST', body: { lead_id: creado.id, tipo: 'creado', detalle: { origen: 'Chat IA' }, autor: 'Asistente IA' } });
   return { ok: true, id: creado.id };

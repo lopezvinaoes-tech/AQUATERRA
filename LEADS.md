@@ -2,6 +2,7 @@
 
 - **Formulario → `POST /api/leads`**: guarda cada solicitud en Supabase, la clasifica por tipo de inversor y prioridad, y registra país, página y campaña (utm).
 - **Panel → `/admin`**: login, métricas, embudo, tipos de inversor, tabla con búsqueda, detalle con estado, notas e historial, y exportación a CSV.
+- **Un solo perfil por persona**: si alguien vuelve a escribir con el mismo email o WhatsApp (otro formulario, el comparador, las alertas o el chat), no se crea un lead nuevo: se completan los datos que faltaban, se actualizan monto y objetivo, se suman los proyectos de interés y el mensaje, y queda un evento "Volvió a escribir desde …" en su historial. En el panel la tabla se ordena por última actividad, muestra cuántos contactos lleva cada lead y avisa cuando uno vuelve a escribir.
 - Mientras la base no esté configurada, `/admin` muestra datos de ejemplo (modo demostración).
 
 ## Puesta en marcha (una sola vez)

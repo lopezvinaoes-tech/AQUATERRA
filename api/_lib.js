@@ -57,6 +57,65 @@ function prioridadDe(min) {
   return 'baja';
 }
 
+// ---------- Un solo perfil por persona ----------
+// Si alguien vuelve a escribir (otro formulario, el comparador, el chat) con el mismo email o
+// WhatsApp, se suma a su lead en lugar de crear uno nuevo, y queda un evento "contacto" en su historial.
+
+const digitos = (w) => String(w || '').replace(/\D/g, '');
+// Los últimos 8 dígitos reconocen el mismo número escrito con o sin prefijo, espacios o guiones.
+const colaWa = (w) => { const d = digitos(w); return d.length >= 8 ? d.slice(-8) : null; };
+
+// Devuelve el lead más antiguo con ese email o WhatsApp, o null.
+async function buscarLeadExistente(email, whatsapp) {
+  const em = email ? String(email).trim().toLowerCase() : null;
+  const cola = colaWa(whatsapp);
+  const conds = [];
+  if (em) conds.push(`email.ilike."${em.replace(/"/g, '')}"`);
+  if (cola) conds.push(`whatsapp.ilike.*${cola.split('').join('*')}*`);
+  if (!conds.length) return null;
+  const candidatos = await db(`leads?select=*&or=${encodeURIComponent('(' + conds.join(',') + ')')}&order=created_at.asc&limit=50`);
+  return candidatos.find((l) => (em && (l.email || '').trim().toLowerCase() === em) || (cola && colaWa(l.whatsapp) === cola)) || null;
+}
+
+// Suma un nuevo contacto al lead existente sin borrar lo que ya había:
+// completa los datos que faltaban, actualiza monto y objetivo si los vuelve a declarar,
+// junta los proyectos de interés y agrega el mensaje nuevo al anterior.
+async function sumarContacto(previo, nuevo, { origen, autor } = {}) {
+  const c = {};
+  for (const k of ['email', 'whatsapp', 'pais', 'ciudad', 'idioma', 'pagina', 'referrer', 'utm_source', 'utm_medium', 'utm_campaign', 'user_agent']) {
+    if (nuevo[k] && !previo[k]) c[k] = nuevo[k];
+  }
+  if (nuevo.monto && nuevo.monto !== previo.monto) {
+    const [min, max] = parseMonto(nuevo.monto);
+    Object.assign(c, { monto: nuevo.monto, monto_min: min, monto_max: max, prioridad: prioridadDe(min) });
+  }
+  if (nuevo.objetivo && nuevo.objetivo !== previo.objetivo) Object.assign(c, { objetivo: nuevo.objetivo, perfil: perfilDe(nuevo.objetivo) });
+  if (nuevo.proyecto_interes) {
+    const lista = String(previo.proyecto_interes || '').split(' / ').filter(Boolean);
+    for (const p of String(nuevo.proyecto_interes).split(' / ')) if (p && !lista.includes(p)) lista.push(p);
+    const unido = lista.join(' / ').slice(0, 160);
+    if (unido !== (previo.proyecto_interes || '')) c.proyecto_interes = unido;
+  }
+  if (nuevo.mensaje && !String(previo.mensaje || '').includes(nuevo.mensaje)) {
+    const fecha = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'America/Asuncion' });
+    const junto = previo.mensaje ? `${previo.mensaje}\n\n${origen || 'Web'} · ${fecha}: ${nuevo.mensaje}` : nuevo.mensaje;
+    c.mensaje = junto.length > 2000 ? '…' + junto.slice(-1999) : junto;
+  }
+  if (nuevo.consentimiento && !previo.consentimiento) c.consentimiento = true;
+  if (nuevo.ia) {
+    // Conserva las conversaciones anteriores con el asistente y suma la nueva.
+    const antes = (previo.ia && previo.ia.conversacion) || [];
+    c.ia = { ...(previo.ia || {}), ...nuevo.ia, conversacion: antes.concat(nuevo.ia.conversacion || []).slice(-60) };
+  }
+  if (Object.keys(c).length) await db(`leads?id=eq.${previo.id}`, { method: 'PATCH', body: c });
+  const detalle = { origen: origen || null };
+  for (const k of ['mensaje', 'proyecto_interes', 'monto', 'objetivo', 'pagina']) if (nuevo[k]) detalle[k] = String(nuevo[k]).slice(0, 300);
+  const campos = Object.keys(c).filter((k) => !['ia', 'monto_min', 'monto_max'].includes(k));
+  if (campos.length) detalle.campos = campos;
+  await db('lead_eventos', { method: 'POST', body: { lead_id: previo.id, tipo: 'contacto', detalle, autor: autor || null } });
+  return previo.id;
+}
+
 const hashIp = (ip) => crypto.createHash('sha256').update(`${process.env.IP_SALT || SERVICE_KEY}:${ip}`).digest('hex').slice(0, 32);
 
 async function readBody(req) {
@@ -113,4 +172,4 @@ async function authAdmin(path, { method = 'GET', body } = {}) {
   return { ok: res.ok, status: res.status, data };
 }
 
-module.exports = { SUPABASE_URL, ANON_KEY, configured, ESTADOS, db, parseMonto, perfilDe, prioridadDe, hashIp, readBody, send, rolDe, memberFromRequest, authAdmin, bootstrapAdmins };
+module.exports = { SUPABASE_URL, ANON_KEY, configured, ESTADOS, db, parseMonto, perfilDe, prioridadDe, buscarLeadExistente, sumarContacto, hashIp, readBody, send, rolDe, memberFromRequest, authAdmin, bootstrapAdmins };
