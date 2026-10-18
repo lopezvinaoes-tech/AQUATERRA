@@ -12,6 +12,7 @@
 <script src="./leads.js"></script>
 <script src="./chat.js" data-offset="72" defer></script>
 <script src="./comparador.js" data-offset="72" defer></script>
+<script src="./ficha-pdf.js" defer></script>
 </head>
 <body>
 <x-dc>
@@ -111,6 +112,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
         <button onClick="{{ cmpOpen }}" style="height:36px;padding:0 6px;border:0;background:transparent;color:{{ linkC }};font-size:14px;font-weight:500;cursor:pointer">{{ cmpVerTxt }}</button>
       </sc-if>
       <button onClick="{{ share }}" style="display:flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:999px;border:1px solid {{ th.line }};background:transparent;color:{{ th.ink }};font-size:14px;font-weight:600;cursor:pointer">{{ shareTxt }}</button>
+      <button onClick="{{ pdf }}" style="display:flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:999px;border:1px solid {{ th.line }};background:transparent;color:{{ th.ink }};font-size:14px;font-weight:600;cursor:pointer">Descargar PDF</button>
     </div>
   </div>
 </section>
@@ -456,6 +458,13 @@ class Component extends DCLogic {
       cmpVerTxt: `Ver comparación (${nCmp}) ›`,
       cmpOpen: () => { if (window.AQComparar) window.AQComparar.abrir(); },
       share: () => this.compartir(p),
+      // El PDF sale siempre en modo día (fondo blanco); al cerrar el diálogo vuelve el modo que tenía.
+      pdf: () => {
+        if (!window.AQFichaPDF) return;
+        const prev = this.state.mode;
+        if (night) this.setState({ mode: 'dia' });
+        window.AQFichaPDF({ titulo: p.name, despues: () => { if (night) this.setState({ mode: prev }); } });
+      },
       shareTxt: s.shareMsg || 'Compartir',
       th, themeName: night ? 'noche' : 'dia',
       marca: (window.MARCA && window.MARCA.nombre) || 'Aquaterra',
