@@ -8,6 +8,7 @@
 <script src="./marca.js"></script>
 <script src="./proyectos.js"></script>
 <script src="./support.js"></script>
+<script src="./fx.js" defer></script>
 <script src="./chat.js" defer></script>
 </head>
 <body>
@@ -82,7 +83,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
 <section data-screen-label="01 Catálogo" style="padding:calc(52px + env(safe-area-inset-top) + clamp(40px,8vw,96px)) clamp(20px,3.2vw,48px) 28px">
   <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
     <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:{{ th.mute }}">Catálogo</span>
-    <h1 style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1.02;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">Proyectos para <span style="color:#86868B">invertir hoy.</span></h1>
+    <h1 data-fx="" style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1.02;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">Proyectos para <span data-accent="" style="color:#86868B">invertir hoy.</span></h1>
     <p style="margin:0;max-width:560px;font-size:clamp(17px,1.6vw,21px);line-height:1.45;color:{{ th.mute2 }};text-wrap:pretty">Departamentos, barrios cerrados, countries, casas y lotes en Asunción y el interior del país.</p>
     <p style="margin:0;max-width:620px;font-size:15px;line-height:1.5;color:{{ th.mute }};text-wrap:pretty">Por ahora mostramos proyectos reales de otras desarrolladoras como referencia del mercado. Cada uno indica de quién es, la fuente del dato y su fecha.</p>
   </div>
@@ -112,7 +113,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
     <span style="font-size:14px;color:{{ th.mute }}">{{ countLabel }}</span>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px">
       <sc-for list="{{ projects }}" as="p" hint-placeholder-count="9">
-        <a href="{{ p.href }}" aria-label="Ver ficha de {{ p.name }}" style="display:flex;flex-direction:column;border-radius:24px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};box-shadow:{{ th.cardSh }};transition:transform .45s cubic-bezier(.3,.7,.2,1), box-shadow .45s" style-hover="transform:translateY(-6px);box-shadow:0 30px 60px -28px rgba(0,0,0,0.45);color:{{ th.ink }}">
+        <a data-tilt="" href="{{ p.href }}" aria-label="Ver ficha de {{ p.name }}" style="display:flex;flex-direction:column;border-radius:24px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};box-shadow:{{ th.cardSh }};transition:transform .45s cubic-bezier(.3,.7,.2,1), box-shadow .45s" style-hover="box-shadow:0 30px 60px -28px rgba(0,0,0,0.45);color:{{ th.ink }}">
           <div style="position:relative;aspect-ratio:4/3;overflow:hidden;background:{{ p.cvBg }};color:#F5F5F7;padding:18px 20px 22px;display:flex;flex-direction:column;justify-content:space-between">
             <span aria-hidden="true" style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,0.035) 0 1px,transparent 1px 56px);pointer-events:none"></span>
             <span aria-hidden="true" style="position:absolute;left:18px;right:-40px;top:30%;transform:translateY(-50%);font-size:clamp(56px,6vw,76px);line-height:1;font-weight:700;letter-spacing:-0.05em;white-space:nowrap;color:rgba(255,255,255,0.05);pointer-events:none">{{ p.tipo }}</span>
@@ -150,7 +151,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
 
     <div style="margin-top:clamp(40px,6vw,72px);padding:clamp(28px,4vw,48px);border-radius:28px;background:{{ th.panel }};color:#F5F5F7;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px">
       <div style="display:flex;flex-direction:column;gap:10px;max-width:620px">
-        <span style="font-size:clamp(26px,3.2vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">¿No encuentras lo que buscas? <span style="color:#86868B">Analicemos tu caso.</span></span>
+        <span style="font-size:clamp(26px,3.2vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">¿No encuentras lo que buscas? <span data-accent="" style="color:#86868B">Analicemos tu caso.</span></span>
         <span style="font-size:17px;line-height:1.5;color:rgba(245,245,247,0.72)">Te presentamos oportunidades a tu medida, incluso fuera de catálogo.</span>
       </div>
       <a href="index.html#contacto" style="display:flex;align-items:center;height:50px;padding:0 28px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Agenda una asesoría</a>

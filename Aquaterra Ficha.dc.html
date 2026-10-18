@@ -8,6 +8,7 @@
 <script src="./marca.js"></script>
 <script src="./proyectos.js"></script>
 <script src="./support.js"></script>
+<script src="./fx.js" defer></script>
 <script src="./leads.js"></script>
 <script src="./chat.js" data-offset="72" defer></script>
 </head>
@@ -91,7 +92,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
             <span style="padding:6px 13px;border-radius:999px;font-size:13px;font-weight:500;background:{{ th.chip }};color:{{ th.mute2 }}">Proyecto de terceros</span>
           </sc-if>
         </div>
-        <h1 style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">{{ pr.name }}</h1>
+        <h1 data-fx="" style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">{{ pr.name }}</h1>
         <span style="font-size:clamp(17px,1.6vw,21px);color:{{ th.mute2 }}">{{ pr.loc }}</span>
         <span style="font-size:15px;color:{{ th.mute }}">{{ pr.devTxt }}</span>
       </div>
@@ -144,7 +145,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
       <div id="pagos" style="display:flex;flex-direction:column;gap:16px">
         <div style="display:flex;flex-direction:column;gap:8px">
           <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Forma de pago</span>
-          <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">Cómo <span style="color:#86868B">se paga.</span></h2>
+          <h2 data-fx="" style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">Cómo <span data-accent="" style="color:#86868B">se paga.</span></h2>
         </div>
         <p style="margin:0;max-width:620px;font-size:17px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">{{ pr.pagos }}</p>
       </div>
@@ -152,7 +153,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
       <div id="amenities" style="display:flex;flex-direction:column;gap:20px">
         <div style="display:flex;flex-direction:column;gap:8px">
           <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Amenities</span>
-          <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">Lo que <span style="color:#86868B">incluye.</span></h2>
+          <h2 data-fx="" style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">Lo que <span data-accent="" style="color:#86868B">incluye.</span></h2>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:10px">
           <sc-for list="{{ amen }}" as="am" hint-placeholder-count="6">
@@ -167,7 +168,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
       <div id="ubicacion" style="display:flex;flex-direction:column;gap:20px">
         <div style="display:flex;flex-direction:column;gap:8px">
           <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Ubicación</span>
-          <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">{{ pr.loc }}</h2>
+          <h2 data-fx="" style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">{{ pr.loc }}</h2>
         </div>
         <sc-if value="{{ hayNota }}" hint-placeholder-val="{{ true }}">
           <p style="margin:0;max-width:620px;font-size:17px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">{{ pr.nota }}</p>
@@ -210,7 +211,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
     <div style="position:relative;display:flex;flex-wrap:wrap;align-items:flex-start;gap:clamp(32px,5vw,64px)">
       <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:20px">
         <span style="align-self:flex-start;padding:7px 16px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase">Consulta personalizada</span>
-        <h2 style="margin:0;font-size:clamp(34px,4.4vw,56px);line-height:1.04;letter-spacing:-0.04em;font-weight:700;text-wrap:balance">Consultar por <span style="color:#E4F7B0">{{ pr.name }}.</span></h2>
+        <h2 data-fx="" style="margin:0;font-size:clamp(34px,4.4vw,56px);line-height:1.04;letter-spacing:-0.04em;font-weight:700;text-wrap:balance">Consultar por <span style="color:#E4F7B0">{{ pr.name }}.</span></h2>
         <p style="margin:0;max-width:440px;font-size:17px;line-height:1.6;color:rgba(245,245,247,0.78);text-wrap:pretty">Te ayudamos a confirmar con la desarrolladora el precio, la disponibilidad y las condiciones actuales, y a valorar si encaja con tu inversión.</p>
         <div style="display:flex;flex-direction:column;border-top:1px solid rgba(245,245,247,0.12)">
           <div style="display:flex;justify-content:space-between;gap:16px;min-height:46px;align-items:center;border-bottom:1px solid rgba(245,245,247,0.12);font-size:15px"><span style="color:rgba(245,245,247,0.6)">{{ pr.precioLbl }}</span><span style="font-weight:600;text-align:right">{{ pr.precioTxt }}</span></div>
@@ -253,13 +254,13 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
     <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px">
       <div style="display:flex;flex-direction:column;gap:8px">
         <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Catálogo</span>
-        <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">Otros <span style="color:#86868B">proyectos.</span></h2>
+        <h2 data-fx="" style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">Otros <span data-accent="" style="color:#86868B">proyectos.</span></h2>
       </div>
       <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;min-height:44px;font-size:17px;color:{{ linkC }}">Ver todos ›</a>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:20px">
       <sc-for list="{{ otros }}" as="o" hint-placeholder-count="3">
-        <a href="{{ o.href }}" aria-label="Ver ficha de {{ o.name }}" style="display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};box-shadow:{{ th.cardSh }};transition:transform .45s cubic-bezier(.3,.7,.2,1), box-shadow .45s" style-hover="transform:translateY(-6px);box-shadow:0 30px 60px -28px rgba(0,0,0,0.45);color:{{ th.ink }}">
+        <a data-tilt="" href="{{ o.href }}" aria-label="Ver ficha de {{ o.name }}" style="display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};box-shadow:{{ th.cardSh }};transition:transform .45s cubic-bezier(.3,.7,.2,1), box-shadow .45s" style-hover="box-shadow:0 30px 60px -28px rgba(0,0,0,0.45);color:{{ th.ink }}">
           <div style="position:relative;overflow:hidden;aspect-ratio:16/9;background:{{ o.cvBg }};color:#F5F5F7;padding:16px 18px 18px;display:flex;flex-direction:column;justify-content:space-between">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
               <span style="padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600;background:{{ o.tagBg }};border:1px solid {{ o.tagBd }};color:{{ o.tagInk }};backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)">{{ o.etapa }}</span>

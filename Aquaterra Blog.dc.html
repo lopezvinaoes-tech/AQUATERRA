@@ -8,6 +8,7 @@
 <script src="./marca.js"></script>
 <script src="./articulos.js"></script>
 <script src="./support.js"></script>
+<script src="./fx.js" defer></script>
 <script src="./chat.js" defer></script>
 </head>
 <body>
@@ -82,7 +83,7 @@ button,select,input{font-family:inherit}
 <section data-screen-label="01 Blog" style="padding:calc(52px + env(safe-area-inset-top) + clamp(40px,8vw,96px)) clamp(16px,3.2vw,48px) 28px">
   <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
     <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:{{ th.mute }}">Blog</span>
-    <h1 style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1.02;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">Información para <span style="color:#86868B">invertir mejor.</span></h1>
+    <h1 data-fx="" style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1.02;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">Información para <span data-accent="" style="color:#86868B">invertir mejor.</span></h1>
     <p style="margin:0;max-width:600px;font-size:clamp(17px,1.6vw,21px);line-height:1.45;color:{{ th.mute2 }};text-wrap:pretty">Guías, datos de mercado y fiscalidad para invertir en Paraguay desde España. Cada cifra lleva su fuente enlazada.</p>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
       <span style="display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;border-radius:999px;background:{{ glassBg }};border:1px solid {{ glassLine }};color:{{ glassInk }};font-size:13px;font-weight:500"><span style="width:7px;height:7px;border-radius:2px;transform:rotate(45deg);background:{{ glassInk }}"></span>Datos con fuente pública</span>
@@ -104,7 +105,7 @@ button,select,input{font-family:inherit}
     <span style="font-size:14px;color:{{ th.mute }}">{{ countLabel }}</span>
     <sc-if value="{{ hasFeat }}" hint-placeholder-val="{{ true }}">
       <div data-card="">
-        <a href="{{ feat.href }}" style="display:grid;grid-template-columns:{{ featCols }};border-radius:28px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .45s cubic-bezier(.3,.7,.2,1), box-shadow .45s" style-hover="transform:scale(1.01);box-shadow:0 30px 60px -36px rgba(0,0,0,0.35);color:{{ th.ink }}">
+        <a data-tilt="" href="{{ feat.href }}" style="display:grid;grid-template-columns:{{ featCols }};border-radius:28px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .45s cubic-bezier(.3,.7,.2,1), box-shadow .45s" style-hover="box-shadow:0 30px 60px -36px rgba(0,0,0,0.35);color:{{ th.ink }}">
           <div style="position:relative;min-height:{{ featMinH }};container-type:inline-size;background:{{ feat.cov.bg }};overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(20px,3vw,32px)">
             <span style="position:absolute;right:-9%;top:-14%;width:46%;aspect-ratio:1;transform:rotate(45deg);border-radius:12%;border:1px solid rgba(201,241,93,0.22);background:rgba(201,241,93,0.05)"></span>
             <span style="position:absolute;right:6%;top:9%;width:13%;aspect-ratio:1;transform:rotate(45deg);border-radius:14%;border:1px solid rgba(201,241,93,0.38);background:rgba(201,241,93,0.14)"></span>
@@ -116,7 +117,7 @@ button,select,input{font-family:inherit}
           </div>
           <div style="padding:clamp(24px,3.4vw,44px);display:flex;flex-direction:column;justify-content:center;gap:14px">
             <span style="font-size:13px;font-weight:600;color:{{ catInk }}">Destacado · {{ feat.cat }}</span>
-            <h2 style="margin:0;font-size:clamp(26px,3vw,38px);line-height:1.1;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">{{ feat.t }}</h2>
+            <h2 data-fx="" style="margin:0;font-size:clamp(26px,3vw,38px);line-height:1.1;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">{{ feat.t }}</h2>
             <p style="margin:0;font-size:17px;line-height:1.5;color:{{ th.mute2 }};text-wrap:pretty">{{ feat.ex }}</p>
             <span style="font-size:14px;color:{{ th.mute }}">{{ feat.fecha }} · {{ feat.min }} de lectura · {{ feat.nf }} fuentes</span>
             <span style="font-size:17px;color:{{ linkC }}">Leer artículo ›</span>
@@ -127,7 +128,7 @@ button,select,input{font-family:inherit}
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px">
       <sc-for list="{{ posts }}" as="p" hint-placeholder-count="5">
         <div data-card="" style="display:flex">
-          <a href="{{ p.href }}" style="flex:1;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .4s cubic-bezier(.3,.7,.2,1), box-shadow .4s" style-hover="transform:scale(1.015);box-shadow:0 24px 48px -30px rgba(0,0,0,0.35);color:{{ th.ink }}">
+          <a data-tilt="" href="{{ p.href }}" style="flex:1;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .4s cubic-bezier(.3,.7,.2,1), box-shadow .4s" style-hover="box-shadow:0 24px 48px -30px rgba(0,0,0,0.35);color:{{ th.ink }}">
             <div style="position:relative;aspect-ratio:16/10;container-type:inline-size;background:{{ p.cov.bg }};overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:18px 20px">
               <span style="position:absolute;right:-12%;top:-20%;width:50%;aspect-ratio:1;transform:rotate(45deg);border-radius:12%;border:1px solid rgba(201,241,93,0.2);background:rgba(201,241,93,0.05)"></span>
               <span style="position:relative;align-self:flex-start;display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:#E4F7B0;font-size:12px;font-weight:600;letter-spacing:0.02em">{{ p.cat }}</span>
@@ -149,7 +150,7 @@ button,select,input{font-family:inherit}
     <div data-card="" style="margin-top:clamp(20px,4vw,40px);border-radius:28px;background:#0B0C0F;color:#F5F5F7;padding:clamp(28px,4.4vw,56px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px">
       <div style="flex:1 1 320px;display:flex;flex-direction:column;gap:10px;max-width:620px">
         <span style="font-size:13px;font-weight:600;color:#E4F7B0">Asesoría sin compromiso</span>
-        <h2 style="margin:0;font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">¿Quieres aplicar estos datos a tu caso?</h2>
+        <h2 data-fx="" style="margin:0;font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">¿Quieres aplicar estos datos a tu caso?</h2>
         <p style="margin:0;font-size:17px;line-height:1.5;color:rgba(245,245,247,0.75);text-wrap:pretty">Cuéntanos tu presupuesto y tu objetivo, y te ayudamos a hacer los números con cifras reales.</p>
       </div>
       <a href="index.html#contacto" style="flex:0 0 auto;display:flex;align-items:center;height:50px;padding:0 24px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Habla con un asesor</a>
@@ -163,7 +164,7 @@ button,select,input{font-family:inherit}
   <div style="max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:18px">
     <a href="Aquaterra%20Blog.dc.html" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:15px;color:{{ linkC }}" style-hover="opacity:0.75">‹ Todos los artículos</a>
     <span style="font-size:14px;font-weight:600;color:{{ catInk }}">{{ art.cat }}</span>
-    <h1 style="margin:0;font-size:clamp(34px,5.2vw,60px);line-height:1.05;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">{{ art.t }}</h1>
+    <h1 data-fx="" style="margin:0;font-size:clamp(34px,5.2vw,60px);line-height:1.05;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">{{ art.t }}</h1>
     <p style="margin:0;font-size:clamp(18px,1.8vw,22px);line-height:1.45;color:{{ th.mute2 }};text-wrap:pretty">{{ art.ex }}</p>
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;font-size:14px;color:{{ th.mute }}">
       <span>{{ art.fecha }}</span><span style="opacity:0.5">·</span><span>{{ art.min }} de lectura</span><span style="opacity:0.5">·</span><a href="#fuentes" style="color:{{ linkC }}">{{ art.nf }} fuentes citadas</a>
@@ -184,7 +185,7 @@ button,select,input{font-family:inherit}
   <div style="max-width:700px;margin:0 auto;padding:clamp(36px,5vw,64px) 0 0;display:flex;flex-direction:column">
     <sc-for list="{{ bloques }}" as="b" hint-placeholder-count="6">
       <sc-if value="{{ b.isH2 }}">
-        <h2 style="margin:36px 0 14px;font-size:clamp(24px,2.6vw,30px);line-height:1.15;letter-spacing:-0.025em;font-weight:700;text-wrap:balance">{{ b.x }}</h2>
+        <h2 data-fx="" style="margin:36px 0 14px;font-size:clamp(24px,2.6vw,30px);line-height:1.15;letter-spacing:-0.025em;font-weight:700;text-wrap:balance">{{ b.x }}</h2>
       </sc-if>
       <sc-if value="{{ b.isP }}">
         <p style="margin:0 0 18px;font-size:clamp(17px,1.5vw,19px);line-height:1.65;color:{{ th.body }};text-wrap:pretty">{{ b.x }}</p>
@@ -251,7 +252,7 @@ button,select,input{font-family:inherit}
 
     <div style="margin-top:28px;border-radius:24px;background:#0B0C0F;color:#F5F5F7;padding:clamp(24px,3.6vw,36px);display:flex;flex-direction:column;gap:14px">
       <span style="align-self:flex-start;display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:#E4F7B0;font-size:12px;font-weight:600">Siguiente paso</span>
-      <h2 style="margin:0;font-size:clamp(24px,2.8vw,32px);line-height:1.12;letter-spacing:-0.025em;font-weight:700;text-wrap:balance">{{ art.ctaT }}</h2>
+      <h2 data-fx="" style="margin:0;font-size:clamp(24px,2.8vw,32px);line-height:1.12;letter-spacing:-0.025em;font-weight:700;text-wrap:balance">{{ art.ctaT }}</h2>
       <p style="margin:0;font-size:17px;line-height:1.55;color:rgba(245,245,247,0.78)">Cuéntanos tu presupuesto, tu residencia fiscal y lo que buscas. Un asesor te responde con números reales para tu caso, sin compromiso.</p>
       <a href="index.html#contacto" style="align-self:flex-start;display:flex;align-items:center;height:48px;padding:0 22px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Habla con un asesor</a>
     </div>
@@ -259,13 +260,13 @@ button,select,input{font-family:inherit}
 
   <section style="max-width:1120px;margin:0 auto;padding:clamp(64px,8vw,104px) 0 clamp(80px,10vw,140px);display:flex;flex-direction:column;gap:22px">
     <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap">
-      <h2 style="margin:0;font-size:clamp(26px,3vw,36px);letter-spacing:-0.03em;font-weight:700">Sigue leyendo</h2>
+      <h2 data-fx="" style="margin:0;font-size:clamp(26px,3vw,36px);letter-spacing:-0.03em;font-weight:700">Sigue leyendo</h2>
       <a href="Aquaterra%20Blog.dc.html" style="font-size:15px;color:{{ linkC }}" style-hover="opacity:0.75">Ver todos ›</a>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:20px">
       <sc-for list="{{ related }}" as="p" hint-placeholder-count="3">
         <div data-card="" style="display:flex">
-          <a href="{{ p.href }}" style="flex:1;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .4s cubic-bezier(.3,.7,.2,1), box-shadow .4s" style-hover="transform:scale(1.015);box-shadow:0 24px 48px -30px rgba(0,0,0,0.35);color:{{ th.ink }}">
+          <a data-tilt="" href="{{ p.href }}" style="flex:1;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .4s cubic-bezier(.3,.7,.2,1), box-shadow .4s" style-hover="box-shadow:0 24px 48px -30px rgba(0,0,0,0.35);color:{{ th.ink }}">
             <div style="position:relative;aspect-ratio:16/9;container-type:inline-size;background:{{ p.cov.bg }};overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:16px 18px">
               <span style="position:absolute;right:-12%;top:-22%;width:48%;aspect-ratio:1;transform:rotate(45deg);border-radius:12%;border:1px solid rgba(201,241,93,0.2);background:rgba(201,241,93,0.05)"></span>
               <span style="position:relative;align-self:flex-start;display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:#E4F7B0;font-size:12px;font-weight:600">{{ p.cat }}</span>
@@ -287,7 +288,7 @@ button,select,input{font-family:inherit}
 <section style="min-height:70svh;padding:calc(52px + env(safe-area-inset-top) + 96px) clamp(16px,3.2vw,48px) 96px">
   <div style="max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
     <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Blog</span>
-    <h1 style="margin:0;font-size:clamp(34px,5vw,56px);line-height:1.05;letter-spacing:-0.035em;font-weight:700">No encontramos este artículo.</h1>
+    <h1 data-fx="" style="margin:0;font-size:clamp(34px,5vw,56px);line-height:1.05;letter-spacing:-0.035em;font-weight:700">No encontramos este artículo.</h1>
     <p style="margin:0;font-size:19px;line-height:1.5;color:{{ th.mute2 }}">Puede que el enlace haya cambiado. Echa un vistazo al resto de artículos.</p>
     <a href="Aquaterra%20Blog.dc.html" style="align-self:flex-start;display:flex;align-items:center;height:48px;padding:0 22px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Ver todos los artículos</a>
   </div>
