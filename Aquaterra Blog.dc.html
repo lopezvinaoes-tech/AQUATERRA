@@ -169,6 +169,11 @@ button,select,input{font-family:inherit}
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;font-size:14px;color:{{ th.mute }}">
       <span>{{ art.fecha }}</span><span style="opacity:0.5">·</span><span>{{ art.min }} de lectura</span><span style="opacity:0.5">·</span><a href="#fuentes" style="color:{{ linkC }}">{{ art.nf }} fuentes citadas</a>
     </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+      <button onClick="{{ askArt }}" style="display:flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;border:1px solid {{ glassLine }};background:{{ glassBg }};color:{{ glassInk }};font-size:14px;font-weight:600;cursor:pointer"><span style="width:7px;height:7px;background:currentColor;transform:rotate(45deg);border-radius:1px"></span>Pregúntale al asistente sobre esto</button>
+      <a href="{{ waArt }}" target="_blank" rel="noopener" style="display:flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;border:1px solid {{ th.line }};color:{{ th.ink }};font-size:14px;font-weight:600" style-hover="opacity:0.75;color:{{ th.ink }}">Enviar por WhatsApp</a>
+      <button onClick="{{ shareArt }}" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid {{ th.line }};background:transparent;color:{{ th.ink }};font-size:14px;font-weight:600;cursor:pointer">{{ shareTxt }}</button>
+    </div>
   </div>
   <div style="max-width:1120px;margin:clamp(28px,4vw,48px) auto 0">
     <div style="position:relative;container-type:inline-size;aspect-ratio:{{ heroAspect }};border-radius:clamp(20px,2.6vw,32px);background:{{ art.cov.bg }};overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(22px,4vw,56px)">
@@ -373,6 +378,15 @@ class Component extends DCLogic {
     this.setMeta();
     this.anim(false);
   }
+  // Comparte el artículo con el menú nativo del teléfono; si no hay, copia el enlace.
+  compartir(art) {
+    if (!art) return;
+    const url = window.location.href;
+    const done = (txt) => { this.setState({ shareMsg: txt }); clearTimeout(this._shareT); this._shareT = setTimeout(() => this.setState({ shareMsg: '' }), 2400); };
+    if (navigator.share) { navigator.share({ title: art.t, text: art.ex, url }).catch(() => {}); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(() => done('✓ Enlace copiado'), () => done('Copia el enlace de la barra'));
+    else done('Copia el enlace de la barra');
+  }
   componentDidUpdate() {
     const c = this.state.cat, reset = this._lastCat !== c;
     this._lastCat = c;
@@ -495,6 +509,10 @@ class Component extends DCLogic {
       heroAspect: s.w >= 720 ? '21/8' : '4/3',
       tablaWide: s.w >= 640, tablaNarrow: s.w < 640,
       bloques: art ? this.blocks(art) : [],
+      askArt: () => { if (art && typeof window.abrirAsistente === 'function') window.abrirAsistente('Acabo de leer «' + art.t + '». ¿Cómo aplica esto a mi caso si invierto desde España?'); },
+      waArt: art ? 'https://wa.me/?text=' + encodeURIComponent(art.t + ' ' + window.location.href) : '#',
+      shareArt: () => this.compartir(art),
+      shareTxt: s.shareMsg || 'Compartir',
       related
     };
   }
