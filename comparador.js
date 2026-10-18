@@ -16,6 +16,8 @@
   var offset = parseInt((document.currentScript && document.currentScript.getAttribute('data-offset')) || '0', 10) || 0;
   var abierto = false;
   var root, tray, modal, toastEl, toastT;
+  // Pedido de la comparación a un asesor (se guarda como lead con origen "Comparador").
+  var lf = { nombre: '', contacto: '', ck: false }, lEstado = '', lErr = '';
 
   function leer() {
     try {
@@ -25,6 +27,7 @@
   }
   function guardar() { try { localStorage.setItem(KEY, JSON.stringify(sel)); } catch (e) {} }
   function avisar() {
+    if (lEstado === 'ok') lEstado = '';
     guardar();
     render();
     try { window.dispatchEvent(new CustomEvent('aq-comparar', { detail: sel.slice() })); } catch (e) {}
@@ -120,6 +123,19 @@
     '.aqv-b1{background:#0071E3;color:#FFFFFF}',
     '.aqv-b1:hover{background:#0077ED;color:#FFFFFF}',
     '.aqv-b2{background:var(--chip);color:var(--ink)}',
+    '.aqv-b:disabled{opacity:.5;cursor:default}',
+    '.aqv-lead{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;margin-top:24px;padding:20px 22px;border-radius:20px;background:var(--soft)}',
+    '.aqv-lead-tx{flex:1 1 260px;display:flex;flex-direction:column;gap:4px;font-size:14px;line-height:1.45;color:var(--mute)}',
+    '.aqv-lead-tx b{font-size:17px;font-weight:600;letter-spacing:-0.01em;color:var(--ink)}',
+    '.aqv-lead-f{flex:2 1 420px;display:flex;flex-wrap:wrap;gap:10px}',
+    '.aqv-in{flex:1 1 150px;min-width:0;height:46px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:16px;font-family:inherit;outline:none}',
+    '.aqv-in:focus{border-color:#C9F15D;box-shadow:0 0 0 3px rgba(201,241,93,.3)}',
+    '.aqv-ck{flex:1 1 100%;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);cursor:pointer}',
+    '.aqv-ck input{width:17px;height:17px;margin:0;accent-color:#0071E3}',
+    '.aqv-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}',
+    '.aqv-err{flex:1 1 100%;margin:0;font-size:14px;color:#D70015}',
+    '.aqv-pn[data-noche] .aqv-err{color:#FF6961}',
+    '.aqv-lead-ok{width:14px;height:14px;flex:0 0 auto;background:#C9F15D;transform:rotate(45deg);border-radius:2px}',
     '.aqv-toast{position:fixed;left:50%;bottom:calc(84px + var(--aqv-off,0px) + env(safe-area-inset-bottom));z-index:99;max-width:calc(100vw - 32px);padding:12px 18px;border-radius:14px;background:#1D1D1F;color:#F5F5F7;font-size:14px;box-shadow:0 12px 30px rgba(0,0,0,.3);transform:translate(-50%,10px);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif}',
     '.aqv-toast[data-on]{opacity:1;transform:translate(-50%,0)}',
     '@media (max-width:560px){.aqv-tray{bottom:calc(88px + var(--aqv-off,0px) + env(safe-area-inset-bottom));padding-left:14px}.aqv-ov{padding:0}.aqv-pn{min-height:100%;border-radius:0;padding-top:calc(20px + env(safe-area-inset-top));padding-bottom:calc(24px + env(safe-area-inset-bottom))}.aqv-t{min-width:calc(104px + var(--n,2) * 210px)}.aqv-t th[scope=row]{width:104px;padding-left:0}.aqv-toast{bottom:calc(156px + var(--aqv-off,0px) + env(safe-area-inset-bottom))}}'
@@ -198,11 +214,56 @@
         }).join('') + '</tbody></table></div>';
     }
 
+    if (sel.length >= 2 && typeof window.enviarLead === 'function') h += htmlPedido();
+
     h += '<div class="aqv-ft"><span class="aqv-note">Datos de cada fuente y fecha indicadas; pueden haber cambiado. Los proyectos son de otras desarrolladoras.' +
       (eurPorUsd ? ' Euros al cambio de referencia del BCE de hoy, solo orientativo.' : '') + '</span><div class="aqv-btns">' +
       (sel.length >= 2 && typeof window.abrirAsistente === 'function' ? '<button type="button" class="aqv-b aqv-b2" data-act="ia">Pregúntale al asistente</button>' : '') +
       '<a class="aqv-b aqv-b1" href="index.html#contacto">Agenda una asesoría</a></div></div>';
     return h;
+  }
+
+  function nombresSel() {
+    var n = sel.map(function (i) { return P[i].name; });
+    return n.length > 1 ? n.slice(0, -1).join(', ') + ' y ' + n[n.length - 1] : n[0];
+  }
+
+  function htmlPedido() {
+    if (lEstado === 'ok') {
+      return '<div class="aqv-lead" role="status"><i class="aqv-lead-ok" aria-hidden="true"></i><div class="aqv-lead-tx"><b>Listo, ' + esc(lf.nombre.split(' ')[0]) + '.</b><span>Te escribimos con nuestro análisis de ' + esc(nombresSel()) + '.</span></div></div>';
+    }
+    return '<form class="aqv-lead" novalidate><div class="aqv-lead-tx"><b>¿Te la enviamos con nuestro análisis?</b><span>Un asesor revisa estos proyectos para tu caso y te escribe por email o WhatsApp.</span></div>' +
+      '<div class="aqv-lead-f"><input class="aqv-in" name="nombre" autocomplete="name" placeholder="Tu nombre" aria-label="Tu nombre" value="' + esc(lf.nombre) + '">' +
+      '<input class="aqv-in" name="contacto" autocomplete="email" placeholder="Email o WhatsApp" aria-label="Email o WhatsApp" value="' + esc(lf.contacto) + '">' +
+      '<button type="submit" class="aqv-b aqv-b1"' + (lEstado === 'enviando' ? ' disabled' : '') + '>' + (lEstado === 'enviando' ? 'Enviando…' : 'Enviármela') + '</button></div>' +
+      '<label class="aqv-ck"><input type="checkbox" name="ck"' + (lf.ck ? ' checked' : '') + '> Acepto que me contacten sobre estos proyectos.</label>' +
+      '<input class="aqv-hp" name="empresa_web" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+      (lErr ? '<p class="aqv-err" role="alert">' + esc(lErr) + '</p>' : '') + '</form>';
+  }
+
+  function enviarPedido(form) {
+    lf.nombre = form.elements.nombre.value.trim();
+    lf.contacto = form.elements.contacto.value.trim();
+    lf.ck = form.elements.ck.checked;
+    var email = /@/.test(lf.contacto) ? lf.contacto : '';
+    var wa = email ? '' : lf.contacto;
+    lErr = lf.nombre.length < 2 ? 'Escribe tu nombre.'
+      : email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? 'El email no parece válido.'
+      : !email && wa.replace(/\D/g, '').length < 6 ? 'Déjanos un email o un WhatsApp.'
+      : !lf.ck ? 'Marca la casilla para que podamos escribirte.' : '';
+    if (lErr) { render(); return; }
+    lEstado = 'enviando'; render();
+    window.enviarLead({
+      nombre: lf.nombre, email: email || null, whatsapp: wa || null,
+      proyecto: sel.map(function (i) { return P[i].name; }).join(' / '),
+      mensaje: 'Pidió que le envíen la comparación de ' + nombresSel() + ' con un análisis para su caso.',
+      origen: 'Comparador', consentimiento: true, empresa_web: form.elements.empresa_web.value
+    }).then(function () {
+      lEstado = 'ok'; render();
+      if (window.gtag) try { window.gtag('event', 'generate_lead', { method: 'comparador' }); } catch (e) {}
+    }, function (e) {
+      lEstado = ''; lErr = (e && e.message) || 'No pudimos enviar tu pedido. Intenta de nuevo.'; render();
+    });
   }
 
   function render() {
@@ -280,6 +341,19 @@
     modal = root.querySelector('.aqv-ov');
     toastEl = root.querySelector('.aqv-toast');
     root.addEventListener('click', onClick);
+    // Lo que se escribe en el pedido se guarda al vuelo para no perderlo si la vista se redibuja.
+    root.addEventListener('input', function (e) {
+      var n = e.target.name;
+      if (n === 'nombre' || n === 'contacto') lf[n] = e.target.value;
+      else if (n === 'ck') lf.ck = e.target.checked;
+    });
+    root.addEventListener('change', function (e) {
+      if (e.target.name !== 'ck') return;
+      lf.ck = e.target.checked;
+      var er = root.querySelector('.aqv-lead .aqv-err');
+      if (lf.ck && er && /casilla/.test(lErr)) { lErr = ''; er.remove(); }
+    });
+    root.addEventListener('submit', function (e) { e.preventDefault(); if (lEstado !== 'enviando') enviarPedido(e.target); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && abierto) cerrar(); });
     // La selección puede cambiar en otra pestaña.
     window.addEventListener('storage', function (e) { if (e.key === KEY) { sel = leer(); render(); try { window.dispatchEvent(new CustomEvent('aq-comparar', { detail: sel.slice() })); } catch (x) {} } });
