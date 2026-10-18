@@ -46,3 +46,10 @@ window.enviarLead({ nombre, email, whatsapp, monto, objetivo, mensaje, proyecto 
 - Las tablas tienen RLS activado y ninguna política: con la clave pública no se puede leer ni escribir nada. Solo la API de Vercel accede, con la clave `service_role`.
 - El panel solo acepta cuentas activas de la tabla `equipo` (o de `ADMIN_EMAILS`), y el servidor comprueba el rol en cada acción.
 - La API limita a 5 envíos por IP cada 10 minutos y descarta bots con un campo trampa (`empresa_web`). La IP no se guarda, solo un hash.
+
+## Chat con IA
+
+- **Ventana → `chat.js`**: botón flotante "¿Dudas? Pregúntame" en todas las páginas (`<script src="./chat.js" defer></script>`). Cualquier enlace a `#asistente` lo abre, y `window.abrirAsistente('pregunta')` lo abre con una pregunta.
+- **Servidor → `POST /api/chat`**: llama a la API de Claude con los datos de la web y el catálogo de `proyectos.js`. Si la persona acepta que la contacten, guarda el lead con origen **Chat IA**, un resumen y la conversación (se ven en el detalle del lead en `/admin`).
+- **Variables en Vercel**: `ANTHROPIC_API_KEY` (obligatoria, de console.anthropic.com → API Keys). Opcionales: `CHAT_MODEL` (por defecto `claude-haiku-5-5`), `CHAT_LIMITE_IP_HORA` (40) y `CHAT_LIMITE_DIARIO` (3000 mensajes al día en total, para acotar el gasto).
+- Sin la clave, el botón aparece igual y responde con un aviso que deriva a WhatsApp o al formulario.
