@@ -109,7 +109,8 @@
       x = ev.clientX; y = ev.clientY;
       if (!c.classList.contains('on')) { cx = x; cy = y; c.classList.add('on'); }
       var t = ev.target.closest ? ev.target : null;
-      var card = t && t.closest('[data-tilt]');
+      var ctl = t && t.closest('button,select,input,label,[role="button"]');
+      var card = !ctl && t && t.closest('[data-tilt]');
       var link = !card && t && t.closest('a,button,[role="button"],input[type="range"],label,select');
       c.classList.toggle('card', !!card);
       c.classList.toggle('link', !!link);
