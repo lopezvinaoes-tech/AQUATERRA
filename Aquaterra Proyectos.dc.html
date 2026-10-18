@@ -114,7 +114,17 @@ select option{color:#1D1D1F;background:#FFFFFF}
 <section data-screen-label="02 Resultados" style="padding:28px clamp(20px,3.2vw,48px) clamp(80px,10vw,140px)">
   <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:20px">
     <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px">
-      <span style="font-size:14px;color:{{ th.mute }}">{{ countLabel }}</span>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px">
+        <span style="font-size:14px;color:{{ th.mute }}">{{ countLabel }}</span>
+        <label style="position:relative;display:flex;align-items:center;gap:6px;min-height:36px;font-size:14px;color:{{ th.ink }};cursor:pointer">
+          <span style="color:{{ th.mute }}">Ordenar:</span><span style="font-weight:600">{{ sortTxt }}</span><span style="font-size:9px;opacity:0.6">▼</span>
+          <select value="{{ sort }}" onChange="{{ setSort }}" aria-label="Ordenar proyectos" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;border:0">
+            <sc-for list="{{ sortOpts }}" as="so" hint-placeholder-count="4">
+              <option value="{{ so.v }}">{{ so.t }}</option>
+            </sc-for>
+          </select>
+        </label>
+      </div>
       <button onClick="{{ openCmp }}" style="display:flex;align-items:center;gap:8px;min-height:36px;padding:0 4px;border:0;background:transparent;color:{{ linkC }};font-size:14px;font-weight:500;cursor:pointer"><span style="width:8px;height:8px;background:#C9F15D;transform:rotate(45deg);border-radius:1px"></span>{{ cmpLabel }}</button>
     </div>
     <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px">
@@ -202,8 +212,11 @@ class Component extends DCLogic {
     mode: (() => { try { return localStorage.getItem('aquaterra-modo'); } catch (e) { return null; } })(),
     w: typeof window !== 'undefined' ? window.innerWidth : 1280,
     menu: false,
-    f: { ciudad: '', tipo: '', etapa: '', rango: '', dorm: '' }
+    // Filtros y orden se leen del enlace (?ciudad=…&orden=…) para poder compartir una búsqueda.
+    f: (() => { const f = { ciudad: '', tipo: '', etapa: '', rango: '', dorm: '' }; try { const q = new URLSearchParams(window.location.search); Object.keys(f).forEach((k) => { f[k] = q.get(k) || ''; }); } catch (e) {} return f; })(),
+    sort: (() => { try { return new URLSearchParams(window.location.search).get('orden') || ''; } catch (e) { return ''; } })()
   };
+  SORTS = [['', 'Destacados'], ['precio-asc', 'Precio: menor a mayor'], ['precio-desc', 'Precio: mayor a menor'], ['entrega', 'Entrega más próxima']];
 
   PROJECTS = window.PROYECTOS || [];
   FILTERS = [
@@ -229,19 +242,46 @@ class Component extends DCLogic {
     // comparador.js carga con defer: refresca los botones cuando ya está disponible.
     if (!window.AQComparar) window.addEventListener('DOMContentLoaded', this._onCmp, { once: true });
   }
+  componentDidUpdate() {
+    // Mantiene el enlace al día con los filtros y el orden, sin recargar ni ensuciar el historial.
+    try {
+      const q = new URLSearchParams(window.location.search);
+      Object.entries({ ...this.state.f, orden: this.state.sort }).forEach(([k, v]) => { if (v) q.set(k, v); else q.delete(k); });
+      const qs = q.toString(), url = window.location.pathname + (qs ? '?' + qs : '') + window.location.hash;
+      if (url !== window.location.pathname + window.location.search + window.location.hash) window.history.replaceState(window.history.state, '', url);
+    } catch (e) {}
+  }
   componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); }
 
   mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
 
   filtered() {
     const f = this.state.f;
-    return this.PROJECTS.map((p, i) => ({ ...p, idx: i })).filter((p) => {
+    const list = this.PROJECTS.map((p, i) => ({ ...p, idx: i })).filter((p) => {
       if (f.ciudad && !(p.ciudad === f.ciudad || p.barrio === f.ciudad)) return false;
       if (f.tipo && p.tipo !== f.tipo && !(p.tambien || []).includes(f.tipo)) return false;
       if (f.etapa && p.etapa !== f.etapa) return false;
       if (f.rango) { const [a, b] = f.rango.split('-'); const v = p.precio || p.precioFiltro; if (!v || v < +a || (b && v > +b)) return false; }
       if (f.dorm) { const d = +f.dorm; if (!p.dmax || p.dmax < d || (d < 4 && p.dmin > d)) return false; }
       return true;
+    });
+    return this.sorted(list);
+  }
+
+  sorted(list) {
+    const s = this.state.sort;
+    if (!s) return list;
+    const precio = (p) => p.precio || p.precioFiltro || null;
+    // Entregado primero, luego por año previsto; sin fecha publicada al final.
+    const entrega = (p) => { if (!p.entrega) return Infinity; if (/^Entregado/.test(p.entrega)) return 0; const y = p.entrega.match(/(20\d\d)/); return y ? +y[1] : Infinity; };
+    const key = s === 'entrega' ? entrega : precio;
+    const dir = s === 'precio-desc' ? -1 : 1;
+    return list.slice().sort((a, b) => {
+      const va = key(a), vb = key(b);
+      const na = va == null || va === Infinity, nb = vb == null || vb === Infinity;
+      if (na !== nb) return na ? 1 : -1;
+      if (na) return a.idx - b.idx;
+      return (va - vb) * dir || a.idx - b.idx;
     });
   }
 
@@ -320,6 +360,10 @@ class Component extends DCLogic {
       anyF: Object.values(s.f).some(Boolean),
       clearF: () => this.setState({ f: { ciudad: '', tipo: '', etapa: '', rango: '', dorm: '' } }),
       projects,
+      sort: s.sort,
+      sortTxt: (this.SORTS.find((o) => o[0] === s.sort) || this.SORTS[0])[1],
+      sortOpts: this.SORTS.map(([v, t]) => ({ v, t })),
+      setSort: (e) => this.setState({ sort: e.target.value }),
       openAlerta: () => {
         if (!window.AQAlertas) return;
         const lbl = (k) => { const fl = this.FILTERS.find((x) => x[0] === k); const o = fl && fl[2].find((x) => x[0] === s.f[k]); return s.f[k] && o ? o[1] : ''; };
