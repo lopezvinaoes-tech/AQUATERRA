@@ -46,3 +46,12 @@ window.enviarLead({ nombre, email, whatsapp, monto, objetivo, mensaje, proyecto 
 - Las tablas tienen RLS activado y ninguna política: con la clave pública no se puede leer ni escribir nada. Solo la API de Vercel accede, con la clave `service_role`.
 - El panel solo acepta cuentas activas de la tabla `equipo` (o de `ADMIN_EMAILS`), y el servidor comprueba el rol en cada acción.
 - La API limita a 5 envíos por IP cada 10 minutos y descarta bots con un campo trampa (`empresa_web`). La IP no se guarda, solo un hash.
+
+## Chat con IA
+
+- **Ventana → `chat.js`**: botón flotante "¿Dudas? Pregúntame" en todas las páginas (`<script src="./chat.js" defer></script>`). Cualquier enlace a `#asistente` lo abre, y `window.abrirAsistente('pregunta')` lo abre con una pregunta.
+- **Servidor → `POST /api/chat`**: llama a la IA con los datos de la web y el catálogo de `proyectos.js`. Si la persona acepta que la contacten, guarda el lead con origen **Chat IA**, un resumen y la conversación (se ven en el detalle del lead en `/admin`).
+- **IA gratis (recomendado)**: Google Gemini. Crear la clave gratis en [aistudio.google.com/apikey](https://aistudio.google.com/apikey) (sin tarjeta) y añadirla en Vercel como `GEMINI_API_KEY`. Modelo por defecto `gemini-3.8-flash`. En el plan gratis Google puede usar las conversaciones para mejorar sus productos y hay un límite diario de consultas.
+- **Alternativa de pago**: Claude, con `ANTHROPIC_API_KEY` (modelo por defecto `claude-haiku-5-5`). Si están las dos claves, se usa Gemini.
+- **Opcionales**: `CHAT_MODEL` (cambia el modelo), `CHAT_LIMITE_IP_HORA` (40) y `CHAT_LIMITE_DIARIO` (3000 mensajes al día en total).
+- Sin ninguna clave, el botón aparece igual y responde con un aviso que deriva a WhatsApp o al formulario.

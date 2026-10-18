@@ -83,3 +83,13 @@ create table if not exists public.equipo (
   creado_por text
 );
 alter table public.equipo enable row level security;
+
+-- Uso del chat con IA (/api/chat): un registro por mensaje, solo para limitar abusos y gasto.
+create table if not exists public.chat_uso (
+  id         bigint generated always as identity primary key,
+  created_at timestamptz not null default now(),
+  ip_hash    text not null
+);
+create index if not exists chat_uso_ip_idx      on public.chat_uso (ip_hash, created_at desc);
+create index if not exists chat_uso_created_idx on public.chat_uso (created_at desc);
+alter table public.chat_uso enable row level security;

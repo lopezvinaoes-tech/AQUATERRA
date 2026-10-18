@@ -1,4 +1,7 @@
 {
+  "functions": {
+    "api/chat.js": { "includeFiles": "proyectos.js" }
+  },
   "headers": [
     {
       "source": "/admin/(.*)",
