@@ -125,7 +125,7 @@ button,select,input{font-family:inherit}
         </a>
       </div>
     </sc-if>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px">
+    <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px">
       <sc-for list="{{ posts }}" as="p" hint-placeholder-count="5">
         <div data-card="" style="display:flex">
           <a data-tilt="" href="{{ p.href }}" style="flex:1;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .4s cubic-bezier(.3,.7,.2,1), box-shadow .4s" style-hover="box-shadow:0 24px 48px -30px rgba(0,0,0,0.35);color:{{ th.ink }}">
@@ -263,7 +263,7 @@ button,select,input{font-family:inherit}
       <h2 data-fx="" style="margin:0;font-size:clamp(26px,3vw,36px);letter-spacing:-0.03em;font-weight:700">Sigue leyendo</h2>
       <a href="Aquaterra%20Blog.dc.html" style="font-size:15px;color:{{ linkC }}" style-hover="opacity:0.75">Ver todos ›</a>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:20px">
+    <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:20px">
       <sc-for list="{{ related }}" as="p" hint-placeholder-count="3">
         <div data-card="" style="display:flex">
           <a data-tilt="" href="{{ p.href }}" style="flex:1;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};transition:transform .4s cubic-bezier(.3,.7,.2,1), box-shadow .4s" style-hover="box-shadow:0 24px 48px -30px rgba(0,0,0,0.35);color:{{ th.ink }}">
