@@ -1,6 +1,8 @@
 // Comparador de proyectos: el visitante marca hasta 3 proyectos del catálogo y los ve lado a lado.
 // Se incluye con <script src="./comparador.js" defer></script> después de proyectos.js.
 // API: window.AQComparar.toggle(idx), .has(idx), .lista(), .abrir().
+// También: .cambio() devuelve una promesa con los euros por dólar del día (o null).
+// Opcional: data-offset="72" en la etiqueta sube la barra (p. ej. si hay una barra fija abajo).
 // Avisa de cada cambio con el evento 'aq-comparar' en window. La selección se guarda en este navegador.
 (function () {
   if (window.AQComparar) return;
@@ -10,6 +12,8 @@
   var P = window.PROYECTOS || [];
   var sel = leer();
   var eurPorUsd = null;
+  var pedido = null;
+  var offset = parseInt((document.currentScript && document.currentScript.getAttribute('data-offset')) || '0', 10) || 0;
   var abierto = false;
   var root, tray, modal, toastEl, toastT;
 
@@ -47,15 +51,17 @@
 
   // Cambio USD → EUR del día (Banco Central Europeo, vía Frankfurter). Si falla, no se muestra la fila en euros.
   function cargarCambio() {
-    if (eurPorUsd || !window.fetch) return;
-    fetch('https://api.frankfurter.app/latest?from=USD&to=EUR')
+    if (pedido) return pedido;
+    if (!window.fetch) return (pedido = Promise.resolve(null));
+    pedido = fetch('https://api.frankfurter.app/latest?from=USD&to=EUR')
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (j) { if (j && j.rates && j.rates.EUR) { eurPorUsd = j.rates.EUR; render(); } })
-      .catch(function () {});
+      .then(function (j) { if (j && j.rates && j.rates.EUR) { eurPorUsd = j.rates.EUR; render(); } return eurPorUsd; })
+      .catch(function () { return null; });
+    return pedido;
   }
 
   var css = [
-    '.aqv-tray{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));z-index:85;display:flex;align-items:center;gap:12px;max-width:min(560px,calc(100vw - 32px));padding:8px 8px 8px 18px;border-radius:999px;background:rgba(29,29,31,.92);color:#F5F5F7;box-shadow:0 14px 40px rgba(0,0,0,.3);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);transform:translate(-50%,0);transition:transform .35s cubic-bezier(.16,1,.3,1),opacity .35s;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif}',
+    '.aqv-tray{position:fixed;left:50%;bottom:calc(20px + var(--aqv-off,0px) + env(safe-area-inset-bottom));z-index:85;display:flex;align-items:center;gap:12px;max-width:min(560px,calc(100vw - 32px));padding:8px 8px 8px 18px;border-radius:999px;background:rgba(29,29,31,.92);color:#F5F5F7;box-shadow:0 14px 40px rgba(0,0,0,.3);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);transform:translate(-50%,0);transition:transform .35s cubic-bezier(.16,1,.3,1),opacity .35s;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif}',
     '.aqv-tray[hidden]{display:flex;opacity:0;pointer-events:none;transform:translate(-50%,24px)}',
     '.aqv-dots{display:flex;gap:6px;flex:0 0 auto}',
     '.aqv-dot{width:9px;height:9px;border-radius:2px;transform:rotate(45deg);background:rgba(245,245,247,.25)}',
@@ -114,9 +120,9 @@
     '.aqv-b1{background:#0071E3;color:#FFFFFF}',
     '.aqv-b1:hover{background:#0077ED;color:#FFFFFF}',
     '.aqv-b2{background:var(--chip);color:var(--ink)}',
-    '.aqv-toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));z-index:99;max-width:calc(100vw - 32px);padding:12px 18px;border-radius:14px;background:#1D1D1F;color:#F5F5F7;font-size:14px;box-shadow:0 12px 30px rgba(0,0,0,.3);transform:translate(-50%,10px);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif}',
+    '.aqv-toast{position:fixed;left:50%;bottom:calc(84px + var(--aqv-off,0px) + env(safe-area-inset-bottom));z-index:99;max-width:calc(100vw - 32px);padding:12px 18px;border-radius:14px;background:#1D1D1F;color:#F5F5F7;font-size:14px;box-shadow:0 12px 30px rgba(0,0,0,.3);transform:translate(-50%,10px);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif}',
     '.aqv-toast[data-on]{opacity:1;transform:translate(-50%,0)}',
-    '@media (max-width:560px){.aqv-tray{bottom:calc(88px + env(safe-area-inset-bottom));padding-left:14px}.aqv-ov{padding:0}.aqv-pn{min-height:100%;border-radius:0;padding-top:calc(20px + env(safe-area-inset-top));padding-bottom:calc(24px + env(safe-area-inset-bottom))}.aqv-t{min-width:calc(104px + var(--n,2) * 210px)}.aqv-t th[scope=row]{width:104px;padding-left:0}.aqv-toast{bottom:calc(156px + env(safe-area-inset-bottom))}}'
+    '@media (max-width:560px){.aqv-tray{bottom:calc(88px + var(--aqv-off,0px) + env(safe-area-inset-bottom));padding-left:14px}.aqv-ov{padding:0}.aqv-pn{min-height:100%;border-radius:0;padding-top:calc(20px + env(safe-area-inset-top));padding-bottom:calc(24px + env(safe-area-inset-bottom))}.aqv-t{min-width:calc(104px + var(--n,2) * 210px)}.aqv-t th[scope=row]{width:104px;padding-left:0}.aqv-toast{bottom:calc(156px + var(--aqv-off,0px) + env(safe-area-inset-bottom))}}'
   ].join('');
 
   function coverBg(tipo) {
@@ -265,6 +271,7 @@
     document.head.appendChild(st);
     root = document.createElement('div');
     root.id = 'aq-comparar';
+    if (offset) root.style.setProperty('--aqv-off', offset + 'px');
     root.innerHTML = '<div class="aqv-tray" role="region" aria-label="Comparación de proyectos" hidden></div>' +
       '<div class="aqv-ov" role="dialog" aria-modal="true" aria-labelledby="aqv-title" aria-hidden="true"><div class="aqv-pn"></div></div>' +
       '<div class="aqv-toast" role="status" aria-live="polite"></div>';
@@ -286,6 +293,7 @@
     has: has,
     lista: function () { return sel.slice(); },
     abrir: function () { if (root) abrir(); },
+    cambio: cargarCambio,
     max: MAX
   };
 

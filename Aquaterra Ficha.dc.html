@@ -11,6 +11,7 @@
 <script src="./fx.js" defer></script>
 <script src="./leads.js"></script>
 <script src="./chat.js" data-offset="72" defer></script>
+<script src="./comparador.js" data-offset="72" defer></script>
 </head>
 <body>
 <x-dc>
@@ -99,7 +100,17 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
       <div style="display:flex;flex-direction:column;gap:4px">
         <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">{{ pr.precioLbl }}</span>
         <span style="font-size:clamp(28px,3vw,40px);line-height:1;letter-spacing:-0.03em;font-weight:700">{{ pr.precioTxt }}</span>
+        <sc-if value="{{ eurTxt }}" hint-placeholder-val="{{ false }}">
+          <span style="font-size:14px;color:{{ th.mute }}">{{ eurTxt }}</span>
+        </sc-if>
       </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px">
+      <button onClick="{{ cmpToggle }}" aria-pressed="{{ cmpOn }}" style="display:flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:999px;border:1px solid {{ cmpBd }};background:{{ cmpBg }};color:{{ cmpInk }};font-size:14px;font-weight:600;cursor:pointer;transition:background .2s, color .2s, border-color .2s">{{ cmpTxt }}</button>
+      <sc-if value="{{ cmpVer }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ cmpOpen }}" style="height:36px;padding:0 6px;border:0;background:transparent;color:{{ linkC }};font-size:14px;font-weight:500;cursor:pointer">{{ cmpVerTxt }}</button>
+      </sc-if>
+      <button onClick="{{ share }}" style="display:flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:999px;border:1px solid {{ th.line }};background:transparent;color:{{ th.ink }};font-size:14px;font-weight:600;cursor:pointer">{{ shareTxt }}</button>
     </div>
   </div>
 </section>
@@ -338,6 +349,26 @@ class Component extends DCLogic {
     this._onKey = (e) => { if (e.key === 'Escape' && this.state.menu) this.setState({ menu: false }); };
     window.addEventListener('keydown', this._onKey);
     this.setMeta();
+    // Comparador y cambio a euros (comparador.js carga con defer).
+    this._onCmp = () => this.setState((st) => ({ cmpV: (st.cmpV || 0) + 1 }));
+    window.addEventListener('aq-comparar', this._onCmp);
+    const conCmp = () => {
+      this._onCmp();
+      if (window.AQComparar && window.AQComparar.cambio) window.AQComparar.cambio().then((r) => { if (r) this.setState({ eur: r }); });
+    };
+    if (window.AQComparar) conCmp(); else window.addEventListener('DOMContentLoaded', conCmp, { once: true });
+  }
+
+  // Comparte la ficha con el menú nativo del teléfono; si no hay, copia el enlace.
+  compartir(p) {
+    const url = window.location.href;
+    const done = (txt) => { this.setState({ shareMsg: txt }); clearTimeout(this._shareT); this._shareT = setTimeout(() => this.setState({ shareMsg: '' }), 2400); };
+    if (navigator.share) {
+      navigator.share({ title: p.name + ' | ' + ((window.MARCA && window.MARCA.nombre) || 'Aquaterra'), text: p.name + ' en ' + this.locTxt(p) + ', Paraguay', url }).catch(() => {});
+      return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(() => done('✓ Enlace copiado'), () => done('Copia el enlace de la barra'));
+    else done('Copia el enlace de la barra');
   }
 
   proyecto() { return this.PROJECTS[Math.max(0, Math.min(this.PROJECTS.length - 1, this.state.pi))]; }
@@ -395,7 +426,7 @@ class Component extends DCLogic {
       .then(() => this.setState({ cfSent: true, cfSending: false }))
       .catch((e) => this.setState({ cfSending: false, cfErr: (e && e.message) || 'No pudimos enviar tu solicitud. Escríbenos por WhatsApp.' }));
   }
-  componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); }
+  componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); clearTimeout(this._shareT); }
 
   mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
 
@@ -410,7 +441,22 @@ class Component extends DCLogic {
     const wa = String((window.MARCA && window.MARCA.whatsapp) || '').replace(/\D/g, '');
     const lime = p.etapa === 'En pozo';
     const usd = (v) => 'USD ' + Math.round(v).toLocaleString('es-PY');
+    const C = window.AQComparar;
+    const cmpOn = !!(C && C.has(pIdx));
+    const nCmp = C ? C.lista().length : 0;
     return {
+      eurTxt: p.precio && s.eur ? '≈ ' + Math.round(p.precio * s.eur).toLocaleString('es-ES') + ' € al cambio de hoy' : '',
+      cmpOn: cmpOn ? 'true' : 'false',
+      cmpTxt: cmpOn ? '✓ En tu comparación' : '+ Comparar',
+      cmpBg: cmpOn ? 'rgba(201,241,93,0.18)' : 'transparent',
+      cmpBd: cmpOn ? 'rgba(201,241,93,0.7)' : th.line,
+      cmpInk: cmpOn ? (night ? '#E4F7B0' : '#3F5410') : th.ink,
+      cmpToggle: () => { if (window.AQComparar) window.AQComparar.toggle(pIdx); },
+      cmpVer: nCmp >= 2,
+      cmpVerTxt: `Ver comparación (${nCmp}) ›`,
+      cmpOpen: () => { if (window.AQComparar) window.AQComparar.abrir(); },
+      share: () => this.compartir(p),
+      shareTxt: s.shareMsg || 'Compartir',
       th, themeName: night ? 'noche' : 'dia',
       marca: (window.MARCA && window.MARCA.nombre) || 'Aquaterra',
       wide, narrow: !wide, menu: s.menu,
