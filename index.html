@@ -121,14 +121,6 @@ select option{color:#1D1D1F;background:#FFFFFF}
   </div>
 </section>
 
-<div aria-label="Datos clave de Paraguay" style="position:relative;overflow:hidden;background:#0B0C0F;color:#F5F5F7;border-top:1px solid rgba(201,241,93,0.18);border-bottom:1px solid rgba(201,241,93,0.18);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)">
-  <div data-marquee="" style="padding:18px 0">
-    <sc-for list="{{ ticker }}" as="t" hint-placeholder-count="16">
-      <span style="display:inline-flex;align-items:center;gap:14px;padding:0 26px;white-space:nowrap;font-size:15px;letter-spacing:-0.01em"><span style="width:8px;height:8px;background:rgba(201,241,93,0.55);border:1px solid #C9F15D;transform:rotate(45deg);border-radius:1px"></span><span data-mono="" style="font-size:13px;color:#E4F7B0">{{ t.k }}</span><span style="color:rgba(245,245,247,0.85)">{{ t.v }}</span></span>
-    </sc-for>
-  </div>
-</div>
-
 <section id="inversiones" data-screen-label="02 Por qué Paraguay" style="background:{{ th.bg }};transition:background .6s;padding:clamp(88px,12vw,168px) clamp(20px,3.2vw,48px)">
   <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:clamp(48px,7vw,112px)">
     <div data-reveal="" style="position:{{ stickyPos }};top:120px;align-self:start;display:flex;flex-direction:column;gap:22px">
@@ -1527,7 +1519,6 @@ class Component extends DCLogic {
           dev: p.dev ? 'Proyecto de ' + p.dev : 'Proyecto de terceros' }; });
       })(),
       nProyectos: (window.PROYECTOS || []).length,
-      ticker: (() => { const t = [['6–8 %', 'renta neta anual en dólares'], ['IVA 5 %', 'en compra y alquiler de vivienda'], ['0 %', 'impuesto al patrimonio'], ['−1,9 %', 'precio en pozo frente a terminado'], ['60–120 días', 'de la reserva a la escritura inscrita'], ['USD 200.000', 'para el Investor Pass'], ['Baa3 · BBB-', 'grado de inversión'], ['Pasaporte', 'y poder notarial: compras sin viajar']].map(([k, v]) => ({ k, v })); return t.concat(t); })(),
       heroBtnInk: night ? '#0B0C0F' : '#FFFFFF',
       heroGlassBd2: night ? 'rgba(201,241,93,0.45)' : 'rgba(110,150,20,0.45)',
       ...(() => {
