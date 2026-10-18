@@ -4,6 +4,7 @@
 //   data-fx      el elemento entra con desenfoque y recorte al aparecer en pantalla
 //   data-tilt    tarjeta que se inclina y tiene un foco de luz que sigue al cursor
 //   data-magnet  botón que se acerca levemente al cursor
+// Además: transición suave entre páginas, cursor propio con anillo lima y una entrada de marca la primera vez que se abre la web.
 // Respeta "reducir movimiento" del sistema.
 (function () {
   if (window.__aqFx) return;
@@ -38,7 +39,25 @@
     '[data-marquee]{display:flex;width:max-content;animation:aq-marquee 48s linear infinite}',
     '[data-marquee]:hover{animation-play-state:paused}',
     '@keyframes aq-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}',
-    '[data-float]{animation:aq-float 5s ease-in-out infinite}'
+    '[data-float]{animation:aq-float 5s ease-in-out infinite}',
+    '@view-transition{navigation:auto}',
+    '::view-transition-old(root){animation:aq-vt-out .35s ' + ease + ' both}',
+    '::view-transition-new(root){animation:aq-vt-in .55s ' + ease + ' both}',
+    '@keyframes aq-vt-out{to{opacity:0;transform:translateY(-12px);filter:blur(6px)}}',
+    '@keyframes aq-vt-in{from{opacity:0;transform:translateY(18px);filter:blur(6px)}}',
+    '#aq-cursor{position:fixed;left:0;top:0;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;pointer-events:none;z-index:70;border:1px solid rgba(201,241,93,.55);background:rgba(201,241,93,.08);display:flex;align-items:center;justify-content:center;opacity:0;transition:width .35s ' + ease + ',height .35s ' + ease + ',margin .35s ' + ease + ',background .3s,border-color .3s,opacity .3s}',
+    '#aq-cursor span{font:500 11px/1 "JetBrains Mono",ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:#C9F15D;text-shadow:0 1px 6px rgba(0,0,0,.55);opacity:0;transition:opacity .2s}',
+    '#aq-cursor.on{opacity:1}',
+    '#aq-cursor.link{width:52px;height:52px;margin:-26px 0 0 -26px;background:rgba(201,241,93,.14)}',
+    '#aq-cursor.card{width:88px;height:88px;margin:-44px 0 0 -44px;background:rgba(201,241,93,.1);border-color:#C9F15D}',
+    '#aq-cursor.card span{opacity:1}',
+    '#aq-cursor.down{transform:scale(.85)}',
+    '#aq-intro{position:fixed;inset:0;z-index:2147483000;background:#0B0C0F;display:flex;align-items:center;justify-content:center;gap:18px;color:#F5F5F7;clip-path:inset(0 0 0 0);transition:clip-path .9s cubic-bezier(.76,0,.24,1)}',
+    '#aq-intro.out{clip-path:inset(0 0 100% 0)}',
+    '#aq-intro i{width:22px;height:22px;border-radius:3px;background:rgba(201,241,93,.2);border:1.5px solid #C9F15D;animation:aq-spin 1s ' + ease + ' both}',
+    '#aq-intro b{font:700 clamp(28px,5vw,44px)/1 "Bricolage Grotesque",-apple-system,sans-serif;letter-spacing:-.03em;animation:aq-rise .9s ' + ease + ' .1s both}',
+    '@keyframes aq-spin{from{transform:rotate(-135deg) scale(.4);opacity:0}to{transform:rotate(45deg) scale(1);opacity:1}}',
+    '@keyframes aq-rise{from{transform:translateY(24px);opacity:0;filter:blur(8px)}}'
   ];
   if (!reduce) {
     css.push('[data-fx]:not([data-in]){opacity:0;filter:blur(14px);transform:translateY(28px);clip-path:inset(0 0 35% 0)}');
@@ -55,6 +74,50 @@
   function onScroll() {
     var h = document.documentElement.scrollHeight - window.innerHeight;
     bar.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, window.scrollY / h) : 0).toFixed(4) + ')';
+  }
+
+  // Entrada de marca: solo la primera vez por visita.
+  var seen = false;
+  try { seen = sessionStorage.getItem('aq-intro') === '1'; sessionStorage.setItem('aq-intro', '1'); } catch (e) { seen = true; }
+  if (!reduce && !seen && !navigator.webdriver) {
+    var intro = document.createElement('div');
+    intro.id = 'aq-intro';
+    intro.setAttribute('aria-hidden', 'true');
+    var nm = (window.MARCA && window.MARCA.nombre) || 'Aquaterra';
+    intro.innerHTML = '<i></i><b></b>';
+    intro.querySelector('b').textContent = nm;
+    (document.body || document.documentElement).appendChild(intro);
+    setTimeout(function () { intro.classList.add('out'); }, 1050);
+    setTimeout(function () { intro.remove(); }, 2100);
+  }
+
+  // Cursor propio: un anillo lima que sigue al ratón y se abre sobre enlaces y tarjetas.
+  function cursor() {
+    var c = document.createElement('div');
+    c.id = 'aq-cursor';
+    c.setAttribute('aria-hidden', 'true');
+    c.innerHTML = '<span>Ver</span>';
+    document.body.appendChild(c);
+    var x = -100, y = -100, cx = x, cy = y, raf = 0;
+    function loop() {
+      cx += (x - cx) * 0.22; cy += (y - cy) * 0.22;
+      c.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)' + (c.classList.contains('down') ? ' scale(.85)' : '');
+      raf = Math.abs(x - cx) + Math.abs(y - cy) > 0.3 ? requestAnimationFrame(loop) : 0;
+    }
+    document.addEventListener('pointermove', function (ev) {
+      if (ev.pointerType !== 'mouse') return;
+      x = ev.clientX; y = ev.clientY;
+      if (!c.classList.contains('on')) { cx = x; cy = y; c.classList.add('on'); }
+      var t = ev.target.closest ? ev.target : null;
+      var card = t && t.closest('[data-tilt]');
+      var link = !card && t && t.closest('a,button,[role="button"],input[type="range"],label,select');
+      c.classList.toggle('card', !!card);
+      c.classList.toggle('link', !!link);
+      if (!raf) raf = requestAnimationFrame(loop);
+    }, { passive: true });
+    document.addEventListener('pointerdown', function () { c.classList.add('down'); if (!raf) raf = requestAnimationFrame(loop); });
+    document.addEventListener('pointerup', function () { c.classList.remove('down'); if (!raf) raf = requestAnimationFrame(loop); });
+    document.documentElement.addEventListener('pointerleave', function () { c.classList.remove('on'); });
   }
 
   var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
@@ -97,6 +160,7 @@
 
   function start() {
     if (!bar.isConnected) document.body.appendChild(bar);
+    if (fine && !reduce) cursor();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
     onScroll();
