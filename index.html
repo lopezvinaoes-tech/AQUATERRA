@@ -96,7 +96,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
       </div>
     </div>
 
-    <div data-reveal="450" style="display:grid;grid-template-columns:{{ heroCols }};align-items:center;gap:20px">
+    <div data-reveal="450" style="display:grid;grid-template-columns:{{ heroCols }};align-items:center;gap:20px;margin-bottom:{{ heroRowMb }}">
       <sc-if value="{{ heroWide }}" hint-placeholder-val="{{ true }}">
       <div style="justify-self:start;display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding:6px 10px;border-radius:10px;background:{{ heroGlass }};border:1px solid {{ heroGlassBd }};backdrop-filter:{{ heroBlur }};-webkit-backdrop-filter:{{ heroBlur }}">
         <span style="font-size:12px;font-weight:500;color:{{ sub }};transition:color .9s">Explora la ciudad</span>
@@ -293,7 +293,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
       </div>
       <a href="Aquaterra%20Proyectos.dc.html" style="display:inline-flex;align-items:center;gap:6px;height:46px;padding:0 22px;border-radius:999px;background:{{ th.ink }};color:{{ th.bg }};font-size:15px;font-weight:600" style-hover="opacity:0.85;color:{{ th.bg }}">Ver los {{ nProyectos }} proyectos <span>›</span></a>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px">
+    <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px">
       <sc-for list="{{ destacados }}" as="d" hint-placeholder-count="3">
         <a href="{{ d.href }}" data-reveal="" data-tilt="" style="display:flex;flex-direction:column;border-radius:26px;overflow:hidden;background:#0B0C0F;color:#F5F5F7;transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s" style-hover="box-shadow:0 30px 60px -30px rgba(0,0,0,0.5);color:#F5F5F7">
           <div style="position:relative;aspect-ratio:16/11;padding:22px;display:flex;flex-direction:column;justify-content:space-between;background:radial-gradient(120% 90% at 85% 0%,rgba(201,241,93,0.22),rgba(201,241,93,0) 55%),linear-gradient(160deg,#1C1F26,#0B0C0F)">
@@ -393,17 +393,17 @@ select option{color:#1D1D1F;background:#FFFFFF}
     </div>
     <div data-reveal="" style="display:flex;flex-direction:column;align-items:center;gap:28px">
       <h3 style="margin:0;text-align:center;font-size:clamp(26px,2.6vw,36px);line-height:1.1;letter-spacing:-0.025em;font-weight:600">Nuestro <span data-accent="" data-mark="" style="color:{{ th.ink }};background:linear-gradient(transparent 60%,rgba(201,241,93,0.45) 60%,rgba(201,241,93,0.45) 92%,transparent 92%);padding:0 .06em">equipo</span></h3>
-      <div style="width:100%;display:flex;flex-wrap:wrap;justify-content:center;gap:20px">
+      <div data-stagger="" style="width:100%;display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(14px,1.6vw,20px)">
         <sc-for list="{{ equipo }}" as="pe" hint-placeholder-count="4">
-          <div style="flex:0 1 280px;min-width:0;display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:#0B0C0F;color:#F5F5F7;text-align:center">
-            <div style="position:relative;aspect-ratio:4/5;overflow:hidden;background:#1F2228;display:flex;align-items:center;justify-content:center">
-              <span style="font-size:48px;font-weight:700;letter-spacing:-0.03em;color:#E4F7B0">{{ pe.ini }}</span>
+          <div style="flex:0 1 min(280px,calc(50% - 8px));min-width:0;display:flex;flex-direction:column;border-radius:clamp(18px,2vw,22px);overflow:hidden;background:#0B0C0F;color:#F5F5F7;text-align:center;box-shadow:0 1px 0 rgba(255,255,255,0.06) inset">
+            <div data-grain="" style="position:relative;aspect-ratio:4/5;overflow:hidden;background:radial-gradient(120% 80% at 50% 0%,rgba(201,241,93,0.16),transparent 60%),linear-gradient(180deg,#1F2228,#121417);display:flex;align-items:center;justify-content:center">
+              <span style="width:clamp(76px,9vw,112px);height:clamp(76px,9vw,112px);border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-size:clamp(28px,3.4vw,42px);font-weight:700;letter-spacing:-0.03em;color:#E4F7B0">{{ pe.ini }}</span>
               <span role="img" aria-label="{{ pe.nombre }}" style="position:absolute;inset:0;background-image:{{ pe.bg }};background-size:cover;background-position:center top"></span>
             </div>
-            <div style="display:flex;flex-direction:column;gap:6px;padding:20px 20px 24px">
-              <span style="font-size:19px;font-weight:600;letter-spacing:-0.02em">{{ pe.nombre }}</span>
-              <span style="font-size:14px;font-weight:600;color:#E4F7B0">{{ pe.rol }} · {{ pe.lugar }}</span>
-              <span style="margin-top:4px;font-size:15px;line-height:1.5;color:rgba(245,245,247,0.8);text-wrap:pretty">{{ pe.texto }}</span>
+            <div style="display:flex;flex-direction:column;gap:6px;padding:clamp(14px,1.8vw,20px) clamp(12px,1.8vw,20px) clamp(18px,2vw,24px)">
+              <span style="font-size:clamp(16px,1.6vw,19px);font-weight:600;letter-spacing:-0.02em">{{ pe.nombre }}</span>
+              <span style="font-size:clamp(12px,1.2vw,14px);font-weight:600;color:#E4F7B0">{{ pe.rol }} · {{ pe.lugar }}</span>
+              <span style="margin-top:4px;font-size:clamp(13px,1.3vw,15px);line-height:1.5;color:rgba(245,245,247,0.8);text-wrap:pretty">{{ pe.texto }}</span>
             </div>
           </div>
         </sc-for>
@@ -1573,7 +1573,7 @@ class Component extends DCLogic {
       ink: night ? '#F5F5F7' : '#1D1D1F',
       sub: night ? 'rgba(245,245,247,0.74)' : '#4A4E56',
       limeText: night ? '#C9F15D' : '#9CC92E',
-      heroWide: s.w >= 600, heroCols: s.w >= 600 ? 'minmax(0,1fr) auto minmax(0,1fr)' : 'auto minmax(0,1fr)',
+      heroWide: s.w >= 600, heroRowMb: s.w >= 600 ? '0px' : '64px', heroCols: s.w >= 600 ? 'minmax(0,1fr) auto minmax(0,1fr)' : 'auto minmax(0,1fr)',
       heroGlass: 'rgba(0,0,0,0)',
       heroGlassBd: 'rgba(0,0,0,0)',
       heroBlur: 'none',
