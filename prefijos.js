@@ -34,8 +34,14 @@
     return String.fromCodePoint.apply(null, c.split('').map(function (l) { return 0x1F1E6 + l.charCodeAt(0) - 65; }));
   }
 
+  // La sugerencia por zona horaria e idioma se calcula una sola vez (Intl es lento la primera vez y los formularios la piden varias).
+  var sugerido = null;
   function porDefecto() {
     try { var g = localStorage.getItem(KEY); if (porCodigo[g]) return g; } catch (e) {}
+    return sugerido || (sugerido = sugerir());
+  }
+
+  function sugerir() {
     try {
       var z = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
       if (ZONAS[z]) return ZONAS[z];
