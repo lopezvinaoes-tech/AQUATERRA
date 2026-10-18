@@ -10,6 +10,7 @@
 <script src="./support.js"></script>
 <script src="./fx.js" defer></script>
 <script src="./chat.js" defer></script>
+<script src="./comparador.js" defer></script>
 </head>
 <body>
 <x-dc>
@@ -110,7 +111,10 @@ select option{color:#1D1D1F;background:#FFFFFF}
 
 <section data-screen-label="02 Resultados" style="padding:28px clamp(20px,3.2vw,48px) clamp(80px,10vw,140px)">
   <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:20px">
-    <span style="font-size:14px;color:{{ th.mute }}">{{ countLabel }}</span>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px">
+      <span style="font-size:14px;color:{{ th.mute }}">{{ countLabel }}</span>
+      <button onClick="{{ openCmp }}" style="display:flex;align-items:center;gap:8px;min-height:36px;padding:0 4px;border:0;background:transparent;color:{{ linkC }};font-size:14px;font-weight:500;cursor:pointer"><span style="width:8px;height:8px;background:#C9F15D;transform:rotate(45deg);border-radius:1px"></span>{{ cmpLabel }}</button>
+    </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px">
       <sc-for list="{{ projects }}" as="p" hint-placeholder-count="9">
         <a data-tilt="" href="{{ p.href }}" aria-label="Ver ficha de {{ p.name }}" style="display:flex;flex-direction:column;border-radius:24px;overflow:hidden;background:{{ th.card }};color:{{ th.ink }};box-shadow:{{ th.cardSh }};transition:transform .45s cubic-bezier(.3,.7,.2,1), box-shadow .45s" style-hover="box-shadow:0 30px 60px -28px rgba(0,0,0,0.45);color:{{ th.ink }}">
@@ -136,7 +140,10 @@ select option{color:#1D1D1F;background:#FFFFFF}
             </sc-if>
             <div style="margin-top:auto;padding-top:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
               <span style="font-size:12px;line-height:1.4;color:{{ th.mute }}">{{ p.fuenteTxt }}</span>
-              <span style="flex:0 0 auto;font-size:14px;font-weight:500;color:{{ linkC }}">Ver ficha ›</span>
+              <div style="flex:0 0 auto;display:flex;align-items:center;gap:12px">
+                <button onClick="{{ p.cmp }}" aria-pressed="{{ p.cmpOn }}" aria-label="{{ p.cmpAria }}" style="display:flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;border:1px solid {{ p.cmpBd }};background:{{ p.cmpBg }};color:{{ p.cmpInk }};font-size:13px;font-weight:600;cursor:pointer;transition:background .2s, color .2s, border-color .2s">{{ p.cmpTxt }}</button>
+                <span style="font-size:14px;font-weight:500;color:{{ linkC }}">Ver ficha ›</span>
+              </div>
             </div>
           </div>
         </a>
@@ -210,8 +217,12 @@ class Component extends DCLogic {
     window.addEventListener('resize', this._onResize);
     this._onKey = (e) => { if (e.key === 'Escape' && this.state.menu) this.setState({ menu: false }); };
     window.addEventListener('keydown', this._onKey);
+    this._onCmp = () => this.setState((st) => ({ cmpV: (st.cmpV || 0) + 1 }));
+    window.addEventListener('aq-comparar', this._onCmp);
+    // comparador.js carga con defer: refresca los botones cuando ya está disponible.
+    if (!window.AQComparar) window.addEventListener('DOMContentLoaded', this._onCmp, { once: true });
   }
-  componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); }
+  componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); }
 
   mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
 
@@ -262,6 +273,18 @@ class Component extends DCLogic {
       tagBd: p.etapa === 'En pozo' ? 'rgba(201,241,93,0.38)' : 'rgba(255,255,255,0.2)',
       tagInk: p.etapa === 'En pozo' ? '#E4F7B0' : '#F5F5F7'
     }));
+    const C = window.AQComparar;
+    const nCmp = C ? C.lista().length : 0;
+    projects.forEach((p) => {
+      const on = !!(C && C.has(p.idx));
+      p.cmpOn = on ? 'true' : 'false';
+      p.cmpTxt = on ? '✓ Comparando' : '+ Comparar';
+      p.cmpAria = (on ? 'Quitar ' : 'Añadir ') + p.name + (on ? ' de la comparación' : ' a la comparación');
+      p.cmpBg = on ? '#C9F15D' : 'transparent';
+      p.cmpBd = on ? '#C9F15D' : th.line;
+      p.cmpInk = on ? '#1D1D1F' : th.ink;
+      p.cmp = (e) => { e.preventDefault(); e.stopPropagation(); if (window.AQComparar) window.AQComparar.toggle(p.idx); };
+    });
     const setF = (k) => (e) => { const v = e.target.value; this.setState((st) => ({ f: { ...st.f, [k]: v } })); };
     return {
       th, themeName: night ? 'noche' : 'dia',
@@ -290,6 +313,8 @@ class Component extends DCLogic {
       anyF: Object.values(s.f).some(Boolean),
       clearF: () => this.setState({ f: { ciudad: '', tipo: '', etapa: '', rango: '', dorm: '' } }),
       projects,
+      openCmp: () => { if (window.AQComparar) window.AQComparar.abrir(); },
+      cmpLabel: nCmp ? `Comparar (${nCmp})` : 'Comparar proyectos',
       noResults: projects.length === 0,
       countLabel: projects.length === 1 ? '1 propiedad' : `${projects.length} propiedades`
     };
