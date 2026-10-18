@@ -147,7 +147,7 @@ button,select,input{font-family:inherit}
         </div>
       </sc-for>
     </div>
-    <div data-card="" style="margin-top:clamp(20px,4vw,40px);border-radius:28px;background:#0B0C0F;color:#F5F5F7;padding:clamp(28px,4.4vw,56px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px">
+    <div data-card="" style="margin-top:clamp(20px,4vw,40px);border-radius:28px;background:{{ th.deep }};color:{{ th.deepInk }};padding:clamp(28px,4.4vw,56px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px">
       <div style="flex:1 1 320px;display:flex;flex-direction:column;gap:10px;max-width:620px">
         <span style="font-size:13px;font-weight:600;color:#E4F7B0">Asesoría sin compromiso</span>
         <h2 data-fx="" style="margin:0;font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">¿Quieres aplicar estos datos a tu caso?</h2>
@@ -201,7 +201,7 @@ button,select,input{font-family:inherit}
         </div>
       </sc-if>
       <sc-if value="{{ b.isDato }}">
-        <div style="margin:14px 0 30px;border-radius:24px;background:#0B0C0F;color:#F5F5F7;padding:clamp(22px,3.4vw,34px);display:flex;flex-direction:column;gap:12px;border:1px solid {{ datoLine }}">
+        <div style="margin:14px 0 30px;border-radius:24px;background:{{ th.deep }};color:{{ th.deepInk }};padding:clamp(22px,3.4vw,34px);display:flex;flex-direction:column;gap:12px;border:1px solid {{ datoLine }}">
           <span style="align-self:flex-start;display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:#E4F7B0;font-size:12px;font-weight:600;letter-spacing:0.02em">Dato destacado</span>
           <span style="font-size:clamp(38px,6vw,60px);line-height:1;font-weight:700;letter-spacing:-0.04em;color:#E4F7B0">{{ b.v }}</span>
           <span style="font-size:17px;line-height:1.55;color:rgba(245,245,247,0.82);text-wrap:pretty">{{ b.x }}</span>
@@ -250,7 +250,7 @@ button,select,input{font-family:inherit}
       <span style="font-size:13px;line-height:1.5;color:{{ th.mute }}">Contenido informativo con datos públicos. Las cifras de mercado son medias y estimaciones, no garantías de rentabilidad. Valida impuestos y trámites con un asesor fiscal o un escribano antes de decidir.</span>
     </div>
 
-    <div style="margin-top:28px;border-radius:24px;background:#0B0C0F;color:#F5F5F7;padding:clamp(24px,3.6vw,36px);display:flex;flex-direction:column;gap:14px">
+    <div style="margin-top:28px;border-radius:24px;background:{{ th.deep }};color:{{ th.deepInk }};padding:clamp(24px,3.6vw,36px);display:flex;flex-direction:column;gap:14px">
       <span style="align-self:flex-start;display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:#E4F7B0;font-size:12px;font-weight:600">Siguiente paso</span>
       <h2 data-fx="" style="margin:0;font-size:clamp(24px,2.8vw,32px);line-height:1.12;letter-spacing:-0.025em;font-weight:700;text-wrap:balance">{{ art.ctaT }}</h2>
       <p style="margin:0;font-size:17px;line-height:1.55;color:rgba(245,245,247,0.78)">Cuéntanos tu presupuesto, tu residencia fiscal y lo que buscas. Un asesor te responde con números reales para tu caso, sin compromiso.</p>
@@ -335,8 +335,8 @@ class Component extends DCLogic {
     'Legal': '¿Te acompañamos en la compra a distancia?'
   };
   THEMES = {
-    dia: { bg: '#F5F5F7', ink: '#1D1D1F', body: '#2C2C2E', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' },
-    noche: { bg: '#000000', ink: '#F5F5F7', body: '#D1D1D6', mute: '#98989D', mute2: '#C7C7CC', line: 'rgba(255,255,255,0.12)', card: '#1C1C1E', foot: '#000000', chip: 'rgba(118,118,128,0.24)' }
+    dia: { bg: '#F5F5F7', ink: '#1D1D1F', body: '#2C2C2E', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' , deep: '#0B0C0F', deepInk: '#F5F5F7'},
+    noche: { bg: '#17191E', ink: '#ECECEE', body: '#D6D7DB', mute: '#A4A7AE', mute2: '#CACCD1', line: 'rgba(255,255,255,0.10)', card: '#212329', foot: '#121418', chip: 'rgba(150,152,160,0.20)' , deep: '#1E2127', deepInk: '#E9EAEC'}
   };
 
   mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
@@ -355,7 +355,7 @@ class Component extends DCLogic {
         nf: a.fuentes.length,
         ctaT: this.CTAS[a.cat] || '¿Hablamos de tu inversión?',
         cov: {
-          bg: `radial-gradient(120% 95% at ${this.GLOWS[i % this.GLOWS.length]}, rgba(201,241,93,0.20), rgba(201,241,93,0) 58%), linear-gradient(160deg, #15171C 0%, #0B0C0F 70%)`,
+          bg: `radial-gradient(120% 95% at ${this.GLOWS[i % this.GLOWS.length]}, rgba(201,241,93,0.20), rgba(201,241,93,0) 58%), linear-gradient(160deg, ${this.mode() === 'noche' ? '#272A31 0%, #1E2127' : '#15171C 0%, #0B0C0F'} 70%)`,
           fs: fit(19, 112), fsBig: fit(17, 100), fsHero: fit(15, 92)
         }
       });
@@ -465,9 +465,9 @@ class Component extends DCLogic {
       toggleMenu: () => this.setState((st) => ({ menu: !st.menu })),
       closeMenu: () => { if (this.state.menu) this.setState({ menu: false }); },
       navItems: this.NAV.map(([href, label]) => ({ href, label, ink: label === 'Blog' ? th.ink : th.mute2, fw: label === 'Blog' ? '600' : '400' })),
-      hdrBg: night ? 'rgba(22,22,23,0.8)' : 'rgba(251,251,253,0.8)',
-      menuBg: night ? 'rgba(0,0,0,0.86)' : 'rgba(251,251,253,0.92)',
-      barBg: night ? 'rgba(0,0,0,0.72)' : 'rgba(245,245,247,0.8)',
+      hdrBg: night ? 'rgba(28,30,36,0.82)' : 'rgba(251,251,253,0.8)',
+      menuBg: night ? 'rgba(23,25,30,0.94)' : 'rgba(251,251,253,0.92)',
+      barBg: night ? 'rgba(23,25,30,0.8)' : 'rgba(245,245,247,0.8)',
       burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
       burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
       ctaLabel: s.w >= 520 ? 'Agenda una asesoría' : 'Asesoría',
@@ -481,8 +481,8 @@ class Component extends DCLogic {
       segTrack: night ? 'rgba(118,118,128,0.32)' : 'rgba(118,118,128,0.16)',
       knobBg: night ? '#636366' : '#FFFFFF',
       knobLeft: night ? '60px' : '2px', knobLeftL: night ? '88px' : '2px',
-      dayInk: night ? 'rgba(245,245,247,0.7)' : '#1D1D1F',
-      nightInk: night ? '#FFFFFF' : '#6E6E73',
+      dayInk: night ? 'rgba(236,236,238,0.72)' : '#1D1D1F',
+      nightInk: night ? '#ECECEE' : '#6E6E73',
       toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { localStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
       isList, isArt, notFound,
       cats: this.CATS.map((c) => ({ label: c, n: c === 'Todos' ? all.length : all.filter((p) => p.cat === c).length, on: c === cat ? 'true' : 'false', bg: c === cat ? th.ink : th.chip, ink: c === cat ? th.bg : th.ink, pick: () => this.pickCat(c) })),

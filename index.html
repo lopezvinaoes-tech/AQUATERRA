@@ -77,7 +77,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
 <section id="inicio" ref="{{ heroRef }}" data-screen-label="01 Inicio" style="position:relative;height:100svh;min-height:600px;max-height:1100px;overflow:hidden;background:{{ heroBg }};transition:background .9s">
   <div ref="{{ cityRef }}" style="position:absolute;inset:0"></div>
   <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ dayHaze }};transition:opacity .9s;background:linear-gradient(to bottom, rgba(231,233,236,0.75) 0%, rgba(231,233,236,0) 16%), linear-gradient(to top, #E7E9EC 0%, rgba(231,233,236,0.94) 26%, rgba(231,233,236,0.45) 42%, rgba(231,233,236,0) 60%)"></div>
-  <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ nightHaze }};transition:opacity .9s;background:linear-gradient(to bottom, rgba(10,12,16,0.8) 0%, rgba(10,12,16,0) 16%), linear-gradient(to top, #0A0C10 0%, rgba(10,12,16,0.92) 26%, rgba(10,12,16,0.42) 42%, rgba(10,12,16,0) 60%)"></div>
+  <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ nightHaze }};transition:opacity .9s;background:linear-gradient(to bottom, rgba(20,23,29,0.8) 0%, rgba(20,23,29,0) 16%), linear-gradient(to top, #14171D 0%, rgba(20,23,29,0.92) 26%, rgba(20,23,29,0.42) 42%, rgba(20,23,29,0) 60%)"></div>
   <div style="position:absolute;left:0;right:0;bottom:0;height:55%;pointer-events:none;background:{{ heroFade }};backdrop-filter:blur(14px) saturate(120%);-webkit-backdrop-filter:blur(14px) saturate(120%);-webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 45%);mask-image:linear-gradient(to bottom, transparent 0%, #000 45%);transition:background .9s"></div>
 
   <div style="position:absolute;left:0;right:0;bottom:0;padding:0 clamp(20px,3.2vw,48px) calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:clamp(24px,5vh,64px);pointer-events:none">
@@ -183,7 +183,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
   <div style="position:sticky;top:0;height:100svh;overflow:hidden">
     <div ref="{{ towerRef }}" style="position:absolute;inset:0"></div>
     <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ dayHaze }};transition:opacity .6s;background:linear-gradient(to right, rgba(19,21,25,0.94) 0%, rgba(19,21,25,0.7) 26%, rgba(19,21,25,0) 46%), linear-gradient(to bottom, #131519 0%, rgba(19,21,25,0) 14%, rgba(19,21,25,0) 86%, #131519 100%)"></div>
-    <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ nightHaze }};transition:opacity .6s;background:linear-gradient(to right, rgba(6,7,10,0.94) 0%, rgba(6,7,10,0.7) 26%, rgba(6,7,10,0) 46%), linear-gradient(to bottom, #06070A 0%, rgba(6,7,10,0) 14%, rgba(6,7,10,0) 86%, #06070A 100%)"></div>
+    <div style="position:absolute;inset:0;pointer-events:none;opacity:{{ nightHaze }};transition:opacity .6s;background:linear-gradient(to right, rgba(18,21,26,0.94) 0%, rgba(18,21,26,0.7) 26%, rgba(18,21,26,0) 46%), linear-gradient(to bottom, #12151A 0%, rgba(18,21,26,0) 14%, rgba(18,21,26,0) 86%, #12151A 100%)"></div>
 
     <div ref="{{ linesRef }}" style="position:absolute;inset:0;pointer-events:none">
       <span data-line="0" style="position:absolute;left:0;top:0;width:0;height:1px;background:#C9F15D;transform-origin:0 50%;opacity:0"></span>
@@ -287,16 +287,16 @@ select option{color:#1D1D1F;background:#FFFFFF}
   <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(36px,5vw,56px)">
     <div data-reveal="" style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px">
       <div style="display:flex;flex-direction:column;gap:20px;max-width:720px">
-        <span data-mono="" style="align-self:flex-start;padding:6px 14px;border-radius:999px;background:rgba(201,241,93,0.22);border:1px solid rgba(120,160,20,0.3);color:#3F5A06;font-size:13px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase">Proyectos</span>
-        <h2 data-fx="" style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Oportunidades para <span data-accent="" data-mark="" style="background:linear-gradient(transparent 60%,rgba(201,241,93,0.45) 60%,rgba(201,241,93,0.45) 92%,transparent 92%);padding:0 .06em">invertir hoy</span></h2>
+        <span data-mono="" style="align-self:flex-start;padding:6px 14px;border-radius:999px;background:rgba(201,241,93,0.22);border:1px solid rgba(120,160,20,0.3);color:{{ th.chipInk }};font-size:13px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase">Proyectos</span>
+        <h2 data-fx="" style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Oportunidades para <span data-accent="" data-mark="" style="background:linear-gradient(transparent 60%,{{ th.mark }} 60%,{{ th.mark }} 92%,transparent 92%);padding:0 .06em">invertir hoy</span></h2>
         <p style="margin:0;font-size:18px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">Departamentos en pozo, barrios cerrados y lotes. Por ahora mostramos proyectos de otras desarrolladoras como referencia, cada uno con su fuente.</p>
       </div>
       <a href="Aquaterra%20Proyectos.dc.html" style="display:inline-flex;align-items:center;gap:6px;height:46px;padding:0 22px;border-radius:999px;background:{{ th.ink }};color:{{ th.bg }};font-size:15px;font-weight:600" style-hover="opacity:0.85;color:{{ th.bg }}">Ver los {{ nProyectos }} proyectos <span>›</span></a>
     </div>
     <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px">
       <sc-for list="{{ destacados }}" as="d" hint-placeholder-count="3">
-        <a href="{{ d.href }}" data-reveal="" data-tilt="" style="display:flex;flex-direction:column;border-radius:26px;overflow:hidden;background:#0B0C0F;color:#F5F5F7;transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s" style-hover="box-shadow:0 30px 60px -30px rgba(0,0,0,0.5);color:#F5F5F7">
-          <div style="position:relative;aspect-ratio:16/11;padding:22px;display:flex;flex-direction:column;justify-content:space-between;background:radial-gradient(120% 90% at 85% 0%,rgba(201,241,93,0.22),rgba(201,241,93,0) 55%),linear-gradient(160deg,#1C1F26,#0B0C0F)">
+        <a href="{{ d.href }}" data-reveal="" data-tilt="" style="display:flex;flex-direction:column;border-radius:26px;overflow:hidden;background:{{ th.deep }};color:{{ th.deepInk }};transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s" style-hover="box-shadow:0 30px 60px -30px rgba(0,0,0,0.5);color:#F5F5F7">
+          <div style="position:relative;aspect-ratio:16/11;padding:22px;display:flex;flex-direction:column;justify-content:space-between;background:radial-gradient(120% 90% at 85% 0%,rgba(201,241,93,0.22),rgba(201,241,93,0) 55%),linear-gradient(160deg,{{ th.deep2 }},{{ th.deep }})">
             <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
               <span style="padding:5px 12px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;font-size:12px;font-weight:600">{{ d.etapa }}</span>
               <span style="font-size:12px;color:rgba(245,245,247,0.6)">{{ d.ciudad }}</span>
@@ -324,7 +324,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
 </section>
 
 <section id="simulador" data-screen-label="05 Simulador" style="background:{{ th.bg }};transition:background .6s;padding:clamp(24px,4vw,56px) clamp(20px,3.2vw,48px) clamp(88px,12vw,160px)">
-  <div data-reveal="" data-grain="" style="max-width:1280px;margin:0 auto;border-radius:clamp(28px,3vw,40px);background:#0B0C0F;color:#F5F5F7;overflow:hidden;display:flex;flex-wrap:wrap">
+  <div data-reveal="" data-grain="" style="max-width:1280px;margin:0 auto;border-radius:clamp(28px,3vw,40px);background:{{ th.deep }};color:{{ th.deepInk }};overflow:hidden;display:flex;flex-wrap:wrap">
     <div style="flex:1 1 440px;display:flex;flex-direction:column;gap:28px;padding:clamp(28px,4vw,56px)">
       <div style="display:flex;flex-direction:column;gap:16px">
         <span data-mono="" style="align-self:flex-start;padding:6px 14px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;font-size:13px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase">Simulador</span>
@@ -370,21 +370,21 @@ select option{color:#1D1D1F;background:#FFFFFF}
   <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(48px,7vw,96px)">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:clamp(40px,6vw,96px)">
       <div data-reveal="" style="display:flex;flex-direction:column;gap:22px">
-        <span data-mono="" style="align-self:flex-start;padding:6px 14px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#3F5A06;font-size:13px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase">Sobre nosotros</span>
-        <h2 data-fx="" style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Asesoramos inversiones con <span data-accent="" data-mark="" style="color:{{ th.ink }};background:linear-gradient(transparent 60%,rgba(201,241,93,0.45) 60%,rgba(201,241,93,0.45) 92%,transparent 92%);padding:0 .06em">criterio de largo plazo</span></h2>
+        <span data-mono="" style="align-self:flex-start;padding:6px 14px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:{{ th.chipInk }};font-size:13px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase">Sobre nosotros</span>
+        <h2 data-fx="" style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Asesoramos inversiones con <span data-accent="" data-mark="" style="color:{{ th.ink }};background:linear-gradient(transparent 60%,{{ th.mark }} 60%,{{ th.mark }} 92%,transparent 92%);padding:0 .06em">criterio de largo plazo</span></h2>
       </div>
       <div data-reveal="150" style="display:flex;flex-direction:column;gap:36px;padding-top:8px">
         <p style="margin:0;font-size:19px;line-height:1.6;color:{{ th.ink }};text-wrap:pretty">{{ marca }} acompaña a inversores locales y del exterior en la compra de propiedades en Paraguay, con foco en desarrollos en pozo. Analizamos cada caso antes de recomendar un proyecto.</p>
         <div style="display:flex;flex-direction:column;gap:12px">
-          <div style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:22px 24px;border-radius:18px;background:#0B0C0F;color:#F5F5F7">
+          <div style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:22px 24px;border-radius:18px;background:{{ th.deep }};color:{{ th.deepInk }}">
             <span style="width:36px;height:36px;border-radius:50%;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;font-size:13px;font-weight:700">01</span>
             <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:20px;font-weight:500;letter-spacing:-0.02em">Análisis de tu perfil</span><span style="font-size:15px;line-height:1.55;color:rgba(245,245,247,0.78)">Objetivo, plazo y monto: definimos juntos qué inversión tiene sentido para ti.</span></div>
           </div>
-          <div style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:22px 24px;border-radius:18px;background:#0B0C0F;color:#F5F5F7">
+          <div style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:22px 24px;border-radius:18px;background:{{ th.deep }};color:{{ th.deepInk }}">
             <span style="width:36px;height:36px;border-radius:50%;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;font-size:13px;font-weight:700">02</span>
             <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:20px;font-weight:500;letter-spacing:-0.02em">Selección de proyectos</span><span style="font-size:15px;line-height:1.55;color:rgba(245,245,247,0.78)">Evaluamos desarrolladora, ubicación y plan de pagos antes de presentarte opciones.</span></div>
           </div>
-          <div style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:22px 24px;border-radius:18px;background:#0B0C0F;color:#F5F5F7">
+          <div style="display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;padding:22px 24px;border-radius:18px;background:{{ th.deep }};color:{{ th.deepInk }}">
             <span style="width:36px;height:36px;border-radius:50%;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;font-size:13px;font-weight:700">03</span>
             <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:20px;font-weight:500;letter-spacing:-0.02em">Acompañamiento hasta la entrega</span><span style="font-size:15px;line-height:1.55;color:rgba(245,245,247,0.78)">Te informamos el avance de obra y te acompañamos hasta la entrega y la puesta en renta.</span></div>
           </div>
@@ -392,10 +392,10 @@ select option{color:#1D1D1F;background:#FFFFFF}
       </div>
     </div>
     <div data-reveal="" style="display:flex;flex-direction:column;align-items:center;gap:28px">
-      <h3 style="margin:0;text-align:center;font-size:clamp(26px,2.6vw,36px);line-height:1.1;letter-spacing:-0.025em;font-weight:600">Nuestro <span data-accent="" data-mark="" style="color:{{ th.ink }};background:linear-gradient(transparent 60%,rgba(201,241,93,0.45) 60%,rgba(201,241,93,0.45) 92%,transparent 92%);padding:0 .06em">equipo</span></h3>
+      <h3 style="margin:0;text-align:center;font-size:clamp(26px,2.6vw,36px);line-height:1.1;letter-spacing:-0.025em;font-weight:600">Nuestro <span data-accent="" data-mark="" style="color:{{ th.ink }};background:linear-gradient(transparent 60%,{{ th.mark }} 60%,{{ th.mark }} 92%,transparent 92%);padding:0 .06em">equipo</span></h3>
       <div data-stagger="" style="width:100%;display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(14px,1.6vw,20px)">
         <sc-for list="{{ equipo }}" as="pe" hint-placeholder-count="4">
-          <div style="flex:0 1 min(280px,calc(50% - 8px));min-width:0;display:flex;flex-direction:column;border-radius:clamp(18px,2vw,22px);overflow:hidden;background:#0B0C0F;color:#F5F5F7;text-align:center;box-shadow:0 1px 0 rgba(255,255,255,0.06) inset">
+          <div style="flex:0 1 min(280px,calc(50% - 8px));min-width:0;display:flex;flex-direction:column;border-radius:clamp(18px,2vw,22px);overflow:hidden;background:{{ th.deep }};color:{{ th.deepInk }};text-align:center;box-shadow:0 1px 0 rgba(255,255,255,0.06) inset">
             <div data-grain="" style="position:relative;aspect-ratio:4/5;overflow:hidden;background:radial-gradient(120% 80% at 50% 0%,rgba(201,241,93,0.16),transparent 60%),linear-gradient(180deg,#1F2228,#121417);display:flex;align-items:center;justify-content:center">
               <span style="width:clamp(76px,9vw,112px);height:clamp(76px,9vw,112px);border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-size:clamp(28px,3.4vw,42px);font-weight:700;letter-spacing:-0.03em;color:#E4F7B0">{{ pe.ini }}</span>
               <span role="img" aria-label="{{ pe.nombre }}" style="position:absolute;inset:0;background-image:{{ pe.bg }};background-size:cover;background-position:center top"></span>
@@ -443,8 +443,8 @@ select option{color:#1D1D1F;background:#FFFFFF}
 <section id="preguntas" data-screen-label="07 Preguntas" style="background:{{ th.bg }};transition:background .6s;padding:clamp(88px,12vw,160px) clamp(20px,3.2vw,48px)">
   <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:clamp(40px,6vw,96px)">
     <div data-reveal="" style="display:flex;flex-direction:column;gap:20px">
-      <span data-mono="" style="align-self:flex-start;padding:6px 14px;border-radius:999px;background:rgba(201,241,93,0.22);border:1px solid rgba(120,160,20,0.3);color:#3F5A06;font-size:13px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase">Preguntas frecuentes</span>
-      <h2 data-fx="" style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Lo que todo inversor <span data-accent="" data-mark="" style="background:linear-gradient(transparent 60%,rgba(201,241,93,0.45) 60%,rgba(201,241,93,0.45) 92%,transparent 92%);padding:0 .06em">nos pregunta</span></h2>
+      <span data-mono="" style="align-self:flex-start;padding:6px 14px;border-radius:999px;background:rgba(201,241,93,0.22);border:1px solid rgba(120,160,20,0.3);color:{{ th.chipInk }};font-size:13px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase">Preguntas frecuentes</span>
+      <h2 data-fx="" style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Lo que todo inversor <span data-accent="" data-mark="" style="background:linear-gradient(transparent 60%,{{ th.mark }} 60%,{{ th.mark }} 92%,transparent 92%);padding:0 .06em">nos pregunta</span></h2>
       <p style="margin:0;font-size:18px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">Respuestas cortas, con su fuente. Para tu caso concreto, te lo explicamos en la asesoría.</p>
     </div>
     <div data-reveal="150" style="display:flex;flex-direction:column">
@@ -468,7 +468,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
 </section>
 
 <section id="contacto" ref="{{ ctaRef }}" data-screen-label="08 Asesoría" style="background:{{ th.bg }};transition:background .6s">
-  <div ref="{{ ctaPanelRef }}" data-grain="" style="position:relative;overflow:hidden;background:#0B0C0F;color:#F5F5F7;margin:0 clamp(16px,8vw,120px);border-radius:clamp(32px,5vw,72px) clamp(32px,5vw,72px) 0 0;padding:clamp(88px,11vw,150px) clamp(20px,3.2vw,48px) clamp(88px,10vw,140px)">
+  <div ref="{{ ctaPanelRef }}" data-grain="" style="position:relative;overflow:hidden;background:{{ th.deep }};color:{{ th.deepInk }};margin:0 clamp(16px,8vw,120px);border-radius:clamp(32px,5vw,72px) clamp(32px,5vw,72px) 0 0;padding:clamp(88px,11vw,150px) clamp(20px,3.2vw,48px) clamp(88px,10vw,140px)">
     <span ref="{{ ctaGlowRef }}" aria-hidden="true" style="position:absolute;left:50%;top:clamp(40px,8vw,120px);width:min(900px,120vw);height:420px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(201,241,93,0.22),rgba(201,241,93,0));pointer-events:none"></span>
     <div style="position:relative;max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(44px,5vw,64px)">
       <div style="display:flex;flex-direction:column;align-items:center;gap:26px;text-align:center">
@@ -506,7 +506,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
   </div>
 </section>
 
-<footer data-screen-label="08 Footer" data-grain="" style="background:#0B0C0F;transition:background .6s;color:#F5F5F7;padding:clamp(64px,8vw,104px) clamp(20px,3.2vw,48px) calc(28px + env(safe-area-inset-bottom));overflow:hidden">
+<footer data-screen-label="08 Footer" data-grain="" style="background:{{ th.deep }};transition:background .6s;color:#F5F5F7;padding:clamp(64px,8vw,104px) clamp(20px,3.2vw,48px) calc(28px + env(safe-area-inset-bottom));overflow:hidden">
   <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(56px,8vw,96px)">
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:48px">
       <div style="flex:1 1 280px;display:flex;flex-direction:column;gap:16px;max-width:340px">
@@ -643,8 +643,8 @@ class Component extends DCLogic {
   OBJS = ['Renta por alquiler', 'Revalorización', 'Vivienda propia', 'Aún no lo sé'];
 
   THEMES = {
-    dia: { bg: '#F5F5F7', bg2: '#FFFFFF', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', line2: 'rgba(0,0,0,0.18)', card: '#FFFFFF', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', panelBd: 'rgba(255,255,255,0)', dark: '#000000', foot: '#1D1D1F', btnBg: '#1D1D1F', btnInk: '#FFFFFF', modal: '#F2F2F7', input: '#FFFFFF', grab: 'rgba(60,60,67,0.3)', fill: 'rgba(118,118,128,0.12)' },
-    noche: { bg: '#000000', bg2: '#1C1C1E', ink: '#F5F5F7', mute: '#98989D', mute2: '#C7C7CC', line: 'rgba(255,255,255,0.12)', line2: 'rgba(255,255,255,0.2)', card: '#1C1C1E', ph: '#1C1C1E', phInk: '#8E8E93', panel: '#1C1C1E', panelBd: 'rgba(255,255,255,0.08)', dark: '#1C1C1E', foot: '#000000', btnBg: '#F5F5F7', btnInk: '#1D1D1F', modal: '#1C1C1E', input: '#2C2C2E', grab: 'rgba(235,235,245,0.3)', fill: 'rgba(118,118,128,0.24)' }
+    dia: { bg: '#F5F5F7', bg2: '#FFFFFF', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', line2: 'rgba(0,0,0,0.18)', card: '#FFFFFF', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', panelBd: 'rgba(255,255,255,0)', dark: '#000000', foot: '#1D1D1F', btnBg: '#1D1D1F', btnInk: '#FFFFFF', modal: '#F2F2F7', input: '#FFFFFF', grab: 'rgba(60,60,67,0.3)', fill: 'rgba(118,118,128,0.12)' , chipInk: '#3F5A06', mark: 'rgba(201,241,93,0.45)', deep: '#0B0C0F', deep2: '#1C1F26', deepInk: '#F5F5F7'},
+    noche: { bg: '#17191E', bg2: '#212329', ink: '#ECECEE', mute: '#A4A7AE', mute2: '#CACCD1', line: 'rgba(255,255,255,0.10)', line2: 'rgba(255,255,255,0.18)', card: '#212329', ph: '#262930', phInk: '#9A9DA4', panel: '#24272E', panelBd: 'rgba(255,255,255,0.08)', dark: '#212329', foot: '#121418', btnBg: '#ECECEE', btnInk: '#1D1D1F', modal: '#212329', input: '#2C2F36', grab: 'rgba(235,235,245,0.3)', fill: 'rgba(150,152,160,0.22)' , chipInk: '#E4F7B0', mark: 'rgba(201,241,93,0.26)', deep: '#1E2127', deep2: '#2A2D35', deepInk: '#E9EAEC'}
   };
 
   mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
@@ -816,7 +816,7 @@ class Component extends DCLogic {
 
     const C = (h) => new THREE.Color(h);
     const DAY = { bg: C('#131519'), conc: C('#EFEAE1'), gnd: C('#1B1E23'), walk: C('#BFC3C9'), glass: C('#2E3236'), tree: C('#A9BC96'), sky: C('#ffffff'), hg: C('#3a3f48'), sun: C('#fff4e6') };
-    const NIGHT = { bg: C('#06070A'), conc: C('#A3ACBC'), gnd: C('#08090C'), walk: C('#2E333C'), glass: C('#10151C'), tree: C('#3E4D3E'), sky: C('#7f90bd'), hg: C('#020305'), sun: C('#bccbf3') };
+    const NIGHT = { bg: C('#12151A'), conc: C('#A3ACBC'), gnd: C('#14171C'), walk: C('#2E333C'), glass: C('#10151C'), tree: C('#3E4D3E'), sky: C('#7f90bd'), hg: C('#020305'), sun: C('#bccbf3') };
     const scene = new THREE.Scene();
     scene.background = DAY.bg.clone();
     scene.fog = new THREE.Fog(DAY.bg.clone(), 150, 380);
@@ -1317,7 +1317,7 @@ class Component extends DCLogic {
 
     const C = (h) => new THREE.Color(h);
     const DAY = { bg: C('#E7E9EC'), bld: C('#F4F5F7'), gnd: C('#D9DCE1'), sky: C('#ffffff'), hgnd: C('#8f95a0'), sun: C('#ffffff') };
-    const NIGHT = { bg: C('#0A0C10'), bld: C('#5C6676'), gnd: C('#07080B'), sky: C('#7f90bd'), hgnd: C('#020305'), sun: C('#d2dcf7') };
+    const NIGHT = { bg: C('#14171D'), bld: C('#5C6676'), gnd: C('#15181E'), sky: C('#7f90bd'), hgnd: C('#020305'), sun: C('#d2dcf7') };
 
     const scene = new THREE.Scene();
     scene.background = DAY.bg.clone();
@@ -1502,7 +1502,7 @@ class Component extends DCLogic {
       equipo: this.EQUIPO.map((pe) => ({ ...pe, bg: pe.foto ? `url("${pe.foto}")` : 'none' })),
       wide: s.w >= 900,
       stickyPos: s.w >= 900 ? 'sticky' : 'static',
-      hdrBg: s.scrolled && !s.menu ? (night ? 'rgba(22,22,23,0.78)' : 'rgba(251,251,253,0.8)') : 'rgba(251,251,253,0)',
+      hdrBg: s.scrolled && !s.menu ? (night ? 'rgba(28,30,36,0.8)' : 'rgba(251,251,253,0.8)') : 'rgba(251,251,253,0)',
       hdrBorder: s.scrolled && !s.menu ? (night ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)') : 'rgba(0,0,0,0)',
       hdrBlur: s.scrolled && !s.menu ? 'saturate(180%) blur(20px)' : 'none',
       narrowNav: s.w < 900, sheetNarrow: s.w < 640,
@@ -1548,7 +1548,7 @@ class Component extends DCLogic {
         toggle: () => this.setState({ faqOpen: open ? -1 : i }), rot: open ? '45deg' : '0deg',
         iconBg: open ? 'rgba(201,241,93,0.35)' : th.fill, iconInk: th.ink }; }),
       menuItems: [['#proyectos', 'Proyectos'], ['#simulador', 'Simulador de renta'], ['#inversiones', 'Por qué Paraguay'], ['#edificio', 'El edificio'], ['#nosotros', 'Nosotros'], ['#preguntas', 'Preguntas'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['#contacto', 'Contacto']].map(([href, label]) => ({ href, label })),
-      menuBg: night ? 'rgba(0,0,0,0.86)' : 'rgba(251,251,253,0.92)',
+      menuBg: night ? 'rgba(23,25,30,0.94)' : 'rgba(251,251,253,0.92)',
       burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
       burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
       ctaLabel: s.w >= 520 ? 'Agenda una asesoría' : 'Asesoría',
@@ -1567,7 +1567,7 @@ class Component extends DCLogic {
       hdrSub: hdrDark ? 'rgba(245,245,247,0.78)' : '#3F434A',
       ctaBg: hdrDark ? '#F5F5F7' : '#1D1D1F',
       ctaInk: hdrDark ? '#1D1D1F' : '#FFFFFF',
-      heroBg: night ? '#0A0C10' : '#E7E9EC',
+      heroBg: night ? '#14171D' : '#E7E9EC',
       dayHaze: night ? 0 : 1,
       nightHaze: night ? 1 : 0,
       ink: night ? '#F5F5F7' : '#1D1D1F',
@@ -1578,12 +1578,12 @@ class Component extends DCLogic {
       heroGlassBd: 'rgba(0,0,0,0)',
       heroBlur: 'none',
       heroPad: '0px',
-      heroFade: night ? 'linear-gradient(to bottom, rgba(10,12,16,0.35), rgba(10,12,16,0.7))' : 'linear-gradient(to bottom, rgba(231,233,236,0.4), rgba(231,233,236,0.75))',
+      heroFade: night ? 'linear-gradient(to bottom, rgba(20,23,29,0.35), rgba(20,23,29,0.7))' : 'linear-gradient(to bottom, rgba(231,233,236,0.4), rgba(231,233,236,0.75))',
       cardBg: night ? 'rgba(44,44,46,0.6)' : 'rgba(29,29,31,0.86)',
       cardBorder: night ? 'rgba(245,245,247,0.16)' : 'rgba(245,245,247,0)',
       knobLeft: night ? '88px' : '2px',
       dayInk: night ? 'rgba(245,245,247,0.75)' : '#1D1D1F',
-      nightInk: night ? '#FFFFFF' : 'rgba(29,29,31,0.7)',
+      nightInk: night ? '#ECECEE' : 'rgba(29,29,31,0.7)',
       toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { localStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
       tlFill: s.tlY + 'px',
       t1: dot(1), t2: dot(2), t3: dot(3), t4: dot(4), t5: dot(5), t6: dot(6),
@@ -1595,7 +1595,7 @@ class Component extends DCLogic {
       pkPlaza: this.state.pkLevel === 2 ? '16C' : '8C',
       towerSecRef: this.towerSecRef, towerRef: this.towerRef, nodesRef: this.nodesRef, twFillRef: this.twFillRef, cardsRef: this.cardsRef, linesRef: this.linesRef,
       twWide: s.w >= 1100,
-      tw: night ? { bg: '#06070A', cardBg: 'rgba(20,23,28,0.94)', cardBd: 'rgba(245,245,247,0.12)', cardInk: '#F5F5F7', cardMute: '#9CA1AA' } : { bg: '#131519', cardBg: '#FFFFFF', cardBd: 'rgba(255,255,255,0)', cardInk: '#1D1D1F', cardMute: '#565A62' },
+      tw: night ? { bg: '#12151A', cardBg: 'rgba(20,23,28,0.94)', cardBd: 'rgba(245,245,247,0.12)', cardInk: '#F5F5F7', cardMute: '#9CA1AA' } : { bg: '#131519', cardBg: '#FFFFFF', cardBd: 'rgba(255,255,255,0)', cardInk: '#1D1D1F', cardMute: '#565A62' },
       twFloor: s.twFloor,
       twInfoW: s.w >= 700 ? 'min(380px, 34vw)' : 'calc(100% - 40px)',
       twInfoPad: s.w >= 700 ? '0px' : 'calc(68px + env(safe-area-inset-top)) 0 0',
