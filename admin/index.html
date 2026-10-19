@@ -158,6 +158,7 @@ td .c { color: var(--mute); font-size: 13px; }
 .note { font-size: 13px; color: var(--mute); }
 .role.bad { background: color-mix(in srgb, var(--bad) 14%, transparent); color: var(--bad); }
 .ok-msg { font-size: 14px; color: var(--good); }
+.ipx { cursor: pointer; border-bottom: 1px dotted var(--mute); }
 .ev { font-size: 12px; font-weight: 600; white-space: nowrap; }
 .ev.good { color: var(--good); } .ev.bad { color: var(--bad); } .ev.warn { color: var(--warn); } .ev.mute { color: var(--mute); }
 
@@ -861,6 +862,19 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
       { created_at: h(1500), email: 'demo@aquaterra.com', evento: 'fallo', ciudad: 'Lagos', pais: 'NG', ip: '102.89.1.9', dispositivo: 'Otro navegador · Linux' }
     ];
   }
+  // La IP se muestra tapada; al tocarla se ve entera (y al volver a tocar se tapa).
+  function tapaIp(ip) {
+    if (ip.indexOf(':') >= 0) return ip.split(':').slice(0, 2).join(':') + ':••••';
+    var p = ip.split('.'); return p.length === 4 ? p[0] + '.' + p[1] + '.•••.•••' : '•••';
+  }
+  function verIp(e) {
+    var t = e.target.closest('.ipx'); if (!t || (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ')) return;
+    e.preventDefault();
+    var full = t.textContent === t.dataset.ip;
+    t.textContent = full ? tapaIp(t.dataset.ip) : t.dataset.ip;
+  }
+  $('accRows').addEventListener('click', verIp);
+  $('accRows').addEventListener('keydown', verIp);
   function loadAccesos() {
     if (S.demo) return renderAccesos(demoAccesos(), []);
     $('accRows').innerHTML = '<tr><td colspan="6" class="empty">Cargando…</td></tr>';
@@ -874,7 +888,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
       var lugar = [a.ciudad, a.pais ? pais(a.pais) : null].filter(Boolean).join(', ') || 'Sin dato';
       return '<tr style="cursor:default"><td class="c num" style="white-space:nowrap">' + esc(fmtDate(a.created_at, true)) + '</td><td class="c">' + esc(a.email) + '</td>' +
         '<td><span class="ev ' + ev[1] + '">' + esc(ev[0]) + '</span>' + (a.detalle ? '<div class="c" style="font-size:12px">' + esc(a.detalle) + '</div>' : '') + '</td>' +
-        '<td class="c">' + esc(lugar) + '</td><td class="c col-opt num">' + esc(a.ip || '—') + '</td><td class="c col-opt">' + esc(a.dispositivo || '—') + '</td></tr>';
+        '<td class="c">' + esc(lugar) + '</td><td class="c col-opt num">' + (a.ip ? '<span class="ipx" role="button" tabindex="0" title="Toca para ver la IP completa" data-ip="' + esc(a.ip) + '">' + esc(tapaIp(a.ip)) + '</span>' : '—') + '</td><td class="c col-opt">' + esc(a.dispositivo || '—') + '</td></tr>';
     }).join('') || '<tr><td colspan="6" class="empty">Todavía no hay accesos registrados.</td></tr>';
   }
 
