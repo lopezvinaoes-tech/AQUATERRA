@@ -156,6 +156,10 @@ td .c { color: var(--mute); font-size: 13px; }
 .demo-as button { border: 0; border-radius: 999px; height: 28px; padding: 0 12px; font-size: 13px; background: rgba(0,0,0,0.08); color: var(--ink); }
 .demo-as button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 .note { font-size: 13px; color: var(--mute); }
+.role.bad { background: color-mix(in srgb, var(--bad) 14%, transparent); color: var(--bad); }
+.ok-msg { font-size: 14px; color: var(--good); }
+.ev { font-size: 12px; font-weight: 600; white-space: nowrap; }
+.ev.good { color: var(--good); } .ev.bad { color: var(--bad); } .ev.warn { color: var(--warn); } .ev.mute { color: var(--mute); }
 
 /* Drawer */
 .scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 40; }
@@ -198,7 +202,16 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
     <label class="field"><span>Email</span><input class="input" type="email" name="email" autocomplete="username" required></label>
     <label class="field"><span>Contraseña</span><input class="input" type="password" name="password" autocomplete="current-password" required></label>
     <div class="err" id="loginErr" role="alert"></div>
+    <div class="ok-msg" id="loginMsg" role="status"></div>
     <button class="btn primary big" type="submit">Entrar</button>
+  </form>
+  <form id="resetForm" class="hidden" autocomplete="off">
+    <div class="brand"><i></i>Aquaterra <small>Leads</small></div>
+    <p style="margin:0;color:var(--mute);font-size:14px">Crea una contraseña nueva para entrar al panel.</p>
+    <label class="field"><span>Contraseña nueva</span><input class="input" type="password" name="p1" autocomplete="new-password" minlength="8" required placeholder="Mínimo 8 caracteres"></label>
+    <label class="field"><span>Repítela</span><input class="input" type="password" name="p2" autocomplete="new-password" minlength="8" required></label>
+    <div class="err" id="resetErr" role="alert"></div>
+    <button class="btn primary big" type="submit">Guardar contraseña</button>
   </form>
 </div>
 
@@ -209,6 +222,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
       <button role="tab" data-view="stats" aria-pressed="true">Estadísticas</button>
       <button role="tab" data-view="leads" aria-pressed="false">Leads</button>
       <button role="tab" data-view="team" aria-pressed="false" class="hidden" id="tabTeam">Equipo</button>
+      <button role="tab" data-view="accesos" aria-pressed="false" class="hidden" id="tabAccesos">Accesos</button>
     </div>
     <span class="sp"></span>
     <div class="seg per" role="group" aria-label="Período">
@@ -242,6 +256,13 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
       </form>
       <p class="note" id="teamMsg" role="status" style="min-height:20px"></p>
       <div class="tscroll"><table><thead><tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Acceso</th><th></th></tr></thead><tbody id="teamRows"></tbody></table></div>
+    </section>
+
+    <section class="card hidden" id="vAccesos">
+      <h2>Accesos</h2>
+      <p class="desc">Quién entró al panel, cuándo y desde dónde, con los intentos fallidos y los bloqueos. La ubicación es aproximada, según la conexión. Solo lo ven los administradores.</p>
+      <p class="note" id="accBloq" style="min-height:0"></p>
+      <div class="tscroll"><table><thead><tr><th>Fecha</th><th>Persona</th><th>Qué pasó</th><th>Desde dónde</th><th class="col-opt">IP</th><th class="col-opt">Dispositivo</th></tr></thead><tbody id="accRows"></tbody></table></div>
     </section>
 
     <section class="grid" id="vStats">
@@ -341,9 +362,9 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
       .then(function (r) {
         return r.json().catch(function () { return {}; }).then(function (j) {
           if (r.status === 401 && S.refresh && !retried) {
-            return refreshSession().then(function (ok) { if (!ok) throw new Error('Sesión vencida'); return api(path, opts, true); });
+            return refreshSession().then(function (ok) { if (!ok) { logout('Tu sesión venció. Vuelve a entrar.'); throw new Error('Sesión vencida'); } return api(path, opts, true); });
           }
-          if (r.status === 401) { logout(); throw new Error(j.error || 'Sesión vencida'); }
+          if (r.status === 401 || r.status === 423) { logout(r.status === 423 ? j.error : null); throw new Error(j.error || 'Sesión vencida'); }
           if (!r.ok) throw new Error(j.error || 'Error ' + r.status);
           return j;
         });
@@ -358,10 +379,34 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
       .then(function (r) { return r.ok ? r.json().then(function (j) { saveSession(j); return true; }) : false; })
       .catch(function () { return false; });
   }
-  function logout() {
+  // Cierra la sesión. Con motivo ('salida' o 'inactividad') también la cierra en el servidor y queda en Accesos.
+  function logout(aviso, motivo) {
+    if (motivo && S.refresh) fetch('/api/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accion: 'salir', refresh_token: S.refresh, motivo: motivo }), keepalive: true }).catch(function () {});
     S.token = S.refresh = S.yo = null; store.set('aq-admin-token', null); store.set('aq-admin-refresh', null);
-    if (!S.demo) { $('app').classList.add('hidden'); closeDrawer(); $('login').classList.remove('hidden'); }
+    if (!S.demo) { $('app').classList.add('hidden'); closeDrawer(); showLogin(aviso); }
   }
+  function showLogin(aviso) {
+    $('resetForm').classList.add('hidden'); $('loginForm').classList.remove('hidden'); $('login').classList.remove('hidden');
+    $('loginErr').textContent = ''; $('loginMsg').textContent = aviso || '';
+  }
+
+  // ---------- Inactividad ----------
+  // Tras 15 minutos sin tocar el panel (en ninguna pestaña) la sesión se cierra y hay que volver a entrar.
+  var IDLE_MS = 15 * 60 * 1000, IDLE_MSG = 'Cerramos la sesión tras 15 minutos sin uso. Vuelve a entrar.';
+  var lastMark = 0;
+  function marcarActividad() {
+    var now = Date.now();
+    if (now - lastMark < 5000) return;
+    lastMark = now; store.set('aq-admin-act', String(now));
+  }
+  function inactivo() { var t = Number(store.get('aq-admin-act') || 0); return !t || Date.now() - t > IDLE_MS; }
+  function revisarInactividad() {
+    if (S.demo || !S.token) return;
+    if (inactivo()) logout(IDLE_MSG, 'inactividad');
+  }
+  ['pointerdown', 'keydown', 'wheel', 'touchstart', 'mousemove'].forEach(function (ev) { document.addEventListener(ev, function () { if (S.token) marcarActividad(); }, { passive: true, capture: true }); });
+  setInterval(revisarInactividad, 20000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) revisarInactividad(); });
 
   // ---------- Demo ----------
   function demoLeads() {
@@ -768,7 +813,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
       return '<tr style="cursor:default"><td><div class="n">' + esc(m.nombre || '—') + '</div></td><td class="c">' + esc(m.email) + (me ? ' (tú)' : '') + '</td>' +
         '<td>' + (lock ? '<span class="role ' + m.rol + '">' + (m.rol === 'admin' ? 'Administrador' : 'Asesor') + '</span>'
           : '<select class="input" data-i="' + i + '" data-act="rol" style="height:34px;font-size:13px;width:auto"><option value="asesor"' + (m.rol === 'asesor' ? ' selected' : '') + '>Asesor</option><option value="admin"' + (m.rol === 'admin' ? ' selected' : '') + '>Administrador</option></select>') + '</td>' +
-        '<td>' + (lock ? '<span class="c">Activo</span>' : '<button class="btn" data-i="' + i + '" data-act="activo" style="height:32px">' + (m.activo ? 'Activo · pausar' : 'Pausado · activar') + '</button>') + '</td>' +
+        '<td>' + (m.bloqueado ? '<span class="role bad" title="Demasiados intentos. Se desbloquea al cambiarle la contraseña.">Bloqueado</span> ' : '') + (lock ? '<span class="c">Activo</span>' : '<button class="btn" data-i="' + i + '" data-act="activo" style="height:32px">' + (m.activo ? 'Activo · pausar' : 'Pausado · activar') + '</button>') + '</td>' +
         '<td style="white-space:nowrap"><button class="btn" data-i="' + i + '" data-act="pass" style="height:32px">Contraseña</button>' + (lock ? '' : ' <button class="btn danger" data-i="' + i + '" data-act="del" style="height:32px">Quitar</button>') + '</td></tr>';
     }).join('') || '<tr><td colspan="5" class="empty">Todavía no hay nadie más en el equipo.</td></tr>';
   }
@@ -801,13 +846,46 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
     }).catch(function () {});
   };
 
+  // ---------- Accesos ----------
+  var EVENTOS = {
+    entrada: ['Entró', 'good'], salida: ['Salió', 'mute'], inactividad: ['Sesión cerrada por inactividad', 'mute'],
+    fallo: ['Contraseña incorrecta', 'warn'], bloqueo: ['Cuenta bloqueada', 'bad'], intento_bloqueado: ['Intento con la cuenta bloqueada', 'bad'],
+    clave_cambiada: ['Cambió la contraseña', 'good']
+  };
+  function demoAccesos() {
+    var h = function (min) { return new Date(Date.now() - min * 60000).toISOString(); };
+    return [
+      { created_at: h(4), email: 'demo@aquaterra.com', evento: 'entrada', ciudad: 'Madrid', pais: 'ES', ip: '83.45.12.7', dispositivo: 'Chrome · Mac' },
+      { created_at: h(95), email: 'asesora@aquaterra.com', evento: 'inactividad', ciudad: 'Asunción', pais: 'PY', ip: '181.120.4.33', dispositivo: 'Safari · iPhone/iPad' },
+      { created_at: h(130), email: 'asesora@aquaterra.com', evento: 'entrada', ciudad: 'Asunción', pais: 'PY', ip: '181.120.4.33', dispositivo: 'Safari · iPhone/iPad' },
+      { created_at: h(1500), email: 'demo@aquaterra.com', evento: 'fallo', ciudad: 'Lagos', pais: 'NG', ip: '102.89.1.9', dispositivo: 'Otro navegador · Linux' }
+    ];
+  }
+  function loadAccesos() {
+    if (S.demo) return renderAccesos(demoAccesos(), []);
+    $('accRows').innerHTML = '<tr><td colspan="6" class="empty">Cargando…</td></tr>';
+    api('/api/admin/accesos').then(function (j) { renderAccesos(j.accesos || [], j.bloqueados || []); })
+      .catch(function (e) { $('accRows').innerHTML = '<tr><td colspan="6" class="empty">' + esc(e.message) + '</td></tr>'; });
+  }
+  function renderAccesos(list, bloqueados) {
+    $('accBloq').innerHTML = bloqueados.length ? '<span class="role bad">Bloqueadas</span> ' + bloqueados.map(function (b) { return esc(b.email); }).join(', ') + '. Se desbloquean con el enlace del correo o cambiándoles la contraseña en Equipo.' : '';
+    $('accRows').innerHTML = list.map(function (a) {
+      var ev = EVENTOS[a.evento] || [a.evento, 'mute'];
+      var lugar = [a.ciudad, a.pais ? pais(a.pais) : null].filter(Boolean).join(', ') || 'Sin dato';
+      return '<tr style="cursor:default"><td class="c num" style="white-space:nowrap">' + esc(fmtDate(a.created_at, true)) + '</td><td class="c">' + esc(a.email) + '</td>' +
+        '<td><span class="ev ' + ev[1] + '">' + esc(ev[0]) + '</span>' + (a.detalle ? '<div class="c" style="font-size:12px">' + esc(a.detalle) + '</div>' : '') + '</td>' +
+        '<td class="c">' + esc(lugar) + '</td><td class="c col-opt num">' + esc(a.ip || '—') + '</td><td class="c col-opt">' + esc(a.dispositivo || '—') + '</td></tr>';
+    }).join('') || '<tr><td colspan="6" class="empty">Todavía no hay accesos registrados.</td></tr>';
+  }
+
   // ---------- Rol ----------
   function applyRole() {
     var admin = isAdmin();
     $('tabTeam').classList.toggle('hidden', !admin);
+    $('tabAccesos').classList.toggle('hidden', !admin);
     $('btnNew').classList.toggle('hidden', !admin);
     $('who').innerHTML = S.yo ? '<b>' + esc(S.yo.email) + '</b>' + (admin ? 'Administrador' : 'Asesor') : '';
-    if (!admin && S.view === 'team') setView('stats');
+    if (!admin && (S.view === 'team' || S.view === 'accesos')) setView('stats');
   }
 
   // ---------- CSV ----------
@@ -823,9 +901,9 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
 
   // ---------- Load ----------
   function load() {
-    if (S.demo) { S.leads = S.leads.length ? S.leads : demoLeads(); applyRole(); render(); if (S.view === 'team') loadTeam(); return Promise.resolve(); }
+    if (S.demo) { S.leads = S.leads.length ? S.leads : demoLeads(); applyRole(); render(); if (S.view === 'team') loadTeam(); if (S.view === 'accesos') loadAccesos(); return Promise.resolve(); }
     $('rows').innerHTML = '<tr><td colspan="7" class="empty">Cargando…</td></tr>';
-    return api('/api/admin/leads').then(function (j) { S.leads = j.leads || []; S.yo = j.yo || S.yo; applyRole(); render(); if (S.view === 'team') loadTeam(); })
+    return api('/api/admin/leads').then(function (j) { S.leads = j.leads || []; S.yo = j.yo || S.yo; applyRole(); render(); if (S.view === 'team') loadTeam(); if (S.view === 'accesos' && isAdmin()) loadAccesos(); })
       .catch(function (e) { $('rows').innerHTML = '<tr><td colspan="7" class="empty">' + esc(e.message) + '</td></tr>'; });
   }
   function showApp() { $('login').classList.add('hidden'); $('app').classList.remove('hidden'); load(); }
@@ -883,7 +961,7 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
   $('btnMore').onclick = function () { S.shown += 25; renderTable(); };
   $('btnCsv').onclick = csv;
   $('btnReload').onclick = load;
-  $('btnOut').onclick = function () { if (S.demo) return; logout(); };
+  $('btnOut').onclick = function () { if (S.demo) return; logout(null, 'salida'); };
   $('rows').addEventListener('click', function (e) { var tr = e.target.closest('tr[data-id]'); if (tr) openDrawer(tr.dataset.id); });
   $('rows').addEventListener('keydown', function (e) { var tr = e.target.closest('tr[data-id]'); if (tr && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openDrawer(tr.dataset.id); } });
   $('scrim').onclick = closeDrawer;
@@ -894,13 +972,15 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
   function setView(v) {
     S.view = v; store.set('aq-admin-view', v);
     document.querySelectorAll('.tabs button').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.view === v)); x.setAttribute('aria-selected', String(x.dataset.view === v)); });
-    $('vStats').classList.toggle('hidden', v !== 'stats'); $('vLeads').classList.toggle('hidden', v !== 'leads'); $('vTeam').classList.toggle('hidden', v !== 'team');
-    $('kpis').classList.toggle('hidden', v === 'team'); document.querySelector('.top .per').style.visibility = v === 'team' ? 'hidden' : '';
+    var aparte = v === 'team' || v === 'accesos';
+    $('vStats').classList.toggle('hidden', v !== 'stats'); $('vLeads').classList.toggle('hidden', v !== 'leads'); $('vTeam').classList.toggle('hidden', v !== 'team'); $('vAccesos').classList.toggle('hidden', v !== 'accesos');
+    $('kpis').classList.toggle('hidden', aparte); document.querySelector('.top .per').style.visibility = aparte ? 'hidden' : '';
     if (v === 'team' && S.yo) loadTeam();
+    if (v === 'accesos' && S.yo) loadAccesos();
     if (S.leads.length) render();
   }
   document.querySelectorAll('.tabs button').forEach(function (b) { b.onclick = function () { setView(b.dataset.view); }; });
-  var v0 = store.get('aq-admin-view'); setView(v0 === 'leads' || v0 === 'team' ? v0 : 'stats');
+  var v0 = store.get('aq-admin-view'); setView(v0 === 'leads' || v0 === 'team' || v0 === 'accesos' ? v0 : 'stats');
   $('btnNew').onclick = openNew;
   document.querySelectorAll('.demo-as button').forEach(function (b) {
     b.onclick = function () {
@@ -941,12 +1021,26 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
   });
 
   $('loginForm').onsubmit = function (e) {
-    e.preventDefault(); $('loginErr').textContent = '';
+    e.preventDefault(); $('loginErr').textContent = ''; $('loginMsg').textContent = '';
     var f = e.target;
     fetch('/api/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: f.email.value, password: f.password.value }) })
       .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'No se pudo entrar'); return j; }); })
-      .then(function (j) { saveSession(j); S.yo = { email: j.email, rol: j.rol }; f.password.value = ''; showApp(); })
+      .then(function (j) { lastMark = 0; marcarActividad(); saveSession(j); S.yo = { email: j.email, rol: j.rol }; f.password.value = ''; showApp(); })
       .catch(function (err) { $('loginErr').textContent = err.message; });
+  };
+
+  // Enlace del correo para crear una contraseña nueva: Supabase vuelve a /admin con la sesión en el #.
+  var hash = new URLSearchParams(location.hash.replace(/^#/, ''));
+  var recovery = hash.get('type') === 'recovery' && hash.get('access_token') ? hash.get('access_token') : null;
+  var hashError = hash.get('error_description');
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  $('resetForm').onsubmit = function (e) {
+    e.preventDefault(); var f = e.target; $('resetErr').textContent = '';
+    if (f.p1.value !== f.p2.value) { $('resetErr').textContent = 'Las dos contraseñas no coinciden'; return; }
+    fetch('/api/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accion: 'nueva_clave', access_token: recovery, password: f.p1.value }) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'No se pudo guardar'); return j; }); })
+      .then(function (j) { recovery = null; f.reset(); showLogin('Contraseña guardada. Ya puedes entrar con la nueva.'); $('loginForm').email.value = j.email || ''; })
+      .catch(function (err) { $('resetErr').textContent = err.message; });
   };
 
   // Arranque: si la API no está configurada (o no existe, como al abrir el archivo en local), modo demo.
@@ -955,7 +1049,11 @@ textarea.input { height: auto; min-height: 110px; padding: 10px 14px; resize: ve
       if (!st.configured) { S.demo = true; S.yo = { email: 'demo@aquaterra.com', rol: 'admin' }; $('demo').classList.remove('hidden'); $('btnOut').classList.add('hidden'); return showApp(); }
       S.token = store.get('aq-admin-token'); S.refresh = store.get('aq-admin-refresh');
       $('live').classList.remove('hidden');
-      if (S.token) showApp(); else $('login').classList.remove('hidden');
+      if (recovery) { S.token = S.refresh = null; $('loginForm').classList.add('hidden'); $('resetForm').classList.remove('hidden'); $('login').classList.remove('hidden'); return; }
+      if (S.token && inactivo()) return logout(IDLE_MSG, 'inactividad');
+      if (S.token) return showApp();
+      showLogin();
+      if (hashError) $('loginErr').textContent = 'El enlace del correo venció o ya se usó. Intenta entrar y te enviaremos otro.';
     });
 })();
 </script>

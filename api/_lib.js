@@ -172,4 +172,56 @@ async function authAdmin(path, { method = 'GET', body } = {}) {
   return { ok: res.ok, status: res.status, data };
 }
 
-module.exports = { SUPABASE_URL, ANON_KEY, configured, ESTADOS, db, parseMonto, perfilDe, prioridadDe, buscarLeadExistente, sumarContacto, hashIp, readBody, send, rolDe, memberFromRequest, authAdmin, bootstrapAdmins };
+// ---------- Seguridad del panel ----------
+// Tras 5 contraseñas incorrectas seguidas la cuenta se bloquea y se envía un correo para crear una nueva.
+const MAX_FALLOS = 5;
+
+// Desde dónde se conecta alguien: IP, ciudad y país (cabeceras de Vercel) y un resumen del navegador.
+function clienteDe(req) {
+  const h = req.headers;
+  const ua = String(h['user-agent'] || '');
+  const nav = /Edg\//.test(ua) ? 'Edge' : /OPR\/|Opera/.test(ua) ? 'Opera' : /Firefox\//.test(ua) ? 'Firefox' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : 'Otro navegador';
+  const so = /iPhone|iPad/.test(ua) ? 'iPhone/iPad' : /Android/.test(ua) ? 'Android' : /Windows/.test(ua) ? 'Windows' : /Mac OS X/.test(ua) ? 'Mac' : /Linux/.test(ua) ? 'Linux' : 'otro sistema';
+  let ciudad = null;
+  try { ciudad = h['x-vercel-ip-city'] ? decodeURIComponent(h['x-vercel-ip-city']).slice(0, 80) : null; } catch (e) {}
+  return {
+    ip: String(h['x-forwarded-for'] || h['x-real-ip'] || '').split(',')[0].trim().slice(0, 64) || null,
+    pais: h['x-vercel-ip-country'] ? String(h['x-vercel-ip-country']).slice(0, 4) : null,
+    ciudad,
+    dispositivo: ua ? `${nav} · ${so}` : null
+  };
+}
+
+// Deja constancia de una entrada, salida, fallo o bloqueo. Nunca hace fallar la petición.
+async function registrarAcceso(req, email, evento, detalle) {
+  try {
+    await db('accesos', { method: 'POST', body: { email: String(email || '').toLowerCase().slice(0, 160) || '(sin email)', evento, detalle: detalle ? String(detalle).slice(0, 200) : null, ...clienteDe(req) } });
+  } catch (e) { console.error('registrar acceso', e.message); }
+}
+
+async function bloqueoDe(email) {
+  const [b] = await db(`acceso_bloqueos?email=eq.${encodeURIComponent(email)}&select=*`);
+  return b || null;
+}
+
+// Suma una contraseña incorrecta y devuelve cuántas lleva seguidas.
+async function sumarFallo(email) {
+  return db('rpc/sumar_fallo', { method: 'POST', body: { p_email: email } });
+}
+
+const limpiarBloqueo = (email) => db(`acceso_bloqueos?email=eq.${encodeURIComponent(email)}`, { method: 'DELETE' });
+
+// Envía el correo de Supabase para crear una contraseña nueva; el enlace vuelve a /admin.
+async function enviarCorreoClave(req, email) {
+  const host = String(req.headers['x-forwarded-host'] || req.headers.host || '').split(',')[0].trim();
+  const base = (process.env.SITE_URL || (host ? `https://${host}` : '')).replace(/\/+$/, '');
+  const r = await fetch(`${SUPABASE_URL}/auth/v1/recover${base ? `?redirect_to=${encodeURIComponent(base + '/admin/')}` : ''}`, {
+    method: 'POST',
+    headers: { apikey: ANON_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+  });
+  if (!r.ok) console.error('correo de recuperación', r.status, await r.text().catch(() => ''));
+  return r.ok;
+}
+
+module.exports = { SUPABASE_URL, ANON_KEY, configured, ESTADOS, db, parseMonto, perfilDe, prioridadDe, buscarLeadExistente, sumarContacto, hashIp, readBody, send, rolDe, memberFromRequest, authAdmin, bootstrapAdmins, MAX_FALLOS, clienteDe, registrarAcceso, bloqueoDe, sumarFallo, limpiarBloqueo, enviarCorreoClave };

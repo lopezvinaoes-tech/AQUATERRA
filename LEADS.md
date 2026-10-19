@@ -48,6 +48,9 @@ window.enviarLead({ nombre, email, whatsapp, monto, objetivo, mensaje, proyecto 
 - Las tablas tienen RLS activado y ninguna política: con la clave pública no se puede leer ni escribir nada. Solo la API de Vercel accede, con la clave `service_role`.
 - El panel solo acepta cuentas activas de la tabla `equipo` (o de `ADMIN_EMAILS`), y el servidor comprueba el rol en cada acción.
 - La API limita a 5 envíos por IP cada 10 minutos y descarta bots con un campo trampa (`empresa_web`). La IP no se guarda, solo un hash.
+- **Bloqueo por intentos**: tras 5 contraseñas incorrectas seguidas (en 24 h) la cuenta del equipo queda bloqueada y Supabase envía un correo con un enlace para crear una contraseña nueva; el enlace abre `/admin` y, al guardar la nueva, se desbloquea. Un administrador también la desbloquea cambiándole la contraseña desde **Equipo**. Para que el enlace funcione, en Supabase **Authentication → URL Configuration** la *Site URL* debe ser la de la web y `https://<dominio>/admin/` debe estar en *Redirect URLs*. El correo de Supabase sin SMTP propio solo llega a direcciones del equipo de Supabase y tiene un límite bajo por hora: para los asesores conviene configurar un SMTP propio (Authentication → Emails → SMTP).
+- **Inactividad**: tras 15 minutos sin usar el panel (en ninguna pestaña) la sesión se cierra, también en Supabase, y hay que volver a entrar.
+- **Accesos** (pestaña solo para administradores): cada entrada, salida, cierre por inactividad, contraseña incorrecta, bloqueo y cambio de contraseña, con fecha, IP, ciudad, país y navegador. Tablas `accesos` y `acceso_bloqueos` en `supabase/schema.sql`.
 
 ## Chat con IA
 
