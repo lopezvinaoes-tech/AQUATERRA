@@ -53,6 +53,13 @@ button{-webkit-user-select:none;user-select:none}
 button,select,input{font-family:inherit}
 select option{color:#1D1D1F;background:#FFFFFF}
 ::selection{background:#C9F15D;color:#1D1D1F}
+/* Catálogo en cifras: las barras crecen al entrar en pantalla y se reacomodan al filtrar. */
+.aqc-bar,.aqc-col{transition:width .9s cubic-bezier(.16,1,.3,1),height .9s cubic-bezier(.16,1,.3,1),background .3s;transition-delay:var(--d,0ms)}
+#cifras:not([data-vis]) .aqc-bar{width:0!important}
+#cifras:not([data-vis]) .aqc-col{height:0!important;min-height:0!important}
+#cifras[data-vis] .aqc-bar,#cifras[data-vis] .aqc-col{transition-delay:0ms}
+#cifras[data-entrada] .aqc-bar,#cifras[data-entrada] .aqc-col{transition-delay:var(--d,0ms)}
+@media (prefers-reduced-motion:reduce){.aqc-bar,.aqc-col{transition:none}}
 </style>
 </helmet>
 <div data-theme="{{ themeName }}" style="min-height:100svh;background:{{ th.bg }};color:{{ th.ink }};font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;overflow-x:clip;transition:background .5s">
@@ -135,6 +142,74 @@ select option{color:#1D1D1F;background:#FFFFFF}
 
 <section data-screen-label="02 Resultados" style="padding:28px clamp(20px,3.2vw,48px) clamp(80px,10vw,140px)">
   <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:20px">
+
+    <div id="cifras" style="display:flex;flex-direction:column;gap:16px;padding-bottom:clamp(16px,3vw,28px);border-bottom:1px solid {{ th.line }}">
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 20px">
+        <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+          <h2 style="margin:0;font-size:clamp(22px,2.4vw,28px);line-height:1.1;letter-spacing:-0.025em;font-weight:600">El catálogo <span data-accent="" style="color:#86868B">en cifras.</span></h2>
+          <span style="font-size:14px;line-height:1.45;color:{{ th.mute }}">Se recalcula con tus filtros. Pulsa una ciudad, un tipo o un tramo de precio para filtrar.</span>
+        </div>
+        <button onClick="{{ chartsToggle }}" aria-expanded="{{ chartsOnAria }}" aria-controls="cifras-graficos" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid {{ th.line }};background:transparent;color:{{ th.ink }};font-size:14px;font-weight:500;cursor:pointer">{{ chartsToggleText }}</button>
+      </div>
+      <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(calc(50% - 5px),180px),1fr));gap:10px">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;gap:4px;min-width:0;padding:14px 18px;border-radius:18px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
+            <span style="font-size:13px;line-height:1.3;color:{{ th.mute }}">{{ k.label }}</span>
+            <span data-cuenta="{{ k.val }}" style="font-size:clamp(22px,2.4vw,28px);line-height:1.1;letter-spacing:-0.03em;font-weight:700;font-variant-numeric:tabular-nums;overflow-wrap:anywhere">{{ k.val }}</span>
+            <span style="font-size:12px;line-height:1.35;color:{{ th.mute }}">{{ k.group }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{ chartsOn }}" hint-placeholder-val="{{ true }}">
+        <div id="cifras-graficos" data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px">
+          <div style="display:flex;flex-direction:column;gap:14px;min-width:0;padding:18px 20px;border-radius:20px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <span style="font-size:15px;font-weight:600">Por ciudad</span>
+              <button onClick="{{ ch.metricToggle }}" style="height:30px;padding:0 10px;border-radius:999px;border:0;background:{{ th.chip }};color:{{ th.ink }};font-size:12px;font-weight:500;cursor:pointer">{{ ch.metricLabel }} ⇄</button>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ ch.zonas }}" as="z" hint-placeholder-count="4">
+                <button onClick="{{ z.pick }}" aria-pressed="{{ z.on }}" style="display:flex;flex-direction:column;gap:5px;padding:4px 0;border:0;background:transparent;color:{{ th.ink }};text-align:left;cursor:pointer;font-size:14px;opacity:{{ z.op }};transition:opacity .3s">
+                  <span style="display:flex;justify-content:space-between;gap:10px;width:100%"><span style="font-weight:{{ z.fw }}">{{ z.name }}</span><span style="color:{{ th.mute2 }};font-variant-numeric:tabular-nums">{{ z.txt }}</span></span>
+                  <span style="display:block;width:100%;height:8px;border-radius:999px;background:{{ th.chip }};overflow:hidden"><span class="aqc-bar" style="--d:{{ z.delay }};display:block;width:{{ z.pct }};height:100%;border-radius:999px;background:{{ z.bar }}"></span></span>
+                </button>
+              </sc-for>
+            </div>
+            <span style="margin-top:auto;font-size:12px;line-height:1.4;color:{{ th.mute }}">{{ ch.zoneDetail }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;min-width:0;padding:18px 20px;border-radius:20px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
+            <span style="font-size:15px;font-weight:600">Por tipo de inmueble</span>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ ch.tipos }}" as="t" hint-placeholder-count="4">
+                <button onClick="{{ t.pick }}" aria-pressed="{{ t.on }}" style="display:flex;flex-direction:column;gap:5px;padding:4px 0;border:0;background:transparent;color:{{ th.ink }};text-align:left;cursor:pointer;font-size:14px;opacity:{{ t.op }};transition:opacity .3s">
+                  <span style="display:flex;justify-content:space-between;gap:10px;width:100%"><span style="display:flex;align-items:center;gap:8px;font-weight:{{ t.fw }}"><span style="width:9px;height:9px;flex:0 0 auto;border-radius:2px;transform:rotate(45deg);background:{{ t.color }}"></span>{{ t.name }}</span><span style="color:{{ th.mute2 }};font-variant-numeric:tabular-nums">{{ t.n }} · {{ t.pctTxt }}</span></span>
+                  <span style="display:block;width:100%;height:8px;border-radius:999px;background:{{ th.chip }};overflow:hidden"><span class="aqc-bar" style="--d:{{ t.delay }};display:block;width:{{ t.pct }};height:100%;border-radius:999px;background:{{ t.bar }}"></span></span>
+                </button>
+              </sc-for>
+            </div>
+            <span style="margin-top:auto;font-size:12px;line-height:1.4;color:{{ th.mute }}">{{ ch.tipoDetail }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;min-width:0;padding:18px 20px;border-radius:20px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
+            <span style="font-size:15px;font-weight:600">Por tramo de precio (USD)</span>
+            <div style="display:flex;align-items:flex-end;gap:8px;height:120px">
+              <sc-for list="{{ ch.bins }}" as="bn" hint-placeholder-count="4">
+                <button onClick="{{ bn.pick }}" aria-pressed="{{ bn.on }}" aria-label="{{ bn.aria }}" style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;padding:0;border:0;background:transparent;color:{{ th.ink }};cursor:pointer;opacity:{{ bn.op }};transition:opacity .3s">
+                  <span data-cuenta="{{ bn.n }}" style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums">{{ bn.n }}</span>
+                  <span class="aqc-col" style="--d:{{ bn.delay }};display:block;width:100%;height:{{ bn.h }};min-height:4px;border-radius:8px 8px 4px 4px;background:{{ bn.bar }}"></span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:8px">
+              <sc-for list="{{ ch.bins }}" as="bn" hint-placeholder-count="4">
+                <span style="flex:1;font-size:11px;line-height:1.3;text-align:center;color:{{ th.mute }}">{{ bn.label }}</span>
+              </sc-for>
+            </div>
+            <span style="margin-top:auto;font-size:12px;line-height:1.4;color:{{ th.mute }}">{{ ch.binDetail }}</span>
+          </div>
+        </div>
+      </sc-if>
+      <span style="font-size:12px;line-height:1.45;color:{{ th.mute }}">Calculado sobre los proyectos publicados en esta web, en USD (precio de entrada publicado o, si no lo hay, el de referencia de la fuente). No es un índice de precios de mercado ni una tasación.</span>
+    </div>
     <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px">
       <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px">
         <span style="font-size:14px;color:{{ th.mute }}">{{ countLabel }}</span>
@@ -237,7 +312,10 @@ class Component extends DCLogic {
     menu: false,
     // Filtros y orden se leen del enlace (?ciudad=…&orden=…) para poder compartir una búsqueda.
     f: (() => { const f = { ciudad: '', tipo: '', etapa: '', rango: '', dorm: '' }; try { const q = new URLSearchParams(window.location.search); Object.keys(f).forEach((k) => { f[k] = q.get(k) || ''; }); } catch (e) {} return f; })(),
-    sort: (() => { try { return new URLSearchParams(window.location.search).get('orden') || ''; } catch (e) { return ''; } })()
+    sort: (() => { try { return new URLSearchParams(window.location.search).get('orden') || ''; } catch (e) { return ''; } })(),
+    // Gráficos abiertos en pantallas anchas; en el móvil, cerrados hasta que se pidan (y se recuerda la elección).
+    charts: (() => { try { const v = localStorage.getItem('aquaterra-cifras'); if (v) return v === 'si'; } catch (e) {} return typeof window === 'undefined' || window.innerWidth >= 640; })(),
+    metric: ''
   };
   SORTS = [['', 'Destacados'], ['precio-asc', 'Precio: menor a mayor'], ['precio-desc', 'Precio: mayor a menor'], ['entrega', 'Entrega más próxima']];
 
@@ -249,7 +327,7 @@ class Component extends DCLogic {
     ['rango', 'Inversión', [['', 'Cualquier monto'], ['0-50000', 'Hasta USD 50.000'], ['50000-100000', 'USD 50.000 – 100.000'], ['100000-200000', 'USD 100.000 – 200.000'], ['200000-', 'Más de USD 200.000']]],
     ['dorm', 'Dormitorios', [['', 'Indistinto'], ['1', '1 dormitorio'], ['2', '2 dormitorios'], ['3', '3 dormitorios'], ['4', '4 o más']]]
   ];
-  NAV = [['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#inversiones', 'Inversiones'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  NAV = [['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['index.html#inversiones', 'Inversiones'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
   THEMES = {
     dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', cardSh: '0 1px 2px rgba(0,0,0,0.04), 0 12px 32px -24px rgba(0,0,0,0.25)', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' , deep: '#0B0C0F', deepInk: '#F5F5F7'},
     noche: { bg: '#17191E', ink: '#ECECEE', mute: '#A4A7AE', mute2: '#CACCD1', line: 'rgba(255,255,255,0.10)', card: '#212329', cardSh: 'inset 0 0 0 1px rgba(255,255,255,0.07)', ph: '#262930', phInk: '#9A9DA4', panel: '#24272E', foot: '#121418', chip: 'rgba(150,152,160,0.20)' , deep: '#1E2127', deepInk: '#E9EAEC'}
@@ -264,8 +342,59 @@ class Component extends DCLogic {
     window.addEventListener('aq-comparar', this._onCmp);
     // comparador.js carga con defer: refresca los botones cuando ya está disponible.
     if (!window.AQComparar) window.addEventListener('DOMContentLoaded', this._onCmp, { once: true });
+    this.observarCifras();
+  }
+
+  // Animación del catálogo en cifras: al entrar en pantalla las barras crecen en cascada y los números cuentan
+  // desde cero; al filtrar, cada número cuenta desde su valor anterior hasta el nuevo.
+  observarCifras() {
+    const el = document.getElementById('cifras');
+    if (!el) return;
+    this._cuentas = new WeakMap();
+    const entrar = () => {
+      el.setAttribute('data-entrada', '');
+      requestAnimationFrame(() => el.setAttribute('data-vis', ''));
+      clearTimeout(this._entradaT);
+      this._entradaT = setTimeout(() => el.removeAttribute('data-entrada'), 1600);
+      this.contarCifras(true);
+    };
+    if (!('IntersectionObserver' in window)) { el.setAttribute('data-vis', ''); return; }
+    this._io = new IntersectionObserver((en) => { if (en[0].isIntersecting) { this._io.disconnect(); this._io = null; entrar(); } }, { threshold: 0.2 });
+    this._io.observe(el);
+    this._entrar = entrar;
+  }
+  contarCifras(desdeCero) {
+    const raiz = document.getElementById('cifras');
+    if (!raiz || !raiz.hasAttribute('data-vis') && !desdeCero) return;
+    const quieto = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    raiz.querySelectorAll('[data-cuenta]').forEach((n) => {
+      const txt = n.getAttribute('data-cuenta') || '';
+      const prev = this._cuentas.get(n);
+      if (!desdeCero && prev && prev.txt === txt) return;
+      const m = txt.match(/\d[\d.]*/);
+      const fin = m ? parseInt(m[0].replace(/\./g, ''), 10) : NaN;
+      const ini = desdeCero || !prev || isNaN(prev.v) ? 0 : prev.v;
+      this._cuentas.set(n, { txt, v: fin });
+      if (quieto || isNaN(fin) || fin === ini) { n.textContent = txt; return; }
+      const pre = txt.slice(0, m.index), post = txt.slice(m.index + m[0].length), t0 = performance.now(), dur = 900;
+      const paso = (now) => {
+        if ((this._cuentas.get(n) || {}).txt !== txt) return;
+        const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        n.textContent = k < 1 ? pre + Math.round(ini + (fin - ini) * e).toLocaleString('es-PY') + post : txt;
+        if (k < 1) requestAnimationFrame(paso);
+      };
+      requestAnimationFrame(paso);
+    });
   }
   componentDidUpdate() {
+    // Al volver a abrir los gráficos, sus barras crecen de nuevo.
+    const cif = document.getElementById('cifras');
+    const reabiertos = this._chartsAntes === false && this.state.charts;
+    this._chartsAntes = this.state.charts;
+    if (cif && reabiertos && cif.hasAttribute('data-vis')) {
+      cif.removeAttribute('data-vis');
+      requestAnimationFrame(() => requestAnimationFrame(() => { if (this._entrar) this._entrar(); else { cif.setAttribute('data-vis', ''); } }));
+    } else this.contarCifras(false);
     // Mantiene el enlace al día con los filtros y el orden, sin recargar ni ensuciar el historial.
     try {
       const q = new URLSearchParams(window.location.search);
@@ -274,21 +403,85 @@ class Component extends DCLogic {
       if (url !== window.location.pathname + window.location.search + window.location.hash) window.history.replaceState(window.history.state, '', url);
     } catch (e) {}
   }
-  componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); }
+  componentWillUnmount() { if (this._io) this._io.disconnect(); clearTimeout(this._entradaT); window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); }
 
   mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
 
-  filtered() {
+  // sin: un filtro que se ignora (las cifras de cada gráfico se cruzan con los demás filtros, no con el suyo).
+  filtered(sin) {
     const f = this.state.f;
     const list = this.PROJECTS.map((p, i) => ({ ...p, idx: i })).filter((p) => {
-      if (f.ciudad && !(p.ciudad === f.ciudad || p.barrio === f.ciudad)) return false;
-      if (f.tipo && p.tipo !== f.tipo && !(p.tambien || []).includes(f.tipo)) return false;
+      if (f.ciudad && sin !== 'ciudad' && !(p.ciudad === f.ciudad || p.barrio === f.ciudad)) return false;
+      if (f.tipo && sin !== 'tipo' && p.tipo !== f.tipo && !(p.tambien || []).includes(f.tipo)) return false;
       if (f.etapa && p.etapa !== f.etapa) return false;
-      if (f.rango) { const [a, b] = f.rango.split('-'); const v = p.precio || p.precioFiltro; if (!v || v < +a || (b && v > +b)) return false; }
+      if (f.rango && sin !== 'rango') { const [a, b] = f.rango.split('-'); const v = p.precio || p.precioFiltro; if (!v || v < +a || (b && v > +b)) return false; }
       if (f.dorm) { const d = +f.dorm; if (!p.dmax || p.dmax < d || (d < 4 && p.dmin > d)) return false; }
       return true;
     });
-    return this.sorted(list);
+    return sin ? list : this.sorted(list);
+  }
+
+  // "El catálogo en cifras": indicadores y gráficos que siguen a los filtros.
+  TINTS = { 'Departamento': '#2997FF', 'Barrio cerrado': '#A4CC3A', 'Country': '#34C795', 'Casa': '#FF956E', 'Lote': '#FFBE50' };
+  cifras(list, th, night) {
+    const s = this.state, f = s.f;
+    const usd = (v) => 'USD ' + Math.round(v).toLocaleString('es-PY');
+    const ref = (p) => p.precio || p.precioFiltro || null;
+    const mediana = (a) => { if (!a.length) return null; const o = a.slice().sort((x, y) => x - y), m = o.length >> 1; return o.length % 2 ? o[m] : (o[m - 1] + o[m]) / 2; };
+    const precios = list.map(ref).filter(Boolean);
+    const ciudades = new Set(list.map((p) => p.ciudad));
+    const pozo = list.filter((p) => p.etapa === 'En pozo').length;
+    const grupo = Object.values(f).some(Boolean) ? 'con tus filtros' : 'en todo el catálogo';
+    const kpis = [
+      { label: 'Proyectos', val: String(list.length), group: grupo },
+      { label: 'Precio de entrada más bajo', val: precios.length ? usd(Math.min(...precios)) : '—', group: precios.length ? 'de ' + precios.length + ' con precio' : 'sin precio publicado' },
+      { label: 'Mediana de precio de entrada', val: precios.length ? usd(mediana(precios)) : '—', group: 'la mitad cuesta menos' },
+      { label: 'En pozo', val: String(pozo), group: ciudades.size === 1 ? 'en 1 ciudad' : `en ${ciudades.size} ciudades` }
+    ];
+    const sel = (on) => ({ on: on ? 'true' : 'false', fw: on ? '600' : '400' });
+    const toggleF = (k, v) => () => this.setState((st) => ({ f: { ...st.f, [k]: st.f[k] === v ? '' : v } }));
+    // Por ciudad (cruzado con los demás filtros).
+    const lc = this.filtered('ciudad');
+    const porPrecio = s.metric === 'precio';
+    const zonasMap = {};
+    lc.forEach((p) => { (zonasMap[p.ciudad] = zonasMap[p.ciudad] || []).push(p); });
+    const zonas = Object.entries(zonasMap).map(([name, ps]) => {
+      const pr = ps.map(ref).filter(Boolean);
+      return { name, n: ps.length, med: mediana(pr), min: pr.length ? Math.min(...pr) : null };
+    }).sort((a, b) => (porPrecio ? (b.med || 0) - (a.med || 0) : b.n - a.n) || a.name.localeCompare(b.name));
+    const maxZ = Math.max(1, ...zonas.map((z) => (porPrecio ? z.med || 0 : z.n)));
+    const zSel = zonas.find((z) => z.name === f.ciudad);
+    // Por tipo (tipo principal de cada proyecto).
+    const lt = this.filtered('tipo');
+    const tiposMap = {};
+    lt.forEach((p) => { tiposMap[p.tipo] = (tiposMap[p.tipo] || 0) + 1; });
+    const tipos = Object.entries(tiposMap).sort((a, b) => b[1] - a[1]);
+    const maxT = Math.max(1, ...tipos.map((x) => x[1]));
+    // Por tramo de precio: los mismos tramos que el filtro "Inversión".
+    const lr = this.filtered('rango');
+    const tramos = this.FILTERS.find((x) => x[0] === 'rango')[2].filter((o) => o[0]);
+    const bins = tramos.map(([v, t]) => { const [a, b] = v.split('-'); return { v, t, n: lr.filter((p) => { const x = ref(p); return x && x >= +a && (!b || x <= +b); }).length }; });
+    const maxB = Math.max(1, ...bins.map((b) => b.n));
+    const sinPrecio = lr.filter((p) => !ref(p)).length;
+    const corto = { '0-50000': '< 50 mil', '50000-100000': '50–100 mil', '100000-200000': '100–200 mil', '200000-': '> 200 mil' };
+    const activo = (on, any) => (any && !on ? '0.45' : '1');
+    return {
+      kpis,
+      ch: {
+        metricLabel: porPrecio ? 'Precio mediano' : 'Nº de proyectos',
+        metricToggle: () => this.setState((st) => ({ metric: st.metric === 'precio' ? '' : 'precio' })),
+        zonas: zonas.map((z) => {
+          const on = f.ciudad === z.name, val = porPrecio ? z.med || 0 : z.n;
+          return { name: z.name, ...sel(on), op: activo(on, !!f.ciudad), delay: zonas.indexOf(z) * 90 + 'ms', pct: Math.max(3, val / maxZ * 100).toFixed(1) + '%', bar: on ? '#C9F15D' : th.ink,
+            txt: porPrecio ? (z.med ? usd(z.med) : 'Sin precio') : z.n + (z.n === 1 ? ' proyecto' : ' proyectos'), pick: toggleF('ciudad', z.name) };
+        }),
+        zoneDetail: zSel ? `${zSel.name}: ${zSel.n} ${zSel.n === 1 ? 'proyecto' : 'proyectos'}${zSel.min ? ', desde ' + usd(zSel.min) : ''}. Vuelve a pulsar para quitar el filtro.` : (porPrecio ? 'Mediana del precio de entrada de cada ciudad.' : 'Pulsa una ciudad para ver solo sus proyectos.'),
+        tipos: tipos.map(([t, n], j) => { const on = f.tipo === t; return { name: t, n, pctTxt: Math.round(n / lt.length * 100) + ' %', pct: Math.max(3, n / maxT * 100).toFixed(1) + '%', delay: j * 90 + 'ms', color: this.TINTS[t] || '#8E8E93', bar: on ? '#C9F15D' : (this.TINTS[t] || '#8E8E93'), ...sel(on), op: activo(on, !!f.tipo), pick: toggleF('tipo', t) }; }),
+        tipoDetail: f.tipo ? 'Vuelve a pulsar el tipo para quitar el filtro.' : 'Pulsa un tipo para ver solo esos proyectos.',
+        bins: bins.map((b, j) => { const on = f.rango === b.v; return { n: b.n, delay: j * 110 + 'ms', label: corto[b.v] || b.t, aria: `${b.t}: ${b.n} proyectos`, on: on ? 'true' : 'false', op: activo(on, !!f.rango), h: (b.n / maxB * 100).toFixed(1) + '%', bar: on ? '#C9F15D' : (night ? 'rgba(236,236,238,0.75)' : '#1D1D1F'), pick: toggleF('rango', b.v) }; }),
+        binDetail: (f.rango ? 'Vuelve a pulsar el tramo para quitar el filtro. ' : 'Pulsa un tramo para filtrar. ') + (sinPrecio ? `${sinPrecio} sin precio publicado no entra${sinPrecio === 1 ? '' : 'n'} en el gráfico.` : '')
+      }
+    };
   }
 
   sorted(list) {
@@ -357,6 +550,10 @@ class Component extends DCLogic {
     });
     const setF = (k) => (e) => { const v = e.target.value; this.setState((st) => ({ f: { ...st.f, [k]: v } })); };
     return {
+      ...this.cifras(projects, th, night),
+      chartsOn: s.charts, chartsOnAria: s.charts ? 'true' : 'false',
+      chartsToggleText: s.charts ? 'Ocultar gráficos' : 'Ver gráficos',
+      chartsToggle: () => { const v = !this.state.charts; try { localStorage.setItem('aquaterra-cifras', v ? 'si' : 'no'); } catch (e) {} this.setState({ charts: v }); },
       th, themeName: night ? 'noche' : 'dia',
       marca: (window.MARCA && window.MARCA.nombre) || 'Aquaterra',
       wide: s.w >= 980, narrow: s.w < 980, menu: s.menu,

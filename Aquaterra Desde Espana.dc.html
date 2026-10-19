@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comprar en Paraguay desde España | Aquaterra</title>
+<meta name="description" content="Distancia, diferencia horaria y cambio del día; comparativa de impuestos y trámites entre España y Paraguay, qué puedes resolver sin viajar y asesoramiento por escrito.">
+<link rel="canonical" href="https://aquaterra-beta.vercel.app/Aquaterra%20Desde%20Espana.dc.html">
+<meta name="theme-color" content="#F5F5F7">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:title" content="Comprar en Paraguay desde España | Aquaterra">
+<meta property="og:description" content="Distancia, diferencia horaria y cambio del día; comparativa de impuestos y trámites entre España y Paraguay, qué puedes resolver sin viajar y asesoramiento por escrito.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="Aquaterra">
+<meta property="og:image" content="https://aquaterra-beta.vercel.app/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>x-dc{display:none}</style>
+<!-- Carga: React se sirve desde /vendor y todos los scripts van con defer, en orden, para no frenar el primer pintado. -->
+<script>window.__resources = {};</script>
+<script src="./marca.js" defer></script>
+<script src="./proyectos.js" defer></script>
+<script src="./leads.js" defer></script>
+<script src="./prefijos.js" defer></script>
+<script src="/vendor/react.production.min.js" defer></script>
+<script src="/vendor/react-dom.production.min.js" defer></script>
+<script src="./arranque.js" defer></script>
+<script src="./globo.js" defer></script>
+<script src="./support.js" defer></script>
+<script src="./fx.js" defer></script>
+<script src="./chat.js" defer></script>
+<script src="./comparador.js" defer></script>
+<script src="./seo.js" defer></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5F5F7">
+<style>
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:#F5F5F7;color:#1D1D1F;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box}
+a{color:#0066CC;text-decoration:none}
+a:hover{color:#0077ED}
+[data-theme="noche"] a{color:#2997FF}
+button,a{touch-action:manipulation}
+button{-webkit-user-select:none;user-select:none}
+button,select,input,textarea{font-family:inherit}
+select option{color:#1D1D1F;background:#FFFFFF}
+::selection{background:#C9F15D;color:#1D1D1F}
+</style>
+</helmet>
+<div data-theme="{{ themeName }}" style="min-height:100svh;background:{{ th.bg }};color:{{ th.ink }};font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;overflow-x:clip;transition:background .5s">
+
+<header style="position:fixed;top:0;left:0;right:0;z-index:50;padding-top:env(safe-area-inset-top);background:{{ hdrBg }};border-bottom:1px solid {{ th.line }};backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);transition:background .35s">
+  <div style="max-width:1120px;margin:0 auto;height:52px;padding:0 clamp(16px,3vw,24px);display:flex;align-items:center;justify-content:space-between;gap:20px">
+    <a href="index.html" style="display:flex;align-items:center;gap:9px;min-height:44px;color:{{ th.ink }};font-weight:600;font-size:18px;letter-spacing:-0.02em">
+      <span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>
+      <span>{{ marca }}</span>
+    </a>
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <nav style="display:flex;align-items:center;gap:clamp(18px,2.4vw,32px)">
+        <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
+          <a href="{{ n.href }}" style="font-size:13px;letter-spacing:-0.01em;color:{{ n.ink }};font-weight:{{ n.fw }}" style-hover="opacity:0.7">{{ n.label }}</a>
+        </sc-for>
+      </nav>
+    </sc-if>
+    <div style="display:flex;align-items:center;gap:8px">
+      <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ toggleMode }}" aria-label="Cambiar modo día / noche" style="position:relative;display:flex;align-items:center;padding:2px;border-radius:9px;border:0;background:{{ segTrack }};cursor:pointer">
+          <span style="position:absolute;top:2px;left:{{ knobLeft }};width:58px;height:28px;border-radius:7px;background:{{ knobBg }};box-shadow:0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);transition:left .35s cubic-bezier(.3,.7,.2,1), background .35s"></span>
+          <span style="position:relative;width:58px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:{{ dayInk }};transition:color .3s">Día</span>
+          <span style="position:relative;width:58px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:{{ nightInk }};transition:color .3s">Noche</span>
+        </button>
+      </sc-if>
+      <a href="index.html#contacto" style="display:flex;align-items:center;height:32px;padding:0 15px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:13px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap" style-hover="background:#0077ED;color:#FFFFFF">{{ ctaLabel }}</a>
+      <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleMenu }}" aria-label="Menú" style="width:44px;height:44px;margin-right:-10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:0;background:transparent;cursor:pointer">
+          <span style="width:18px;height:1.5px;border-radius:1px;background:{{ th.ink }};transform:{{ burgerA }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
+          <span style="width:18px;height:1.5px;border-radius:1px;background:{{ th.ink }};transform:{{ burgerB }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
+        </button>
+      </sc-if>
+    </div>
+  </div>
+</header>
+<sc-if value="{{ menu }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:49;background:{{ menuBg }};backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);padding:calc(72px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom));display:flex;flex-direction:column;overflow:auto;overscroll-behavior:contain">
+    <sc-for list="{{ navItems }}" as="m" hint-placeholder-count="6">
+      <a href="{{ m.href }}" onClick="{{ closeMenu }}" style="display:flex;align-items:center;justify-content:space-between;min-height:60px;font-size:28px;font-weight:600;letter-spacing:-0.025em;color:{{ th.ink }};border-bottom:1px solid {{ th.line }}">{{ m.label }}<span style="font-size:24px;font-weight:400;color:{{ th.mute }}">›</span></a>
+    </sc-for>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:76px;border-bottom:1px solid {{ th.line }}">
+      <span style="font-size:17px;color:{{ th.mute2 }}">Apariencia</span>
+      <button onClick="{{ toggleMode }}" aria-label="Cambiar modo día / noche" style="position:relative;display:flex;align-items:center;padding:2px;border-radius:10px;border:0;background:{{ segTrack }};cursor:pointer">
+        <span style="position:absolute;top:2px;left:{{ knobLeftL }};width:84px;height:40px;border-radius:8px;background:{{ knobBg }};box-shadow:0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);transition:left .35s cubic-bezier(.3,.7,.2,1), background .35s"></span>
+        <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ dayInk }}">Día</span>
+        <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ nightInk }}">Noche</span>
+      </button>
+    </div>
+    <a href="index.html#contacto" onClick="{{ closeMenu }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Agenda una asesoría</a>
+  </div>
+</sc-if>
+
+<section data-screen-label="01 Desde España" style="padding:calc(52px + env(safe-area-inset-top) + clamp(40px,8vw,96px)) clamp(20px,3.2vw,48px) clamp(28px,4vw,48px)">
+  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+    <span style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;letter-spacing:-0.01em;color:{{ th.mute }}">España <span style="width:8px;height:8px;background:#C9F15D;transform:rotate(45deg);border-radius:1px"></span> Paraguay</span>
+    <h1 data-fx="" style="margin:0;max-width:900px;font-size:clamp(40px,6vw,80px);line-height:1.02;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">Comprar en Paraguay <span data-accent="" style="color:#86868B">viviendo en España.</span></h1>
+    <p style="margin:0;max-width:620px;font-size:clamp(17px,1.6vw,21px);line-height:1.45;color:{{ th.mute2 }};text-wrap:pretty">Qué cambia entre los dos países, quién interviene en cada paso y qué puedes resolver sin subirte a un avión.</p>
+    <p style="margin:0;max-width:620px;font-size:14px;line-height:1.5;color:{{ th.mute }};text-wrap:pretty">Información general. Cada caso conviene confirmarlo con un escribano en Paraguay y un asesor fiscal en España.</p>
+  </div>
+</section>
+
+<section data-screen-label="02 En vivo" style="padding:0 clamp(20px,3.2vw,48px)">
+  <div style="max-width:1120px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:stretch;gap:20px">
+    <div style="flex:1 1 420px;min-width:0;position:relative;border-radius:28px;background:{{ th.card }};box-shadow:{{ th.cardSh }};overflow:hidden;display:flex;flex-direction:column">
+      <canvas ref="{{ globoRef }}" tabindex="0" role="img" aria-label="Globo con la ruta Madrid – Asunción. Arrástralo o usa las flechas del teclado para girarlo." style="display:block;width:100%;aspect-ratio:1/1;max-height:560px;outline:none;touch-action:pan-y"></canvas>
+      <span style="position:absolute;left:20px;bottom:16px;right:20px;font-size:12px;line-height:1.4;color:{{ th.mute }}">Arrastra el globo o usa las flechas del teclado.</span>
+    </div>
+    <div style="flex:1 1 380px;min-width:0;display:flex;flex-direction:column;gap:12px">
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+        <sc-for list="{{ stats }}" as="st" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;gap:6px;min-width:0;padding:18px 20px;border-radius:20px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
+            <span style="font-size:13px;line-height:1.35;color:{{ th.mute }}">{{ st.k }}</span>
+            <span style="font-size:clamp(24px,2.6vw,32px);line-height:1.05;letter-spacing:-0.03em;font-weight:700;font-variant-numeric:tabular-nums">{{ st.v }}</span>
+            <span style="font-size:12px;line-height:1.4;color:{{ th.mute }}">{{ st.s }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;padding:18px 20px;border-radius:20px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
+        <span style="font-size:13px;color:{{ th.mute }}">Para hablar en horario de oficina</span>
+        <span style="font-size:17px;line-height:1.4;font-weight:600;letter-spacing:-0.01em">{{ franja }}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;padding:18px 20px;border-radius:20px;background:{{ th.panel }};color:#F5F5F7">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <span style="font-size:13px;color:rgba(245,245,247,0.7)">Conversor orientativo</span>
+          <button onClick="{{ cvSwap }}" aria-label="Invertir la conversión" style="height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(245,245,247,0.22);background:transparent;color:#F5F5F7;font-size:13px;font-weight:600;cursor:pointer">{{ cvDir }} ⇄</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <label style="flex:1 1 160px;min-width:0;display:flex;align-items:center;gap:8px;height:48px;padding:0 14px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04)">
+            <span style="font-size:14px;font-weight:600;color:rgba(245,245,247,0.6)">{{ cvDe }}</span>
+            <input value="{{ cvVal }}" onChange="{{ cvSet }}" inputmode="numeric" aria-label="Importe a convertir" style="flex:1;min-width:0;height:100%;border:0;background:transparent;color:#F5F5F7;font-size:17px;font-weight:600;outline:none;font-variant-numeric:tabular-nums">
+          </label>
+          <span style="flex:1 1 160px;min-width:0;font-size:clamp(22px,2.4vw,28px);font-weight:700;letter-spacing:-0.02em;color:#E4F7B0;font-variant-numeric:tabular-nums">{{ cvRes }}</span>
+        </div>
+        <span style="font-size:12px;line-height:1.4;color:rgba(245,245,247,0.55)">{{ cvNota }}</span>
+      </div>
+    </div>
+  </div>
+  <p style="max-width:1120px;margin:14px auto 0;font-size:13px;line-height:1.5;color:{{ th.mute }}">La distancia ortodrómica y la hora se calculan en tu navegador; los inmuebles en Paraguay se publican casi siempre en dólares.</p>
+</section>
+
+<section id="comparativa" data-screen-label="03 Comparativa" style="padding:clamp(72px,10vw,128px) clamp(20px,3.2vw,48px) 0">
+  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;flex-direction:column;gap:10px;max-width:720px">
+      <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">01 · Comparativa</span>
+      <h2 data-fx="" style="margin:0;font-size:clamp(30px,3.6vw,48px);line-height:1.06;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">España y Paraguay, <span data-accent="" style="color:#86868B">frente a frente.</span></h2>
+      <p style="margin:0;font-size:17px;line-height:1.55;color:{{ th.mute2 }};text-wrap:pretty">Lo que más pregunta un comprador español, punto por punto y con su fuente.</p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <sc-for list="{{ cmpTabs }}" as="tb" hint-placeholder-count="4">
+        <button onClick="{{ tb.pick }}" aria-pressed="{{ tb.on }}" style="height:38px;padding:0 16px;border-radius:999px;border:0;background:{{ tb.bg }};color:{{ tb.ink }};font-size:14px;font-weight:500;cursor:pointer;transition:background .25s, color .25s">{{ tb.t }}</button>
+      </sc-for>
+    </div>
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <div role="table" aria-label="Comparativa España – Paraguay" style="border-radius:24px;background:{{ th.card }};box-shadow:{{ th.cardSh }};overflow:hidden">
+        <div role="row" style="display:grid;grid-template-columns:1.1fr 2fr 2fr 1.2fr;gap:24px;padding:16px 24px;border-bottom:1px solid {{ th.line }};font-size:13px;font-weight:600;color:{{ th.mute }}">
+          <span role="columnheader">Aspecto</span><span role="columnheader">España</span><span role="columnheader">Paraguay</span><span role="columnheader">Fuente</span>
+        </div>
+        <sc-for list="{{ comparativa }}" as="c" hint-placeholder-count="6">
+          <div role="row" style="display:grid;grid-template-columns:1.1fr 2fr 2fr 1.2fr;gap:24px;padding:18px 24px;border-bottom:1px solid {{ th.line }};font-size:15px;line-height:1.5">
+            <span role="rowheader" style="font-weight:600">{{ c.k }}</span>
+            <span role="cell" style="color:{{ th.mute2 }}">{{ c.es }}</span>
+            <span role="cell">{{ c.py }}</span>
+            <span role="cell" style="font-size:13px"><a href="{{ c.url }}" target="_blank" rel="noopener" style="color:{{ linkC }}">{{ c.src }}</a></span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ comparativa }}" as="c" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;gap:12px;padding:18px 20px;border-radius:20px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
+            <span style="font-size:17px;font-weight:600;letter-spacing:-0.01em">{{ c.k }}</span>
+            <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:{{ th.mute }}">España</span><span style="font-size:15px;line-height:1.5;color:{{ th.mute2 }}">{{ c.es }}</span></div>
+            <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:{{ th.mute }}">Paraguay</span><span style="font-size:15px;line-height:1.5">{{ c.py }}</span></div>
+            <a href="{{ c.url }}" target="_blank" rel="noopener" style="font-size:13px;color:{{ linkC }}">Fuente: {{ c.src }}</a>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <span style="font-size:13px;line-height:1.5;color:{{ th.mute }}">Información general, sin valor de asesoramiento legal ni fiscal. Las normas cambian: revisa la fuente y confírmalo con un profesional.</span>
+  </div>
+</section>
+
+<section data-screen-label="04 A distancia" style="padding:clamp(72px,10vw,128px) clamp(20px,3.2vw,48px) 0">
+  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;flex-direction:column;gap:10px;max-width:720px">
+      <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">02 · A distancia</span>
+      <h2 data-fx="" style="margin:0;font-size:clamp(30px,3.6vw,48px);line-height:1.06;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Lo que puedes resolver <span data-accent="" style="color:#86868B">sin viajar.</span></h2>
+    </div>
+    <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px">
+      <sc-for list="{{ remoto }}" as="r" hint-placeholder-count="3">
+        <div style="display:flex;flex-direction:column;gap:12px;padding:24px;border-radius:24px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
+          <span style="width:40px;height:40px;border-radius:12px;background:rgba(201,241,93,0.22);border:1px solid rgba(140,180,30,0.35);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:{{ th.ink }}">{{ r.n }}</span>
+          <span style="font-size:21px;font-weight:600;letter-spacing:-0.02em">{{ r.t }}</span>
+          <span style="font-size:16px;line-height:1.55;color:{{ th.mute2 }};text-wrap:pretty">{{ r.x }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;padding:clamp(22px,3vw,32px);border-radius:24px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
+      <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">El proceso, de la reserva a la inscripción</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:18px">
+        <sc-for list="{{ pasos }}" as="pa" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;gap:6px;padding-left:14px;border-left:2px solid #C9F15D">
+            <span style="font-size:13px;font-weight:600;color:{{ th.mute }}">{{ pa.n }} · {{ pa.quien }}</span>
+            <span style="font-size:16px;font-weight:600;letter-spacing:-0.01em">{{ pa.t }}</span>
+            <span style="font-size:14px;line-height:1.5;color:{{ th.mute2 }}">{{ pa.x }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <span style="font-size:13px;color:{{ th.mute }}">Suele durar entre 60 y 120 días en total.</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">
+      <a href="Aquaterra%20Blog.dc.html" style="display:flex;align-items:center;height:46px;padding:0 22px;border-radius:999px;background:{{ th.ink }};color:{{ th.bg }};font-size:15px;font-weight:600" style-hover="opacity:0.85;color:{{ th.bg }}">Ver guías prácticas</a>
+      <a href="Aquaterra%20Blog.dc.html?a=comprar-en-paraguay-desde-espana-sin-residencia" style="display:flex;align-items:center;height:46px;padding:0 22px;border-radius:999px;border:1px solid {{ th.line }};color:{{ th.ink }};font-size:15px;font-weight:600" style-hover="opacity:0.75;color:{{ th.ink }}">Leer el proceso paso a paso ›</a>
+      <a href="Aquaterra%20Blog.dc.html?a=impuestos-invertir-paraguay-desde-espana" style="display:flex;align-items:center;height:46px;padding:0 12px;color:{{ linkC }};font-size:15px;font-weight:500">Impuestos desde España ›</a>
+    </div>
+  </div>
+</section>
+
+<section id="asesoramiento" data-screen-label="05 Asesoramiento" style="scroll-margin-top:calc(52px + env(safe-area-inset-top) + 12px);padding:clamp(72px,10vw,128px) clamp(20px,3.2vw,48px) clamp(72px,10vw,120px)">
+  <div style="position:relative;overflow:hidden;max-width:1120px;margin:0 auto;border-radius:32px;background:{{ th.deep }};color:{{ th.deepInk }};padding:clamp(28px,5vw,64px)">
+    <span aria-hidden="true" style="position:absolute;left:-10%;top:-30%;width:70%;height:520px;background:radial-gradient(closest-side,rgba(201,241,93,0.16),rgba(201,241,93,0));pointer-events:none"></span>
+    <div style="position:relative;display:flex;flex-wrap:wrap;align-items:flex-start;gap:clamp(32px,5vw,64px)">
+      <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:20px">
+        <span style="align-self:flex-start;padding:7px 16px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:#E4F7B0;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase">03 · Asesoramiento</span>
+        <h2 data-fx="" style="margin:0;font-size:clamp(34px,4.4vw,56px);line-height:1.04;letter-spacing:-0.04em;font-weight:700;text-wrap:balance">Cuéntanos tu objetivo <span style="color:#E4F7B0">y tu plazo.</span></h2>
+        <p style="margin:0;max-width:440px;font-size:17px;line-height:1.6;color:rgba(245,245,247,0.78);text-wrap:pretty">Te respondemos por escrito con las zonas que encajan, los documentos que conviene pedir y los profesionales que intervienen. Sin compromiso y sin promesas de rentabilidad.</p>
+        <div style="display:flex;flex-direction:column;border-top:1px solid rgba(245,245,247,0.12)">
+          <sc-for list="{{ promesas }}" as="pm" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:12px;min-height:46px;border-bottom:1px solid rgba(245,245,247,0.12);font-size:15px"><span style="width:8px;height:8px;flex:0 0 auto;background:#C9F15D;transform:rotate(45deg);border-radius:1px"></span>{{ pm }}</div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="flex:1 1 400px;min-width:0;display:flex;flex-direction:column;gap:18px;padding:clamp(22px,3vw,36px);border-radius:26px;background:rgba(255,255,255,0.045);border:1px solid rgba(245,245,247,0.12);box-shadow:0 40px 120px -40px rgba(201,241,93,0.18)">
+        <sc-if value="{{ fNotSent }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Tu objetivo</span>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <sc-for list="{{ objOpts }}" as="o" hint-placeholder-count="4">
+                  <button onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" style="height:38px;padding:0 14px;border-radius:999px;border:1px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.ink }};font-size:14px;font-weight:500;cursor:pointer">{{ o.t }}</button>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Tu plazo</span>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <sc-for list="{{ plazoOpts }}" as="o" hint-placeholder-count="4">
+                  <button onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" style="height:38px;padding:0 14px;border-radius:999px;border:1px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.ink }};font-size:14px;font-weight:500;cursor:pointer">{{ o.t }}</button>
+                </sc-for>
+              </div>
+            </div>
+            <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Inversión aproximada
+              <span style="position:relative;display:flex;align-items:center;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;font-weight:400">{{ fMontoTxt }}<span style="margin-left:auto;font-size:10px;opacity:0.6">▼</span>
+                <select value="{{ fMonto }}" onChange="{{ onF.monto }}" aria-label="Inversión aproximada" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;border:0">
+                  <sc-for list="{{ montoOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.t }}</option></sc-for>
+                </select>
+              </span>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Nombre y apellido<input name="nombre" value="{{ fNombre }}" onChange="{{ onF.nombre }}" autocomplete="name" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></label>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px">
+              <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Email<input name="email" value="{{ fEmail }}" onChange="{{ onF.email }}" type="email" autocomplete="email" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></label>
+              <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)"><span>WhatsApp</span><div style="display:flex;gap:8px"><span class="aqp" style="height:52px;padding:0 14px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:15px;font-weight:400"><span>{{ fPreTxt }}</span><select data-aqp value="{{ fPre }}" onChange="{{ onF.pre }}" aria-label="Prefijo del teléfono"><sc-for list="{{ preOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.c }}">{{ o.t }}</option></sc-for></select></span><input name="whatsapp" value="{{ fTel }}" onChange="{{ onF.tel }}" type="tel" inputmode="tel" autocomplete="tel-national" aria-label="Número de WhatsApp" placeholder="Número" style="flex:1;min-width:0;width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></div></div>
+            </div>
+            <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Algo más (opcional)<textarea name="mensaje" value="{{ fMsg }}" onChange="{{ onF.msg }}" rows="3" placeholder="Por ejemplo: busco un departamento para alquilar en Asunción y no puedo viajar este año." style="width:100%;min-height:96px;padding:14px 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;line-height:1.5;outline:none;resize:vertical"></textarea></label>
+            <div aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden"><label>Empresa web<input name="empresa_web" tabindex="-1" autocomplete="off" value="{{ fHp }}" onChange="{{ onF.empresa_web }}"></label></div>
+            <button onClick="{{ fSubmit }}" style="height:56px;border-radius:999px;border:1px solid {{ fBtnBd }};background:{{ fBtnBg }};color:{{ fBtnInk }};font-size:17px;font-weight:600;cursor:{{ fBtnCursor }};transition:background .25s, color .25s, border-color .25s">{{ fBtnTxt }}</button>
+            <span role="status" aria-live="polite" style="text-align:center;font-size:13px;line-height:1.5;color:{{ fHintInk }}">{{ fHint }}</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ fSent }}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:36px 0">
+            <span style="width:56px;height:56px;border-radius:50%;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:#E4F7B0;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700">✓</span>
+            <span style="font-size:24px;letter-spacing:-0.02em;font-weight:700">Recibimos tu consulta</span>
+            <span style="max-width:380px;font-size:15px;line-height:1.5;color:rgba(245,245,247,0.72)">Te escribimos con una primera respuesta. Mientras, puedes mirar el catálogo.</span>
+            <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;min-height:44px;font-size:15px;color:#E4F7B0">Ver proyectos ›</a>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer data-screen-label="06 Footer" style="background:{{ th.foot }};color:#F5F5F7;padding:56px clamp(20px,3.2vw,48px) calc(28px + env(safe-area-inset-bottom))">
+  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:28px">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:20px 32px">
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:360px">
+        <span style="display:flex;align-items:center;gap:9px;font-size:18px;font-weight:600;letter-spacing:-0.02em"><span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>{{ marca }}</span>
+        <span style="font-size:14px;line-height:1.55;color:rgba(245,245,247,0.72)">Inversión inmobiliaria en Paraguay. Asunción y el interior del país.</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:0 24px;font-size:14px">
+        <a href="index.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Inicio</a>
+        <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Proyectos</a>
+        <a href="Aquaterra%20Blog.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Blog</a>
+        <a href="index.html#nosotros" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Nosotros</a>
+        <a href="index.html#contacto" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Contacto</a>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;padding-top:20px;border-top:1px solid rgba(245,245,247,0.12);font-size:13px;line-height:1.5;color:rgba(245,245,247,0.6)">
+      <span style="max-width:640px">Información general sobre España y Paraguay, con su fuente. No sustituye el asesoramiento de un escribano ni de un asesor fiscal.</span>
+      <span>© 2026 {{ marca }} · Asunción, Paraguay</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    mode: (() => { try { return localStorage.getItem('aquaterra-modo'); } catch (e) { return null; } })(),
+    w: typeof window !== 'undefined' ? window.innerWidth : 1280,
+    menu: false,
+    now: Date.now(),
+    eur: null, eurFail: false,
+    cv: { val: '100.000', usdAEur: true },
+    cat: '',
+    f: (() => {
+      const g = (window.contactoGuardado && window.contactoGuardado()) || {};
+      const sp = g.whatsapp && window.AQPrefijos ? window.AQPrefijos.separar(g.whatsapp) : null;
+      return { nombre: g.nombre || '', email: g.email || '', tel: sp ? sp.num : '', pre: sp ? sp.c : (window.AQPrefijos ? window.AQPrefijos.porDefecto() : 'ES'), objetivo: '', plazo: '', monto: '', msg: '', empresa_web: '' };
+    })(),
+    fSending: false, fSent: false, fErr: ''
+  };
+  globoRef = React.createRef();
+
+  NAV = [['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['index.html#inversiones', 'Inversiones'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  THEMES = {
+    dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', cardSh: '0 1px 2px rgba(0,0,0,0.04), 0 12px 32px -24px rgba(0,0,0,0.25)', ph: '#E8E8ED', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)', deep: '#0B0C0F', deepInk: '#F5F5F7' },
+    noche: { bg: '#17191E', ink: '#ECECEE', mute: '#A4A7AE', mute2: '#CACCD1', line: 'rgba(255,255,255,0.10)', card: '#212329', cardSh: 'inset 0 0 0 1px rgba(255,255,255,0.07)', ph: '#262930', panel: '#24272E', foot: '#121418', chip: 'rgba(150,152,160,0.20)', deep: '#1E2127', deepInk: '#E9EAEC' }
+  };
+
+  // Comparativa: cat sirve para los filtros de arriba de la tabla.
+  COMPARATIVA = [
+    { cat: 'Compra', k: 'Quién puede comprar', es: 'Cualquier persona, con NIE para extranjeros.', py: 'Un extranjero compra a su nombre con el pasaporte, sin residencia ni sociedad local.', src: 'Infonegocios Legal', url: 'https://infonegocios.com.py/infolegal/invertir-en-departamentos-en-paraguay-introduccion-general-para-el-inversionista' },
+    { cat: 'Compra', k: 'Límites para extranjeros', es: 'Ninguno general para residentes de la UE.', py: 'Solo en suelo rural: la franja de 50 km de frontera está vedada a nacionales de países limítrofes. No afecta a un español ni a un piso en Asunción.', src: 'Ley 2532/05 · Rio Times', url: 'https://www.riotimesonline.com/buying-property-paraguay-foreigners-2026/' },
+    { cat: 'Compra', k: 'Quién da fe de la compra', es: 'Notario e inscripción en el Registro de la Propiedad.', py: 'Escribano público e inscripción en la Dirección General de los Registros Públicos.', src: 'Rio Times', url: 'https://www.riotimesonline.com/buying-property-paraguay-foreigners-2026/' },
+    { cat: 'Compra', k: 'Firmar sin viajar', es: 'Poder notarial ante notario español.', py: 'Válido con poder otorgado en España y apostillado (Convenio de La Haya).', src: 'Rio Times', url: 'https://www.riotimesonline.com/buying-property-paraguay-foreigners-2026/' },
+    { cat: 'Compra', k: 'Financiación', es: 'Hipoteca bancaria habitual.', py: 'Créditos sobre todo en guaraníes y casi siempre con residencia. Lo realista es contado o cuotas del promotor durante la obra.', src: 'UbicaProp', url: 'https://ubicaprop.com.py/creditos-hipotecarios-paraguay-bancos-tasas/' },
+    { cat: 'Impuestos', k: 'Al comprar vivienda', es: 'ITP del 6 al 10 % según la comunidad (usada) o IVA del 10 % más AJD (nueva).', py: 'IVA del 5 % en la compra de vivienda. Escribano, registro y tasas no suelen superar el 3 %.', src: 'Infonegocios Legal', url: 'https://infonegocios.com.py/infolegal/invertir-en-departamentos-en-paraguay-introduccion-general-para-el-inversionista' },
+    { cat: 'Impuestos', k: 'Cada año por tener el inmueble', es: 'IBI municipal, del 0,4 al 1,1 % del valor catastral en vivienda urbana.', py: 'Impuesto inmobiliario del 1 % del valor fiscal, muy por debajo del valor de mercado.', src: 'Última Hora', url: 'https://www.ultimahora.com/santiago-pena-decreta-reajuste-del-4-1-para-el-impuesto-inmobiliario-del-2026' },
+    { cat: 'Impuestos', k: 'Alquiler cobrado', es: 'Si resides en España, tributa en tu IRPF aunque el piso esté en Paraguay.', py: 'IRP del 8 % sobre una renta presunta del 50 %: un 4 % efectivo, si tu residencia fiscal está en Paraguay.', src: 'Yo Facturo', url: 'https://yo-facturo.com/blog/irp-paraguay-impuesto-renta-personal/' },
+    { cat: 'Impuestos', k: 'Patrimonio', es: 'Modelo 720 si tus bienes en el extranjero superan los 50.000 €.', py: 'No existe impuesto al patrimonio.', src: 'TaxDown', url: 'https://taxdown.es/extranjeros/rentas-vivienda-extranjero' },
+    { cat: 'Impuestos', k: 'Doble imposición', es: 'Lo pagado en Paraguay se descuenta en España, hasta el límite del impuesto español.', py: 'Convenio con España publicado en el BOE el 29 de julio de 2024.', src: 'Ferrere', url: 'https://ferrere.com/es/novedades/espana-ratifica-convenio-con-paraguay-para-evitar-la-doble-imposicion/' },
+    { cat: 'Vivir', k: 'Moneda', es: 'Euro.', py: 'Guaraní; los inmuebles se publican casi siempre en dólares.', src: 'BCP', url: 'https://www.bcp.gov.py/' },
+    { cat: 'Vivir', k: 'Residencia por inversión', es: 'La «golden visa» por compra de inmuebles se eliminó en abril de 2025.', py: 'Investor Pass: desde USD 200.000 en inmuebles que no sean vivienda propia.', src: 'ABC Color', url: 'https://www.abc.com.py/economia/2026/05/21/investor-pass-residencia-permanente-en-paraguay-para-inversores-extranjeros/' },
+    { cat: 'Vivir', k: 'Idioma', es: 'Castellano y lenguas cooficiales.', py: 'Castellano y guaraní, ambos oficiales.', src: 'Constitución, art. 140', url: 'https://es.wikipedia.org/wiki/Constituci%C3%B3n_de_Paraguay_de_1992' }
+  ];
+  CATS = [['', 'Todo'], ['Compra', 'Compra'], ['Impuestos', 'Impuestos'], ['Vivir', 'Moneda y residencia']];
+  REMOTO = [
+    { n: '01', t: 'Visitas en directo', x: 'Por videollamada, no con vídeos editados: accesos, entorno, medidores y zonas comunes, en el horario que te venga bien.' },
+    { n: '02', t: 'Poder y apostilla', x: 'Un poder otorgado ante notario en España necesita la apostilla de La Haya para surtir efecto en Paraguay. Tu escribano te dirá qué debe incluir.' },
+    { n: '03', t: 'Fiscalidad en España', x: 'Si resides en España, tus obligaciones fiscales allí siguen vigentes: IRPF por el alquiler y Modelo 720 si superas el umbral. Consulta con tu asesor antes de firmar.' }
+  ];
+  PASOS = [
+    { n: '1', quien: 'Tú y el vendedor', t: 'Reserva', x: 'Con contrato y recibo. Con promotores suele ser de USD 1.000 a 5.000.' },
+    { n: '2', quien: 'Tu escribano', t: 'Revisión del título', x: 'Historia del título, embargos, hipotecas y deudas municipales.' },
+    { n: '3', quien: 'Escribano y apoderado', t: 'Escritura pública', x: 'En persona o con tu poder apostillado.' },
+    { n: '4', quien: 'Registros Públicos', t: 'Inscripción', x: 'Desde aquí la propiedad es plenamente tuya.' }
+  ];
+  OBJS = ['Renta por alquiler', 'Revalorización', 'Vivienda propia', 'Aún no lo sé'];
+  PLAZOS = ['Menos de 3 meses', '3 a 6 meses', '6 a 12 meses', 'Solo me informo'];
+  MONTOS = ['Hasta USD 50.000', 'USD 50.000 – 100.000', 'USD 100.000 – 250.000', 'Más de USD 250.000'];
+
+  componentDidMount() {
+    this._onResize = () => this.setState((st) => ({ w: window.innerWidth, menu: window.innerWidth >= 980 ? false : st.menu }));
+    window.addEventListener('resize', this._onResize);
+    this._onKey = (e) => { if (e.key === 'Escape' && this.state.menu) this.setState({ menu: false }); };
+    window.addEventListener('keydown', this._onKey);
+    // Relojes: se actualizan cada 15 s, alineados al cambio de minuto aproximado.
+    this._tick = setInterval(() => this.setState({ now: Date.now() }), 15000);
+    if (window.AQGlobo && this.globoRef.current) this._globo = window.AQGlobo.montar(this.globoRef.current, { noche: this.mode() === 'noche' });
+    const conCambio = () => {
+      if (window.AQComparar && window.AQComparar.cambio) window.AQComparar.cambio().then((r) => this.setState(r ? { eur: r } : { eurFail: true }));
+      else this.setState({ eurFail: true });
+    };
+    if (window.AQComparar) conCambio(); else window.addEventListener('DOMContentLoaded', conCambio, { once: true });
+  }
+  componentDidUpdate() {
+    const night = this.mode() === 'noche';
+    if (this._globo && this._night !== night) { this._night = night; this._globo.tema(night); }
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey);
+    clearInterval(this._tick);
+    if (this._globo) this._globo.destruir();
+  }
+
+  mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
+
+  // Minutos de diferencia con UTC de una zona horaria en este momento.
+  offset(tz, t) {
+    try {
+      const p = {};
+      new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+        .formatToParts(new Date(t)).forEach((x) => { p[x.type] = x.value; });
+      return Math.round((Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour % 24, +p.minute) - Math.floor(t / 60000) * 60000) / 60000);
+    } catch (e) { return null; }
+  }
+  hora(tz, t) {
+    try { return new Intl.DateTimeFormat('es-ES', { timeZone: tz, hour: '2-digit', minute: '2-digit' }).format(new Date(t)); } catch (e) { return '—'; }
+  }
+  dia(tz, t) {
+    try { return new Intl.DateTimeFormat('es-ES', { timeZone: tz, weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(t)); } catch (e) { return ''; }
+  }
+  num(txt) { const n = parseInt(String(txt).replace(/\D/g, ''), 10); return isNaN(n) ? 0 : n; }
+
+  enviar() {
+    const s = this.state;
+    if (s.fSending) return;
+    this.setState({ fSending: true, fErr: '' });
+    const f = s.f;
+    const msg = ['Plazo: ' + (f.plazo || 'sin indicar') + '.', f.msg.trim()].filter(Boolean).join(' ');
+    const d = { nombre: f.nombre.trim(), email: f.email.trim(), whatsapp: window.AQPrefijos ? window.AQPrefijos.unir(f.pre, f.tel) : f.tel.trim(), monto: f.monto, objetivo: f.objetivo, mensaje: msg, origen: 'Desde España', empresa_web: f.empresa_web };
+    const envio = typeof window.enviarLead === 'function'
+      ? Promise.resolve().then(() => window.enviarLead(d))
+      : Promise.reject(new Error('No pudimos enviar tu solicitud. Escríbenos por WhatsApp.'));
+    envio
+      .then(() => { if (window.AQPrefijos) window.AQPrefijos.recordar(f.pre); this.setState({ fSent: true, fSending: false }); })
+      .catch((e) => this.setState({ fSending: false, fErr: (e && e.message) || 'No pudimos enviar tu solicitud. Escríbenos por WhatsApp.' }));
+  }
+
+  renderVals() {
+    const s = this.state;
+    const night = this.mode() === 'noche';
+    const th = this.THEMES[night ? 'noche' : 'dia'];
+    const G = window.AQGlobo;
+    const km = G ? G.distanciaKm(G.MADRID, G.ASUNCION) : 9180;
+    const oM = this.offset('Europe/Madrid', s.now), oA = this.offset('America/Asuncion', s.now);
+    const dif = oM != null && oA != null ? (oM - oA) / 60 : null;
+    const hh = (h) => String(((h % 24) + 24) % 24).padStart(2, '0') + ':00';
+    const franja = dif != null ? `De 9:00 a 18:00 en Asunción son las ${hh(9 + dif)} a ${hh(18 + dif)} en Madrid.` : 'De 9:00 a 18:00 en Asunción.';
+    // Conversor: el importe se escribe con puntos de miles.
+    const val = this.num(s.cv.val);
+    const r = s.eur;
+    const res = r ? (s.cv.usdAEur ? val * r : val / r) : null;
+    const fmt = (v) => Math.round(v).toLocaleString('es-PY');
+    const cfOk = s.f.nombre.trim().length > 1 && (s.f.tel.replace(/\D/g, '').length > 5 || /\S+@\S+\.\S+/.test(s.f.email));
+    const pick = (k, list) => list.map((t) => {
+      const on = s.f[k] === t;
+      return { t, on: on ? 'true' : 'false', bg: on ? 'rgba(201,241,93,0.2)' : 'rgba(255,255,255,0.04)', bd: on ? 'rgba(201,241,93,0.6)' : 'rgba(245,245,247,0.16)', ink: on ? '#E4F7B0' : '#F5F5F7', pick: () => this.setState((st) => ({ f: { ...st.f, [k]: on ? '' : t }, fErr: '' })) };
+    });
+    return {
+      th, themeName: night ? 'noche' : 'dia',
+      marca: (window.MARCA && window.MARCA.nombre) || 'Aquaterra',
+      wide: s.w >= 980, narrow: s.w < 980, menu: s.menu,
+      toggleMenu: () => this.setState((st) => ({ menu: !st.menu })),
+      closeMenu: () => { if (this.state.menu) this.setState({ menu: false }); },
+      navItems: this.NAV.map(([href, label]) => ({ href, label, ink: label === 'Desde España' ? th.ink : th.mute2, fw: label === 'Desde España' ? '600' : '400' })),
+      hdrBg: night ? 'rgba(28,30,36,0.82)' : 'rgba(251,251,253,0.8)',
+      menuBg: night ? 'rgba(23,25,30,0.94)' : 'rgba(251,251,253,0.92)',
+      burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
+      burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
+      ctaLabel: s.w >= 520 ? 'Agenda una asesoría' : 'Asesoría',
+      linkC: night ? '#2997FF' : '#0066CC',
+      segTrack: night ? 'rgba(118,118,128,0.32)' : 'rgba(118,118,128,0.16)',
+      knobBg: night ? '#636366' : '#FFFFFF',
+      knobLeft: night ? '60px' : '2px', knobLeftL: night ? '88px' : '2px',
+      dayInk: night ? 'rgba(236,236,238,0.72)' : '#1D1D1F',
+      nightInk: night ? '#ECECEE' : '#636368',
+      toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { localStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
+      globoRef: this.globoRef,
+      stats: [
+        { k: 'Distancia en línea recta', v: Math.round(km).toLocaleString('es-PY') + ' km', s: 'Madrid – Asunción' },
+        { k: 'Diferencia horaria hoy', v: dif != null ? (dif === Math.round(dif) ? dif : dif.toFixed(1).replace('.', ',')) + ' h' : '—', s: dif != null ? 'España va por delante' : 'No disponible' },
+        { k: 'Madrid, ahora', v: this.hora('Europe/Madrid', s.now), s: this.dia('Europe/Madrid', s.now) },
+        { k: 'Asunción, ahora', v: this.hora('America/Asuncion', s.now), s: this.dia('America/Asuncion', s.now) }
+      ],
+      franja,
+      cvDir: s.cv.usdAEur ? 'USD → EUR' : 'EUR → USD',
+      cvDe: s.cv.usdAEur ? 'USD' : '€',
+      cvVal: s.cv.val,
+      cvSet: (e) => { const n = this.num(e.target.value); this.setState((st) => ({ cv: { ...st.cv, val: n ? n.toLocaleString('es-PY') : '' } })); },
+      cvSwap: () => this.setState((st) => ({ cv: { ...st.cv, usdAEur: !st.cv.usdAEur } })),
+      cvRes: res == null ? (s.eurFail ? '—' : 'Cargando…') : (s.cv.usdAEur ? '≈ ' + fmt(res) + ' €' : '≈ USD ' + Math.round(res).toLocaleString('es-PY')),
+      cvNota: r ? `Cambio de referencia del BCE de hoy: 1 USD = ${r.toLocaleString('es-ES', { maximumFractionDigits: 4 })} €. Solo orientativo; tu banco aplicará el suyo.` : (s.eurFail ? 'No pudimos cargar el cambio de hoy.' : 'Cargando el cambio de referencia del BCE…'),
+      cmpTabs: this.CATS.map(([v, t]) => ({ t, on: s.cat === v ? 'true' : 'false', bg: s.cat === v ? th.ink : th.chip, ink: s.cat === v ? th.bg : th.ink, pick: () => this.setState({ cat: v }) })),
+      comparativa: this.COMPARATIVA.filter((c) => !s.cat || c.cat === s.cat),
+      remoto: this.REMOTO,
+      pasos: this.PASOS,
+      promesas: ['Zonas y proyectos que encajan con tu objetivo', 'Documentos que conviene pedir', 'Profesionales que intervienen en cada paso'],
+      objOpts: pick('objetivo', this.OBJS),
+      plazoOpts: pick('plazo', this.PLAZOS),
+      montoOpts: [{ v: '', t: 'Elige una opción' }, ...this.MONTOS.map((t) => ({ v: t, t }))],
+      fMonto: s.f.monto, fMontoTxt: s.f.monto || 'Elige una opción',
+      fNombre: s.f.nombre, fEmail: s.f.email, fTel: s.f.tel, fPre: s.f.pre, fMsg: s.f.msg, fHp: s.f.empresa_web,
+      fPreTxt: window.AQPrefijos ? window.AQPrefijos.corto(s.f.pre) : '', preOpts: window.AQPrefijos ? window.AQPrefijos.opciones : [],
+      onF: Object.fromEntries(['nombre', 'email', 'tel', 'pre', 'msg', 'monto', 'empresa_web'].map((k) => [k, (e) => { const v = e.target.value; this.setState((st) => ({ f: { ...st.f, [k]: v }, fErr: '' })); }])),
+      fSent: s.fSent, fNotSent: !s.fSent,
+      fHint: s.fErr || (s.fSending ? 'Enviando…' : 'Necesitamos tu nombre y un email o WhatsApp para responderte.'),
+      fHintInk: s.fErr ? '#FF9F8F' : 'rgba(245,245,247,0.6)',
+      fBtnTxt: s.fSending ? 'Enviando…' : 'Quiero mi respuesta por escrito',
+      fBtnBg: cfOk ? 'rgba(201,241,93,0.22)' : 'rgba(245,245,247,0.08)',
+      fBtnBd: cfOk ? 'rgba(201,241,93,0.55)' : 'rgba(245,245,247,0.12)',
+      fBtnInk: cfOk ? '#E4F7B0' : 'rgba(245,245,247,0.5)',
+      fBtnCursor: cfOk && !s.fSending ? 'pointer' : 'not-allowed',
+      fSubmit: () => { if (cfOk) this.enviar(); else this.setState({ fErr: 'Necesitamos tu nombre y un email o WhatsApp para responderte.' }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

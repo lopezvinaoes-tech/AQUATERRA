@@ -33,6 +33,7 @@ module.exports = (req, res) => {
     { loc: '/', prioridad: '1.0' },
     { loc: '/Aquaterra%20Proyectos.dc.html', prioridad: '0.9' },
     { loc: '/Aquaterra%20Blog.dc.html', prioridad: '0.8' },
+    { loc: '/Aquaterra%20Desde%20Espana.dc.html', prioridad: '0.8' },
     ...cargar('proyectos.js', 'PROYECTOS').map((p, i) => ({ loc: `/Aquaterra%20Ficha.dc.html?p=${i}`, prioridad: '0.7' })),
     ...cargar('articulos.js', 'ARTICULOS').map((a) => ({ loc: `/Aquaterra%20Blog.dc.html?a=${encodeURIComponent(a.slug)}`, prioridad: '0.7' }))
   ];

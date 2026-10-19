@@ -83,6 +83,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
       <nav style="display:flex;align-items:center;gap:clamp(18px,2.4vw,32px)">
         <a href="#proyectos" style="font-size:13px;letter-spacing:-0.01em;color:{{ hdrSub }};transition:color .3s" style-hover="opacity:0.7">Proyectos</a>
         <a href="#simulador" style="font-size:13px;letter-spacing:-0.01em;color:{{ hdrSub }};transition:color .3s" style-hover="opacity:0.7">Simulador</a>
+        <a href="Aquaterra%20Desde%20Espana.dc.html" style="font-size:13px;letter-spacing:-0.01em;color:{{ hdrSub }};transition:color .3s" style-hover="opacity:0.7">Desde España</a>
         <a href="#inversiones" style="font-size:13px;letter-spacing:-0.01em;color:{{ hdrSub }};transition:color .3s" style-hover="opacity:0.7">Inversiones</a>
         <a href="#edificio" style="font-size:13px;letter-spacing:-0.01em;color:{{ hdrSub }};transition:color .3s" style-hover="opacity:0.7">El edificio</a>
         <a href="#nosotros" style="font-size:13px;letter-spacing:-0.01em;color:{{ hdrSub }};transition:color .3s" style-hover="opacity:0.7">Nosotros</a>
@@ -586,6 +587,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
           <a href="#simulador" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Simulador de renta</a>
           <a href="#preguntas" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Preguntas frecuentes</a>
           <a href="Aquaterra%20Blog.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Guías del blog</a>
+          <a href="Aquaterra%20Desde%20Espana.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Comprar desde España</a>
         </div>
       </div>
     </div>
@@ -1662,7 +1664,7 @@ class Component extends DCLogic {
         num: String(i + 1).padStart(2, '0'), numInk: open ? th.chipInk : th.mute,
         bd: open ? 'rgba(201,241,93,0.55)' : th.line, sh: open ? '0 0 0 4px rgba(201,241,93,0.12)' : 'none',
         iconBg: open ? 'rgba(201,241,93,0.18)' : th.fill, iconBd: open ? 'rgba(201,241,93,0.5)' : 'transparent', iconInk: open ? th.chipInk : th.ink }; }),
-      menuItems: [['#proyectos', 'Proyectos'], ['#simulador', 'Simulador de renta'], ['#inversiones', 'Por qué Paraguay'], ['#edificio', 'El edificio'], ['#nosotros', 'Nosotros'], ['#preguntas', 'Preguntas'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['#contacto', 'Contacto']].map(([href, label]) => ({ href, label })),
+      menuItems: [['#proyectos', 'Proyectos'], ['#simulador', 'Simulador de renta'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['#inversiones', 'Por qué Paraguay'], ['#edificio', 'El edificio'], ['#nosotros', 'Nosotros'], ['#preguntas', 'Preguntas'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['#contacto', 'Contacto']].map(([href, label]) => ({ href, label })),
       menuBg: night ? 'rgba(23,25,30,0.94)' : 'rgba(251,251,253,0.92)',
       burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
       burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
