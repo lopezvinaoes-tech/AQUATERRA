@@ -3,7 +3,7 @@
 // POST   /api/admin/usuarios                 -> { email, nombre, rol, password } crea o reactiva el acceso
 // PATCH  /api/admin/usuarios                 -> { email, rol?, activo?, nombre?, password? }
 // DELETE /api/admin/usuarios?email=...       -> quita el acceso al panel
-const { configured, db, readBody, send, memberFromRequest, authAdmin, bootstrapAdmins } = require('../_lib');
+const { configured, db, readBody, send, memberFromRequest, authAdmin, bootstrapAdmins, limpiarBloqueo, registrarAcceso } = require('../_lib');
 
 const ROLES = ['admin', 'asesor'];
 const emailOk = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e || '');
@@ -20,6 +20,9 @@ module.exports = async (req, res) => {
       const equipo = await db('equipo?select=*&order=created_at.asc');
       fijos.forEach((e) => { if (!equipo.some((m) => m.email === e)) equipo.unshift({ email: e, nombre: null, rol: 'admin', activo: true, fijo: true }); });
       equipo.forEach((m) => { if (fijos.includes(m.email)) m.fijo = true; });
+      // Cuentas bloqueadas por demasiados intentos: se desbloquean poniéndoles una contraseña nueva.
+      const bloqueados = await db('acceso_bloqueos?bloqueado_at=not.is.null&select=email').catch(() => []);
+      equipo.forEach((m) => { if (bloqueados.some((x) => x.email === m.email)) m.bloqueado = true; });
       return send(res, 200, { equipo, yo });
     }
 
@@ -43,6 +46,7 @@ module.exports = async (req, res) => {
         const upd = await authAdmin(`users/${u.id}`, { method: 'PUT', body: { password: String(b.password) } });
         if (!upd.ok) return send(res, 400, { error: 'No se pudo actualizar la contraseña' });
       }
+      await limpiarBloqueo(email).catch(() => {});
       const [m] = await db('equipo?on_conflict=email', {
         method: 'POST', prefer: 'resolution=merge-duplicates,return=representation',
         body: { email, nombre: String(b.nombre || '').slice(0, 120) || null, rol: b.rol || 'asesor', activo: true, creado_por: yo.email }
@@ -61,6 +65,8 @@ module.exports = async (req, res) => {
         if (!u) return send(res, 404, { error: 'Usuario no encontrado' });
         const upd = await authAdmin(`users/${u.id}`, { method: 'PUT', body: { password: String(b.password) } });
         if (!upd.ok) return send(res, 400, { error: 'No se pudo cambiar la contraseña' });
+        await limpiarBloqueo(email).catch(() => {});
+        await registrarAcceso(req, email, 'clave_cambiada', `Por ${yo.email}`);
       }
       let m = null;
       if (Object.keys(cambios).length) [m] = await db(`equipo?email=eq.${encodeURIComponent(email)}`, { method: 'PATCH', body: cambios, prefer: 'return=representation' });

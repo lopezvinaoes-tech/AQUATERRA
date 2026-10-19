@@ -93,3 +93,39 @@ create table if not exists public.chat_uso (
 create index if not exists chat_uso_ip_idx      on public.chat_uso (ip_hash, created_at desc);
 create index if not exists chat_uso_created_idx on public.chat_uso (created_at desc);
 alter table public.chat_uso enable row level security;
+
+-- Seguridad del panel: registro de accesos y bloqueo tras 5 contraseñas incorrectas seguidas.
+create table if not exists public.accesos (
+  id          bigint generated always as identity primary key,
+  created_at  timestamptz not null default now(),
+  email       text not null,
+  evento      text not null,        -- entrada, fallo, bloqueo, intento_bloqueado, clave_cambiada, salida, inactividad
+  detalle     text,
+  ip          text,
+  pais        text,
+  ciudad      text,
+  dispositivo text
+);
+create index if not exists accesos_created_idx on public.accesos (created_at desc);
+create index if not exists accesos_email_idx   on public.accesos (email, created_at desc);
+alter table public.accesos enable row level security;
+
+create table if not exists public.acceso_bloqueos (
+  email        text primary key,
+  fallos       integer not null default 0,
+  bloqueado_at timestamptz,          -- con valor, la cuenta no puede entrar hasta cambiar la contraseña
+  correo_at    timestamptz,          -- último correo enviado para crear una contraseña nueva
+  updated_at   timestamptz not null default now()
+);
+alter table public.acceso_bloqueos enable row level security;
+
+-- Suma un fallo y devuelve cuántos lleva seguidos (los de hace más de 24 h no cuentan).
+create or replace function public.sumar_fallo(p_email text) returns integer
+language sql set search_path = '' as $$
+  insert into public.acceso_bloqueos as b (email, fallos, updated_at) values (p_email, 1, now())
+  on conflict (email) do update
+    set fallos = case when b.updated_at < now() - interval '24 hours' then 1 else b.fallos + 1 end,
+        updated_at = now()
+  returning fallos
+$$;
+revoke execute on function public.sumar_fallo(text) from public, anon, authenticated;
