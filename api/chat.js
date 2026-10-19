@@ -84,7 +84,7 @@ Datos de la web (cada uno con su fuente):
 Catálogo actual (proyectos reales de otras desarrolladoras, con fuente y fecha del dato):
 {{CATALOGO}}
 
-Páginas: [Proyectos](/Aquaterra%20Proyectos.dc.html), [Blog](/Aquaterra%20Blog.dc.html), [asesoría](/#contacto).`;
+Páginas: [Proyectos](/Aquaterra%20Proyectos.dc.html), [Comprar desde España](/Aquaterra%20Desde%20Espana.dc.html), [Blog](/Aquaterra%20Blog.dc.html), [asesoría](/#contacto).`;
 
 const HERRAMIENTAS = [{
   name: 'guardar_contacto',
