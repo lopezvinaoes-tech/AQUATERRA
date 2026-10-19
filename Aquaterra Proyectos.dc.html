@@ -52,6 +52,13 @@ button{-webkit-user-select:none;user-select:none}
 button,select,input{font-family:inherit}
 select option{color:#1D1D1F;background:#FFFFFF}
 ::selection{background:#C9F15D;color:#1D1D1F}
+/* Catálogo en cifras: las barras crecen al entrar en pantalla y se reacomodan al filtrar. */
+.aqc-bar,.aqc-col{transition:width .9s cubic-bezier(.16,1,.3,1),height .9s cubic-bezier(.16,1,.3,1),background .3s;transition-delay:var(--d,0ms)}
+#cifras:not([data-vis]) .aqc-bar{width:0!important}
+#cifras:not([data-vis]) .aqc-col{height:0!important;min-height:0!important}
+#cifras[data-vis] .aqc-bar,#cifras[data-vis] .aqc-col{transition-delay:0ms}
+#cifras[data-entrada] .aqc-bar,#cifras[data-entrada] .aqc-col{transition-delay:var(--d,0ms)}
+@media (prefers-reduced-motion:reduce){.aqc-bar,.aqc-col{transition:none}}
 </style>
 </helmet>
 <div data-theme="{{ themeName }}" style="min-height:100svh;background:{{ th.bg }};color:{{ th.ink }};font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;overflow-x:clip;transition:background .5s">
@@ -143,17 +150,17 @@ select option{color:#1D1D1F;background:#FFFFFF}
         </div>
         <button onClick="{{ chartsToggle }}" aria-expanded="{{ chartsOnAria }}" aria-controls="cifras-graficos" style="height:36px;padding:0 14px;border-radius:999px;border:1px solid {{ th.line }};background:transparent;color:{{ th.ink }};font-size:14px;font-weight:500;cursor:pointer">{{ chartsToggleText }}</button>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(calc(50% - 5px),180px),1fr));gap:10px">
+      <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(calc(50% - 5px),180px),1fr));gap:10px">
         <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
           <div style="display:flex;flex-direction:column;gap:4px;min-width:0;padding:14px 18px;border-radius:18px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
             <span style="font-size:13px;line-height:1.3;color:{{ th.mute }}">{{ k.label }}</span>
-            <span style="font-size:clamp(22px,2.4vw,28px);line-height:1.1;letter-spacing:-0.03em;font-weight:700;font-variant-numeric:tabular-nums;overflow-wrap:anywhere">{{ k.val }}</span>
+            <span data-cuenta="{{ k.val }}" style="font-size:clamp(22px,2.4vw,28px);line-height:1.1;letter-spacing:-0.03em;font-weight:700;font-variant-numeric:tabular-nums;overflow-wrap:anywhere">{{ k.val }}</span>
             <span style="font-size:12px;line-height:1.35;color:{{ th.mute }}">{{ k.group }}</span>
           </div>
         </sc-for>
       </div>
       <sc-if value="{{ chartsOn }}" hint-placeholder-val="{{ true }}">
-        <div id="cifras-graficos" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px">
+        <div id="cifras-graficos" data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px">
           <div style="display:flex;flex-direction:column;gap:14px;min-width:0;padding:18px 20px;border-radius:20px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
               <span style="font-size:15px;font-weight:600">Por ciudad</span>
@@ -161,9 +168,9 @@ select option{color:#1D1D1F;background:#FFFFFF}
             </div>
             <div style="display:flex;flex-direction:column;gap:8px">
               <sc-for list="{{ ch.zonas }}" as="z" hint-placeholder-count="4">
-                <button onClick="{{ z.pick }}" aria-pressed="{{ z.on }}" style="display:flex;flex-direction:column;gap:5px;padding:4px 0;border:0;background:transparent;color:{{ th.ink }};text-align:left;cursor:pointer;font-size:14px;opacity:{{ z.op }}">
+                <button onClick="{{ z.pick }}" aria-pressed="{{ z.on }}" style="display:flex;flex-direction:column;gap:5px;padding:4px 0;border:0;background:transparent;color:{{ th.ink }};text-align:left;cursor:pointer;font-size:14px;opacity:{{ z.op }};transition:opacity .3s">
                   <span style="display:flex;justify-content:space-between;gap:10px;width:100%"><span style="font-weight:{{ z.fw }}">{{ z.name }}</span><span style="color:{{ th.mute2 }};font-variant-numeric:tabular-nums">{{ z.txt }}</span></span>
-                  <span style="display:block;width:100%;height:8px;border-radius:999px;background:{{ th.chip }};overflow:hidden"><span style="display:block;width:{{ z.pct }};height:100%;border-radius:999px;background:{{ z.bar }};transition:width .5s cubic-bezier(.3,.7,.2,1)"></span></span>
+                  <span style="display:block;width:100%;height:8px;border-radius:999px;background:{{ th.chip }};overflow:hidden"><span class="aqc-bar" style="--d:{{ z.delay }};display:block;width:{{ z.pct }};height:100%;border-radius:999px;background:{{ z.bar }}"></span></span>
                 </button>
               </sc-for>
             </div>
@@ -171,31 +178,23 @@ select option{color:#1D1D1F;background:#FFFFFF}
           </div>
           <div style="display:flex;flex-direction:column;gap:14px;min-width:0;padding:18px 20px;border-radius:20px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
             <span style="font-size:15px;font-weight:600">Por tipo de inmueble</span>
-            <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
-              <div role="img" aria-label="{{ ch.donutAria }}" style="position:relative;flex:0 0 auto;width:120px;height:120px;border-radius:50%;background:{{ ch.donutBg }}">
-                <span style="position:absolute;inset:18px;border-radius:50%;background:{{ th.card }};display:flex;flex-direction:column;align-items:center;justify-content:center">
-                  <span style="font-size:26px;font-weight:700;letter-spacing:-0.03em;line-height:1">{{ ch.donutN }}</span>
-                  <span style="font-size:11px;color:{{ th.mute }}">{{ ch.donutLabel }}</span>
-                </span>
-              </div>
-              <div style="flex:1 1 140px;min-width:0;display:flex;flex-direction:column;gap:2px">
-                <sc-for list="{{ ch.tipos }}" as="t" hint-placeholder-count="4">
-                  <button onClick="{{ t.pick }}" aria-pressed="{{ t.on }}" style="display:flex;align-items:center;gap:8px;min-height:32px;padding:0;border:0;background:transparent;color:{{ th.ink }};font-size:14px;cursor:pointer;text-align:left;opacity:{{ t.op }}">
-                    <span style="width:10px;height:10px;flex:0 0 auto;border-radius:3px;background:{{ t.color }}"></span>
-                    <span style="flex:1;font-weight:{{ t.fw }}">{{ t.name }}</span>
-                    <span style="color:{{ th.mute2 }};font-variant-numeric:tabular-nums">{{ t.n }} · {{ t.pctTxt }}</span>
-                  </button>
-                </sc-for>
-              </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ ch.tipos }}" as="t" hint-placeholder-count="4">
+                <button onClick="{{ t.pick }}" aria-pressed="{{ t.on }}" style="display:flex;flex-direction:column;gap:5px;padding:4px 0;border:0;background:transparent;color:{{ th.ink }};text-align:left;cursor:pointer;font-size:14px;opacity:{{ t.op }};transition:opacity .3s">
+                  <span style="display:flex;justify-content:space-between;gap:10px;width:100%"><span style="display:flex;align-items:center;gap:8px;font-weight:{{ t.fw }}"><span style="width:9px;height:9px;flex:0 0 auto;border-radius:2px;transform:rotate(45deg);background:{{ t.color }}"></span>{{ t.name }}</span><span style="color:{{ th.mute2 }};font-variant-numeric:tabular-nums">{{ t.n }} · {{ t.pctTxt }}</span></span>
+                  <span style="display:block;width:100%;height:8px;border-radius:999px;background:{{ th.chip }};overflow:hidden"><span class="aqc-bar" style="--d:{{ t.delay }};display:block;width:{{ t.pct }};height:100%;border-radius:999px;background:{{ t.bar }}"></span></span>
+                </button>
+              </sc-for>
             </div>
+            <span style="margin-top:auto;font-size:12px;line-height:1.4;color:{{ th.mute }}">{{ ch.tipoDetail }}</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:14px;min-width:0;padding:18px 20px;border-radius:20px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
             <span style="font-size:15px;font-weight:600">Por tramo de precio (USD)</span>
             <div style="display:flex;align-items:flex-end;gap:8px;height:120px">
               <sc-for list="{{ ch.bins }}" as="bn" hint-placeholder-count="4">
-                <button onClick="{{ bn.pick }}" aria-pressed="{{ bn.on }}" aria-label="{{ bn.aria }}" style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;padding:0;border:0;background:transparent;color:{{ th.ink }};cursor:pointer;opacity:{{ bn.op }}">
-                  <span style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums">{{ bn.n }}</span>
-                  <span style="display:block;width:100%;height:{{ bn.h }};min-height:4px;border-radius:8px 8px 4px 4px;background:{{ bn.bar }};transition:height .5s cubic-bezier(.3,.7,.2,1)"></span>
+                <button onClick="{{ bn.pick }}" aria-pressed="{{ bn.on }}" aria-label="{{ bn.aria }}" style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;padding:0;border:0;background:transparent;color:{{ th.ink }};cursor:pointer;opacity:{{ bn.op }};transition:opacity .3s">
+                  <span data-cuenta="{{ bn.n }}" style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums">{{ bn.n }}</span>
+                  <span class="aqc-col" style="--d:{{ bn.delay }};display:block;width:100%;height:{{ bn.h }};min-height:4px;border-radius:8px 8px 4px 4px;background:{{ bn.bar }}"></span>
                 </button>
               </sc-for>
             </div>
@@ -341,8 +340,59 @@ class Component extends DCLogic {
     window.addEventListener('aq-comparar', this._onCmp);
     // comparador.js carga con defer: refresca los botones cuando ya está disponible.
     if (!window.AQComparar) window.addEventListener('DOMContentLoaded', this._onCmp, { once: true });
+    this.observarCifras();
+  }
+
+  // Animación del catálogo en cifras: al entrar en pantalla las barras crecen en cascada y los números cuentan
+  // desde cero; al filtrar, cada número cuenta desde su valor anterior hasta el nuevo.
+  observarCifras() {
+    const el = document.getElementById('cifras');
+    if (!el) return;
+    this._cuentas = new WeakMap();
+    const entrar = () => {
+      el.setAttribute('data-entrada', '');
+      requestAnimationFrame(() => el.setAttribute('data-vis', ''));
+      clearTimeout(this._entradaT);
+      this._entradaT = setTimeout(() => el.removeAttribute('data-entrada'), 1600);
+      this.contarCifras(true);
+    };
+    if (!('IntersectionObserver' in window)) { el.setAttribute('data-vis', ''); return; }
+    this._io = new IntersectionObserver((en) => { if (en[0].isIntersecting) { this._io.disconnect(); this._io = null; entrar(); } }, { threshold: 0.2 });
+    this._io.observe(el);
+    this._entrar = entrar;
+  }
+  contarCifras(desdeCero) {
+    const raiz = document.getElementById('cifras');
+    if (!raiz || !raiz.hasAttribute('data-vis') && !desdeCero) return;
+    const quieto = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    raiz.querySelectorAll('[data-cuenta]').forEach((n) => {
+      const txt = n.getAttribute('data-cuenta') || '';
+      const prev = this._cuentas.get(n);
+      if (!desdeCero && prev && prev.txt === txt) return;
+      const m = txt.match(/\d[\d.]*/);
+      const fin = m ? parseInt(m[0].replace(/\./g, ''), 10) : NaN;
+      const ini = desdeCero || !prev || isNaN(prev.v) ? 0 : prev.v;
+      this._cuentas.set(n, { txt, v: fin });
+      if (quieto || isNaN(fin) || fin === ini) { n.textContent = txt; return; }
+      const pre = txt.slice(0, m.index), post = txt.slice(m.index + m[0].length), t0 = performance.now(), dur = 900;
+      const paso = (now) => {
+        if ((this._cuentas.get(n) || {}).txt !== txt) return;
+        const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        n.textContent = k < 1 ? pre + Math.round(ini + (fin - ini) * e).toLocaleString('es-PY') + post : txt;
+        if (k < 1) requestAnimationFrame(paso);
+      };
+      requestAnimationFrame(paso);
+    });
   }
   componentDidUpdate() {
+    // Al volver a abrir los gráficos, sus barras crecen de nuevo.
+    const cif = document.getElementById('cifras');
+    const reabiertos = this._chartsAntes === false && this.state.charts;
+    this._chartsAntes = this.state.charts;
+    if (cif && reabiertos && cif.hasAttribute('data-vis')) {
+      cif.removeAttribute('data-vis');
+      requestAnimationFrame(() => requestAnimationFrame(() => { if (this._entrar) this._entrar(); else { cif.setAttribute('data-vis', ''); } }));
+    } else this.contarCifras(false);
     // Mantiene el enlace al día con los filtros y el orden, sin recargar ni ensuciar el historial.
     try {
       const q = new URLSearchParams(window.location.search);
@@ -351,7 +401,7 @@ class Component extends DCLogic {
       if (url !== window.location.pathname + window.location.search + window.location.hash) window.history.replaceState(window.history.state, '', url);
     } catch (e) {}
   }
-  componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); }
+  componentWillUnmount() { if (this._io) this._io.disconnect(); clearTimeout(this._entradaT); window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); }
 
   mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
 
@@ -404,8 +454,7 @@ class Component extends DCLogic {
     const tiposMap = {};
     lt.forEach((p) => { tiposMap[p.tipo] = (tiposMap[p.tipo] || 0) + 1; });
     const tipos = Object.entries(tiposMap).sort((a, b) => b[1] - a[1]);
-    let acc = 0;
-    const stops = tipos.map(([t, n]) => { const a = acc; acc += n / Math.max(1, lt.length) * 100; return `${this.TINTS[t] || '#8E8E93'} ${a.toFixed(2)}% ${acc.toFixed(2)}%`; });
+    const maxT = Math.max(1, ...tipos.map((x) => x[1]));
     // Por tramo de precio: los mismos tramos que el filtro "Inversión".
     const lr = this.filtered('rango');
     const tramos = this.FILTERS.find((x) => x[0] === 'rango')[2].filter((o) => o[0]);
@@ -421,15 +470,13 @@ class Component extends DCLogic {
         metricToggle: () => this.setState((st) => ({ metric: st.metric === 'precio' ? '' : 'precio' })),
         zonas: zonas.map((z) => {
           const on = f.ciudad === z.name, val = porPrecio ? z.med || 0 : z.n;
-          return { name: z.name, ...sel(on), op: activo(on, !!f.ciudad), pct: Math.max(3, val / maxZ * 100).toFixed(1) + '%', bar: on ? '#C9F15D' : th.ink,
+          return { name: z.name, ...sel(on), op: activo(on, !!f.ciudad), delay: zonas.indexOf(z) * 90 + 'ms', pct: Math.max(3, val / maxZ * 100).toFixed(1) + '%', bar: on ? '#C9F15D' : th.ink,
             txt: porPrecio ? (z.med ? usd(z.med) : 'Sin precio') : z.n + (z.n === 1 ? ' proyecto' : ' proyectos'), pick: toggleF('ciudad', z.name) };
         }),
         zoneDetail: zSel ? `${zSel.name}: ${zSel.n} ${zSel.n === 1 ? 'proyecto' : 'proyectos'}${zSel.min ? ', desde ' + usd(zSel.min) : ''}. Vuelve a pulsar para quitar el filtro.` : (porPrecio ? 'Mediana del precio de entrada de cada ciudad.' : 'Pulsa una ciudad para ver solo sus proyectos.'),
-        donutBg: tipos.length ? `conic-gradient(${stops.join(', ')})` : th.chip,
-        donutN: String(lt.length), donutLabel: lt.length === 1 ? 'proyecto' : 'proyectos',
-        donutAria: 'Proyectos por tipo: ' + tipos.map(([t, n]) => `${t} ${n}`).join(', '),
-        tipos: tipos.map(([t, n]) => { const on = f.tipo === t; return { name: t, n, pctTxt: Math.round(n / lt.length * 100) + ' %', color: this.TINTS[t] || '#8E8E93', ...sel(on), op: activo(on, !!f.tipo), pick: toggleF('tipo', t) }; }),
-        bins: bins.map((b) => { const on = f.rango === b.v; return { n: b.n, label: corto[b.v] || b.t, aria: `${b.t}: ${b.n} proyectos`, on: on ? 'true' : 'false', op: activo(on, !!f.rango), h: (b.n / maxB * 100).toFixed(1) + '%', bar: on ? '#C9F15D' : (night ? 'rgba(236,236,238,0.75)' : '#1D1D1F'), pick: toggleF('rango', b.v) }; }),
+        tipos: tipos.map(([t, n], j) => { const on = f.tipo === t; return { name: t, n, pctTxt: Math.round(n / lt.length * 100) + ' %', pct: Math.max(3, n / maxT * 100).toFixed(1) + '%', delay: j * 90 + 'ms', color: this.TINTS[t] || '#8E8E93', bar: on ? '#C9F15D' : (this.TINTS[t] || '#8E8E93'), ...sel(on), op: activo(on, !!f.tipo), pick: toggleF('tipo', t) }; }),
+        tipoDetail: f.tipo ? 'Vuelve a pulsar el tipo para quitar el filtro.' : 'Pulsa un tipo para ver solo esos proyectos.',
+        bins: bins.map((b, j) => { const on = f.rango === b.v; return { n: b.n, delay: j * 110 + 'ms', label: corto[b.v] || b.t, aria: `${b.t}: ${b.n} proyectos`, on: on ? 'true' : 'false', op: activo(on, !!f.rango), h: (b.n / maxB * 100).toFixed(1) + '%', bar: on ? '#C9F15D' : (night ? 'rgba(236,236,238,0.75)' : '#1D1D1F'), pick: toggleF('rango', b.v) }; }),
         binDetail: (f.rango ? 'Vuelve a pulsar el tramo para quitar el filtro. ' : 'Pulsa un tramo para filtrar. ') + (sinPrecio ? `${sinPrecio} sin precio publicado no entra${sinPrecio === 1 ? '' : 'n'} en el gráfico.` : '')
       }
     };
