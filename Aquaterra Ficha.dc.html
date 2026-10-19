@@ -21,6 +21,7 @@
 <!-- Carga: React se sirve desde /vendor y todos los scripts van con defer, en orden, para no frenar el primer pintado. -->
 <script>window.__resources = {};</script>
 <script src="./marca.js" defer></script>
+<script src="./cookies.js" defer></script>
 <script src="./proyectos.js" defer></script>
 <script src="./leads.js" defer></script>
 <script src="./prefijos.js" defer></script>
@@ -203,7 +204,15 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
           <p style="margin:0;max-width:620px;font-size:17px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">{{ pr.nota }}</p>
         </sc-if>
         <sc-if value="{{ hayMapa }}" hint-placeholder-val="{{ true }}">
-          <iframe src="{{ mapaEmbed }}" title="Mapa de {{ pr.name }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="width:100%;aspect-ratio:{{ mapAspect }};border:0;border-radius:22px;background:{{ th.ph }}"></iframe>
+          <sc-if value="{{ mapaOk }}" hint-placeholder-val="{{ true }}">
+            <iframe src="{{ mapaEmbed }}" title="Mapa de {{ pr.name }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="width:100%;aspect-ratio:{{ mapAspect }};border:0;border-radius:22px;background:{{ th.ph }}"></iframe>
+          </sc-if>
+          <sc-if value="{{ mapaNo }}" hint-placeholder-val="{{ false }}">
+            <div style="width:100%;aspect-ratio:{{ mapAspect }};border-radius:22px;background:{{ th.ph }};color:{{ th.phInk }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center">
+              <span style="max-width:420px;font-size:15px;line-height:1.5">El mapa lo sirve Google Maps, que puede instalar sus propias cookies. Solo lo cargamos si lo aceptas.</span>
+              <button type="button" onClick="{{ mapaAceptar }}" style="min-height:44px;padding:0 20px;border:0;border-radius:999px;background:{{ th.ink }};color:{{ th.bg }};font-size:15px;font-weight:600;cursor:pointer">Aceptar y mostrar el mapa</button>
+            </div>
+          </sc-if>
           <a href="{{ mapaUrl }}" target="_blank" rel="noopener" style="align-self:flex-start;display:flex;align-items:center;gap:4px;min-height:44px;font-size:17px;color:{{ linkC }}">Abrir en Google Maps ›</a>
         </sc-if>
       </div>
@@ -327,6 +336,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;padding-top:20px;border-top:1px solid rgba(245,245,247,0.12);font-size:13px;line-height:1.5;color:rgba(245,245,247,0.6)">
       <span style="max-width:640px">Los proyectos del catálogo son de otras desarrolladoras. Indicamos la fuente y la fecha de cada dato; pueden haber cambiado.</span>
       <span>© 2026 {{ marca }} · Asunción, Paraguay</span>
+      <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
     </div>
   </div>
 </footer>
@@ -370,6 +380,10 @@ class Component extends DCLogic {
     // Comparador y cambio a euros (comparador.js carga con defer).
     this._onCmp = () => this.setState((st) => ({ cmpV: (st.cmpV || 0) + 1 }));
     window.addEventListener('aq-comparar', this._onCmp);
+    // El mapa de Google solo se carga con permiso (aviso de cookies, cookies.js).
+    this._onConsent = () => this.setState({ mapaOk: !!(window.AQCookies && window.AQCookies.ok('terceros')) });
+    window.addEventListener('aq-consent', this._onConsent);
+    if (window.AQCookies) this._onConsent(); else window.addEventListener('DOMContentLoaded', this._onConsent, { once: true });
     const conCmp = () => {
       this._onCmp();
       // El cambio a euros se pide cuando la ficha ya está pintada, para no competir con la carga inicial.
@@ -445,7 +459,7 @@ class Component extends DCLogic {
       .then(() => this.setState({ cfSent: true, cfSending: false }))
       .catch((e) => this.setState({ cfSending: false, cfErr: (e && e.message) || 'No pudimos enviar tu solicitud. Escríbenos por WhatsApp.' }));
   }
-  componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); clearTimeout(this._shareT); }
+  componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); window.removeEventListener('aq-consent', this._onConsent); clearTimeout(this._shareT); }
 
   mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
 
@@ -540,6 +554,8 @@ class Component extends DCLogic {
       hayNota: !!p.nota,
       hayMapa: !!p.mapa,
       mapAspect: narrowM ? '4/3' : '16/9',
+      mapaOk: !!s.mapaOk, mapaNo: !s.mapaOk,
+      mapaAceptar: () => { if (window.AQCookies) window.AQCookies.permitir('terceros'); },
       mapaEmbed: p.mapa ? 'https://www.google.com/maps?output=embed&q=' + encodeURIComponent(p.mapa) : '',
       mapaUrl: p.mapa ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.mapa) : '',
       fuentes: p.fuentes
