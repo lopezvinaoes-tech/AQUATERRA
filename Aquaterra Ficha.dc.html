@@ -51,25 +51,38 @@ button{-webkit-user-select:none;user-select:none}
 button,input,textarea{font-family:inherit}
 input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
 ::selection{background:#C9F15D;color:#1D1D1F}
+/* Sistema común a todas las páginas (mismo bloque en cada una):
+   data-kicker  etiqueta de sección con rombo lima y número de capítulo en negrita; data-kicker="oscuro" sobre fondos oscuros
+   data-nav     enlace del menú; con aria-current lleva debajo el rombo lima de "estás aquí" */
+[data-kicker]{align-self:flex-start;display:inline-flex;align-items:center;gap:9px;width:max-content;max-width:100%;padding:6px 14px 6px 12px;border-radius:999px;background:rgba(201,241,93,.22);border:1px solid rgba(120,160,20,.3);color:#3F5A06;font:600 12px/1.3 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em;text-transform:uppercase}
+[data-kicker]::before{content:"";flex:0 0 auto;width:7px;height:7px;border-radius:1.5px;background:#C9F15D;transform:rotate(45deg);box-shadow:0 0 0 1px rgba(90,120,10,.4)}
+[data-kicker] b{font-weight:500;opacity:.62}
+[data-theme="noche"] [data-kicker],[data-kicker="oscuro"]{background:rgba(201,241,93,.14);border-color:rgba(201,241,93,.38);color:#E4F7B0}
+[data-theme="noche"] [data-kicker]::before,[data-kicker="oscuro"]::before{box-shadow:none}
+[data-nav]{position:relative}
+[data-nav]::after{content:"";position:absolute;left:50%;bottom:-6px;width:5px;height:5px;margin-left:-2.5px;border-radius:1px;background:#C9F15D;transform:rotate(45deg) scale(0);transition:transform .35s cubic-bezier(.16,1,.3,1)}
+[data-nav][aria-current]::after{transform:rotate(45deg) scale(1)}
+/* El pie (con su fondo animado) no se pinta hasta que se acerca a la pantalla. */
+footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 760px}
 </style>
 </helmet>
 <div data-theme="{{ themeName }}" style="--aq-line:{{ th.line }};min-height:100svh;background:{{ th.bg }};color:{{ th.ink }};font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;overflow-x:clip;transition:background .5s">
 
 <header style="position:fixed;top:0;left:0;right:0;z-index:50;padding-top:env(safe-area-inset-top);background:{{ hdrBg }};border-bottom:1px solid {{ th.line }};backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);transition:background .35s">
-  <div style="max-width:1120px;margin:0 auto;height:52px;padding:0 clamp(16px,3vw,24px);display:flex;align-items:center;justify-content:space-between;gap:20px">
+  <div style="max-width:calc(1280px + 2 * clamp(20px,3.2vw,48px));margin:0 auto;height:52px;padding:0 clamp(20px,3.2vw,48px);display:flex;align-items:center;justify-content:space-between;gap:20px">
     <a href="index.html" style="display:flex;align-items:center;gap:9px;min-height:44px;color:{{ th.ink }};font-weight:600;font-size:18px;letter-spacing:-0.02em">
       <span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>
       <span>{{ marca }}</span>
     </a>
-    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
-      <nav style="display:flex;align-items:center;gap:clamp(18px,2.4vw,32px)">
+    <sc-if value="{{ navWide }}" hint-placeholder-val="{{ true }}">
+      <nav style="display:flex;align-items:center;gap:clamp(14px,1.8vw,26px)">
         <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
-          <a href="{{ n.href }}" style="font-size:13px;letter-spacing:-0.01em;color:{{ n.ink }};font-weight:{{ n.fw }}" style-hover="opacity:0.7">{{ n.label }}</a>
+          <a href="{{ n.href }}" data-nav="" aria-current="{{ n.cur }}" style="white-space:nowrap;font-size:13px;letter-spacing:-0.01em;color:{{ n.ink }};font-weight:{{ n.fw }}" style-hover="opacity:0.7">{{ n.label }}</a>
         </sc-for>
       </nav>
     </sc-if>
     <div style="display:flex;align-items:center;gap:8px">
-      <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <sc-if value="{{ navWide }}" hint-placeholder-val="{{ true }}">
         <button onClick="{{ toggleMode }}" aria-label="Cambiar modo día / noche" style="position:relative;display:flex;align-items:center;padding:2px;border-radius:9px;border:0;background:{{ segTrack }};cursor:pointer">
           <span style="position:absolute;top:2px;left:{{ knobLeft }};width:58px;height:28px;border-radius:7px;background:{{ knobBg }};box-shadow:0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);transition:left .35s cubic-bezier(.3,.7,.2,1), background .35s"></span>
           <span style="position:relative;width:58px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:{{ dayInk }};transition:color .3s">Día</span>
@@ -77,7 +90,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
         </button>
       </sc-if>
       <a href="#consulta" style="display:flex;align-items:center;height:32px;padding:0 15px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:13px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap" style-hover="background:#0077ED;color:#FFFFFF">{{ ctaLabel }}</a>
-      <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+      <sc-if value="{{ navNarrow }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ toggleMenu }}" aria-label="Menú" style="width:44px;height:44px;margin-right:-10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:0;background:transparent;cursor:pointer">
           <span style="width:18px;height:1.5px;border-radius:1px;background:{{ th.ink }};transform:{{ burgerA }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
           <span style="width:18px;height:1.5px;border-radius:1px;background:{{ th.ink }};transform:{{ burgerB }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
@@ -88,7 +101,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
 </header>
 <sc-if value="{{ menu }}" hint-placeholder-val="{{ false }}">
   <div style="position:fixed;inset:0;z-index:49;background:{{ menuBg }};backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);padding:calc(72px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom));display:flex;flex-direction:column;overflow:auto;overscroll-behavior:contain">
-    <sc-for list="{{ navItems }}" as="m" hint-placeholder-count="6">
+    <sc-for list="{{ menuItems }}" as="m" hint-placeholder-count="6">
       <a href="{{ m.href }}" onClick="{{ closeMenu }}" style="display:flex;align-items:center;justify-content:space-between;min-height:60px;font-size:28px;font-weight:600;letter-spacing:-0.025em;color:{{ th.ink }};border-bottom:1px solid {{ th.line }}">{{ m.label }}<span style="font-size:24px;font-weight:400;color:{{ th.mute }}">›</span></a>
     </sc-for>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:76px;border-bottom:1px solid {{ th.line }}">
@@ -115,13 +128,13 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
 </sc-if>
 <sc-if value="{{ vigente }}" hint-placeholder-val="{{ true }}">
 <section data-screen-label="01 Encabezado" style="padding:calc(52px + env(safe-area-inset-top) + clamp(16px,3vw,40px)) clamp(20px,3.2vw,48px) 24px">
-  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:18px">
+  <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:18px">
     <nav aria-label="Ruta" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-height:44px;font-size:14px;color:{{ th.mute }}">
       <a href="index.html" style="color:{{ linkC }}">Inicio</a><span aria-hidden="true">/</span>
       <a href="Aquaterra%20Proyectos.dc.html" style="color:{{ linkC }}">Proyectos</a><span aria-hidden="true">/</span>
       <span aria-current="page" style="color:{{ th.mute2 }}">{{ pr.name }}</span>
     </nav>
-    <span style="font-size:13px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:{{ th.mute }}">Ficha técnica · Ref. {{ pr.ref }}</span>
+    <span data-kicker="">Ficha técnica · Ref. {{ pr.ref }}</span>
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px 32px;flex-wrap:wrap">
       <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
         <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
@@ -162,7 +175,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
 </section>
 
 <section data-screen-label="02 Portada" style="padding:0 clamp(20px,3.2vw,48px)">
-  <div style="max-width:1120px;margin:0 auto">
+  <div style="max-width:1280px;margin:0 auto">
     <div style="position:relative;overflow:hidden;min-height:{{ coverMinH }};border-radius:28px;background:{{ cvBg }};color:#F5F5F7;padding:clamp(22px,3.6vw,48px);display:flex;flex-direction:column;justify-content:space-between;gap:clamp(32px,5vw,56px)">
       <span aria-hidden="true" style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,0.035) 0 1px,transparent 1px 72px);pointer-events:none"></span>
       <span aria-hidden="true" style="position:absolute;left:clamp(16px,3vw,40px);top:46%;transform:translateY(-100%);font-size:clamp(84px,14vw,210px);line-height:1;font-weight:700;letter-spacing:-0.055em;white-space:nowrap;color:rgba(255,255,255,0.045);pointer-events:none">{{ pr.tipo }}</span>
@@ -187,7 +200,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
 </section>
 
 <section data-screen-label="03 Detalle" style="padding:clamp(40px,6vw,72px) clamp(20px,3.2vw,48px) clamp(72px,10vw,120px)">
-  <div style="max-width:1120px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:flex-start;gap:clamp(32px,4vw,56px)">
+  <div style="max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:flex-start;gap:clamp(32px,4vw,56px)">
     <div style="flex:1 1 560px;min-width:0;display:flex;flex-direction:column;gap:clamp(16px,2.4vw,28px)">
 
       <div role="tablist" aria-label="Secciones de la ficha" style="position:sticky;top:calc(52px + env(safe-area-inset-top));z-index:15;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -4px;padding:10px 4px;background:{{ tabBarBg }};backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px)">
@@ -210,7 +223,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
 
           <div style="display:flex;flex-direction:column;gap:16px">
             <div style="display:flex;flex-direction:column;gap:8px">
-              <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Precio en contexto</span>
+              <span data-kicker="">Precio en contexto</span>
               <h2 style="margin:0;font-size:clamp(26px,2.8vw,36px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">Frente a otros <span data-accent="" style="color:#86868B">{{ ctxTitulo }}</span></h2>
             </div>
             <div style="display:flex;flex-direction:column;gap:10px;padding:20px 22px;border-radius:22px;background:{{ th.card }};box-shadow:{{ th.cardSh }}">
@@ -226,7 +239,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
 
           <div style="display:flex;flex-direction:column;gap:16px">
             <div style="display:flex;flex-direction:column;gap:8px">
-              <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Antes de decidir</span>
+              <span data-kicker="">Antes de decidir</span>
               <h2 style="margin:0;font-size:clamp(26px,2.8vw,36px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">Tres cosas <span data-accent="" style="color:#86868B">a tener claras.</span></h2>
             </div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px">
@@ -248,7 +261,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
         <div style="display:flex;flex-direction:column;gap:clamp(40px,6vw,64px)">
       <div id="ubicacion" style="display:flex;flex-direction:column;gap:20px">
         <div style="display:flex;flex-direction:column;gap:8px">
-          <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Ubicación</span>
+          <span data-kicker="">Ubicación</span>
           <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">{{ pr.loc }}</h2>
         </div>
         <sc-if value="{{ hayNota }}" hint-placeholder-val="{{ true }}">
@@ -274,7 +287,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
 
       <div id="pagos" style="display:flex;flex-direction:column;gap:16px">
         <div style="display:flex;flex-direction:column;gap:8px">
-          <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Forma de pago</span>
+          <span data-kicker="">Forma de pago</span>
           <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">Cómo <span data-accent="" style="color:#86868B">se paga.</span></h2>
         </div>
         <p style="margin:0;max-width:620px;font-size:17px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">{{ pr.pagos }}</p>
@@ -282,7 +295,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
 
       <div id="amenities" style="display:flex;flex-direction:column;gap:20px">
         <div style="display:flex;flex-direction:column;gap:8px">
-          <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Características</span>
+          <span data-kicker="">Características</span>
           <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">Lo que <span data-accent="" style="color:#86868B">incluye.</span></h2>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:10px">
@@ -300,7 +313,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
       <sc-if value="{{ tabDocs }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;flex-direction:column;gap:20px">
           <div style="display:flex;flex-direction:column;gap:8px">
-            <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Documentación</span>
+            <span data-kicker="">Documentación</span>
             <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">De dónde sale <span data-accent="" style="color:#86868B">cada dato.</span></h2>
           </div>
           <div id="fuentes" style="display:flex;flex-direction:column;gap:12px;padding:20px 22px;border-radius:20px;background:{{ th.card }}">
@@ -324,7 +337,7 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
         <div style="display:flex;flex-direction:column;gap:20px">
           <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px">
             <div style="display:flex;flex-direction:column;gap:8px">
-              <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Similares</span>
+              <span data-kicker="">Similares</span>
               <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">También te puede <span data-accent="" style="color:#86868B">interesar.</span></h2>
             </div>
             <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;min-height:44px;font-size:17px;color:{{ linkC }}">Ver todos ›</a>
@@ -372,11 +385,11 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
 </section>
 
 <section id="consulta" data-screen-label="04 Consulta" style="scroll-margin-top:calc(52px + env(safe-area-inset-top) + 12px);padding:0 clamp(20px,3.2vw,48px) clamp(64px,9vw,112px)">
-  <div style="position:relative;overflow:hidden;max-width:1120px;margin:0 auto;border-radius:32px;background:{{ th.deep }};color:{{ th.deepInk }};padding:clamp(28px,5vw,64px)">
+  <div style="position:relative;overflow:hidden;max-width:1280px;margin:0 auto;border-radius:32px;background:{{ th.deep }};color:{{ th.deepInk }};padding:clamp(28px,5vw,64px)">
     <span aria-hidden="true" style="position:absolute;left:-10%;top:-30%;width:70%;height:520px;background:radial-gradient(closest-side,rgba(201,241,93,0.16),rgba(201,241,93,0));pointer-events:none"></span>
     <div style="position:relative;display:flex;flex-wrap:wrap;align-items:flex-start;gap:clamp(32px,5vw,64px)">
       <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:20px">
-        <span style="align-self:flex-start;padding:7px 16px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase">Consulta personalizada</span>
+        <span data-kicker="oscuro">Consulta personalizada</span>
         <h2 data-fx="" style="margin:0;font-size:clamp(34px,4.4vw,56px);line-height:1.04;letter-spacing:-0.04em;font-weight:700;text-wrap:balance">Consultar por <span style="color:#E4F7B0">{{ pr.name }}.</span></h2>
         <p style="margin:0;max-width:440px;font-size:17px;line-height:1.6;color:rgba(245,245,247,0.78);text-wrap:pretty">Te ayudamos a confirmar con la desarrolladora el precio, la disponibilidad y las condiciones actuales, y a valorar si encaja con tu inversión.</p>
         <div style="display:flex;flex-direction:column;border-top:1px solid rgba(245,245,247,0.12)">
@@ -417,24 +430,46 @@ input::placeholder,textarea::placeholder{color:rgba(245,245,247,0.38)}
 
 </sc-if>
 
-<footer data-screen-label="05 Footer" style="background:{{ th.foot }};color:#F5F5F7;padding:56px clamp(20px,3.2vw,48px) {{ footPad }}">
-  <div style="max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:28px">
-    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:20px 32px">
-      <div style="display:flex;flex-direction:column;gap:10px;max-width:360px">
-        <span style="display:flex;align-items:center;gap:9px;font-size:18px;font-weight:600;letter-spacing:-0.02em"><span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>{{ marca }}</span>
-        <span style="font-size:14px;line-height:1.55;color:rgba(245,245,247,0.72)">Inversión inmobiliaria en Paraguay. Asunción y el interior del país.</span>
+<!-- Pie común a todas las páginas: mismas columnas, mismos enlaces y la marca grande; solo cambia la nota legal de cada página. -->
+<footer data-screen-label="05 Footer" data-grain="" data-aurora="" style="background:{{ th.deep }};transition:background .6s;color:#F5F5F7;padding:clamp(64px,8vw,104px) clamp(20px,3.2vw,48px) {{ footPad }};overflow:hidden">
+  <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(56px,8vw,96px)">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:48px">
+      <div style="flex:1 1 280px;display:flex;flex-direction:column;gap:16px;max-width:340px">
+        <span style="display:flex;align-items:center;gap:10px;font-size:20px;font-weight:600;letter-spacing:-0.035em"><span style="width:13px;height:13px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>{{ marca }}</span>
+        <span style="font-size:15px;line-height:1.6;color:rgba(245,245,247,0.82)">Inversión inmobiliaria en Paraguay. Asunción y el interior del país.</span>
       </div>
-      <div style="display:flex;flex-wrap:wrap;gap:0 24px;font-size:14px">
-        <a href="index.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Inicio</a>
-        <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Proyectos</a>
-        <a href="Aquaterra%20Blog.dc.html" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Blog</a>
-        <a href="index.html#contacto" style="display:flex;align-items:center;min-height:44px;color:#F5F5F7" style-hover="color:#C9F15D">Contacto</a>
+      <div style="display:flex;flex-wrap:wrap;gap:clamp(40px,6vw,88px)">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span data-mono="" style="font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:rgba(228,247,176,0.75)">Navegación</span>
+          <a href="index.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Inicio</a>
+          <a href="Aquaterra%20Proyectos.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Proyectos</a>
+          <a href="index.html#inversiones" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Inversiones</a>
+          <a href="index.html#nosotros" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Nosotros</a>
+          <a href="Aquaterra%20Blog.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Blog</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span data-mono="" style="font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:rgba(228,247,176,0.75)">Contacto</span>
+          <a href="index.html#contacto" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Formulario de asesoría</a>
+          <a href="{{ footWa }}" target="_blank" rel="noopener" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">WhatsApp</a>
+          <span style="font-size:15px">Asunción, Paraguay</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span data-mono="" style="font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:rgba(228,247,176,0.75)">Recursos</span>
+          <a href="index.html#simulador" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Simulador de renta</a>
+          <a href="index.html#preguntas" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Preguntas frecuentes</a>
+          <a href="Aquaterra%20Blog.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Guías del blog</a>
+          <a href="Aquaterra%20Desde%20Espana.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Comprar desde España</a>
+        </div>
       </div>
     </div>
-    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;padding-top:20px;border-top:1px solid rgba(245,245,247,0.12);font-size:13px;line-height:1.5;color:rgba(245,245,247,0.6)">
-      <span style="max-width:640px">Los proyectos del catálogo son de otras desarrolladoras. Indicamos la fuente y la fecha de cada dato; pueden haber cambiado.</span>
-      <span>© 2026 {{ marca }} · Asunción, Paraguay</span>
+    <span aria-hidden="true" style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(72px,17vw,250px);line-height:0.9;letter-spacing:-0.055em;font-weight:800;margin-left:-0.04em;padding-bottom:0.06em;background:linear-gradient(180deg,rgba(245,245,247,0.92) 35%,rgba(245,245,247,0.05) 100%);-webkit-background-clip:text;background-clip:text;color:transparent">{{ marca }}</span>
+    <div style="display:flex;flex-direction:column;gap:16px;padding-top:20px;border-top:1px solid rgba(245,245,247,0.12)">
+    <span style="max-width:720px;font-size:13px;line-height:1.55;color:rgba(245,245,247,0.68)">Los proyectos del catálogo son de otras desarrolladoras. Indicamos la fuente y la fecha de cada dato; pueden haber cambiado.</span>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:rgba(245,245,247,0.75)">
+      <span>© 2026 {{ marca }}. Todos los derechos reservados.</span>
       <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
+      <span>Asunción, Paraguay</span>
+    </div>
     </div>
   </div>
 </footer>
@@ -468,14 +503,17 @@ class Component extends DCLogic {
   DOCS = ['Título de propiedad del terreno e informe del Registro de la Propiedad', 'Certificado Catastral-Registral y estado de deudas municipales', 'Permiso de construcción aprobado por la municipalidad', 'Contrato de reserva o boleto de compraventa, con plan de pagos', 'Reglamento de copropiedad (dice si se permite el alquiler temporal)'];
 
   PROJECTS = window.PROYECTOS || [];
-  NAV = [['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['index.html#inversiones', 'Inversiones'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  // Menú del móvil: el mismo en todas las páginas (algo más descriptivo que el de escritorio e incluye Preguntas).
+  MENU = [['index.html#inversiones', 'Por qué Paraguay'], ['index.html#edificio', 'El edificio'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#simulador', 'Simulador de renta'], ['index.html#nosotros', 'Nosotros'], ['index.html#preguntas', 'Preguntas'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  // Mismo menú y en el mismo orden en todas las páginas: primero los capítulos del inicio (en el orden en que aparecen), luego las otras páginas.
+  NAV = [['index.html#inversiones', 'Inversiones'], ['index.html#edificio', 'El edificio'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#simulador', 'Simulador'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
   THEMES = {
     dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', cardSh: '0 1px 2px rgba(0,0,0,0.04), 0 12px 32px -24px rgba(0,0,0,0.25)', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' , deep: '#0B0C0F', deepInk: '#F5F5F7'},
     noche: { bg: '#17191E', ink: '#ECECEE', mute: '#A4A7AE', mute2: '#CACCD1', line: 'rgba(255,255,255,0.10)', card: '#212329', cardSh: 'inset 0 0 0 1px rgba(255,255,255,0.07)', ph: '#262930', phInk: '#9A9DA4', panel: '#24272E', foot: '#121418', chip: 'rgba(150,152,160,0.20)' , deep: '#1E2127', deepInk: '#E9EAEC'}
   };
 
   componentDidMount() {
-    this._onResize = () => this.setState((st) => ({ w: window.innerWidth, menu: window.innerWidth >= 980 ? false : st.menu }));
+    this._onResize = () => this.setState((st) => ({ w: window.innerWidth, menu: window.innerWidth >= 1140 ? false : st.menu }));
     window.addEventListener('resize', this._onResize);
     this._onKey = (e) => { if (e.key === 'Escape' && this.state.menu) this.setState({ menu: false }); };
     window.addEventListener('keydown', this._onKey);
@@ -675,7 +713,10 @@ class Component extends DCLogic {
       wide, narrow: !wide, menu: s.menu,
       toggleMenu: () => this.setState((st) => ({ menu: !st.menu })),
       closeMenu: () => { if (this.state.menu) this.setState({ menu: false }); },
-      navItems: this.NAV.map(([href, label]) => ({ href, label, ink: label === 'Proyectos' ? th.ink : th.mute2, fw: label === 'Proyectos' ? '600' : '400' })),
+      footWa: 'https://wa.me/' + String((window.MARCA && window.MARCA.whatsapp) || '').replace(/\D/g, ''),
+      navWide: s.w >= 1140, navNarrow: s.w < 1140,
+      menuItems: this.MENU.map(([href, label]) => ({ href, label })),
+      navItems: this.NAV.map(([href, label]) => ({ href, label, cur: label === 'Proyectos' ? 'page' : undefined, ink: label === 'Proyectos' ? th.ink : th.mute2, fw: label === 'Proyectos' ? '600' : '400' })),
       hdrBg: night ? 'rgba(28,30,36,0.82)' : 'rgba(251,251,253,0.8)',
       menuBg: night ? 'rgba(23,25,30,0.94)' : 'rgba(251,251,253,0.92)',
       burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
