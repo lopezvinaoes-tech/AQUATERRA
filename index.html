@@ -940,7 +940,7 @@ class Component extends DCLogic {
   }
 
   loadThree() {
-    if (!this._three) this._three = import('/vendor/three.min.js');
+    if (!this._three) this._three = import('/vendor/three.min.js?v=r160-2');
     return this._three;
   }
 
@@ -1277,8 +1277,8 @@ class Component extends DCLogic {
   }
 
   async initParking() {
-    let THREE;
-    try { THREE = await this.loadThree(); } catch (e) { return; }
+    let THREE, coches = null;
+    try { [THREE, coches] = await Promise.all([this.loadThree(), import('/coches.js').catch(() => null)]); } catch (e) { return; }
     const host = this.parkRef.current;
     if (!host || this.dead) return;
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
@@ -1350,9 +1350,6 @@ class Component extends DCLogic {
     const tube = new THREE.MeshStandardMaterial({ color: C('#ffffff'), emissive: C('#F4F2EC'), emissiveIntensity: 2.4 });
     const pipeM = new THREE.MeshStandardMaterial({ color: C('#2B2E33'), metalness: 0.8, roughness: 0.4 });
     const warm = new THREE.MeshStandardMaterial({ color: C('#ffffff'), emissive: C('#FFD9A0'), emissiveIntensity: 1.6 });
-    const carM = new THREE.MeshStandardMaterial({ color: C('#ffffff'), metalness: 0.6, roughness: 0.28, envMapIntensity: 1.2 });
-    const glassM = new THREE.MeshStandardMaterial({ color: C('#14181D'), metalness: 0.9, roughness: 0.08, envMapIntensity: 1.4 });
-    const tireM = new THREE.MeshStandardMaterial({ color: C('#16171A'), roughness: 0.8 });
 
     const plane = (w, h, mat, p, rot) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat); m.position.set(p[0], p[1], p[2]); m.rotation.set(rot[0], rot[1], 0); scene.add(m); return m; };
     plane(LX, LZ, floorM, [0, 0, 0], [-Math.PI / 2, 0]);
@@ -1379,26 +1376,23 @@ class Component extends DCLogic {
     const door = new THREE.Mesh(new THREE.BoxGeometry(0.08, 2.4, 3.2), warm); door.position.set(HX - 0.05, 1.2, 0); scene.add(door);
     [[0.12, 0.14, 3.6, HX - 0.08, 2.47, 0], [0.12, 2.54, 0.14, HX - 0.08, 1.27, -1.73], [0.12, 2.54, 0.14, HX - 0.08, 1.27, 1.73]].forEach((b) => { const m = new THREE.Mesh(B, lime); m.scale.set(b[0], b[1], b[2]); m.position.set(b[3], b[4], b[5]); scene.add(m); });
 
-    const bodyG = new THREE.BoxGeometry(1.84, 0.62, 4.4), cabG = new THREE.BoxGeometry(1.6, 0.56, 2.3), whG = new THREE.CylinderGeometry(0.33, 0.33, 0.24, 18); whG.rotateZ(Math.PI / 2);
-    const MAXC = N * 2;
-    const bodyM = new THREE.InstancedMesh(bodyG, carM, MAXC), cabM = new THREE.InstancedMesh(cabG, glassM, MAXC), whM = new THREE.InstancedMesh(whG, tireM, MAXC * 4);
-    scene.add(bodyM, cabM, whM);
-    const CARC = ['#E9EAEC', '#1C1E22', '#7C838C', '#3E4A5A', '#B9BEC4', '#6A3434', '#F5F5F7'].map(C);
+    // Coches: modelos actuales hechos con código (coches.js). Cada plaza ocupada recibe modelo, color y sentido
+    // al azar pero siempre los mismos para ese subsuelo; unos entran de frente y otros marcha atrás.
+    const flota = coches ? coches.crearFlota(THREE, scene, { max: N * 2, calidad: host.clientWidth < 700 ? 'media' : 'alta', vivo: () => !this.dead }) : null;
     const cars = () => {
-      let n = 0, w = 0;
+      if (!flota) return;
+      const r = (a, b) => Math.abs(Math.sin(a * 12.9898 + b * 78.233 + level * 7.7) * 43758.5) % 1, list = [];
       [-1, 1].forEach((s) => { for (let j = 0; j < N; j++) {
         if (s > 0 && j === HL) continue;
         const h = Math.abs(Math.sin(j * 12.9898 + s * 4.1 + level * 7.7) * 43758.5) % 1;
         if (h < 0.28) continue;
-        const x = sx(j), z = s * (AZ + SD / 2 + 0.15);
-        m4.compose(pv.set(x, 0.64, z), q, sv.set(1, 1, 1)); bodyM.setMatrixAt(n, m4); bodyM.setColorAt(n, CARC[Math.floor(h * 1000) % CARC.length]);
-        m4.compose(pv.set(x, 1.22, z + s * 0.25), q, sv.set(1, 1, 1)); cabM.setMatrixAt(n, m4);
-        [[-0.82, -1.38], [0.82, -1.38], [-0.82, 1.38], [0.82, 1.38]].forEach(([dx, dz]) => { m4.compose(pv.set(x + dx, 0.33, z + dz), q, sv.set(1, 1, 1)); whM.setMatrixAt(w++, m4); });
-        n++;
+        const c = { modelo: r(j, s * 3.1), color: r(j + 0.37, s * 5.3) }, L = flota.largo(c), deFrente = r(j + 0.71, s * 1.7) < 0.55;
+        c.x = sx(j) + (r(j + 0.13, s) - 0.5) * 0.16;
+        c.z = s * Math.max(AZ + 0.15 + L / 2, AZ + SD - 0.22 - L / 2 + (r(j + 0.29, s) - 0.5) * 0.14);
+        c.giro = (deFrente === s > 0 ? 0 : Math.PI) + (r(j + 0.53, s) - 0.5) * 0.05;
+        list.push(c);
       } });
-      bodyM.count = n; cabM.count = n; whM.count = w;
-      bodyM.instanceMatrix.needsUpdate = true; cabM.instanceMatrix.needsUpdate = true; whM.instanceMatrix.needsUpdate = true;
-      if (bodyM.instanceColor) bodyM.instanceColor.needsUpdate = true;
+      flota.colocar(list);
     };
     cars();
 
