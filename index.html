@@ -1378,7 +1378,7 @@ class Component extends DCLogic {
 
     // Coches: modelos actuales hechos con código (coches.js). Cada plaza ocupada recibe modelo, color y sentido
     // al azar pero siempre los mismos para ese subsuelo; unos entran de frente y otros marcha atrás.
-    const flota = coches ? coches.crearFlota(THREE, scene, { max: N * 2, calidad: host.clientWidth < 700 ? 'media' : 'alta', vivo: () => !this.dead }) : null;
+    const flota = coches ? coches.crearFlota(THREE, scene, { max: N * 2, calidad: host.clientWidth < 700 ? 'media' : 'alta', renderer, vivo: () => !this.dead }) : null;
     const cars = () => {
       if (!flota) return;
       const r = (a, b) => Math.abs(Math.sin(a * 12.9898 + b * 78.233 + level * 7.7) * 43758.5) % 1, list = [];

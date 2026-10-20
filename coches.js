@@ -2,7 +2,7 @@
 // Cada modelo se describe con su planta, su silueta lateral y su sección; la carrocería sale de coser
 // esas curvas en una malla suave, con pasos de rueda recortados, lunas, faros LED, llantas y matrícula.
 // Se carga con import() desde el parking de index.html y recibe el THREE que ya usa la página.
-// Uso: const flota = crearFlota(THREE, scene, { max: 32, calidad: 'alta' | 'media', vivo: () => true });
+// Uso: const flota = crearFlota(THREE, scene, { max: 32, calidad: 'alta' | 'media', renderer, vivo: () => true });
 //      flota.colocar([{ x, z, giro, modelo, color }]);   // modelo y color: números de 0 a 1 (azar estable)
 //      flota.listo -> promesa que se cumple cuando ya están todos los modelos
 
@@ -545,21 +545,43 @@ export function crearFlota(THREE, scene, op) {
   const modelos = [], vivo = (op && op.vivo) || (() => true);
   let ultima = null, listo;
   const hecho = new Promise((r) => { listo = r; });
-  const mk = (g, m) => { const im = new THREE.InstancedMesh(g, m, max); im.count = 0; im.frustumCulled = false; scene.add(im); return im; };
+  // Los shaders se compilan antes de meter cada modelo en la escena. Si no, el primer fotograma con coches deja
+  // el hilo principal parado mientras la GPU compila la pintura con barniz, justo al llegar al parking.
+  // Con KHR_parallel_shader_compile se espera a que la GPU termine sin bloquear nada; sin él, el primer uso de
+  // cada programa bloquea igual, así que se fuerza de uno en uno, cada uno en su propia tarea.
+  const R = op && op.renderer, cam = new THREE.PerspectiveCamera(), blanco = C('#ffffff');
+  const compilar = (objs) => new Promise((ok) => {
+    if (!R || !R.compile || !R.properties) { ok(); return; }
+    const pre = new THREE.Scene(); pre.add(...objs);
+    const progs = [...new Set([...R.compile(pre, cam, scene)].map((m) => R.properties.get(m).currentProgram).filter(Boolean))];
+    const paso = () => {
+      if (!vivo()) return;
+      const i = progs.findIndex((p) => p.isReady());
+      if (i >= 0) progs.splice(i, 1)[0].getUniforms();
+      if (progs.length) setTimeout(paso, i >= 0 ? 0 : 16); else ok();
+    };
+    setTimeout(paso, 0);
+  });
+  const mk = (g, m, tinte) => { const im = new THREE.InstancedMesh(g, m, max); im.count = 0; im.frustumCulled = false; if (tinte) im.setColorAt(0, blanco); return im; };
   const siguiente = (i) => {
     if (!vivo()) return;
     if (i >= MODELOS.length) { listo(); return; }
     const M = Object.assign({}, MODELOS[i]), geo = construir(THREE, M, q);
     // Cada modelo lleva su propia matrícula, así dos coches vecinos no repiten número.
     const mats = geo.rest.keys.map((k) => (k === 'placa' ? Object.assign(MAT.placa.clone(), { map: texPlaca(THREE, PLACAS[i % PLACAS.length]) }) : MAT[k]));
-    modelos[i] = { M, s: mk(geo.paint, PS), m: mk(geo.paint, PM), r: mk(geo.rest.g, mats) };
-    if (ultima) colocar(ultima);
-    setTimeout(() => siguiente(i + 1), 0);
+    const o = { M, s: mk(geo.paint, PS, true), m: mk(geo.paint, PM, true), r: mk(geo.rest.g, mats) }, nuevos = i ? [o.s, o.m, o.r] : [sombra, o.s, o.m, o.r];
+    const poner = () => {
+      if (!vivo()) return;
+      scene.add(...nuevos); modelos[i] = o;
+      if (ultima) colocar(ultima);
+      setTimeout(() => siguiente(i + 1), 0);
+    };
+    compilar(nuevos).then(poner, poner);
   };
   setTimeout(() => siguiente(0), 0);
   const sombra = new THREE.InstancedMesh(new THREE.PlaneGeometry(1, 1).rotateX(-Math.PI / 2),
     new THREE.MeshBasicMaterial({ map: texSombra(THREE), transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -4 }), max);
-  sombra.count = 0; sombra.frustumCulled = false; sombra.renderOrder = -1; scene.add(sombra);
+  sombra.count = 0; sombra.frustumCulled = false; sombra.renderOrder = -1;
   const cols = COLORES.map((c) => [C(c[0]), c[1]]);
   const m4 = new THREE.Matrix4(), qq = new THREE.Quaternion(), up = new THREE.Vector3(0, 1, 0), pv = new THREE.Vector3(), sv = new THREE.Vector3(1, 1, 1);
 
