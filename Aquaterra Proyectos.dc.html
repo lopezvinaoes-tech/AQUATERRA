@@ -24,6 +24,7 @@
 <script src="./marca.js" defer></script>
 <script src="./cookies.js" defer></script>
 <script src="./proyectos.js" defer></script>
+<script src="./moneda.js" defer></script>
 <script src="./leads.js" defer></script>
 <script src="./prefijos.js" defer></script>
 <script src="/vendor/react.production.min.js" defer></script>
@@ -150,6 +151,13 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
     <sc-if value="{{ anyF }}" hint-placeholder-val="{{ false }}">
       <button onClick="{{ clearF }}" style="flex:0 0 auto;height:40px;padding:0 10px;border:0;background:transparent;color:{{ linkC }};font-size:15px;cursor:pointer">Limpiar</button>
     </sc-if>
+    <div style="position:sticky;right:0;z-index:1;flex:0 0 auto;margin-left:auto;padding-left:8px;background:{{ th.bg }};box-shadow:-14px 0 12px -6px {{ th.bg }}">
+      <div role="group" aria-label="Moneda de los precios" style="display:flex;gap:2px;padding:2px;border-radius:999px;background:{{ th.chip }}">
+        <sc-for list="{{ monedas }}" as="m" hint-placeholder-count="3">
+          <button onClick="{{ m.pick }}" aria-pressed="{{ m.on }}" title="{{ m.title }}" style="height:36px;min-width:48px;padding:0 12px;border:0;border-radius:999px;background:{{ m.bg }};color:{{ m.ink }};font-size:14px;font-weight:600;cursor:pointer;transition:background .2s, color .2s">{{ m.t }}</button>
+        </sc-for>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -226,6 +234,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
     <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px">
       <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px">
         <span style="font-size:14px;color:{{ th.mute }}">{{ countLabel }}</span>
+        <span style="font-size:13px;color:{{ th.mute }}">{{ monedaNota }}</span>
         <label style="position:relative;display:flex;align-items:center;gap:6px;min-height:36px;font-size:14px;color:{{ th.ink }};cursor:pointer">
           <span style="color:{{ th.mute }}">Ordenar:</span><span style="font-weight:600">{{ sortTxt }}</span><span style="font-size:9px;opacity:0.6">▼</span>
           <select value="{{ sort }}" onChange="{{ setSort }}" aria-label="Ordenar proyectos" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;border:0">
@@ -247,6 +256,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
               <span style="padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:0.01em;background:{{ p.tagBg }};border:1px solid {{ p.tagBd }};color:{{ p.tagInk }};backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%)">{{ p.etapa }}</span>
               <span style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,247,0.62);text-align:right">{{ p.tipo }}</span>
             </div>
+            <span style="position:absolute;right:12px;bottom:10px;font-size:10px;letter-spacing:0.02em;color:rgba(245,245,247,0.55);pointer-events:none">{{ p.fotoNota }}</span>
             <div style="position:relative;display:flex;flex-direction:column;gap:6px;min-width:0">
               <span style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(245,245,247,0.7)"><span style="width:7px;height:7px;flex:0 0 auto;background:#C9F15D;transform:rotate(45deg);border-radius:1px"></span>{{ p.loc }}</span>
               <span style="font-size:12px;font-weight:500;letter-spacing:0.02em;color:rgba(245,245,247,0.55)">{{ p.kf.k }}</span>
@@ -378,6 +388,10 @@ class Component extends DCLogic {
     window.addEventListener('keydown', this._onKey);
     this._onCmp = () => this.setState((st) => ({ cmpV: (st.cmpV || 0) + 1 }));
     window.addEventListener('aq-comparar', this._onCmp);
+    this._onMon = () => this.setState((st) => ({ monV: (st.monV || 0) + 1 }));
+    window.addEventListener('aq-moneda', this._onMon);
+    // El cambio pudo llegar antes de montar la página: se repinta una vez por si acaso.
+    if (window.AQMoneda && window.AQMoneda.tasas()) this._onMon();
     // comparador.js carga con defer: refresca los botones cuando ya está disponible.
     if (!window.AQComparar) window.addEventListener('DOMContentLoaded', this._onCmp, { once: true });
     this.observarCifras();
@@ -441,7 +455,7 @@ class Component extends DCLogic {
       if (url !== window.location.pathname + window.location.search + window.location.hash) window.history.replaceState(window.history.state, '', url);
     } catch (e) {}
   }
-  componentWillUnmount() { if (this._io) this._io.disconnect(); clearTimeout(this._entradaT); window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); }
+  componentWillUnmount() { if (this._io) this._io.disconnect(); clearTimeout(this._entradaT); window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); window.removeEventListener('aq-moneda', this._onMon); }
 
   mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
 
@@ -540,15 +554,30 @@ class Component extends DCLogic {
   }
 
   // Portada tipográfica: fondo oscuro con un tono suave según el tipo de propiedad.
-  coverBg(tipo) {
+  coverBg(tipo, foto) {
     const tint = { 'Departamento': '41,151,255', 'Barrio cerrado': '201,241,93', 'Country': '52,199,149', 'Casa': '255,149,110', 'Lote': '255,190,80' }[tipo] || '142,142,147';
-    return `radial-gradient(120% 95% at 100% 0%, rgba(${tint},0.30), rgba(${tint},0) 62%), radial-gradient(90% 70% at 0% 100%, rgba(${tint},0.10), rgba(${tint},0) 70%), ${this.mode() === 'noche' ? '#1E2127' : '#0B0C0F'}`;
+    // Con imagen de referencia: se oscurece para que el texto se lea; si no carga, queda el degradado de siempre.
+    const img = foto ? `linear-gradient(180deg, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.12) 38%, rgba(0,0,0,0.72) 100%), url("${foto}") center/cover no-repeat, ` : '';
+    return `${img}radial-gradient(120% 95% at 100% 0%, rgba(${tint},0.30), rgba(${tint},0) 62%), radial-gradient(90% 70% at 0% 100%, rgba(${tint},0.10), rgba(${tint},0) 70%), ${this.mode() === 'noche' ? '#1E2127' : '#0B0C0F'}`;
   }
 
-  // Un dato real y destacado de la fuente para la portada: precio, entrega o el primer dato publicado.
+  // Selector USD / EUR / ₲ (moneda.js): botones y la nota con el cambio usado.
+  monedaVals(th) {
+    const M = window.AQMoneda;
+    const cur = M ? M.actual() : 'USD';
+    const T = { USD: ['USD', 'Dólares'], EUR: ['EUR', 'Euros'], PYG: ['₲', 'Guaraníes'] };
+    return {
+      monedas: ['USD', 'EUR', 'PYG'].map((c) => ({ t: T[c][0], title: 'Ver precios en ' + T[c][1].toLowerCase(), on: c === cur ? 'true' : 'false', bg: c === cur ? th.ink : 'transparent', ink: c === cur ? th.bg : th.ink, pick: () => M && M.poner(c) })),
+      monedaNota: M && cur !== 'USD' ? M.nota() : ''
+    };
+  }
+
+  // Un dato real y destacado de la fuente para la portada: precio, último precio publicado, entrega o el primer dato publicado.
   keyFigure(p) {
-    if (p.precio) return { k: 'Desde', v: 'USD ' + p.precio.toLocaleString('es-PY') };
-    if (p.precioTxt) return { k: 'Desde', v: p.precioTxt };
+    const M = window.AQMoneda;
+    const pv = M ? M.precio(p) : (p.precio ? 'USD ' + p.precio.toLocaleString('es-PY') : p.precioTxt);
+    if (pv) return { k: 'Desde', v: pv };
+    if (p.precioPub && M) return { k: 'Precio publicado en ' + p.precioPub.fecha, v: M.precioPub(p) };
     if (p.entrega) return { k: 'Entrega', v: p.entrega };
     const f = (p.facts || [])[0];
     return f ? { k: f[0], v: f[1] } : { k: 'Precio', v: 'Consultar' };
@@ -565,11 +594,12 @@ class Component extends DCLogic {
       meta: p.tipologia,
       devTxt: p.dev ? 'Proyecto de ' + p.dev : 'Proyecto de terceros',
       precioPre: p.precio || p.precioTxt ? 'Desde ' : '',
-      precioTxt: p.precio ? 'USD ' + p.precio.toLocaleString('es-PY') : p.precioTxt || 'Consultar precio',
+      precioTxt: (window.AQMoneda && window.AQMoneda.precio(p)) || (p.precio ? 'USD ' + p.precio.toLocaleString('es-PY') : p.precioTxt) || 'Consultar precio',
       fuenteTxt: 'Fuente: ' + p.fuentes.map((x) => `${x.nombre}, ${x.fecha}`).join(' · '),
       kf: this.keyFigure(p),
       extra: (p.precio || p.precioTxt) ? (p.entrega ? (/^Entregado/.test(p.entrega) ? p.entrega : 'Entrega: ' + p.entrega) : '') : 'Consultar precio',
-      cvBg: this.coverBg(p.tipo),
+      cvBg: this.coverBg(p.tipo, p.fotos && p.fotos[0]),
+      fotoNota: p.fotos && p.fotos.length ? 'Imagen de referencia' : '',
       tagBg: p.etapa === 'En pozo' ? 'rgba(201,241,93,0.14)' : 'rgba(255,255,255,0.08)',
       tagBd: p.etapa === 'En pozo' ? 'rgba(201,241,93,0.38)' : 'rgba(255,255,255,0.2)',
       tagInk: p.etapa === 'En pozo' ? '#E4F7B0' : '#F5F5F7'
@@ -633,6 +663,7 @@ class Component extends DCLogic {
       openCmp: () => { if (window.AQComparar) window.AQComparar.abrir(); },
       cmpLabel: nCmp ? `Comparar (${nCmp})` : 'Comparar proyectos',
       noResults: projects.length === 0,
+      ...this.monedaVals(th),
       countLabel: projects.length === 1 ? '1 propiedad' : `${projects.length} propiedades`
     };
   }

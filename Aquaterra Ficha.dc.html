@@ -23,6 +23,7 @@
 <script src="./marca.js" defer></script>
 <script src="./cookies.js" defer></script>
 <script src="./proyectos.js" defer></script>
+<script src="./moneda.js" defer></script>
 <script src="./leads.js" defer></script>
 <script src="./prefijos.js" defer></script>
 <script src="/vendor/react.production.min.js" defer></script>
@@ -152,6 +153,14 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
         <span style="font-size:clamp(28px,3vw,40px);line-height:1;letter-spacing:-0.03em;font-weight:700">{{ pr.precioTxt }}</span>
         <span style="min-height:{{ eurH }};font-size:14px;color:{{ th.mute }}">{{ eurTxt }}</span>
         <span style="font-size:13px;color:{{ th.mute }}">{{ pr.actualizado }}</span>
+        <div role="group" aria-label="Moneda de los precios" style="align-self:flex-start;margin-top:8px;display:flex;gap:2px;padding:2px;border-radius:999px;background:{{ th.chip }}">
+          <sc-for list="{{ monedas }}" as="m" hint-placeholder-count="3">
+            <button onClick="{{ m.pick }}" aria-pressed="{{ m.on }}" title="{{ m.title }}" style="height:32px;min-width:46px;padding:0 12px;border:0;border-radius:999px;background:{{ m.bg }};color:{{ m.ink }};font-size:13px;font-weight:600;cursor:pointer;transition:background .2s, color .2s">{{ m.t }}</button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ monedaNota }}" hint-placeholder-val="{{ false }}">
+          <span style="max-width:340px;font-size:12px;line-height:1.45;color:{{ th.mute }}">{{ monedaNota }}</span>
+        </sc-if>
       </div>
     </div>
     <sc-if value="{{ haySpecs }}" hint-placeholder-val="{{ true }}">
@@ -192,10 +201,19 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
         </sc-for>
       </div>
       <div style="position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.12)">
-        <span style="max-width:520px;font-size:14px;line-height:1.5;color:rgba(245,245,247,0.68)">Las imágenes de este proyecto pertenecen a su desarrolladora. Puedes verlas en la fuente.</span>
+        <span style="max-width:520px;font-size:14px;line-height:1.5;color:rgba(245,245,247,0.68)">{{ fotoNota }}</span>
         <a href="{{ pr.fuenteUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 18px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.22);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#F5F5F7;font-size:15px;font-weight:500;white-space:nowrap" style-hover="background:rgba(255,255,255,0.14);color:#FFFFFF">Ver imágenes en {{ pr.fuenteNombre }} ›</a>
       </div>
     </div>
+    <sc-if value="{{ hayGaleria }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px">
+        <sc-for list="{{ galeria }}" as="g" hint-placeholder-count="2">
+          <div role="img" aria-label="{{ g.alt }}" style="position:relative;aspect-ratio:16/10;border-radius:20px;overflow:hidden;background:{{ g.bg }}">
+            <span style="position:absolute;left:12px;bottom:10px;padding:3px 9px;border-radius:999px;background:rgba(0,0,0,0.45);color:rgba(245,245,247,0.85);font-size:11px;font-weight:500">Imagen de referencia</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
   </div>
 </section>
 
@@ -521,6 +539,10 @@ class Component extends DCLogic {
     // Comparador y cambio a euros (comparador.js carga con defer).
     this._onCmp = () => this.setState((st) => ({ cmpV: (st.cmpV || 0) + 1 }));
     window.addEventListener('aq-comparar', this._onCmp);
+    this._onMon = () => this.setState((st) => ({ monV: (st.monV || 0) + 1 }));
+    window.addEventListener('aq-moneda', this._onMon);
+    // El cambio pudo llegar antes de montar la página: se repinta una vez por si acaso.
+    if (window.AQMoneda && window.AQMoneda.tasas()) this._onMon();
     // El mapa de Google solo se carga con permiso (aviso de cookies, cookies.js).
     this._onConsent = () => this.setState({ mapaOk: !!(window.AQCookies && window.AQCookies.ok('terceros')) });
     window.addEventListener('aq-consent', this._onConsent);
@@ -564,13 +586,20 @@ class Component extends DCLogic {
   }
 
   // Portada tipográfica (igual que en el catálogo).
-  coverBg(tipo) {
+  coverBg(tipo, foto) {
     const tint = { 'Departamento': '41,151,255', 'Barrio cerrado': '201,241,93', 'Country': '52,199,149', 'Casa': '255,149,110', 'Lote': '255,190,80' }[tipo] || '142,142,147';
-    return `radial-gradient(120% 95% at 100% 0%, rgba(${tint},0.30), rgba(${tint},0) 62%), radial-gradient(90% 70% at 0% 100%, rgba(${tint},0.10), rgba(${tint},0) 70%), ${this.mode() === 'noche' ? '#1E2127' : '#0B0C0F'}`;
+    // Con imagen de referencia: se oscurece para que el texto se lea; si no carga, queda el degradado de siempre.
+    const img = foto ? `linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.75) 100%), url("${foto}") center/cover no-repeat, ` : '';
+    return `${img}radial-gradient(120% 95% at 100% 0%, rgba(${tint},0.30), rgba(${tint},0) 62%), radial-gradient(90% 70% at 0% 100%, rgba(${tint},0.10), rgba(${tint},0) 70%), ${this.mode() === 'noche' ? '#1E2127' : '#0B0C0F'}`;
+  }
+  precioTxt(p) {
+    const M = window.AQMoneda;
+    return M ? M.precio(p) : (p.precio ? 'USD ' + p.precio.toLocaleString('es-PY') : p.precioTxt || '');
   }
   keyFigure(p) {
-    if (p.precio) return { k: 'Desde', v: 'USD ' + p.precio.toLocaleString('es-PY') };
-    if (p.precioTxt) return { k: 'Desde', v: p.precioTxt };
+    const pv = this.precioTxt(p);
+    if (pv) return { k: 'Desde', v: pv };
+    if (p.precioPub && window.AQMoneda) return { k: 'Precio publicado en ' + p.precioPub.fecha, v: window.AQMoneda.precioPub(p) };
     if (p.entrega) return { k: 'Entrega', v: p.entrega };
     const f = (p.facts || [])[0];
     return f ? { k: f[0], v: f[1] } : { k: 'Precio', v: 'Consultar' };
@@ -578,14 +607,25 @@ class Component extends DCLogic {
   // Hasta tres datos publicados para la portada de la ficha.
   keyFigures(p) {
     const out = [];
-    const pv = p.precio ? 'USD ' + p.precio.toLocaleString('es-PY') : p.precioTxt;
+    const pv = this.precioTxt(p);
     if (pv) out.push({ k: 'Desde', v: pv });
+    else if (p.precioPub && window.AQMoneda) out.push({ k: 'Precio publicado en ' + p.precioPub.fecha, v: window.AQMoneda.precioPub(p) });
     if (p.entrega) out.push({ k: 'Entrega', v: p.entrega });
     (p.facts || []).forEach(([k, v]) => {
       if (out.length >= 3 || v.length > 26 || /^Entrega$/.test(k) || (pv && v.includes(pv)) || out.some((o) => o.v === v)) return;
       out.push({ k, v });
     });
     return out;
+  }
+  // Selector USD / EUR / ₲ (moneda.js): botones y la nota con el cambio usado.
+  monedaVals(th) {
+    const M = window.AQMoneda;
+    const cur = M ? M.actual() : 'USD';
+    const T = { USD: ['USD', 'Dólares'], EUR: ['EUR', 'Euros'], PYG: ['₲', 'Guaraníes'] };
+    return {
+      monedas: ['USD', 'EUR', 'PYG'].map((c) => ({ t: T[c][0], title: 'Ver precios en ' + T[c][1].toLowerCase(), on: c === cur ? 'true' : 'false', bg: c === cur ? th.ink : 'transparent', ink: c === cur ? th.bg : th.ink, pick: () => M && M.poner(c) })),
+      monedaNota: M && cur !== 'USD' ? M.nota() : ''
+    };
   }
   ref(i) { return 'AQ-' + String(i + 1).padStart(3, '0'); }
   precioRef(p) { return p.precio || p.precioFiltro || null; }
@@ -656,7 +696,7 @@ class Component extends DCLogic {
       .then(() => this.setState({ cfSent: true, cfSending: false }))
       .catch((e) => this.setState({ cfSending: false, cfErr: (e && e.message) || 'No pudimos enviar tu solicitud. Escríbenos por WhatsApp.' }));
   }
-  componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); window.removeEventListener('aq-consent', this._onConsent); clearTimeout(this._shareT); }
+  componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); window.removeEventListener('aq-consent', this._onConsent); window.removeEventListener('aq-moneda', this._onMon); clearTimeout(this._shareT); }
 
   mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
 
@@ -664,6 +704,7 @@ class Component extends DCLogic {
     const s = this.state;
     const night = this.mode() === 'noche';
     const th = this.THEMES[night ? 'noche' : 'dia'];
+    const M = window.AQMoneda;
     const wide = s.w >= 980, narrowM = s.w < 640;
     const p = this.proyecto();
     const pIdx = this.PROJECTS.indexOf(p);
@@ -696,7 +737,11 @@ class Component extends DCLogic {
       masZona: 'Aquaterra%20Proyectos.dc.html?ciudad=' + encodeURIComponent(p.ciudad),
       masZonaTxt: 'Más proyectos en ' + p.ciudad + ' ›',
       eurH: p.precio ? '1.45em' : '0px',
-      eurTxt: p.precio && s.eur ? '≈ ' + Math.round(p.precio * s.eur).toLocaleString('es-ES') + ' € al cambio de hoy' : '',
+      eurTxt: !p.precio ? '' : M && M.efectiva() !== 'USD' ? 'Publicado en USD ' + p.precio.toLocaleString('es-PY') : s.eur ? '≈ ' + Math.round(p.precio * s.eur).toLocaleString('es-ES') + ' € al cambio de hoy' : '',
+      ...this.monedaVals(th),
+      fotoNota: (p.fotos || []).length ? 'Imágenes de referencia del tipo de propiedad, no del proyecto. Las fotos reales pertenecen a la desarrolladora.' : 'Las imágenes de este proyecto pertenecen a su desarrolladora. Puedes verlas en la fuente.',
+      galeria: (p.fotos || []).slice(1).map((f, j) => ({ alt: 'Imagen de referencia ' + (j + 2) + ' de ' + p.tipo.toLowerCase(), bg: `url("${f}") center/cover no-repeat, ${th.ph}` })),
+      hayGaleria: (p.fotos || []).length > 1,
       cmpOn: cmpOn ? 'true' : 'false',
       cmpTxt: cmpOn ? '✓ En tu comparación' : '+ Comparar',
       cmpBg: cmpOn ? 'rgba(201,241,93,0.18)' : 'transparent',
@@ -730,7 +775,7 @@ class Component extends DCLogic {
       nightInk: night ? '#ECECEE' : '#636368',
       toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { localStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
       coverMinH: narrowM ? '440px' : '460px',
-      cvBg: this.coverBg(p.tipo),
+      cvBg: this.coverBg(p.tipo, (p.fotos || [])[0]),
       keyFigs: this.keyFigures(p),
       footPad: wide ? 'calc(28px + env(safe-area-inset-bottom))' : 'calc(100px + env(safe-area-inset-bottom))',
       pr: {
@@ -738,8 +783,8 @@ class Component extends DCLogic {
         loc: this.locTxt(p),
         devTxt: p.dev ? 'Proyecto de ' + p.dev : 'Proyecto de terceros',
         devCorto: p.dev || 'Sin dato publicado',
-        precioLbl: p.precio || p.precioTxt ? 'Desde' : 'Precio',
-        precioTxt: p.precio ? usd(p.precio) : p.precioTxt || 'Consultar precio',
+        precioLbl: this.precioTxt(p) ? 'Desde' : p.precioPub ? 'Precio publicado en ' + p.precioPub.fecha : 'Precio',
+        precioTxt: this.precioTxt(p) || (p.precioPub && M ? M.precioPub(p) : '') || 'Consultar precio',
         entregaTxt: p.entrega || 'No aplica',
         ref: this.ref(pIdx),
         actualizado: 'Fuente: ' + p.fuentes[0].nombre + ', ' + p.fuentes[0].fecha,
@@ -752,7 +797,7 @@ class Component extends DCLogic {
         .filter((x) => x.i !== pIdx)
         .sort((a, b) => (b.o.ciudad === p.ciudad) - (a.o.ciudad === p.ciudad) || a.i - b.i)
         .slice(0, 3)
-        .map(({ o, i }) => ({ ...o, ...this.glass(o.etapa), href: 'Aquaterra%20Ficha.dc.html?p=' + i, loc: this.locTxt(o), kf: this.keyFigure(o), cvBg: this.coverBg(o.tipo) })),
+        .map(({ o, i }) => ({ ...o, ...this.glass(o.etapa), href: 'Aquaterra%20Ficha.dc.html?p=' + i, loc: this.locTxt(o), kf: this.keyFigure(o), cvBg: this.coverBg(o.tipo, (o.fotos || [])[0]) })),
       cfNombre: s.cf.nombre, cfEmail: s.cf.email, cfTel: s.cf.tel, cfPre: s.cf.pre, cfPreTxt: window.AQPrefijos ? window.AQPrefijos.corto(s.cf.pre) : '', preOpts: window.AQPrefijos ? window.AQPrefijos.opciones : [], cfMsg: s.cf.msg, cfHp: s.cf.empresa_web,
       onCf: Object.fromEntries(['nombre', 'email', 'tel', 'pre', 'msg', 'empresa_web'].map((k) => [k, (e) => { const v = e.target.value; this.setState((st) => ({ cf: { ...st.cf, [k]: v }, cfErr: '' })); }])),
       cfPh: '¿Qué te gustaría saber de ' + p.name + '?',

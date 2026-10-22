@@ -35,6 +35,7 @@
 <script src="./marca.js" defer></script>
 <script src="./cookies.js" defer></script>
 <script src="./proyectos.js" defer></script>
+<script src="./moneda.js" defer></script>
 <script src="./leads.js" defer></script>
 <script src="./prefijos.js" defer></script>
 <script src="/vendor/react.production.min.js" defer></script>
@@ -355,7 +356,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
     <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px">
       <sc-for list="{{ destacados }}" as="d" hint-placeholder-count="3">
         <a href="{{ d.href }}" data-reveal="" data-tilt="" style="display:flex;flex-direction:column;border-radius:26px;overflow:hidden;background:{{ th.deep }};color:{{ th.deepInk }};transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s" style-hover="box-shadow:0 30px 60px -30px rgba(0,0,0,0.5);color:#F5F5F7">
-          <div style="position:relative;aspect-ratio:16/11;padding:22px;display:flex;flex-direction:column;justify-content:space-between;background:radial-gradient(120% 90% at 85% 0%,rgba(201,241,93,0.22),rgba(201,241,93,0) 55%),linear-gradient(160deg,{{ th.deep2 }},{{ th.deep }})">
+          <div style="position:relative;aspect-ratio:16/11;padding:22px;display:flex;flex-direction:column;justify-content:space-between;background:{{ d.foto }}radial-gradient(120% 90% at 85% 0%,rgba(201,241,93,0.22),rgba(201,241,93,0) 55%),linear-gradient(160deg,{{ th.deep2 }},{{ th.deep }})">
             <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
               <span style="padding:5px 12px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;font-size:12px;font-weight:600">{{ d.etapa }}</span>
               <span style="font-size:12px;color:rgba(245,245,247,0.6)">{{ d.ciudad }}</span>
@@ -740,6 +741,10 @@ class Component extends DCLogic {
     this._onKey = (e) => { if (e.key === 'Escape' && (this.state.modal || this.state.menu)) this.setState({ modal: false, menu: false }); };
     window.addEventListener('keydown', this._onKey);
     this._lastMode = this.mode();
+    this._onMon = () => this.setState((st) => ({ monV: (st.monV || 0) + 1 }));
+    window.addEventListener('aq-moneda', this._onMon);
+    // El cambio pudo llegar antes de montar la página: se repinta una vez por si acaso.
+    if (window.AQMoneda && window.AQMoneda.tasas()) this._onMon();
     this.scanReveal();
     this.initCtaTitle();
     this.onScroll();
@@ -800,6 +805,7 @@ class Component extends DCLogic {
     document.removeEventListener('scroll', this._onScroll, { capture: true });
     window.removeEventListener('resize', this._onResize);
     window.removeEventListener('keydown', this._onKey);
+    window.removeEventListener('aq-moneda', this._onMon);
     if (this.io) this.io.disconnect();
     if (this.ctaIo) this.ctaIo.disconnect();
     if (this._lazyIo) this._lazyIo.forEach((io) => io.disconnect());
@@ -1659,7 +1665,9 @@ class Component extends DCLogic {
         return [0, 2, 5].filter((i) => all[i]).map((i) => { const p = all[i]; return {
           href: 'Aquaterra%20Ficha.dc.html?p=' + i, name: p.name, tipo: p.tipo, etapa: p.etapa, ciudad: p.ciudad,
           loc: p.barrio === p.ciudad ? p.ciudad : p.barrio, tipologia: p.tipologia,
-          precio: p.precio ? 'Desde USD ' + fmt(p.precio) : (p.precioTxt ? 'Desde ' + p.precioTxt : 'Consultar precio'),
+          precio: (() => { const M = window.AQMoneda, v = M ? M.precio(p) : (p.precio ? 'USD ' + fmt(p.precio) : p.precioTxt); return v ? 'Desde ' + v : 'Consultar precio'; })(),
+          // Imagen de referencia oscurecida para que el texto se lea; si no carga, queda el degradado.
+          foto: p.fotos && p.fotos[0] ? `linear-gradient(180deg,rgba(0,0,0,0.45) 0%,rgba(0,0,0,0.15) 40%,rgba(0,0,0,0.7) 100%),url("${p.fotos[0]}") center/cover no-repeat,` : '',
           dev: p.dev ? 'Proyecto de ' + p.dev : 'Proyecto de terceros' }; });
       })(),
       nProyectos: (window.PROYECTOS || []).length,
