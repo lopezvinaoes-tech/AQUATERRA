@@ -795,6 +795,34 @@ class Component extends DCLogic {
     this.whenNear(this.towerSecRef, () => { this.initTower(); this.initParking(); });
     // Las fotos del equipo se piden cuando su sección se acerca, no durante la carga inicial.
     this.whenNear(this.equipoRef, () => this.setState({ verEquipo: true }));
+    // Llegadas desde otras páginas con ancla (index.html#simulador, #asesoria...).
+    this.irAlAncla();
+    this._onHash = () => this.irAlAncla();
+    window.addEventListener('hashchange', this._onHash);
+  }
+
+  // La página se pinta después de cargar, así que el navegador no encuentra la sección del ancla y se queda arriba: el salto se hace a mano.
+  // #asesoria abre directamente el formulario "Agenda una asesoría" (los botones de las otras páginas llegan así).
+  // Durante unos segundos se corrige la posición por si algo de arriba cambia de alto mientras termina de cargar, salvo que el visitante ya se haya movido.
+  irAlAncla() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    if (id === 'asesoria') {
+      this.setState({ modal: true, sent: false, menu: false });
+      try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+      return;
+    }
+    let quieto = true;
+    const parar = () => { quieto = false; };
+    ['wheel', 'touchstart', 'keydown'].forEach((ev) => window.addEventListener(ev, parar, { once: true, passive: true }));
+    const fin = Date.now() + 4000;
+    const ir = () => {
+      const el = document.getElementById(id);
+      if (!quieto || !el) return;
+      if (Math.abs(el.getBoundingClientRect().top) > 2) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: 'auto' });
+      if (Date.now() < fin) setTimeout(ir, 200);
+    };
+    requestAnimationFrame(ir);
   }
 
   // Nitidez adaptable del 3D: si el equipo no sostiene unos 40 fps, se baja la resolución del lienzo para que el movimiento siga fluido.
@@ -847,6 +875,7 @@ class Component extends DCLogic {
     window.removeEventListener('resize', this._onResize);
     window.removeEventListener('keydown', this._onKey);
     window.removeEventListener('aq-moneda', this._onMon);
+    window.removeEventListener('hashchange', this._onHash);
     if (this.io) this.io.disconnect();
     if (this.ctaIo) this.ctaIo.disconnect();
     if (this._lazyIo) this._lazyIo.forEach((io) => io.disconnect());
