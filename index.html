@@ -38,6 +38,8 @@
 <script src="./moneda.js" defer></script>
 <script src="./leads.js" defer></script>
 <script src="./prefijos.js" defer></script>
+<script src="./alertas.js" defer></script>
+<script src="./asesoria.js" data-barra defer></script>
 <script src="/vendor/react.production.min.js" defer></script>
 <script src="/vendor/react-dom.production.min.js" defer></script>
 <script src="./arranque.js" defer></script>
@@ -129,7 +131,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
         <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ nightInk }}">Noche</span>
       </button>
     </div>
-    <button onClick="{{ openModal }}" style="margin-top:28px;height:50px;border-radius:14px;border:0;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500;cursor:pointer">Agenda una asesoría</button>
+    <button onClick="{{ openModal }}" style="margin-top:28px;height:50px;border-radius:14px;border:0;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500;cursor:pointer">Reserva tu llamada gratis de 20 min</button>
   </div>
 </sc-if>
 
@@ -149,9 +151,10 @@ select option{color:#1D1D1F;background:#FFFFFF}
         <p style="margin:0;max-width:620px;font-size:clamp(15px,1.2vw,18px);line-height:1.5;color:{{ sub }};transition:color .9s;text-wrap:pretty">Te ayudamos a elegir, comprar a distancia y alquilar un piso en Asunción, con una renta estimada del 6 al 8 % neto al año e impuestos bajos.</p>
         <span style="display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;font-weight:500;color:{{ sub }};transition:color .9s"><span><span style="color:{{ limeText }}">✓</span> Grado de inversión</span><span><span style="color:{{ limeText }}">✓</span> Compra sin viajar</span><span><span style="color:{{ limeText }}">✓</span> Acompañamiento hasta la renta</span></span>
         <div style="pointer-events:auto;display:flex;flex-wrap:wrap;gap:10px;padding-top:6px">
-          <button onClick="{{ openModal }}" data-magnet="" style="display:inline-flex;align-items:center;gap:6px;height:46px;padding:0 22px;border-radius:999px;border:0;cursor:pointer;background:{{ ink }};color:{{ heroBtnInk }};font-size:15px;font-weight:600;letter-spacing:-0.01em" style-hover="opacity:0.85">Agenda tu asesoría <span>›</span></button>
+          <button onClick="{{ openModal }}" data-magnet="" style="display:inline-flex;align-items:center;gap:6px;height:46px;padding:0 22px;border-radius:999px;border:0;cursor:pointer;background:{{ ink }};color:{{ heroBtnInk }};font-size:15px;font-weight:600;letter-spacing:-0.01em" style-hover="opacity:0.85">Reserva tu llamada gratis de 20 min <span>›</span></button>
           <a href="#simulador" data-magnet="" style="display:inline-flex;align-items:center;gap:6px;height:46px;padding:0 22px;border-radius:999px;border:1px solid {{ heroGlassBd2 }};background:rgba(201,241,93,0.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:{{ ink }};font-size:15px;font-weight:600;letter-spacing:-0.01em" style-hover="background:rgba(201,241,93,0.28);color:{{ ink }}">Calcula tu renta</a>
         </div>
+        <span style="font-size:12.5px;font-weight:500;color:{{ sub }};transition:color .9s">Sin compromiso · Respondemos en menos de 24 h · Horario de España</span>
       </div>
     </div>
 
@@ -266,20 +269,111 @@ select option{color:#1D1D1F;background:#FFFFFF}
   </div>
 </section>
 
-<section data-screen-label="03 Llamada a la acción" style="background:{{ th.bg }};transition:background .6s;padding:0 clamp(20px,3.2vw,48px) clamp(88px,12vw,160px)">
+<section data-screen-label="03 Llamada a la acción" style="background:{{ th.bg }};transition:background .6s;padding:0 clamp(20px,3.2vw,48px) clamp(16px,2vw,24px)">
   <div data-reveal="" data-grain="" style="max-width:1280px;margin:0 auto;border-radius:clamp(28px,3vw,40px);background:{{ th.deep }};color:{{ th.deepInk }};overflow:hidden;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:28px;padding:clamp(28px,4vw,56px)">
     <div style="flex:1 1 420px;display:flex;flex-direction:column;gap:12px">
       <h2 style="margin:0;font-size:clamp(28px,3vw,44px);line-height:1.08;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">¿Encaja Paraguay con <span data-accent="" style="color:#E4F7B0">tu perfil</span>?</h2>
       <p style="margin:0;max-width:520px;font-size:17px;line-height:1.6;color:rgba(245,245,247,0.75);text-wrap:pretty">Cuéntanos tu objetivo y tu presupuesto y te decimos con claridad si tiene sentido para ti, antes de comprometer nada.</p>
     </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
     <div style="display:flex;flex-wrap:wrap;gap:10px">
-      <button onClick="{{ openModal }}" data-magnet="" style="height:52px;padding:0 24px;border-radius:999px;border:0;cursor:pointer;background:#C9F15D;color:#1D1D1F;font-size:16px;font-weight:600" style-hover="opacity:0.85">Agenda tu asesoría</button>
+      <button onClick="{{ openModal }}" data-magnet="" style="height:52px;padding:0 24px;border-radius:999px;border:0;cursor:pointer;background:#C9F15D;color:#1D1D1F;font-size:16px;font-weight:600" style-hover="opacity:0.85">Reserva tu llamada gratis de 20 min</button>
       <a href="{{ waHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;height:52px;padding:0 22px;border-radius:999px;border:1px solid rgba(245,245,247,0.24);color:#F5F5F7;font-size:16px;font-weight:500" style-hover="background:rgba(255,255,255,0.08);color:#F5F5F7">Escríbenos por WhatsApp</a>
+    </div>
+    <span style="font-size:13px;font-weight:500;color:rgba(245,245,247,0.7)">Sin compromiso · Respondemos en menos de 24 h · Horario de España</span>
+    <button onClick="{{ openGuia }}" style="align-self:flex-start;padding:0;border:0;background:none;cursor:pointer;font-size:15px;font-weight:500;color:#E4F7B0;text-decoration:underline;text-underline-offset:3px;font-family:inherit" style-hover="opacity:0.8">¿Aún no estás listo? Descarga la guía gratuita ›</button>
     </div>
   </div>
 </section>
 
-<section id="edificio" ref="{{ towerSecRef }}" data-screen-label="03 Edificio" style="position:relative;height:940vh;background:{{ tw.bg }};transition:background .6s">
+<section id="simulador" data-screen-label="04 Simulador" style="background:{{ th.bg }};transition:background .6s;padding:clamp(24px,4vw,56px) clamp(20px,3.2vw,48px) clamp(88px,12vw,160px)">
+  <div data-reveal="" data-grain="" data-aurora="" style="max-width:1280px;margin:0 auto;border-radius:clamp(28px,3vw,40px);background:{{ th.deep }};color:{{ th.deepInk }};overflow:hidden;display:flex;flex-wrap:wrap">
+    <div style="flex:1 1 440px;display:flex;flex-direction:column;gap:28px;padding:clamp(28px,4vw,56px)">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <span data-kicker="oscuro"><b>03</b>Simulador</span>
+        <h2 data-fx="" style="margin:0;font-size:clamp(32px,3.6vw,52px);line-height:1.04;letter-spacing:-0.03em;font-weight:700">¿Cuánto podría <span data-accent="" style="color:#E4F7B0">rentarte</span>?</h2>
+        <p style="margin:0;font-size:17px;line-height:1.6;color:rgba(245,245,247,0.75);text-wrap:pretty">Mueve el monto y elige si compras terminado o en pozo. Usamos los rangos publicados para Asunción.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+          <span style="font-size:14px;color:rgba(245,245,247,0.7)">Monto a invertir</span>
+          <span style="font-size:clamp(28px,3vw,40px);font-weight:700;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">{{ simMontoTxt }}</span>
+        </div>
+        <input type="range" min="30000" max="300000" step="5000" value="{{ simMonto }}" onChange="{{ onSimMonto }}" onInput="{{ onSimMonto }}" aria-label="Monto a invertir en dólares" data-range="" style="--p:{{ simPct }};width:100%;accent-color:#C9F15D;height:28px;cursor:pointer">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(245,245,247,0.5)"><span>USD 30.000</span><span>USD 300.000</span></div>
+      </div>
+      <div role="group" aria-label="Tipo de compra" style="display:flex;padding:4px;border-radius:14px;background:rgba(255,255,255,0.06);border:1px solid rgba(245,245,247,0.1)">
+        <sc-for list="{{ simModos }}" as="m" hint-placeholder-count="2">
+          <button onClick="{{ m.pick }}" aria-pressed="{{ m.on }}" style="flex:1;height:44px;border-radius:10px;border:1px solid {{ m.bd }};background:{{ m.bg }};color:{{ m.ink }};font-size:15px;font-weight:600;cursor:pointer;transition:background .25s, color .25s">{{ m.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="flex:1 1 420px;display:flex;flex-direction:column;justify-content:space-between;gap:28px;padding:clamp(28px,4vw,56px);background:radial-gradient(120% 100% at 100% 0%,rgba(201,241,93,0.16),rgba(201,241,93,0) 60%),#121419;border-left:1px solid rgba(245,245,247,0.08)">
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <sc-for list="{{ simFilas }}" as="f" hint-placeholder-count="3">
+          <div style="display:flex;flex-direction:column;gap:6px;padding-bottom:20px;border-bottom:1px solid rgba(245,245,247,0.1)">
+            <span style="font-size:14px;color:rgba(245,245,247,0.7)">{{ f.k }}</span>
+            <span style="font-size:clamp(24px,2.4vw,34px);line-height:1.1;font-weight:700;letter-spacing:-0.025em;color:{{ f.ink }};font-variant-numeric:tabular-nums">{{ f.v }}</span>
+            <span style="font-size:13px;line-height:1.5;color:rgba(245,245,247,0.6)">{{ f.nota }}</span>
+          </div>
+        </sc-for>
+        <sc-if value="{{ simPass }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:14px 16px;border-radius:14px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);font-size:14px;line-height:1.5;color:#E4F7B0">Con USD 200.000 o más en inmuebles que no sean para uso propio puedes pedir el Investor Pass, la residencia permanente para inversores.</div>
+        </sc-if>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <button onClick="{{ simCta }}" data-magnet="" style="height:54px;border-radius:999px;border:1px solid rgba(201,241,93,0.55);background:rgba(201,241,93,0.2);color:#E4F7B0;font-size:16px;font-weight:600;cursor:pointer;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)" style-hover="background:rgba(201,241,93,0.3)">Quiero un análisis de mi caso</button>
+        <span style="font-size:12px;line-height:1.55;color:rgba(245,245,247,0.55)">Estimación orientativa, no una promesa de rentabilidad: no descuenta vacancia, expensas ni impuestos. Fuentes: <a href="https://infonegocios.com.py/infolegal/invertir-en-departamentos-en-paraguay-introduccion-general-para-el-inversionista" target="_blank" rel="noopener" style="color:rgba(245,245,247,0.75);text-decoration:underline">Infonegocios</a> (6 – 8 % neto), <a href="https://www.riotimesonline.com/buying-property-paraguay-foreigners-2026/" target="_blank" rel="noopener" style="color:rgba(245,245,247,0.75);text-decoration:underline">Rio Times</a> (reserva), <a href="https://holacasa.com.py/comprar-en-pozo-vs-terminado-paraguay/" target="_blank" rel="noopener" style="color:rgba(245,245,247,0.75);text-decoration:underline">HolaCasa</a> (obra sin renta), <a href="https://www.abc.com.py/economia/2026/05/21/investor-pass-residencia-permanente-en-paraguay-para-inversores-extranjeros/" target="_blank" rel="noopener" style="color:rgba(245,245,247,0.75);text-decoration:underline">ABC</a> (Investor Pass).</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="proyectos" data-screen-label="05 Proyectos" style="background:{{ th.bg }};transition:background .6s;padding:clamp(88px,12vw,160px) clamp(20px,3.2vw,48px) clamp(56px,7vw,96px)">
+  <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(36px,5vw,56px)">
+    <div data-reveal="" style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:20px;max-width:720px">
+        <span data-kicker=""><b>04</b>Proyectos</span>
+        <h2 data-fx="" style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Proyectos que <span data-accent="" data-mark="" style="background:linear-gradient(transparent 60%,{{ th.mark }} 60%,{{ th.mark }} 92%,transparent 92%);padding:0 .06em">analizamos para ti</span></h2>
+        <p style="margin:0;font-size:18px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">Departamentos en pozo, barrios cerrados y lotes. Antes de enseñarte uno, revisamos cuatro cosas:</p>
+        <span style="display:flex;flex-wrap:wrap;gap:8px 20px;font-size:15px;font-weight:500;color:{{ th.mute2 }}"><span><span style="color:{{ th.tick }}">✓</span> Trayectoria de la desarrolladora</span><span><span style="color:{{ th.tick }}">✓</span> Ubicación y demanda de alquiler</span><span><span style="color:{{ th.tick }}">✓</span> Plan de pagos</span><span><span style="color:{{ th.tick }}">✓</span> Documentación del terreno</span></span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <a href="Aquaterra%20Proyectos.dc.html" style="display:inline-flex;align-items:center;gap:6px;height:46px;padding:0 22px;border-radius:999px;background:{{ th.ink }};color:{{ th.bg }};font-size:15px;font-weight:600" style-hover="opacity:0.85;color:{{ th.bg }}">Ver los {{ nProyectos }} proyectos <span>›</span></a>
+        <button onClick="{{ openAlertas }}" style="display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 20px;border-radius:999px;border:1px solid {{ th.line2 }};background:transparent;color:{{ th.ink }};font-size:15px;font-weight:600;cursor:pointer;font-family:inherit" style-hover="background:{{ th.line }}">Avísame de nuevos proyectos</button>
+      </div>
+    </div>
+    <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px">
+      <sc-for list="{{ destacados }}" as="d" hint-placeholder-count="3">
+        <a href="{{ d.href }}" data-reveal="" data-tilt="" style="display:flex;flex-direction:column;border-radius:26px;overflow:hidden;background:{{ th.deep }};color:{{ th.deepInk }};transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s" style-hover="box-shadow:0 30px 60px -30px rgba(0,0,0,0.5);color:#F5F5F7">
+          <div style="position:relative;aspect-ratio:16/11;padding:22px;display:flex;flex-direction:column;justify-content:space-between;background:{{ d.foto }}radial-gradient(120% 90% at 85% 0%,rgba(201,241,93,0.22),rgba(201,241,93,0) 55%),linear-gradient(160deg,{{ th.deep2 }},{{ th.deep }})">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+              <span style="padding:5px 12px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;font-size:12px;font-weight:600">{{ d.etapa }}</span>
+              <span style="font-size:12px;color:rgba(245,245,247,0.6)">{{ d.ciudad }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span data-mono="" style="font-size:13px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:rgba(228,247,176,0.8)">{{ d.tipo }}</span>
+              <span style="font-size:clamp(30px,2.8vw,40px);line-height:1;letter-spacing:-0.035em;font-weight:700">{{ d.name }}</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;padding:20px 22px 22px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+              <span style="font-size:14px;color:rgba(245,245,247,0.72)">{{ d.loc }}</span>
+              <span style="font-size:15px;font-weight:600;white-space:nowrap">{{ d.precio }}</span>
+            </div>
+            <span style="font-size:14px;line-height:1.5;color:rgba(245,245,247,0.72)">{{ d.tipologia }}</span>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:14px;border-top:1px solid rgba(245,245,247,0.1)">
+              <span style="font-size:12px;color:rgba(245,245,247,0.55)">{{ d.dev }}</span>
+              <span style="font-size:14px;font-weight:600;color:#E4F7B0">Ver ficha ›</span>
+            </div>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section id="edificio" ref="{{ towerSecRef }}" data-screen-label="06 Edificio" style="position:relative;height:500vh;background:{{ tw.bg }};transition:background .6s">
   <div id="cocheras" style="position:absolute;left:0;top:53.6%;width:1px;height:1px;pointer-events:none"></div>
   <div style="position:sticky;top:0;height:100svh;overflow:hidden">
     <div ref="{{ towerRef }}" style="position:absolute;inset:0"></div>
@@ -303,7 +397,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
 
     <div ref="{{ twInfoRef }}" style="position:absolute;left:clamp(20px,3.2vw,48px);top:0;bottom:0;width:{{ twInfoW }};padding:{{ twInfoPad }};display:flex;flex-direction:column;justify-content:{{ twInfoJustify }};gap:28px;color:#F5F5F7;pointer-events:none">
       <div style="display:flex;flex-direction:column;gap:18px">
-        <span style="display:flex;align-items:center;flex-wrap:wrap;gap:10px"><span data-kicker="oscuro" style="align-self:center"><b>03</b>El proyecto, piso por piso</span><span style="padding:4px 10px;border-radius:999px;background:#C9F15D;color:#1D1D1F;font-size:12px;font-weight:600;letter-spacing:0">Ejemplo ilustrativo</span></span>
+        <span style="display:flex;align-items:center;flex-wrap:wrap;gap:10px"><span data-kicker="oscuro" style="align-self:center"><b>05</b>El proyecto, piso por piso</span><span style="padding:4px 10px;border-radius:999px;background:#C9F15D;color:#1D1D1F;font-size:12px;font-weight:600;letter-spacing:0">Ejemplo ilustrativo</span></span>
         <h2 data-fx="" style="margin:0;font-size:clamp(30px,3.6vw,54px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Recorre una inversión <span data-accent="" style="color:#86868B">de arriba a abajo</span></h2>
         <sc-if value="{{ twWide }}" hint-placeholder-val="{{ true }}">
           <p style="margin:0;max-width:380px;font-size:16px;line-height:1.6;color:rgba(245,245,247,0.72);text-wrap:pretty">Así presentamos cada desarrollo, desde las amenities hasta la calle. Este edificio es un ejemplo ilustrativo, no un proyecto en venta.</p>
@@ -384,89 +478,6 @@ select option{color:#1D1D1F;background:#FFFFFF}
   </div>
 </section>
 
-<section id="proyectos" data-screen-label="04 Proyectos" style="background:{{ th.bg }};transition:background .6s;padding:clamp(88px,12vw,160px) clamp(20px,3.2vw,48px) clamp(56px,7vw,96px)">
-  <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(36px,5vw,56px)">
-    <div data-reveal="" style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px">
-      <div style="display:flex;flex-direction:column;gap:20px;max-width:720px">
-        <span data-kicker=""><b>04</b>Proyectos</span>
-        <h2 data-fx="" style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Oportunidades para <span data-accent="" data-mark="" style="background:linear-gradient(transparent 60%,{{ th.mark }} 60%,{{ th.mark }} 92%,transparent 92%);padding:0 .06em">invertir hoy</span></h2>
-        <p style="margin:0;font-size:18px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">Departamentos en pozo, barrios cerrados y lotes. Por ahora mostramos proyectos de otras desarrolladoras como referencia, cada uno con su fuente.</p>
-      </div>
-      <a href="Aquaterra%20Proyectos.dc.html" style="display:inline-flex;align-items:center;gap:6px;height:46px;padding:0 22px;border-radius:999px;background:{{ th.ink }};color:{{ th.bg }};font-size:15px;font-weight:600" style-hover="opacity:0.85;color:{{ th.bg }}">Ver los {{ nProyectos }} proyectos <span>›</span></a>
-    </div>
-    <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px">
-      <sc-for list="{{ destacados }}" as="d" hint-placeholder-count="3">
-        <a href="{{ d.href }}" data-reveal="" data-tilt="" style="display:flex;flex-direction:column;border-radius:26px;overflow:hidden;background:{{ th.deep }};color:{{ th.deepInk }};transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s" style-hover="box-shadow:0 30px 60px -30px rgba(0,0,0,0.5);color:#F5F5F7">
-          <div style="position:relative;aspect-ratio:16/11;padding:22px;display:flex;flex-direction:column;justify-content:space-between;background:{{ d.foto }}radial-gradient(120% 90% at 85% 0%,rgba(201,241,93,0.22),rgba(201,241,93,0) 55%),linear-gradient(160deg,{{ th.deep2 }},{{ th.deep }})">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
-              <span style="padding:5px 12px;border-radius:999px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;font-size:12px;font-weight:600">{{ d.etapa }}</span>
-              <span style="font-size:12px;color:rgba(245,245,247,0.6)">{{ d.ciudad }}</span>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:6px">
-              <span data-mono="" style="font-size:13px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:rgba(228,247,176,0.8)">{{ d.tipo }}</span>
-              <span style="font-size:clamp(30px,2.8vw,40px);line-height:1;letter-spacing:-0.035em;font-weight:700">{{ d.name }}</span>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:14px;padding:20px 22px 22px">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
-              <span style="font-size:14px;color:rgba(245,245,247,0.72)">{{ d.loc }}</span>
-              <span style="font-size:15px;font-weight:600;white-space:nowrap">{{ d.precio }}</span>
-            </div>
-            <span style="font-size:14px;line-height:1.5;color:rgba(245,245,247,0.72)">{{ d.tipologia }}</span>
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:14px;border-top:1px solid rgba(245,245,247,0.1)">
-              <span style="font-size:12px;color:rgba(245,245,247,0.55)">{{ d.dev }}</span>
-              <span style="font-size:14px;font-weight:600;color:#E4F7B0">Ver ficha ›</span>
-            </div>
-          </div>
-        </a>
-      </sc-for>
-    </div>
-  </div>
-</section>
-
-<section id="simulador" data-screen-label="05 Simulador" style="background:{{ th.bg }};transition:background .6s;padding:clamp(24px,4vw,56px) clamp(20px,3.2vw,48px) clamp(88px,12vw,160px)">
-  <div data-reveal="" data-grain="" data-aurora="" style="max-width:1280px;margin:0 auto;border-radius:clamp(28px,3vw,40px);background:{{ th.deep }};color:{{ th.deepInk }};overflow:hidden;display:flex;flex-wrap:wrap">
-    <div style="flex:1 1 440px;display:flex;flex-direction:column;gap:28px;padding:clamp(28px,4vw,56px)">
-      <div style="display:flex;flex-direction:column;gap:16px">
-        <span data-kicker="oscuro"><b>05</b>Simulador</span>
-        <h2 data-fx="" style="margin:0;font-size:clamp(32px,3.6vw,52px);line-height:1.04;letter-spacing:-0.03em;font-weight:700">¿Cuánto podría <span data-accent="" style="color:#E4F7B0">rentarte</span>?</h2>
-        <p style="margin:0;font-size:17px;line-height:1.6;color:rgba(245,245,247,0.75);text-wrap:pretty">Mueve el monto y elige si compras terminado o en pozo. Usamos los rangos publicados para Asunción.</p>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:14px">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
-          <span style="font-size:14px;color:rgba(245,245,247,0.7)">Monto a invertir</span>
-          <span style="font-size:clamp(28px,3vw,40px);font-weight:700;letter-spacing:-0.03em;font-variant-numeric:tabular-nums">{{ simMontoTxt }}</span>
-        </div>
-        <input type="range" min="30000" max="300000" step="5000" value="{{ simMonto }}" onChange="{{ onSimMonto }}" onInput="{{ onSimMonto }}" aria-label="Monto a invertir en dólares" data-range="" style="--p:{{ simPct }};width:100%;accent-color:#C9F15D;height:28px;cursor:pointer">
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(245,245,247,0.5)"><span>USD 30.000</span><span>USD 300.000</span></div>
-      </div>
-      <div role="group" aria-label="Tipo de compra" style="display:flex;padding:4px;border-radius:14px;background:rgba(255,255,255,0.06);border:1px solid rgba(245,245,247,0.1)">
-        <sc-for list="{{ simModos }}" as="m" hint-placeholder-count="2">
-          <button onClick="{{ m.pick }}" aria-pressed="{{ m.on }}" style="flex:1;height:44px;border-radius:10px;border:1px solid {{ m.bd }};background:{{ m.bg }};color:{{ m.ink }};font-size:15px;font-weight:600;cursor:pointer;transition:background .25s, color .25s">{{ m.label }}</button>
-        </sc-for>
-      </div>
-    </div>
-    <div style="flex:1 1 420px;display:flex;flex-direction:column;justify-content:space-between;gap:28px;padding:clamp(28px,4vw,56px);background:radial-gradient(120% 100% at 100% 0%,rgba(201,241,93,0.16),rgba(201,241,93,0) 60%),#121419;border-left:1px solid rgba(245,245,247,0.08)">
-      <div style="display:flex;flex-direction:column;gap:22px">
-        <sc-for list="{{ simFilas }}" as="f" hint-placeholder-count="3">
-          <div style="display:flex;flex-direction:column;gap:6px;padding-bottom:20px;border-bottom:1px solid rgba(245,245,247,0.1)">
-            <span style="font-size:14px;color:rgba(245,245,247,0.7)">{{ f.k }}</span>
-            <span style="font-size:clamp(24px,2.4vw,34px);line-height:1.1;font-weight:700;letter-spacing:-0.025em;color:{{ f.ink }};font-variant-numeric:tabular-nums">{{ f.v }}</span>
-            <span style="font-size:13px;line-height:1.5;color:rgba(245,245,247,0.6)">{{ f.nota }}</span>
-          </div>
-        </sc-for>
-        <sc-if value="{{ simPass }}" hint-placeholder-val="{{ false }}">
-          <div style="padding:14px 16px;border-radius:14px;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);font-size:14px;line-height:1.5;color:#E4F7B0">Con USD 200.000 o más en inmuebles que no sean para uso propio puedes pedir el Investor Pass, la residencia permanente para inversores.</div>
-        </sc-if>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:16px">
-        <button onClick="{{ simCta }}" data-magnet="" style="height:54px;border-radius:999px;border:1px solid rgba(201,241,93,0.55);background:rgba(201,241,93,0.2);color:#E4F7B0;font-size:16px;font-weight:600;cursor:pointer;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)" style-hover="background:rgba(201,241,93,0.3)">Quiero un análisis de mi caso</button>
-        <span style="font-size:12px;line-height:1.55;color:rgba(245,245,247,0.55)">Estimación orientativa, no una promesa de rentabilidad: no descuenta vacancia, expensas ni impuestos. Fuentes: <a href="https://infonegocios.com.py/infolegal/invertir-en-departamentos-en-paraguay-introduccion-general-para-el-inversionista" target="_blank" rel="noopener" style="color:rgba(245,245,247,0.75);text-decoration:underline">Infonegocios</a> (6 – 8 % neto), <a href="https://www.riotimesonline.com/buying-property-paraguay-foreigners-2026/" target="_blank" rel="noopener" style="color:rgba(245,245,247,0.75);text-decoration:underline">Rio Times</a> (reserva), <a href="https://holacasa.com.py/comprar-en-pozo-vs-terminado-paraguay/" target="_blank" rel="noopener" style="color:rgba(245,245,247,0.75);text-decoration:underline">HolaCasa</a> (obra sin renta), <a href="https://www.abc.com.py/economia/2026/05/21/investor-pass-residencia-permanente-en-paraguay-para-inversores-extranjeros/" target="_blank" rel="noopener" style="color:rgba(245,245,247,0.75);text-decoration:underline">ABC</a> (Investor Pass).</span>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section id="nosotros" data-screen-label="06 Nosotros" style="background:{{ th.bg2 }};color:{{ th.ink }};transition:background .6s;padding:clamp(88px,12vw,168px) clamp(20px,3.2vw,48px)">
   <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(64px,9vw,128px)">
     <div style="display:flex;flex-direction:column;gap:clamp(32px,4vw,56px)">
@@ -511,10 +522,9 @@ select option{color:#1D1D1F;background:#FFFFFF}
       <div data-reveal="" style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding-bottom:18px;border-bottom:1px solid {{ th.line }}">
         <h3 style="margin:0;font-size:clamp(30px,3.4vw,48px);line-height:1.1;letter-spacing:-0.025em;font-weight:600">Nuestro <span data-accent="" data-mark="" style="color:{{ th.ink }};background:linear-gradient(transparent 60%,{{ th.mark }} 60%,{{ th.mark }} 92%,transparent 92%);padding:0 .06em">equipo</span></h3>
       </div>
-      <div ref="{{ equipoRef }}" data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(calc(50% - 7px),250px),1fr));gap:14px">
+      <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(calc(50% - 7px),250px),1fr));gap:14px">
         <sc-for list="{{ equipo }}" as="pe" hint-placeholder-count="4">
           <div style="position:relative;min-width:0;display:flex;flex-direction:column;border-radius:28px;overflow:hidden;background:radial-gradient(110% 70% at 50% 0%,rgba(201,241,93,0.18),transparent 62%),linear-gradient(180deg,{{ th.deep2 }},{{ th.deep }});color:#F5F5F7;isolation:isolate;transition:transform .5s cubic-bezier(.16,1,.3,1)" style-hover="transform:translateY(-4px)">
-            <span role="img" aria-label="{{ pe.nombre }}" style="position:absolute;inset:0;z-index:1;background-image:{{ pe.bg }};background-size:cover;background-position:center top"></span>
             <div style="flex:1;min-height:clamp(132px,17vw,230px);display:flex;align-items:center;justify-content:center;padding:18px 0 8px">
               <span style="width:clamp(72px,8vw,104px);height:clamp(72px,8vw,104px);border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(26px,3vw,38px);font-weight:700;letter-spacing:-0.03em;color:#E4F7B0">{{ pe.ini }}</span>
             </div>
@@ -585,6 +595,31 @@ select option{color:#1D1D1F;background:#FFFFFF}
   </div>
 </section>
 
+<section id="guia" data-screen-label="07b Guía gratuita" style="background:{{ th.bg }};transition:background .6s;padding:0 clamp(20px,3.2vw,48px) clamp(56px,7vw,96px)">
+  <div data-reveal="" style="max-width:1280px;margin:0 auto;border-radius:clamp(28px,3vw,40px);background:{{ th.card }};border:1px solid {{ th.line }};display:flex;flex-wrap:wrap;align-items:center;gap:clamp(28px,5vw,64px);padding:clamp(28px,4vw,56px)">
+    <div style="flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:18px">
+      <span data-kicker="">Guía gratuita</span>
+      <h2 style="margin:0;font-size:clamp(30px,3.4vw,48px);line-height:1.05;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">Cómo invertir en Paraguay <span data-accent="" style="color:{{ th.tick }}">desde España</span> (2026)</h2>
+      <p style="margin:0;max-width:540px;font-size:17px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">Todo lo que necesitas saber antes de hablar con nadie, en un PDF para leer con calma. Con la fuente de cada dato.</p>
+      <span style="display:grid;max-width:600px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:8px 20px;font-size:15px;font-weight:500;color:{{ th.mute2 }}"><span><span style="color:{{ th.tick }}">✓</span> Rentabilidad y costes reales</span><span><span style="color:{{ th.tick }}">✓</span> Impuestos en Paraguay y en España</span><span><span style="color:{{ th.tick }}">✓</span> Comprar sin viajar, paso a paso</span><span><span style="color:{{ th.tick }}">✓</span> Documentos que debes pedir</span></span>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding-top:6px">
+        <button onClick="{{ openGuia }}" data-magnet="" style="height:52px;padding:0 26px;border-radius:999px;border:0;cursor:pointer;background:{{ th.ink }};color:{{ th.bg }};font-size:16px;font-weight:600;font-family:inherit" style-hover="opacity:0.85">Descargar la guía gratis</button>
+        <span style="font-size:13px;color:{{ th.mute }}">PDF gratuito · descarga inmediata</span>
+      </div>
+    </div>
+    <div aria-hidden="true" style="flex:0 1 300px;margin:0 auto;display:flex;justify-content:center">
+      <div style="position:relative;width:min(240px,62vw);aspect-ratio:210/297;border-radius:10px;background:linear-gradient(160deg,#1D1D1F 0%,#2A2D33 100%);color:#F5F5F7;padding:22px 20px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 30px 60px -20px rgba(0,0,0,0.45),0 0 0 1px rgba(255,255,255,0.06) inset;transform:rotate(-3deg)">
+        <span style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600"><span style="width:9px;height:9px;background:#C9F15D;transform:rotate(45deg);border-radius:1.5px"></span>{{ marca }}</span>
+        <span style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#C9F15D">Guía 2026</span>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-size:24px;line-height:1.05;font-weight:700;letter-spacing:-0.03em">Cómo invertir en Paraguay desde España</span>
+        </span>
+        <span style="font-size:10px;color:rgba(245,245,247,0.6)">Rentabilidad · Impuestos · Compra a distancia</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="contacto" ref="{{ ctaRef }}" data-screen-label="08 Asesoría" style="background:{{ th.bg }};transition:background .6s">
   <div ref="{{ ctaPanelRef }}" data-grain="" style="position:relative;overflow:hidden;background:{{ th.deep }};color:{{ th.deepInk }};margin:0 clamp(16px,8vw,120px);border-radius:clamp(32px,5vw,72px) clamp(32px,5vw,72px) 0 0;padding:clamp(88px,11vw,150px) clamp(20px,3.2vw,48px) clamp(88px,10vw,140px)">
     <span ref="{{ ctaGlowRef }}" aria-hidden="true" style="position:absolute;left:50%;top:clamp(40px,8vw,120px);width:min(900px,120vw);height:420px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(201,241,93,0.22),rgba(201,241,93,0));pointer-events:none"></span>
@@ -592,30 +627,10 @@ select option{color:#1D1D1F;background:#FFFFFF}
       <div style="display:flex;flex-direction:column;align-items:center;gap:26px;text-align:center">
         <span data-reveal="" data-kicker="oscuro" style="align-self:center"><b>08</b>Asesoría personalizada</span>
         <h2 ref="{{ ctaTitleRef }}" aria-label="Analicemos tu caso." style="margin:0;font-size:clamp(52px,8vw,124px);line-height:1.02;letter-spacing:-0.045em;font-weight:700"><span aria-hidden="true" data-w="0" style="display:inline-block">Analicemos</span> <span aria-hidden="true" style="position:relative;display:inline-block;padding:0 0.14em;white-space:nowrap"><span data-pill="" style="position:absolute;left:0;right:0;top:0.1em;bottom:0.02em;border-radius:0.22em;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%)"></span><span data-w="1" data-accent="" style="position:relative;display:inline-block;color:#E4F7B0">tu</span> <span data-w="2" data-accent="" style="position:relative;display:inline-block;color:#E4F7B0">caso.</span></span></h2>
-        <p data-reveal="500" style="margin:0;max-width:560px;font-size:19px;line-height:1.6;color:rgba(245,245,247,0.82);text-wrap:pretty">Cada inversión empieza con una conversación. Déjanos tus datos y un asesor te presentará opciones a tu medida.</p>
+        <p data-reveal="500" style="margin:0;max-width:560px;font-size:19px;line-height:1.6;color:rgba(245,245,247,0.82);text-wrap:pretty">Responde dos preguntas y reserva tu llamada gratis de 20 minutos. Un asesor te presentará opciones a tu medida, sin compromiso.</p>
       </div>
       <div data-reveal="150" style="display:flex;flex-direction:column;gap:22px;padding:clamp(26px,3.4vw,44px);border-radius:28px;background:rgba(255,255,255,0.045);border:1px solid rgba(245,245,247,0.12);box-shadow:0 40px 120px -40px rgba(201,241,93,0.18)">
-        <sc-if value="{{ cfNotSent }}" hint-placeholder-val="{{ true }}">
-          <div style="display:flex;flex-direction:column;gap:18px">
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px">
-              <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Nombre y apellido<input value="{{ cfNombre }}" onChange="{{ onCf.nombre }}" autocomplete="name" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></label>
-              <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Email<input value="{{ cfEmail }}" onChange="{{ onCf.email }}" type="email" autocomplete="email" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></label>
-              <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)"><span>WhatsApp</span><div style="display:flex;gap:8px"><span class="aqp" style="height:52px;padding:0 14px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:15px;font-weight:400"><span>{{ cfPreTxt }}</span><select data-aqp value="{{ cfPre }}" onChange="{{ onCf.pre }}" aria-label="Prefijo del teléfono"><sc-for list="{{ preOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.c }}">{{ o.t }}</option></sc-for></select></span><input value="{{ cfTel }}" onChange="{{ onCf.tel }}" type="tel" inputmode="tel" autocomplete="tel-national" aria-label="Número de WhatsApp" placeholder="Número" style="flex:1;min-width:0;width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></div></div>
-              <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Monto aproximado<select value="{{ cfMonto }}" onChange="{{ onCf.monto }}" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none;cursor:pointer"><sc-for list="{{ cfMontoOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.t }}</option></sc-for></select></label>
-            </div>
-            <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Objetivo<select value="{{ cfObj }}" onChange="{{ onCf.obj }}" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none;cursor:pointer"><sc-for list="{{ cfObjOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.t }}</option></sc-for></select></label>
-            <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Mensaje (opcional)<textarea value="{{ cfMsg }}" onChange="{{ onCf.msg }}" rows="3" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none;height:auto;min-height:104px;padding:14px 16px;resize:vertical;font-family:inherit;line-height:1.5"></textarea></label>
-            <button onClick="{{ cfSubmit }}" style="height:56px;border-radius:999px;border:1px solid {{ cfBtnBd }};background:{{ cfBtnBg }};color:{{ cfBtnInk }};backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font-size:17px;font-weight:600;cursor:{{ cfBtnCursor }};transition:background .25s, color .25s, border-color .25s">Enviar consulta</button>
-            <span role="status" style="text-align:center;font-size:13px;line-height:1.5;color:{{ cfHintInk }}">{{ cfHint }}</span>
-          </div>
-        </sc-if>
-        <sc-if value="{{ cfSent }}" hint-placeholder-val="{{ false }}">
-          <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:32px 0">
-            <span style="width:56px;height:56px;border-radius:50%;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700">✓</span>
-            <span style="font-size:24px;letter-spacing:-0.02em;font-weight:700">Recibimos tu consulta</span>
-            <span style="max-width:380px;font-size:15px;line-height:1.5;color:rgba(245,245,247,0.72)">Un asesor de {{ marca }} te contactará para analizar tu caso.</span>
-          </div>
-        </sc-if>
+        <div ref="{{ asesoriaRef }}"></div>
       </div>
       <div data-reveal="" style="display:flex;justify-content:center">
         <a href="{{ waHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px;border-radius:999px;border:1px solid rgba(245,245,247,0.2);color:#F5F5F7;font-size:15px;font-weight:500" style-hover="background:rgba(245,245,247,0.08);color:#F5F5F7"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>Escribir por WhatsApp</a>
@@ -660,92 +675,36 @@ select option{color:#1D1D1F;background:#FFFFFF}
     <div style="display:flex;flex-direction:column;gap:16px;padding-top:20px;border-top:1px solid rgba(245,245,247,0.12)">
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:rgba(245,245,247,0.75)">
       <span>© 2026 {{ marca }}. Todos los derechos reservados.</span>
-      <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
+      <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="privacidad.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de privacidad</a><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
       <span>Asunción, Paraguay</span>
     </div>
     </div>
   </div>
 </footer>
-
-<sc-if value="{{ modal }}" hint-placeholder-val="{{ false }}">
-  <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:{{ shAlign }};justify-content:center;padding:{{ shOuter }}">
-    <div onClick="{{ stop }}" role="dialog" aria-modal="true" style="width:{{ shW }};max-height:{{ shMaxH }};overflow:auto;overscroll-behavior:contain;background:{{ th.modal }};border-radius:{{ shRadius }};padding:{{ shPad }};display:flex;flex-direction:column;gap:24px;box-shadow:0 30px 80px -20px rgba(0,0,0,0.45)">
-      <sc-if value="{{ sheetNarrow }}" hint-placeholder-val="{{ false }}">
-        <span style="align-self:center;width:36px;height:5px;border-radius:3px;background:{{ th.grab }};margin:-6px 0 -10px"></span>
-      </sc-if>
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <span style="font-size:28px;line-height:1.1;letter-spacing:-0.025em;font-weight:700">Agenda una asesoría</span>
-          <span style="font-size:15px;line-height:1.45;color:{{ th.mute }}">Unas preguntas para preparar tu caso antes de la llamada.</span>
-        </div>
-        <button onClick="{{ closeModal }}" aria-label="Cerrar" style="width:44px;height:44px;flex:0 0 auto;margin:-6px -8px 0 0;display:flex;align-items:center;justify-content:center;border:0;background:transparent;cursor:pointer">
-          <span style="width:30px;height:30px;border-radius:50%;background:{{ th.fill }};color:{{ th.mute }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">✕</span>
-        </button>
-      </div>
-      <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
-        <div style="display:flex;flex-direction:column;gap:22px">
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Tus datos</span>
-            <div style="display:flex;flex-direction:column;border-radius:12px;overflow:hidden;background:{{ th.input }}">
-              <input value="{{ nombre }}" onChange="{{ onNombre }}" aria-label="Nombre y apellido" placeholder="Nombre y apellido" autocomplete="name" style="height:50px;padding:0 16px;border:0;background:transparent;font-size:17px;outline:none;color:{{ th.ink }}">
-              <span style="height:1px;margin-left:16px;background:{{ th.line }}"></span>
-              <div style="display:flex;align-items:center"><span class="aqp" style="height:50px;padding:0 2px 0 16px;font-size:17px;color:{{ th.ink }}"><span>{{ telPreTxt }}</span><select data-aqp value="{{ telPre }}" onChange="{{ onTelPre }}" aria-label="Prefijo del teléfono"><sc-for list="{{ preOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.c }}">{{ o.t }}</option></sc-for></select></span><span style="width:1px;height:24px;margin-left:12px;background:{{ th.line }}"></span><input value="{{ tel }}" onChange="{{ onTel }}" aria-label="WhatsApp" placeholder="WhatsApp" type="tel" inputmode="tel" autocomplete="tel-national" style="flex:1;min-width:0;height:50px;padding:0 16px 0 12px;border:0;background:transparent;font-size:17px;outline:none;color:{{ th.ink }}"></div>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:10px"><span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Monto aproximado a invertir</span>
-            <div style="display:flex;flex-wrap:wrap;gap:8px">
-              <sc-for list="{{ montoOpts }}" as="o" hint-placeholder-count="4">
-                <button onClick="{{ o.pick }}" style="min-height:44px;padding:0 16px;border-radius:999px;font-size:15px;cursor:pointer;background:{{ o.bg }};color:{{ o.ink }};border:0;transition:background .2s, color .2s">{{ o.label }}</button>
-              </sc-for>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:10px"><span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Objetivo principal</span>
-            <div style="display:flex;flex-wrap:wrap;gap:8px">
-              <sc-for list="{{ objOpts }}" as="o" hint-placeholder-count="4">
-                <button onClick="{{ o.pick }}" style="min-height:44px;padding:0 16px;border-radius:999px;font-size:15px;cursor:pointer;background:{{ o.bg }};color:{{ o.ink }};border:0;transition:background .2s, color .2s">{{ o.label }}</button>
-              </sc-for>
-            </div>
-          </div>
-          <button onClick="{{ submit }}" style="height:50px;border-radius:14px;border:0;background:{{ submitBg }};color:{{ submitInk }};font-size:17px;font-weight:600;cursor:{{ submitCursor }};transition:background .25s">Enviar solicitud</button>
-        </div>
-      </sc-if>
-      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:12px 0 4px">
-          <span style="width:56px;height:56px;border-radius:50%;background:#C9F15D;color:#1D1D1F;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700">✓</span>
-          <span style="font-size:22px;letter-spacing:-0.02em;font-weight:700">Recibimos tu solicitud</span>
-          <span style="max-width:360px;font-size:15px;line-height:1.5;color:{{ th.mute }}">Un asesor de {{ marca }} te contactará por WhatsApp a la brevedad para analizar tu caso.</span>
-          <button onClick="{{ closeModal }}" style="align-self:stretch;margin-top:8px;height:50px;border-radius:14px;border:0;background:{{ th.fill }};font-size:17px;font-weight:600;cursor:pointer;color:#0071E3">Listo</button>
-        </div>
-      </sc-if>
-    </div>
-  </div>
-</sc-if>
-
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;modo&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Día&quot;,&quot;Noche&quot;],&quot;default&quot;:&quot;Día&quot;,&quot;tsType&quot;:&quot;'Día' | 'Noche'&quot;,&quot;section&quot;:&quot;Ciudad 3D&quot;},&quot;autoRotar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Ciudad 3D&quot;},&quot;velocidad&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.2,&quot;max&quot;:4,&quot;step&quot;:0.1,&quot;default&quot;:1.5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Ciudad 3D&quot;}}">
 class Component extends DCLogic {
   state = {
     mode: (() => { try { return localStorage.getItem('aquaterra-modo'); } catch (e) { return null; } })(), scrolled: false, sec: null, twFloor: 'Rooftop', twStep: 0, w: typeof window !== 'undefined' ? window.innerWidth : 1280,
-    ti: 0, tVis: true, modal: false, sent: false, nombre: '', tel: '', telPre: (window.AQPrefijos ? window.AQPrefijos.porDefecto() : 'ES'), monto: '', obj: '',
+    ti: 0, tVis: true,
     simMonto: 80000, simPozo: false, faqOpen: 0,
-    cf: { nombre: '', email: '', tel: '', pre: (window.AQPrefijos ? window.AQPrefijos.porDefecto() : 'ES'), monto: '', obj: '', msg: '' }, cfSent: false, cfSending: false, cfErr: '',
     tlOn: 0
   };
-  rootRef = React.createRef(); heroRef = React.createRef(); cityRef = React.createRef(); equipoRef = React.createRef();
+  rootRef = React.createRef(); heroRef = React.createRef(); cityRef = React.createRef();
   tlFillRef = React.createRef(); tlTipRef = React.createRef(); twFloorRef = React.createRef();
-  ctaRef = React.createRef(); ctaPanelRef = React.createRef(); ctaTitleRef = React.createRef(); ctaGlowRef = React.createRef();
+  asesoriaRef = React.createRef(); ctaRef = React.createRef(); ctaPanelRef = React.createRef(); ctaTitleRef = React.createRef(); ctaGlowRef = React.createRef();
   tlRef = React.createRef(); towerSecRef = React.createRef(); towerRef = React.createRef(); nodesRef = React.createRef(); twFillRef = React.createRef(); cardsRef = React.createRef(); linesRef = React.createRef();
 
   parkSecRef = React.createRef(); parkRef = React.createRef(); twCurtRef = React.createRef(); pkCurtRef = React.createRef(); pkFillRef = React.createRef(); pkChipRef = React.createRef(); twInfoRef = React.createRef(); pkLayerRef = React.createRef();
   setPark(l) { if (l === (this.state.pkLevel || 1)) return; this.setState({ pkLevel: l }); if (this.park) this.park.setLevel(l); }
 
-  // Equipo de La Dolce Casa (ladolcecasa.es/#equipo). Fotos servidas desde su web; sin foto se muestran las iniciales.
+  // Equipo: se muestran las iniciales de cada persona, sin fotos.
   EQUIPO = [
-    { nombre: 'Bruno Sanmartín', rol: 'Fundador y director', lugar: 'Asunción', texto: 'Dirige la empresa y lidera su expansión.', foto: 'https://ladolcecasa.es/assets/equipo/02-bruno-800.webp', ini: 'BS' },
-    { nombre: 'Adrián Bernabéu', rol: 'Asesor estratégico', lugar: 'Asunción', texto: 'Analista de producto e inversiones en Paraguay.', foto: 'https://ladolcecasa.es/assets/equipo/01-adrian-800.webp', ini: 'AB' },
-    { nombre: 'Ángel García', rol: 'Gerente de ventas', lugar: 'Asunción', texto: 'Lleva las ventas y acompaña a cada inversor desde la primera consulta.', foto: '', ini: 'ÁG' },
-    { nombre: 'Doris Gordillo', rol: 'Gerente de marketing', lugar: 'Bogotá', texto: 'Dirige el marketing y abre nuevos mercados.', foto: '', ini: 'DG' }
+    { nombre: 'Bruno Sanmartín', rol: 'Fundador y director', lugar: 'Asunción', texto: 'Dirige la empresa y lidera su expansión.', ini: 'BS' },
+    { nombre: 'Adrián Bernabéu', rol: 'Asesor estratégico', lugar: 'Asunción', texto: 'Analista de producto e inversiones en Paraguay.', ini: 'AB' },
+    { nombre: 'Ángel García', rol: 'Gerente de ventas', lugar: 'Asunción', texto: 'Lleva las ventas y acompaña a cada inversor desde la primera consulta.', ini: 'ÁG' },
+    { nombre: 'Doris Gordillo', rol: 'Gerente de marketing', lugar: 'Bogotá', texto: 'Dirige el marketing y abre nuevos mercados.', ini: 'DG' }
   ];
   // Sección oculta: estos textos son de muestra. Reemplazarlos por testimonios reales (con permiso) antes de activarla.
   MOSTRAR_TESTIMONIOS = false;
@@ -768,8 +727,8 @@ class Component extends DCLogic {
   OBJS = ['Renta por alquiler', 'Revalorización', 'Vivienda propia', 'Aún no lo sé'];
 
   THEMES = {
-    dia: { bg: '#F5F5F7', bg2: '#FFFFFF', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', line2: 'rgba(0,0,0,0.18)', card: '#FFFFFF', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', panelBd: 'rgba(255,255,255,0)', dark: '#000000', foot: '#1D1D1F', btnBg: '#1D1D1F', btnInk: '#FFFFFF', modal: '#F2F2F7', input: '#FFFFFF', grab: 'rgba(60,60,67,0.3)', fill: 'rgba(118,118,128,0.12)' , tileSh: '0 1px 2px rgba(0,0,0,0.04), 0 18px 40px -30px rgba(0,0,0,0.3)', stroke: 'rgba(29,29,31,0.10)', chipInk: '#3F5A06', mark: 'rgba(201,241,93,0.45)', deep: '#0B0C0F', deep2: '#1C1F26', deepInk: '#F5F5F7'},
-    noche: { bg: '#17191E', bg2: '#212329', ink: '#ECECEE', mute: '#A4A7AE', mute2: '#CACCD1', line: 'rgba(255,255,255,0.10)', line2: 'rgba(255,255,255,0.18)', card: '#212329', ph: '#262930', phInk: '#9A9DA4', panel: '#24272E', panelBd: 'rgba(255,255,255,0.08)', dark: '#212329', foot: '#121418', btnBg: '#ECECEE', btnInk: '#1D1D1F', modal: '#212329', input: '#2C2F36', grab: 'rgba(235,235,245,0.3)', fill: 'rgba(150,152,160,0.22)' , tileSh: 'inset 0 0 0 1px rgba(255,255,255,0.07)', stroke: 'rgba(236,236,238,0.10)', chipInk: '#E4F7B0', mark: 'rgba(201,241,93,0.26)', deep: '#1E2127', deep2: '#2A2D35', deepInk: '#E9EAEC'}
+    dia: { tick: '#5E8A0C', bg: '#F5F5F7', bg2: '#FFFFFF', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', line2: 'rgba(0,0,0,0.18)', card: '#FFFFFF', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', panelBd: 'rgba(255,255,255,0)', dark: '#000000', foot: '#1D1D1F', btnBg: '#1D1D1F', btnInk: '#FFFFFF', modal: '#F2F2F7', input: '#FFFFFF', grab: 'rgba(60,60,67,0.3)', fill: 'rgba(118,118,128,0.12)' , tileSh: '0 1px 2px rgba(0,0,0,0.04), 0 18px 40px -30px rgba(0,0,0,0.3)', stroke: 'rgba(29,29,31,0.10)', chipInk: '#3F5A06', mark: 'rgba(201,241,93,0.45)', deep: '#0B0C0F', deep2: '#1C1F26', deepInk: '#F5F5F7'},
+    noche: { tick: '#C9F15D', bg: '#17191E', bg2: '#212329', ink: '#ECECEE', mute: '#A4A7AE', mute2: '#CACCD1', line: 'rgba(255,255,255,0.10)', line2: 'rgba(255,255,255,0.18)', card: '#212329', ph: '#262930', phInk: '#9A9DA4', panel: '#24272E', panelBd: 'rgba(255,255,255,0.08)', dark: '#212329', foot: '#121418', btnBg: '#ECECEE', btnInk: '#1D1D1F', modal: '#212329', input: '#2C2F36', grab: 'rgba(235,235,245,0.3)', fill: 'rgba(150,152,160,0.22)' , tileSh: 'inset 0 0 0 1px rgba(255,255,255,0.07)', stroke: 'rgba(236,236,238,0.10)', chipInk: '#E4F7B0', mark: 'rgba(201,241,93,0.26)', deep: '#1E2127', deep2: '#2A2D35', deepInk: '#E9EAEC'}
   };
 
   mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
@@ -779,7 +738,7 @@ class Component extends DCLogic {
     document.addEventListener('scroll', this._onScroll, { passive: true, capture: true });
     this._onResize = () => { this.setState((st) => ({ w: window.innerWidth, menu: window.innerWidth >= 1140 ? false : st.menu })); this.onScroll(); };
     window.addEventListener('resize', this._onResize);
-    this._onKey = (e) => { if (e.key === 'Escape' && (this.state.modal || this.state.menu)) this.setState({ modal: false, menu: false }); };
+    this._onKey = (e) => { if (e.key === 'Escape' && this.state.menu) this.setState({ menu: false }); };
     window.addEventListener('keydown', this._onKey);
     this._lastMode = this.mode();
     this._onMon = () => this.setState((st) => ({ monV: (st.monV || 0) + 1 }));
@@ -788,13 +747,13 @@ class Component extends DCLogic {
     if (window.AQMoneda && window.AQMoneda.tasas()) this._onMon();
     this.scanReveal();
     this.initCtaTitle();
+    // Formulario de asesoría en dos pasos (asesoria.js), el mismo que se abre en ventana.
+    if (window.AQAsesoria) window.AQAsesoria.montar(this.asesoriaRef.current, { origen: 'Asesoría personalizada' });
     this.onScroll();
     // Las escenas 3D no se crean al cargar: la ciudad arranca con el primer gesto del visitante (o sola, unos segundos después)
     // y el edificio y el parking cuando su sección se acerca a la pantalla. Así la carga inicial no se traba.
     this.startCityWhenIdle();
     this.whenNear(this.towerSecRef, () => { this.initTower(); this.initParking(); });
-    // Las fotos del equipo se piden cuando su sección se acerca, no durante la carga inicial.
-    this.whenNear(this.equipoRef, () => this.setState({ verEquipo: true }));
     // Llegadas desde otras páginas con ancla (index.html#simulador, #asesoria...).
     this.irAlAncla();
     this._onHash = () => this.irAlAncla();
@@ -802,13 +761,13 @@ class Component extends DCLogic {
   }
 
   // La página se pinta después de cargar, así que el navegador no encuentra la sección del ancla y se queda arriba: el salto se hace a mano.
-  // #asesoria abre directamente el formulario "Agenda una asesoría" (los botones de las otras páginas llegan así).
+  // #asesoria abre directamente la ventana de asesoría (los botones de las otras páginas llegan así).
   // Durante unos segundos se corrige la posición por si algo de arriba cambia de alto mientras termina de cargar, salvo que el visitante ya se haya movido.
   irAlAncla() {
     const id = decodeURIComponent(location.hash.slice(1));
     if (!id) return;
     if (id === 'asesoria') {
-      this.setState({ modal: true, sent: false, menu: false });
+      this.abrirAsesoria();
       try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
       return;
     }
@@ -908,33 +867,10 @@ class Component extends DCLogic {
     this.ctaIo.observe(h);
   }
 
-  // Envío del formulario de contacto a la base de leads (leads.js -> /api/leads).
-  // datos = { nombre, email, tel, monto, obj, msg }; monto y obj son textos de MONTOS y OBJS.
-  enviarConsulta(datos) {
-    if (this.state.cfSending) return;
-    this.setState({ cfSending: true, cfErr: '' });
-    this.guardarLead({ nombre: datos.nombre, email: datos.email, whatsapp: this.unirTel(datos.pre, datos.tel), monto: datos.monto, objetivo: datos.obj, mensaje: datos.msg, origen: 'Asesoría personalizada' })
-      .then(() => this.setState({ cfSent: true, cfSending: false }))
-      .catch((e) => this.setState({ cfSending: false, cfErr: e.message }));
-  }
-
-  // Formulario rápido "Agenda una asesoría" (ventana emergente).
-  enviarAgenda() {
-    if (this.state.sending) return;
-    this.setState({ sending: true });
-    this.guardarLead({ nombre: this.state.nombre, whatsapp: this.unirTel(this.state.telPre, this.state.tel), monto: this.state.monto, objetivo: this.state.obj, origen: 'Agenda una asesoría' })
-      .then(() => this.setState({ sent: true, sending: false }))
-      .catch((e) => { this.setState({ sending: false }); window.alert(e.message); });
-  }
-
-  // Prefijo elegido + número (prefijos.js); si escribió el número con +, se respeta.
-  unirTel(pre, tel) {
-    return window.AQPrefijos ? window.AQPrefijos.unir(pre, tel) : tel;
-  }
-
-  guardarLead(d) {
-    if (typeof window.enviarLead !== 'function') return Promise.reject(new Error('No pudimos enviar tu solicitud. Escríbenos por WhatsApp.'));
-    return window.enviarLead(d);
+  // Ventana de asesoría en dos pasos (asesoria.js). opts: { origen, monto, objetivo }.
+  abrirAsesoria(opts) {
+    this.setState({ menu: false });
+    if (window.AQAsesoria) window.AQAsesoria.abrir(Object.assign({ origen: 'Agenda una asesoría' }, opts));
   }
 
   scanReveal() {
@@ -956,8 +892,8 @@ class Component extends DCLogic {
 
   // Mismo menú y orden que en el resto de páginas: los capítulos del inicio en el orden en que aparecen y luego las otras páginas.
   // El tercer valor es la sección que activa el rombo lima de "estás aquí".
-  NAV = [['#inversiones', 'Inversiones', 'inversiones'], ['#edificio', 'El edificio', 'edificio'], ['#proyectos', 'Proyectos', 'proyectos'], ['#simulador', 'Simulador', 'simulador'], ['#nosotros', 'Nosotros', 'nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['#contacto', 'Contacto', 'contacto']];
-  SECS = ['inversiones', 'edificio', 'proyectos', 'simulador', 'nosotros', 'testimonios', 'preguntas', 'contacto'];
+  NAV = [['#inversiones', 'Inversiones', 'inversiones'], ['#simulador', 'Simulador', 'simulador'], ['#proyectos', 'Proyectos', 'proyectos'], ['#edificio', 'El edificio', 'edificio'], ['#nosotros', 'Nosotros', 'nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['#contacto', 'Contacto', 'contacto']];
+  SECS = ['inversiones', 'simulador', 'proyectos', 'edificio', 'nosotros', 'testimonios', 'preguntas', 'contacto'];
 
   onScroll() {
     if (this._raf) return;
@@ -1706,29 +1642,23 @@ class Component extends DCLogic {
     const twS = (i) => (s.twStep === i ? { op: 1, dot: '#C9F15D' } : { op: 0.55, dot: 'rgba(245,245,247,0.3)' });
     const dot = (i) => (s.tlOn >= i ? { bg: '#C9F15D', bd: th.ink } : { bg: th.bg, bd: th.line2 });
     const setF = (k) => (e) => { const v = e.target.value; this.setState((st) => ({ f: { ...st.f, [k]: v } })); };
-    const chip = (key, label) => {
-      const on = s[key] === label;
-      return { label, bg: on ? '#0071E3' : th.input, ink: on ? '#FFFFFF' : th.ink, bd: 'transparent', pick: () => this.setState({ [key]: label }) };
-    };
-    const valid = s.nombre.trim().length > 1 && s.tel.trim().length > 5;
-    const cfOk = s.cf.nombre.trim().length > 1 && (s.cf.tel.trim().length > 5 || /\S+@\S+\.\S+/.test(s.cf.email));
     const goT = (dir) => () => {
       this.setState({ tVis: false });
       clearTimeout(this._tt);
       this._tt = setTimeout(() => this.setState((st) => ({ ti: (st.ti + dir + this.TESTI.length) % this.TESTI.length, tVis: true })), 220);
     };
     return {
-      rootRef: this.rootRef, heroRef: this.heroRef, cityRef: this.cityRef, equipoRef: this.equipoRef, tlFillRef: this.tlFillRef, tlTipRef: this.tlTipRef, twFloorRef: this.twFloorRef, tlRef: this.tlRef,
+      rootRef: this.rootRef, heroRef: this.heroRef, cityRef: this.cityRef, tlFillRef: this.tlFillRef, tlTipRef: this.tlTipRef, twFloorRef: this.twFloorRef, tlRef: this.tlRef,
       th, themeName: night ? 'noche' : 'dia',
       marca: (window.MARCA && window.MARCA.nombre) || 'Aquaterra',
       mostrarTestimonios: this.MOSTRAR_TESTIMONIOS,
-      equipo: this.EQUIPO.map((pe) => ({ ...pe, bg: pe.foto && s.verEquipo ? `url("${pe.foto}")` : 'none' })),
+      equipo: this.EQUIPO,
       wide: s.w >= 900,
       stickyPos: s.w >= 900 ? 'sticky' : 'static',
       hdrBg: s.scrolled && !s.menu ? (night ? 'rgba(28,30,36,0.8)' : 'rgba(251,251,253,0.8)') : 'rgba(251,251,253,0)',
       hdrBorder: s.scrolled && !s.menu ? (night ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)') : 'rgba(0,0,0,0)',
       hdrBlur: s.scrolled && !s.menu ? 'saturate(180%) blur(20px)' : 'none',
-      narrowNav: s.w < 900, sheetNarrow: s.w < 640,
+      narrowNav: s.w < 900,
       menu: !!s.menu,
       toggleMenu: () => this.setState((st) => ({ menu: !st.menu })),
       closeMenu: () => { if (this.state.menu) this.setState({ menu: false }); },
@@ -1766,7 +1696,7 @@ class Component extends DCLogic {
             bg: on ? 'rgba(201,241,93,0.2)' : 'transparent', bd: on ? 'rgba(201,241,93,0.5)' : 'transparent', ink: on ? '#E4F7B0' : 'rgba(245,245,247,0.7)',
             pick: () => this.setState({ simPozo: v }) }; }),
           simFilas: filas, simPass: m >= 200000,
-          simCta: () => { this.setState((st) => ({ cf: { ...st.cf, monto: this.MONTOS[bucket], obj: st.cf.obj || 'Renta por alquiler' } })); this.scrollToEl(document.getElementById('contacto'), 0); }
+          simCta: () => this.abrirAsesoria({ origen: 'Simulador', monto: this.MONTOS[bucket], objetivo: 'Renta por alquiler' })
         };
       })(),
       faq: this.FAQ.map((f, i) => { const open = s.faqOpen === i; return { ...f, open,
@@ -1774,7 +1704,7 @@ class Component extends DCLogic {
         num: String(i + 1).padStart(2, '0'), numInk: open ? th.chipInk : th.mute,
         bd: open ? 'rgba(201,241,93,0.55)' : th.line, sh: open ? '0 0 0 4px rgba(201,241,93,0.12)' : 'none',
         iconBg: open ? 'rgba(201,241,93,0.18)' : th.fill, iconBd: open ? 'rgba(201,241,93,0.5)' : 'transparent', iconInk: open ? th.chipInk : th.ink }; }),
-      menuItems: [['#inversiones', 'Por qué Paraguay'], ['#edificio', 'El edificio'], ['#proyectos', 'Proyectos'], ['#simulador', 'Simulador de renta'], ['#nosotros', 'Nosotros'], ['#preguntas', 'Preguntas'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['#contacto', 'Contacto']].map(([href, label]) => ({ href, label })),
+      menuItems: [['#inversiones', 'Por qué Paraguay'], ['#simulador', 'Simulador de renta'], ['#proyectos', 'Proyectos'], ['#edificio', 'El edificio'], ['#nosotros', 'Nosotros'], ['#preguntas', 'Preguntas'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['#contacto', 'Contacto']].map(([href, label]) => ({ href, label })),
       // Mismo menú y orden que en el resto de páginas; el rombo lima marca el capítulo que se está viendo.
       navWide: s.w >= 1140, navNarrow: s.w < 1140,
       navItems: this.NAV.map(([href, label, id]) => ({ href, label, cur: id === s.sec ? 'true' : undefined, ink: id === s.sec ? (hdrDark ? '#F5F5F7' : '#1D1D1F') : (hdrDark ? 'rgba(245,245,247,0.78)' : '#3F434A'), fw: id === s.sec ? '600' : '400' })),
@@ -1782,13 +1712,10 @@ class Component extends DCLogic {
       menuBg: night ? 'rgba(23,25,30,0.94)' : 'rgba(251,251,253,0.92)',
       burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
       burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
-      ctaLabel: s.w >= 520 ? 'Agenda una asesoría' : 'Asesoría',
+      ctaLabel: s.w >= 520 ? 'Reserva tu llamada gratis' : 'Llamada gratis',
       linkC: night ? '#2997FF' : '#0066CC',
       segTrack: night ? 'rgba(118,118,128,0.32)' : 'rgba(118,118,128,0.16)',
       knobBg: night ? '#636366' : '#FFFFFF',
-      shAlign: s.w < 640 ? 'flex-end' : 'center', shOuter: s.w < 640 ? '0' : '20px', shW: s.w < 640 ? '100%' : 'min(520px, 100%)',
-      shMaxH: s.w < 640 ? '92svh' : 'calc(100svh - 40px)', shRadius: s.w < 640 ? '22px 22px 0 0' : '22px',
-      shPad: s.w < 640 ? '20px 20px calc(24px + env(safe-area-inset-bottom))' : 'clamp(24px,4vw,32px)',
       pkLayerRef: this.pkLayerRef, pkWide: s.w >= 700,
       pkW: s.w >= 700 ? 'min(400px, 38vw)' : 'auto', pkRight: s.w >= 700 ? 'auto' : '20px',
       pkPad: s.w >= 700 ? '0px' : 'calc(68px + env(safe-area-inset-top)) 0 calc(24px + env(safe-area-inset-bottom))',
@@ -1858,36 +1785,11 @@ class Component extends DCLogic {
       tOp: s.tVis ? 1 : 0,
       tCount: `0${s.ti + 1} / 0${this.TESTI.length}`,
       prevT: goT(-1), nextT: goT(1),
-      modal: s.modal, sent: s.sent, notSent: !s.sent,
-      openModal: () => this.setState({ modal: true, sent: false, menu: false }),
-      closeModal: () => this.setState({ modal: false }),
-      stop: (e) => e.stopPropagation(),
-      nombre: s.nombre, tel: s.tel,
-      onNombre: (e) => this.setState({ nombre: e.target.value }),
-      onTel: (e) => this.setState({ tel: e.target.value }),
-      telPre: s.telPre, telPreTxt: window.AQPrefijos ? window.AQPrefijos.corto(s.telPre) : '',
-      onTelPre: (e) => this.setState({ telPre: e.target.value }),
-      preOpts: window.AQPrefijos ? window.AQPrefijos.opciones : [],
-      montoOpts: this.MONTOS.map((l) => chip('monto', l)),
-      objOpts: this.OBJS.map((l) => chip('obj', l)),
-      submitBg: valid ? '#0071E3' : th.fill,
-      submitInk: valid ? '#FFFFFF' : th.mute,
-      submitCursor: valid ? 'pointer' : 'not-allowed',
-      submit: () => { if (valid) this.enviarAgenda(); },
-      ctaRef: this.ctaRef, ctaPanelRef: this.ctaPanelRef, ctaTitleRef: this.ctaTitleRef, ctaGlowRef: this.ctaGlowRef,
-      waHref: 'https://wa.me/' + String((window.MARCA && window.MARCA.whatsapp) || '').replace(/\D/g, ''),
-      cfNombre: s.cf.nombre, cfEmail: s.cf.email, cfTel: s.cf.tel, cfPre: s.cf.pre, cfPreTxt: window.AQPrefijos ? window.AQPrefijos.corto(s.cf.pre) : '', cfMonto: s.cf.monto, cfObj: s.cf.obj, cfMsg: s.cf.msg,
-      onCf: Object.fromEntries(['nombre', 'email', 'tel', 'pre', 'monto', 'obj', 'msg'].map((k) => [k, (e) => { const v = e.target.value; this.setState((st) => ({ cf: { ...st.cf, [k]: v } })); }])),
-      cfMontoOpts: [{ v: '', t: 'Elige una opción' }, ...this.MONTOS.map((t) => ({ v: t, t }))],
-      cfObjOpts: [{ v: '', t: 'Elige una opción' }, ...this.OBJS.map((t) => ({ v: t, t }))],
-      cfSent: s.cfSent, cfNotSent: !s.cfSent,
-      cfHint: s.cfErr || (s.cfSending ? 'Enviando…' : 'Necesitamos tu nombre y un email o WhatsApp para responderte.'),
-      cfHintInk: s.cfErr ? '#FF9F8F' : 'rgba(245,245,247,0.6)',
-      cfBtnBg: cfOk ? 'rgba(201,241,93,0.22)' : 'rgba(245,245,247,0.08)',
-      cfBtnBd: cfOk ? 'rgba(201,241,93,0.55)' : 'rgba(245,245,247,0.12)',
-      cfBtnInk: cfOk ? '#E4F7B0' : 'rgba(245,245,247,0.5)',
-      cfBtnCursor: cfOk ? 'pointer' : 'not-allowed',
-      cfSubmit: () => { if (cfOk) this.enviarConsulta({ ...s.cf }); }
+      openModal: () => this.abrirAsesoria(),
+      openGuia: () => { this.setState({ menu: false }); if (window.AQAsesoria) window.AQAsesoria.guia({ origen: 'Guía gratuita' }); },
+      openAlertas: () => { if (window.AQAlertas) window.AQAlertas.abrir({}); },
+      asesoriaRef: this.asesoriaRef, ctaRef: this.ctaRef, ctaPanelRef: this.ctaPanelRef, ctaTitleRef: this.ctaTitleRef, ctaGlowRef: this.ctaGlowRef,
+      waHref: 'https://wa.me/' + String((window.MARCA && window.MARCA.whatsapp) || '').replace(/\D/g, '')
     };
   }
 }

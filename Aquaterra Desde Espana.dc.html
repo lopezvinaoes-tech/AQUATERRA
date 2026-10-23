@@ -25,6 +25,7 @@
 <script src="./proyectos.js" defer></script>
 <script src="./leads.js" defer></script>
 <script src="./prefijos.js" defer></script>
+<script src="./asesoria.js" data-barra defer></script>
 <script src="/vendor/react.production.min.js" defer></script>
 <script src="/vendor/react-dom.production.min.js" defer></script>
 <script src="./arranque.js" defer></script>
@@ -113,7 +114,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
         <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ nightInk }}">Noche</span>
       </button>
     </div>
-    <a href="index.html#asesoria" onClick="{{ closeMenu }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Agenda una asesoría</a>
+    <a href="index.html#asesoria" onClick="{{ closeMenu }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Reserva tu llamada gratis de 20 min</a>
   </div>
 </sc-if>
 
@@ -250,8 +251,8 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
     <div style="position:relative;display:flex;flex-wrap:wrap;align-items:flex-start;gap:clamp(32px,5vw,64px)">
       <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:20px">
         <span data-kicker="oscuro"><b>03</b>Asesoramiento</span>
-        <h2 data-fx="" style="margin:0;font-size:clamp(34px,4.4vw,56px);line-height:1.04;letter-spacing:-0.04em;font-weight:700;text-wrap:balance">Cuéntanos tu objetivo <span style="color:#E4F7B0">y tu plazo.</span></h2>
-        <p style="margin:0;max-width:440px;font-size:17px;line-height:1.6;color:rgba(245,245,247,0.78);text-wrap:pretty">Te respondemos por escrito con las zonas que encajan, los documentos que conviene pedir y los profesionales que intervienen. Sin compromiso y sin promesas de rentabilidad.</p>
+        <h2 data-fx="" style="margin:0;font-size:clamp(34px,4.4vw,56px);line-height:1.04;letter-spacing:-0.04em;font-weight:700;text-wrap:balance">Cuéntanos tu objetivo <span style="color:#E4F7B0">y tu presupuesto.</span></h2>
+        <p style="margin:0;max-width:440px;font-size:17px;line-height:1.6;color:rgba(245,245,247,0.78);text-wrap:pretty">En una llamada gratuita de 20 minutos te contamos qué zonas encajan, qué documentos conviene pedir y qué profesionales intervienen. Sin compromiso y sin promesas de rentabilidad.</p>
         <div style="display:flex;flex-direction:column;border-top:1px solid rgba(245,245,247,0.12)">
           <sc-for list="{{ promesas }}" as="pm" hint-placeholder-count="3">
             <div style="display:flex;align-items:center;gap:12px;min-height:46px;border-bottom:1px solid rgba(245,245,247,0.12);font-size:15px"><span style="width:8px;height:8px;flex:0 0 auto;background:#C9F15D;transform:rotate(45deg);border-radius:1px"></span>{{ pm }}</div>
@@ -259,50 +260,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
         </div>
       </div>
       <div style="flex:1 1 400px;min-width:0;display:flex;flex-direction:column;gap:18px;padding:clamp(22px,3vw,36px);border-radius:26px;background:rgba(255,255,255,0.045);border:1px solid rgba(245,245,247,0.12);box-shadow:0 40px 120px -40px rgba(201,241,93,0.18)">
-        <sc-if value="{{ fNotSent }}" hint-placeholder-val="{{ true }}">
-          <div style="display:flex;flex-direction:column;gap:16px">
-            <div style="display:flex;flex-direction:column;gap:8px">
-              <span style="font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Tu objetivo</span>
-              <div style="display:flex;flex-wrap:wrap;gap:8px">
-                <sc-for list="{{ objOpts }}" as="o" hint-placeholder-count="4">
-                  <button onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" style="height:38px;padding:0 14px;border-radius:999px;border:1px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.ink }};font-size:14px;font-weight:500;cursor:pointer">{{ o.t }}</button>
-                </sc-for>
-              </div>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:8px">
-              <span style="font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Tu plazo</span>
-              <div style="display:flex;flex-wrap:wrap;gap:8px">
-                <sc-for list="{{ plazoOpts }}" as="o" hint-placeholder-count="4">
-                  <button onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" style="height:38px;padding:0 14px;border-radius:999px;border:1px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.ink }};font-size:14px;font-weight:500;cursor:pointer">{{ o.t }}</button>
-                </sc-for>
-              </div>
-            </div>
-            <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Inversión aproximada
-              <span style="position:relative;display:flex;align-items:center;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;font-weight:400">{{ fMontoTxt }}<span style="margin-left:auto;font-size:10px;opacity:0.6">▼</span>
-                <select value="{{ fMonto }}" onChange="{{ onF.monto }}" aria-label="Inversión aproximada" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;border:0">
-                  <sc-for list="{{ montoOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.t }}</option></sc-for>
-                </select>
-              </span>
-            </label>
-            <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Nombre y apellido<input name="nombre" value="{{ fNombre }}" onChange="{{ onF.nombre }}" autocomplete="name" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></label>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px">
-              <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Email<input name="email" value="{{ fEmail }}" onChange="{{ onF.email }}" type="email" autocomplete="email" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></label>
-              <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)"><span>WhatsApp</span><div style="display:flex;gap:8px"><span class="aqp" style="height:52px;padding:0 14px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:15px;font-weight:400"><span>{{ fPreTxt }}</span><select data-aqp value="{{ fPre }}" onChange="{{ onF.pre }}" aria-label="Prefijo del teléfono"><sc-for list="{{ preOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.c }}">{{ o.t }}</option></sc-for></select></span><input name="whatsapp" value="{{ fTel }}" onChange="{{ onF.tel }}" type="tel" inputmode="tel" autocomplete="tel-national" aria-label="Número de WhatsApp" placeholder="Número" style="flex:1;min-width:0;width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></div></div>
-            </div>
-            <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Algo más (opcional)<textarea name="mensaje" value="{{ fMsg }}" onChange="{{ onF.msg }}" rows="3" placeholder="Por ejemplo: busco un departamento para alquilar en Asunción y no puedo viajar este año." style="width:100%;min-height:96px;padding:14px 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;line-height:1.5;outline:none;resize:vertical"></textarea></label>
-            <div aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden"><label>Empresa web<input name="empresa_web" tabindex="-1" autocomplete="off" value="{{ fHp }}" onChange="{{ onF.empresa_web }}"></label></div>
-            <button onClick="{{ fSubmit }}" style="height:56px;border-radius:999px;border:1px solid {{ fBtnBd }};background:{{ fBtnBg }};color:{{ fBtnInk }};font-size:17px;font-weight:600;cursor:{{ fBtnCursor }};transition:background .25s, color .25s, border-color .25s">{{ fBtnTxt }}</button>
-            <span role="status" aria-live="polite" style="text-align:center;font-size:13px;line-height:1.5;color:{{ fHintInk }}">{{ fHint }}</span>
-          </div>
-        </sc-if>
-        <sc-if value="{{ fSent }}" hint-placeholder-val="{{ false }}">
-          <div role="status" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:36px 0">
-            <span style="width:56px;height:56px;border-radius:50%;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:#E4F7B0;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700">✓</span>
-            <span style="font-size:24px;letter-spacing:-0.02em;font-weight:700">Recibimos tu consulta</span>
-            <span style="max-width:380px;font-size:15px;line-height:1.5;color:rgba(245,245,247,0.72)">Te escribimos con una primera respuesta. Mientras, puedes mirar el catálogo.</span>
-            <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;min-height:44px;font-size:15px;color:#E4F7B0">Ver proyectos ›</a>
-          </div>
-        </sc-if>
+        <div ref="{{ asesoriaRef }}"></div>
       </div>
     </div>
   </div>
@@ -345,7 +303,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
     <span style="max-width:720px;font-size:13px;line-height:1.55;color:rgba(245,245,247,0.68)">Información general sobre España y Paraguay, con su fuente. No sustituye el asesoramiento de un escribano ni de un asesor fiscal.</span>
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:rgba(245,245,247,0.75)">
       <span>© 2026 {{ marca }}. Todos los derechos reservados.</span>
-      <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
+      <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="privacidad.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de privacidad</a><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
       <span>Asunción, Paraguay</span>
     </div>
     </div>
@@ -363,20 +321,14 @@ class Component extends DCLogic {
     now: Date.now(),
     eur: null, eurFail: false,
     cv: { val: '100.000', usdAEur: true },
-    cat: '',
-    f: (() => {
-      const g = (window.contactoGuardado && window.contactoGuardado()) || {};
-      const sp = g.whatsapp && window.AQPrefijos ? window.AQPrefijos.separar(g.whatsapp) : null;
-      return { nombre: g.nombre || '', email: g.email || '', tel: sp ? sp.num : '', pre: sp ? sp.c : (window.AQPrefijos ? window.AQPrefijos.porDefecto() : 'ES'), objetivo: '', plazo: '', monto: '', msg: '', empresa_web: '' };
-    })(),
-    fSending: false, fSent: false, fErr: ''
+    cat: ''
   };
-  globoRef = React.createRef();
+  globoRef = React.createRef(); asesoriaRef = React.createRef();
 
   // Menú del móvil: el mismo en todas las páginas (algo más descriptivo que el de escritorio e incluye Preguntas).
-  MENU = [['index.html#inversiones', 'Por qué Paraguay'], ['index.html#edificio', 'El edificio'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#simulador', 'Simulador de renta'], ['index.html#nosotros', 'Nosotros'], ['index.html#preguntas', 'Preguntas'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  MENU = [['index.html#inversiones', 'Por qué Paraguay'], ['index.html#simulador', 'Simulador de renta'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['index.html#preguntas', 'Preguntas'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
   // Mismo menú y en el mismo orden en todas las páginas: primero los capítulos del inicio (en el orden en que aparecen), luego las otras páginas.
-  NAV = [['index.html#inversiones', 'Inversiones'], ['index.html#edificio', 'El edificio'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#simulador', 'Simulador'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  NAV = [['index.html#inversiones', 'Inversiones'], ['index.html#simulador', 'Simulador'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
   THEMES = {
     dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', cardSh: '0 1px 2px rgba(0,0,0,0.04), 0 12px 32px -24px rgba(0,0,0,0.25)', ph: '#E8E8ED', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)', deep: '#0B0C0F', deepInk: '#F5F5F7' },
     noche: { bg: '#17191E', ink: '#ECECEE', mute: '#A4A7AE', mute2: '#CACCD1', line: 'rgba(255,255,255,0.10)', card: '#212329', cardSh: 'inset 0 0 0 1px rgba(255,255,255,0.07)', ph: '#262930', panel: '#24272E', foot: '#121418', chip: 'rgba(150,152,160,0.20)', deep: '#1E2127', deepInk: '#E9EAEC' }
@@ -410,9 +362,6 @@ class Component extends DCLogic {
     { n: '3', quien: 'Escribano y apoderado', t: 'Escritura pública', x: 'En persona o con tu poder apostillado.' },
     { n: '4', quien: 'Registros Públicos', t: 'Inscripción', x: 'Desde aquí la propiedad es plenamente tuya.' }
   ];
-  OBJS = ['Renta por alquiler', 'Revalorización', 'Vivienda propia', 'Aún no lo sé'];
-  PLAZOS = ['Menos de 3 meses', '3 a 6 meses', '6 a 12 meses', 'Solo me informo'];
-  MONTOS = ['Hasta USD 50.000', 'USD 50.000 – 100.000', 'USD 100.000 – 250.000', 'Más de USD 250.000'];
 
   componentDidMount() {
     this._onResize = () => this.setState((st) => ({ w: window.innerWidth, menu: window.innerWidth >= 1140 ? false : st.menu }));
@@ -421,6 +370,7 @@ class Component extends DCLogic {
     window.addEventListener('keydown', this._onKey);
     // Relojes: se actualizan cada 15 s, alineados al cambio de minuto aproximado.
     this._tick = setInterval(() => this.setState({ now: Date.now() }), 15000);
+    if (window.AQAsesoria) window.AQAsesoria.montar(this.asesoriaRef.current, { origen: 'Desde España' });
     if (window.AQGlobo && this.globoRef.current) this._globo = window.AQGlobo.montar(this.globoRef.current, { noche: this.mode() === 'noche' });
     const conCambio = () => {
       if (window.AQComparar && window.AQComparar.cambio) window.AQComparar.cambio().then((r) => this.setState(r ? { eur: r } : { eurFail: true }));
@@ -457,21 +407,6 @@ class Component extends DCLogic {
   }
   num(txt) { const n = parseInt(String(txt).replace(/\D/g, ''), 10); return isNaN(n) ? 0 : n; }
 
-  enviar() {
-    const s = this.state;
-    if (s.fSending) return;
-    this.setState({ fSending: true, fErr: '' });
-    const f = s.f;
-    const msg = ['Plazo: ' + (f.plazo || 'sin indicar') + '.', f.msg.trim()].filter(Boolean).join(' ');
-    const d = { nombre: f.nombre.trim(), email: f.email.trim(), whatsapp: window.AQPrefijos ? window.AQPrefijos.unir(f.pre, f.tel) : f.tel.trim(), monto: f.monto, objetivo: f.objetivo, mensaje: msg, origen: 'Desde España', empresa_web: f.empresa_web };
-    const envio = typeof window.enviarLead === 'function'
-      ? Promise.resolve().then(() => window.enviarLead(d))
-      : Promise.reject(new Error('No pudimos enviar tu solicitud. Escríbenos por WhatsApp.'));
-    envio
-      .then(() => { if (window.AQPrefijos) window.AQPrefijos.recordar(f.pre); this.setState({ fSent: true, fSending: false }); })
-      .catch((e) => this.setState({ fSending: false, fErr: (e && e.message) || 'No pudimos enviar tu solicitud. Escríbenos por WhatsApp.' }));
-  }
-
   renderVals() {
     const s = this.state;
     const night = this.mode() === 'noche';
@@ -487,11 +422,6 @@ class Component extends DCLogic {
     const r = s.eur;
     const res = r ? (s.cv.usdAEur ? val * r : val / r) : null;
     const fmt = (v) => Math.round(v).toLocaleString('es-PY');
-    const cfOk = s.f.nombre.trim().length > 1 && (s.f.tel.replace(/\D/g, '').length > 5 || /\S+@\S+\.\S+/.test(s.f.email));
-    const pick = (k, list) => list.map((t) => {
-      const on = s.f[k] === t;
-      return { t, on: on ? 'true' : 'false', bg: on ? 'rgba(201,241,93,0.2)' : 'rgba(255,255,255,0.04)', bd: on ? 'rgba(201,241,93,0.6)' : 'rgba(245,245,247,0.16)', ink: on ? '#E4F7B0' : '#F5F5F7', pick: () => this.setState((st) => ({ f: { ...st.f, [k]: on ? '' : t }, fErr: '' })) };
-    });
     return {
       th, themeName: night ? 'noche' : 'dia',
       marca: (window.MARCA && window.MARCA.nombre) || 'Aquaterra',
@@ -506,7 +436,7 @@ class Component extends DCLogic {
       menuBg: night ? 'rgba(23,25,30,0.94)' : 'rgba(251,251,253,0.92)',
       burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
       burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
-      ctaLabel: s.w >= 520 ? 'Agenda una asesoría' : 'Asesoría',
+      ctaLabel: s.w >= 520 ? 'Reserva tu llamada gratis' : 'Llamada gratis',
       linkC: night ? '#2997FF' : '#0066CC',
       segTrack: night ? 'rgba(118,118,128,0.32)' : 'rgba(118,118,128,0.16)',
       knobBg: night ? '#636366' : '#FFFFFF',
@@ -534,22 +464,7 @@ class Component extends DCLogic {
       remoto: this.REMOTO,
       pasos: this.PASOS,
       promesas: ['Zonas y proyectos que encajan con tu objetivo', 'Documentos que conviene pedir', 'Profesionales que intervienen en cada paso'],
-      objOpts: pick('objetivo', this.OBJS),
-      plazoOpts: pick('plazo', this.PLAZOS),
-      montoOpts: [{ v: '', t: 'Elige una opción' }, ...this.MONTOS.map((t) => ({ v: t, t }))],
-      fMonto: s.f.monto, fMontoTxt: s.f.monto || 'Elige una opción',
-      fNombre: s.f.nombre, fEmail: s.f.email, fTel: s.f.tel, fPre: s.f.pre, fMsg: s.f.msg, fHp: s.f.empresa_web,
-      fPreTxt: window.AQPrefijos ? window.AQPrefijos.corto(s.f.pre) : '', preOpts: window.AQPrefijos ? window.AQPrefijos.opciones : [],
-      onF: Object.fromEntries(['nombre', 'email', 'tel', 'pre', 'msg', 'monto', 'empresa_web'].map((k) => [k, (e) => { const v = e.target.value; this.setState((st) => ({ f: { ...st.f, [k]: v }, fErr: '' })); }])),
-      fSent: s.fSent, fNotSent: !s.fSent,
-      fHint: s.fErr || (s.fSending ? 'Enviando…' : 'Necesitamos tu nombre y un email o WhatsApp para responderte.'),
-      fHintInk: s.fErr ? '#FF9F8F' : 'rgba(245,245,247,0.6)',
-      fBtnTxt: s.fSending ? 'Enviando…' : 'Quiero mi respuesta por escrito',
-      fBtnBg: cfOk ? 'rgba(201,241,93,0.22)' : 'rgba(245,245,247,0.08)',
-      fBtnBd: cfOk ? 'rgba(201,241,93,0.55)' : 'rgba(245,245,247,0.12)',
-      fBtnInk: cfOk ? '#E4F7B0' : 'rgba(245,245,247,0.5)',
-      fBtnCursor: cfOk && !s.fSending ? 'pointer' : 'not-allowed',
-      fSubmit: () => { if (cfOk) this.enviar(); else this.setState({ fErr: 'Necesitamos tu nombre y un email o WhatsApp para responderte.' }); }
+      asesoriaRef: this.asesoriaRef,
     };
   }
 }

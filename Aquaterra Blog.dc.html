@@ -23,6 +23,9 @@
 <script src="./marca.js" defer></script>
 <script src="./cookies.js" defer></script>
 <script src="./articulos.js" defer></script>
+<script src="./leads.js" defer></script>
+<script src="./prefijos.js" defer></script>
+<script src="./asesoria.js" data-barra defer></script>
 <script src="/vendor/react.production.min.js" defer></script>
 <script src="/vendor/react-dom.production.min.js" defer></script>
 <script src="./arranque.js" defer></script>
@@ -108,7 +111,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
         <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ nightInk }}">Noche</span>
       </button>
     </div>
-    <a href="index.html#asesoria" onClick="{{ closeMenu }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Agenda una asesoría</a>
+    <a href="index.html#asesoria" onClick="{{ closeMenu }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Reserva tu llamada gratis de 20 min</a>
   </div>
 </sc-if>
 
@@ -186,7 +189,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
         <h2 data-fx="" style="margin:0;font-size:clamp(26px,3.2vw,38px);line-height:1.1;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">¿Quieres aplicar estos datos a tu caso?</h2>
         <p style="margin:0;font-size:17px;line-height:1.5;color:rgba(245,245,247,0.75);text-wrap:pretty">Cuéntanos tu presupuesto y tu objetivo, y te ayudamos a hacer los números con cifras reales.</p>
       </div>
-      <a href="index.html#asesoria" style="flex:0 0 auto;display:flex;align-items:center;height:50px;padding:0 24px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Habla con un asesor</a>
+      <a href="index.html#asesoria" style="flex:0 0 auto;display:flex;align-items:center;height:50px;padding:0 24px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Reserva tu llamada gratis de 20 min</a>
     </div>
   </div>
 </section>
@@ -292,7 +295,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
       <span data-kicker="oscuro">Siguiente paso</span>
       <h2 data-fx="" style="margin:0;font-size:clamp(24px,2.8vw,32px);line-height:1.12;letter-spacing:-0.025em;font-weight:700;text-wrap:balance">{{ art.ctaT }}</h2>
       <p style="margin:0;font-size:17px;line-height:1.55;color:rgba(245,245,247,0.78)">Cuéntanos tu presupuesto, tu residencia fiscal y lo que buscas. Un asesor te responde con números reales para tu caso, sin compromiso.</p>
-      <a href="index.html#asesoria" style="align-self:flex-start;display:flex;align-items:center;height:48px;padding:0 22px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Habla con un asesor</a>
+      <a href="index.html#asesoria" style="align-self:flex-start;display:flex;align-items:center;height:48px;padding:0 22px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Reserva tu llamada gratis de 20 min</a>
     </div>
   </div>
 
@@ -370,7 +373,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
     <span style="max-width:720px;font-size:13px;line-height:1.55;color:rgba(245,245,247,0.68)">Contenido informativo con fuentes públicas enlazadas; no constituye asesoramiento fiscal ni legal.</span>
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:rgba(245,245,247,0.75)">
       <span>© 2026 {{ marca }}. Todos los derechos reservados.</span>
-      <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
+      <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="privacidad.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de privacidad</a><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
       <span>Asunción, Paraguay</span>
     </div>
     </div>
@@ -393,9 +396,9 @@ class Component extends DCLogic {
   CATS = ['Todos', 'Guías', 'Mercado', 'Impuestos', 'Legal'];
   GLOWS = ['18% 110%', '92% 100%', '10% 0%', '80% 115%', '50% 120%', '0% 60%'];
   // Menú del móvil: el mismo en todas las páginas (algo más descriptivo que el de escritorio e incluye Preguntas).
-  MENU = [['index.html#inversiones', 'Por qué Paraguay'], ['index.html#edificio', 'El edificio'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#simulador', 'Simulador de renta'], ['index.html#nosotros', 'Nosotros'], ['index.html#preguntas', 'Preguntas'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  MENU = [['index.html#inversiones', 'Por qué Paraguay'], ['index.html#simulador', 'Simulador de renta'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['index.html#preguntas', 'Preguntas'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
   // Mismo menú y en el mismo orden en todas las páginas: primero los capítulos del inicio (en el orden en que aparecen), luego las otras páginas.
-  NAV = [['index.html#inversiones', 'Inversiones'], ['index.html#edificio', 'El edificio'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#simulador', 'Simulador'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  NAV = [['index.html#inversiones', 'Inversiones'], ['index.html#simulador', 'Simulador'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
   CTAS = {
     'Guías': '¿Te ayudamos a elegir la opción que encaja contigo?',
     'Mercado': '¿Quieres hacer estos números con tu presupuesto?',
@@ -550,7 +553,7 @@ class Component extends DCLogic {
       barBg: night ? 'rgba(23,25,30,0.8)' : 'rgba(245,245,247,0.8)',
       burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
       burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
-      ctaLabel: s.w >= 520 ? 'Agenda una asesoría' : 'Asesoría',
+      ctaLabel: s.w >= 520 ? 'Reserva tu llamada gratis' : 'Llamada gratis',
       linkC: night ? '#2997FF' : '#0066CC',
       catInk: night ? '#C9F15D' : '#4F7A0A',
       bullet: night ? 'rgba(201,241,93,0.75)' : '#6F9A1F',

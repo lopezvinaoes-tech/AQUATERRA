@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Política de privacidad | Aquaterra</title>
+<meta name="description" content="Cómo trata Aquaterra los datos que nos dejas en la web: quién es el responsable, para qué los usamos, cuánto tiempo los guardamos y cómo ejercer tus derechos según el RGPD.">
+<link rel="canonical" href="https://aquaterra-beta.vercel.app/privacidad.html">
+<meta name="theme-color" content="#F5F5F7">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script>try { if (localStorage.getItem('aquaterra-modo') === 'noche') document.documentElement.setAttribute('data-modo', 'noche'); } catch (e) {}</script>
+<script src="./marca.js" defer></script>
+<script src="./cookies.js" defer></script>
+<style>
+@font-face{font-family:'Bricolage Grotesque';src:url(/fonts/bricolage-grotesque.woff2) format('woff2');font-weight:200 800;font-display:swap}
+:root{--bg:#F5F5F7;--ink:#1D1D1F;--mute:#6E6E73;--card:#FFFFFF;--line:rgba(0,0,0,0.1);--link:#0B5CAD}
+:root[data-modo="noche"]{--bg:#17191E;--ink:#ECECEE;--mute:#A4A7AE;--card:#212329;--line:rgba(255,255,255,0.10);--link:#E4F7B0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--link);text-underline-offset:2px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:880px;margin:0 auto;padding:20px 20px 0}
+.marca{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:600;letter-spacing:-0.03em;color:var(--ink);text-decoration:none}
+.marca:before{content:"";width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px}
+main{max-width:880px;margin:0 auto;padding:clamp(40px,7vw,80px) 20px 64px}
+h1{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(36px,6vw,56px);line-height:1.02;letter-spacing:-0.045em;font-weight:700;margin:0 0 16px}
+h2{font-size:24px;line-height:1.2;letter-spacing:-0.02em;font-weight:600;margin:48px 0 12px}
+p,li{color:var(--ink)}
+.lead{font-size:19px;color:var(--mute);max-width:640px;margin:0 0 28px}
+.estado{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:20px 22px;border-radius:20px;background:var(--card);border:1px solid var(--line)}
+.estado span{font-size:15px;color:var(--mute)}
+.estado b{color:var(--ink)}
+.btn{min-height:44px;padding:0 20px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font-size:15px;font-weight:600;cursor:pointer}
+.btn:focus-visible{outline:2px solid #C9F15D;outline-offset:2px}
+.tabla{width:100%;overflow-x:auto;border-radius:20px;background:var(--card);border:1px solid var(--line)}
+table{width:100%;min-width:620px;border-collapse:collapse;font-size:14.5px;line-height:1.45}
+th,td{text-align:left;vertical-align:top;padding:12px 16px;border-bottom:1px solid var(--line)}
+th{font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--mute)}
+tr:last-child td{border-bottom:0}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+.cat{display:inline-block;padding:2px 10px;border-radius:999px;background:rgba(118,118,128,0.14);font-size:12.5px;white-space:nowrap}
+footer{max-width:880px;margin:0 auto;padding:24px 20px calc(32px + env(safe-area-inset-bottom));border-top:1px solid var(--line);font-size:14px;color:var(--mute)}
+.dato{font-weight:600}
+.pend{display:inline-block;padding:0 8px;border-radius:6px;background:rgba(255,159,10,0.18);font-weight:500}
+.caja{padding:20px 22px;border-radius:20px;background:var(--card);border:1px solid var(--line)}
+.caja p{margin:6px 0}
+</style>
+</head>
+<body>
+<header>
+  <a class="marca" href="index.html">Aquaterra</a>
+  <a href="index.html" style="font-size:15px">Volver a la web</a>
+</header>
+<main>
+  <h1>Política de privacidad</h1>
+  <p class="lead">Qué datos nos das en esta web, para qué los usamos, cuánto tiempo los guardamos y cómo puedes consultarlos, corregirlos o pedir que los borremos.</p>
+
+  <p>Esta política cumple el Reglamento (UE) 2016/679, General de Protección de Datos (RGPD), y la Ley Orgánica 3/2018, de Protección de Datos Personales y garantía de los derechos digitales (LOPDGDD). Se aplica a los datos que recogemos a través de esta web. Lo relativo a cookies y almacenamiento en tu navegador está en la <a href="cookies.html">política de cookies</a>.</p>
+
+  <h2>1. Quién es el responsable</h2>
+  <div class="caja">
+    <p>Titular: <span class="dato" data-marca="titular"></span></p>
+    <p>Documento identificativo: <span class="dato" data-marca="documento"></span></p>
+    <p>Domicilio: <span class="dato" data-marca="domicilio"></span></p>
+    <p>Email de protección de datos: <span class="dato" data-marca="emailPrivacidad"></span></p>
+  </div>
+
+  <h2>2. Qué datos recogemos</h2>
+  <ul>
+    <li><b>Los que escribes en los formularios</b> (asesoría, consulta por un proyecto, alertas de proyectos, comparador y guía gratuita): nombre, WhatsApp o email, el monto aproximado que quieres invertir, tu objetivo y, si lo indicas, el proyecto que te interesa.</li>
+    <li><b>Los que compartes con el asistente virtual</b> del chat, si decides dejarnos tus datos para que te contacte un asesor.</li>
+    <li><b>Datos técnicos del envío</b>: la página desde la que escribes, la web de la que llegaste, la campaña (parámetros utm, solo si aceptaste la medición), el tipo de navegador y una huella cifrada de tu IP que usamos únicamente para frenar envíos automáticos. No guardamos tu IP en claro.</li>
+  </ul>
+  <p>No te pedimos datos especialmente protegidos. Esta web no está dirigida a menores de 18 años.</p>
+
+  <h2>3. Para qué los usamos y con qué base legal</h2>
+  <div class="tabla">
+    <table>
+      <thead><tr><th>Finalidad</th><th>Base legal (art. 6 RGPD)</th></tr></thead>
+      <tbody>
+        <tr><td>Responder a tu solicitud, llamarte o escribirte para la asesoría y presentarte proyectos que encajen con lo que nos contaste.</td><td>Aplicación de medidas precontractuales a petición tuya (art. 6.1.b).</td></tr>
+        <tr><td>Enviarte la guía gratuita que pides y, si marcas la casilla, avisarte de proyectos nuevos o novedades por email o WhatsApp.</td><td>Tu consentimiento (art. 6.1.a), que puedes retirar cuando quieras.</td></tr>
+        <tr><td>Proteger los formularios frente a envíos automáticos y abusos.</td><td>Interés legítimo en la seguridad de la web (art. 6.1.f).</td></tr>
+        <tr><td>Cumplir obligaciones legales si llegas a comprar un inmueble con nosotros.</td><td>Obligación legal (art. 6.1.c).</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>No tomamos decisiones automatizadas con efectos jurídicos sobre ti. Clasificamos las solicitudes por monto y objetivo solo para que te atienda antes el asesor adecuado.</p>
+
+  <h2>4. Cuánto tiempo los guardamos</h2>
+  <p>Mientras estemos en contacto contigo y, si no llegamos a trabajar juntos, un máximo de 2 años desde tu último contacto. Si retiras tu consentimiento o pides la supresión, los borramos salvo los que la ley nos obligue a conservar, que quedarán bloqueados durante el plazo legal.</p>
+
+  <h2>5. Quién más puede verlos</h2>
+  <p>No vendemos ni cedemos tus datos a terceros. Solo acceden a ellos los asesores que llevan tu caso y los proveedores que nos prestan servicio, con contrato de encargado del tratamiento:</p>
+  <ul>
+    <li><b>Vercel Inc.</b>, alojamiento de la web.</li>
+    <li><b>Supabase Inc.</b>, base de datos donde se guardan las solicitudes.</li>
+    <li><b>Google (Gemini) y Anthropic</b>, para que funcione el asistente virtual del chat, solo con lo que escribes en él.</li>
+  </ul>
+  <p>Si nos lo pides para avanzar en una compra, compartiremos lo necesario con el escribano o la desarrolladora del proyecto, siempre avisándote antes.</p>
+
+  <h2>6. Transferencias fuera del Espacio Económico Europeo</h2>
+  <p>Nuestro equipo trabaja desde Paraguay y algunos proveedores están en Estados Unidos. Cuando los datos salen del Espacio Económico Europeo lo hacemos con las garantías del capítulo V del RGPD: el Marco de Privacidad de Datos UE-EE. UU. para las empresas adheridas y las cláusulas contractuales tipo aprobadas por la Comisión Europea en el resto de casos. Puedes pedirnos una copia de esas garantías.</p>
+
+  <h2>7. Tus derechos</h2>
+  <p>Puedes pedir en cualquier momento:</p>
+  <ul>
+    <li><b>Acceso</b>: saber qué datos tuyos tenemos.</li>
+    <li><b>Rectificación</b> de los que estén mal.</li>
+    <li><b>Supresión</b> cuando ya no sean necesarios o retires tu consentimiento.</li>
+    <li><b>Oposición</b> y <b>limitación</b> del tratamiento.</li>
+    <li><b>Portabilidad</b>: recibirlos en un formato que puedas llevar a otra empresa.</li>
+    <li><b>Retirar tu consentimiento</b>, sin que afecte a lo hecho antes de retirarlo.</li>
+  </ul>
+  <p>Escríbenos a <span class="dato" data-marca="emailPrivacidad"></span> indicando qué derecho quieres ejercer. Te responderemos en un plazo máximo de un mes. Si crees que no hemos tratado bien tus datos, puedes reclamar ante la <a href="https://www.aepd.es" target="_blank" rel="noopener">Agencia Española de Protección de Datos</a>.</p>
+
+  <h2>8. Seguridad</h2>
+  <p>Los datos viajan cifrados (HTTPS), se guardan en una base de datos con acceso restringido y solo los ven las personas del equipo que lo necesitan, con usuario propio.</p>
+
+  <h2>9. Cambios en esta política</h2>
+  <p>Si cambiamos algo importante, lo publicaremos aquí y actualizaremos la fecha.</p>
+  <p style="font-size:14px;color:var(--mute)">Última actualización: octubre de 2026.</p>
+</main>
+<footer>© 2026 Aquaterra · Asunción, Paraguay · <a href="cookies.html">Política de cookies</a></footer>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var M = window.MARCA || {};
+  Array.prototype.forEach.call(document.querySelectorAll('[data-marca]'), function (el) {
+    var k = el.getAttribute('data-marca'), v = String(M[k] || '').trim();
+    if (!v) { el.className = 'pend'; el.textContent = 'pendiente de publicar'; return; }
+    if (k === 'emailPrivacidad') { var a = document.createElement('a'); a.href = 'mailto:' + v; a.textContent = v; el.appendChild(a); }
+    else el.textContent = v;
+  });
+});
+</script>
+</body>
+</html>

@@ -26,6 +26,7 @@
 <script src="./moneda.js" defer></script>
 <script src="./leads.js" defer></script>
 <script src="./prefijos.js" defer></script>
+<script src="./asesoria.js" defer></script>
 <script src="/vendor/react.production.min.js" defer></script>
 <script src="/vendor/react-dom.production.min.js" defer></script>
 <script src="./arranque.js" defer></script>
@@ -417,27 +418,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
         </div>
       </div>
       <div style="flex:1 1 400px;min-width:0;display:flex;flex-direction:column;gap:18px;padding:clamp(22px,3vw,36px);border-radius:26px;background:rgba(255,255,255,0.045);border:1px solid rgba(245,245,247,0.12);box-shadow:0 40px 120px -40px rgba(201,241,93,0.18)">
-        <sc-if value="{{ cfNotSent }}" hint-placeholder-val="{{ true }}">
-          <div style="display:flex;flex-direction:column;gap:16px">
-            <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Nombre y apellido<input name="nombre" value="{{ cfNombre }}" onChange="{{ onCf.nombre }}" autocomplete="name" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></label>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px">
-              <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Email<input name="email" value="{{ cfEmail }}" onChange="{{ onCf.email }}" type="email" autocomplete="email" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></label>
-              <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)"><span>WhatsApp</span><div style="display:flex;gap:8px"><span class="aqp" style="height:52px;padding:0 14px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:15px;font-weight:400"><span>{{ cfPreTxt }}</span><select data-aqp value="{{ cfPre }}" onChange="{{ onCf.pre }}" aria-label="Prefijo del teléfono"><sc-for list="{{ preOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.c }}">{{ o.t }}</option></sc-for></select></span><input name="whatsapp" value="{{ cfTel }}" onChange="{{ onCf.tel }}" type="tel" inputmode="tel" autocomplete="tel-national" aria-label="Número de WhatsApp" placeholder="Número" style="flex:1;min-width:0;width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none"></div></div>
-            </div>
-            <label style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-weight:500;color:rgba(245,245,247,0.75)">Mensaje (opcional)<textarea name="mensaje" value="{{ cfMsg }}" onChange="{{ onCf.msg }}" rows="3" placeholder="{{ cfPh }}" style="width:100%;height:52px;padding:0 16px;border-radius:14px;border:1px solid rgba(245,245,247,0.16);background:rgba(255,255,255,0.04);color:#F5F5F7;font-size:16px;outline:none;height:auto;min-height:104px;padding:14px 16px;resize:vertical;line-height:1.5"></textarea></label>
-            <div aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden"><label>Empresa web<input name="empresa_web" tabindex="-1" autocomplete="off" value="{{ cfHp }}" onChange="{{ onCf.empresa_web }}"></label></div>
-            <button onClick="{{ cfSubmit }}" style="height:56px;border-radius:999px;border:1px solid {{ cfBtnBd }};background:{{ cfBtnBg }};color:{{ cfBtnInk }};backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font-size:17px;font-weight:600;cursor:{{ cfBtnCursor }};transition:background .25s, color .25s, border-color .25s">{{ cfBtnTxt }}</button>
-            <span role="status" aria-live="polite" style="text-align:center;font-size:13px;line-height:1.5;color:{{ cfHintInk }}">{{ cfHint }}</span>
-          </div>
-        </sc-if>
-        <sc-if value="{{ cfSent }}" hint-placeholder-val="{{ false }}">
-          <div role="status" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:36px 0">
-            <span style="width:56px;height:56px;border-radius:50%;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#E4F7B0;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700">✓</span>
-            <span style="font-size:24px;letter-spacing:-0.02em;font-weight:700">Recibimos tu consulta</span>
-            <span style="max-width:380px;font-size:15px;line-height:1.5;color:rgba(245,245,247,0.72)">Un asesor de {{ marca }} te contactará para hablar de {{ pr.name }}.</span>
-            <a href="Aquaterra%20Proyectos.dc.html" style="display:flex;align-items:center;min-height:44px;font-size:15px;color:#E4F7B0">Ver otros proyectos ›</a>
-          </div>
-        </sc-if>
+        <div ref="{{ consultaRef }}"></div>
         <sc-if value="{{ hayWa }}" hint-placeholder-val="{{ false }}">
           <a href="{{ waHref }}" target="_blank" rel="noopener" style="align-self:center;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(245,245,247,0.2);color:#F5F5F7;font-size:14px;font-weight:500" style-hover="background:rgba(245,245,247,0.08);color:#F5F5F7">Prefiero escribir por WhatsApp</a>
         </sc-if>
@@ -485,7 +466,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
     <span style="max-width:720px;font-size:13px;line-height:1.55;color:rgba(245,245,247,0.68)">Los proyectos del catálogo son de otras desarrolladoras. Indicamos la fuente y la fecha de cada dato; pueden haber cambiado.</span>
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:rgba(245,245,247,0.75)">
       <span>© 2026 {{ marca }}. Todos los derechos reservados.</span>
-      <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
+      <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="privacidad.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de privacidad</a><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
       <span>Asunción, Paraguay</span>
     </div>
     </div>
@@ -510,8 +491,6 @@ class Component extends DCLogic {
     mode: (() => { try { return localStorage.getItem('aquaterra-modo'); } catch (e) { return null; } })(),
     w: typeof window !== 'undefined' ? window.innerWidth : 1280,
     menu: false,
-    cf: { nombre: '', email: '', tel: '', pre: (window.AQPrefijos ? window.AQPrefijos.porDefecto() : 'ES'), msg: '', empresa_web: '' },
-    cfSending: false, cfSent: false, cfErr: '',
     pi: (() => { try { const v = parseInt(new URLSearchParams(window.location.search).get('p'), 10); return isNaN(v) ? 0 : v; } catch (e) { return 0; } })(),
     // Un enlace a un proyecto que ya no existe muestra el aviso de ficha retirada.
     retirada: (() => { try { const q = new URLSearchParams(window.location.search).get('p'); if (q == null) return false; const v = parseInt(q, 10); return isNaN(v) || v < 0 || v >= (window.PROYECTOS || []).length; } catch (e) { return false; } })(),
@@ -522,9 +501,9 @@ class Component extends DCLogic {
 
   PROJECTS = window.PROYECTOS || [];
   // Menú del móvil: el mismo en todas las páginas (algo más descriptivo que el de escritorio e incluye Preguntas).
-  MENU = [['index.html#inversiones', 'Por qué Paraguay'], ['index.html#edificio', 'El edificio'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#simulador', 'Simulador de renta'], ['index.html#nosotros', 'Nosotros'], ['index.html#preguntas', 'Preguntas'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  MENU = [['index.html#inversiones', 'Por qué Paraguay'], ['index.html#simulador', 'Simulador de renta'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['index.html#preguntas', 'Preguntas'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
   // Mismo menú y en el mismo orden en todas las páginas: primero los capítulos del inicio (en el orden en que aparecen), luego las otras páginas.
-  NAV = [['index.html#inversiones', 'Inversiones'], ['index.html#edificio', 'El edificio'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#simulador', 'Simulador'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  NAV = [['index.html#inversiones', 'Inversiones'], ['index.html#simulador', 'Simulador'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
   THEMES = {
     dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', cardSh: '0 1px 2px rgba(0,0,0,0.04), 0 12px 32px -24px rgba(0,0,0,0.25)', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' , deep: '#0B0C0F', deepInk: '#F5F5F7'},
     noche: { bg: '#17191E', ink: '#ECECEE', mute: '#A4A7AE', mute2: '#CACCD1', line: 'rgba(255,255,255,0.10)', card: '#212329', cardSh: 'inset 0 0 0 1px rgba(255,255,255,0.07)', ph: '#262930', phInk: '#9A9DA4', panel: '#24272E', foot: '#121418', chip: 'rgba(150,152,160,0.20)' , deep: '#1E2127', deepInk: '#E9EAEC'}
@@ -535,6 +514,7 @@ class Component extends DCLogic {
     window.addEventListener('resize', this._onResize);
     this._onKey = (e) => { if (e.key === 'Escape' && this.state.menu) this.setState({ menu: false }); };
     window.addEventListener('keydown', this._onKey);
+    this.montarConsulta();
     this.setMeta();
     // Comparador y cambio a euros (comparador.js carga con defer).
     this._onCmp = () => this.setState((st) => ({ cmpV: (st.cmpV || 0) + 1 }));
@@ -683,20 +663,17 @@ class Component extends DCLogic {
     return { tagBg: lime ? 'rgba(201,241,93,0.14)' : 'rgba(255,255,255,0.08)', tagBd: lime ? 'rgba(201,241,93,0.38)' : 'rgba(255,255,255,0.2)', tagInk: lime ? '#E4F7B0' : '#F5F5F7' };
   }
 
-  // Envío de la consulta a la base de leads (leads.js -> /api/leads).
-  enviarConsulta() {
-    const s = this.state, p = this.proyecto();
-    if (s.cfSending) return;
-    this.setState({ cfSending: true, cfErr: '' });
-    const d = { nombre: s.cf.nombre.trim(), email: s.cf.email.trim(), whatsapp: window.AQPrefijos ? window.AQPrefijos.unir(s.cf.pre, s.cf.tel) : s.cf.tel.trim(), mensaje: s.cf.msg.trim(), proyecto: p.name, origen: 'Ficha de proyecto', empresa_web: s.cf.empresa_web };
-    const envio = typeof window.enviarLead === 'function'
-      ? Promise.resolve().then(() => window.enviarLead(d))
-      : Promise.reject(new Error('No pudimos enviar tu solicitud. Escríbenos por WhatsApp.'));
-    envio
-      .then(() => this.setState({ cfSent: true, cfSending: false }))
-      .catch((e) => this.setState({ cfSending: false, cfErr: (e && e.message) || 'No pudimos enviar tu solicitud. Escríbenos por WhatsApp.' }));
+  // Formulario de consulta en dos pasos (asesoria.js), con el proyecto ya indicado.
+  consultaRef = React.createRef();
+  montarConsulta() {
+    const el = this.consultaRef.current, p = this.proyecto();
+    if (!el || !p || !window.AQAsesoria) return;
+    if (this._consultaEl === el && this._consultaP === p.name) return;
+    const opts = { origen: 'Ficha de proyecto', proyecto: p.name };
+    if (this._consultaEl === el) this._consulta.reset(opts); else this._consulta = window.AQAsesoria.montar(el, opts);
+    this._consultaEl = el; this._consultaP = p.name;
   }
-  componentWillUnmount() { window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); window.removeEventListener('aq-consent', this._onConsent); window.removeEventListener('aq-moneda', this._onMon); clearTimeout(this._shareT); }
+  componentDidUpdate() { this.montarConsulta(); }
 
   mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
 
@@ -708,7 +685,6 @@ class Component extends DCLogic {
     const wide = s.w >= 980, narrowM = s.w < 640;
     const p = this.proyecto();
     const pIdx = this.PROJECTS.indexOf(p);
-    const cfOk = s.cf.nombre.trim().length > 1 && (s.cf.tel.replace(/\D/g, '').length > 5 || /\S+@\S+\.\S+/.test(s.cf.email));
     const wa = String((window.MARCA && window.MARCA.whatsapp) || '').replace(/\D/g, '');
     const lime = p.etapa === 'En pozo';
     const usd = (v) => 'USD ' + Math.round(v).toLocaleString('es-PY');
@@ -798,21 +774,7 @@ class Component extends DCLogic {
         .sort((a, b) => (b.o.ciudad === p.ciudad) - (a.o.ciudad === p.ciudad) || a.i - b.i)
         .slice(0, 3)
         .map(({ o, i }) => ({ ...o, ...this.glass(o.etapa), href: 'Aquaterra%20Ficha.dc.html?p=' + i, loc: this.locTxt(o), kf: this.keyFigure(o), cvBg: this.coverBg(o.tipo, (o.fotos || [])[0]) })),
-      cfNombre: s.cf.nombre, cfEmail: s.cf.email, cfTel: s.cf.tel, cfPre: s.cf.pre, cfPreTxt: window.AQPrefijos ? window.AQPrefijos.corto(s.cf.pre) : '', preOpts: window.AQPrefijos ? window.AQPrefijos.opciones : [], cfMsg: s.cf.msg, cfHp: s.cf.empresa_web,
-      onCf: Object.fromEntries(['nombre', 'email', 'tel', 'pre', 'msg', 'empresa_web'].map((k) => [k, (e) => { const v = e.target.value; this.setState((st) => ({ cf: { ...st.cf, [k]: v }, cfErr: '' })); }])),
-      cfPh: '¿Qué te gustaría saber de ' + p.name + '?',
-      cfSent: s.cfSent, cfNotSent: !s.cfSent,
-      cfHint: s.cfErr || (s.cfSending ? 'Enviando…' : 'Necesitamos tu nombre y un email o WhatsApp para responderte.'),
-      cfHintInk: s.cfErr ? '#FF9F8F' : 'rgba(245,245,247,0.6)',
-      cfBtnTxt: s.cfSending ? 'Enviando…' : 'Enviar consulta',
-      cfBtnBg: cfOk ? 'rgba(201,241,93,0.22)' : 'rgba(245,245,247,0.08)',
-      cfBtnBd: cfOk ? 'rgba(201,241,93,0.55)' : 'rgba(245,245,247,0.12)',
-      cfBtnInk: cfOk ? '#E4F7B0' : 'rgba(245,245,247,0.5)',
-      cfBtnCursor: cfOk && !s.cfSending ? 'pointer' : 'not-allowed',
-      cfSubmit: () => {
-        if (cfOk) this.enviarConsulta();
-        else this.setState({ cfErr: 'Necesitamos tu nombre y un email o WhatsApp para responderte.' });
-      },
+      consultaRef: this.consultaRef,
       hayDev: !!p.dev,
       hayWa: !!wa,
       waHref: wa ? 'https://wa.me/' + wa + '?text=' + encodeURIComponent('Hola, me interesa ' + p.name + ' (' + this.locTxt(p) + ').') : '',
