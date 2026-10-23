@@ -144,7 +144,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
       <div data-hero="" style="--d:100ms;display:flex;flex-direction:column;gap:16px;max-width:{{ heroMaxW }};padding:{{ heroPad }};border-radius:20px;background:{{ heroGlass }};border:1px solid {{ heroGlassBd }};backdrop-filter:{{ heroBlur }};-webkit-backdrop-filter:{{ heroBlur }}">
         <span style="width:56px;height:2px;background:#C9F15D"></span>
         <div style="display:flex;align-items:flex-start;gap:clamp(20px,3vw,48px);flex-wrap:wrap">
-          <h1 data-hero-t="" style="margin:0;font-size:clamp(44px,6vw,96px);line-height:0.98;letter-spacing:-0.04em;font-weight:700;color:{{ ink }};transition:color .9s;text-wrap:balance">Invierte en <span data-accent="" style="color:{{ limeText }};transition:color .9s">Paraguay</span> desde <span data-accent="" style="color:{{ grayText }};transition:color .9s">España</span></h1>
+          <h1 data-hero-t="" style="margin:0;font-size:{{ heroH1 }};line-height:0.98;letter-spacing:-0.04em;font-weight:700;color:{{ ink }};transition:color .9s;white-space:{{ heroH1Ws }}">Invierte en <span data-accent="" style="color:{{ limeText }};transition:color .9s">Paraguay</span><br>desde <span data-accent="" style="color:{{ grayText }};transition:color .9s">España</span></h1>
         </div>
         <p style="margin:0;max-width:620px;font-size:clamp(15px,1.2vw,18px);line-height:1.5;color:{{ sub }};transition:color .9s;text-wrap:pretty">Te ayudamos a elegir, comprar a distancia y alquilar un piso en Asunción, con una renta estimada del 6 al 8 % neto al año e impuestos bajos.</p>
         <span style="display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;font-weight:500;color:{{ sub }};transition:color .9s"><span><span style="color:{{ limeText }}">✓</span> Grado de inversión</span><span><span style="color:{{ limeText }}">✓</span> Compra sin viajar</span><span><span style="color:{{ limeText }}">✓</span> Acompañamiento hasta la renta</span></span>
@@ -1786,6 +1786,9 @@ class Component extends DCLogic {
       heroMaxW: s.w >= 900 ? 'min(680px, 48vw)' : '760px',
       // Margen lateral más generoso para que el titular y los botones no queden pegados al borde.
       heroSidePad: s.w >= 900 ? 'clamp(56px,8vw,140px)' : s.w >= 600 ? '40px' : '24px',
+      // Desde 600 px el titular va siempre en dos líneas; en móvil puede partirse en tres.
+      heroH1: s.w >= 900 ? 'clamp(44px,6vw,96px)' : s.w >= 600 ? 'min(calc((100vw - 80px) / 7.8), 80px)' : '44px',
+      heroH1Ws: s.w >= 600 ? 'nowrap' : 'normal',
       nightHazeBg: s.w >= 900
         ? 'linear-gradient(to bottom, rgba(20,23,29,0.8) 0%, rgba(20,23,29,0) 16%), linear-gradient(to right, #14171D 0%, rgba(20,23,29,0.92) 28%, rgba(20,23,29,0.45) 46%, rgba(20,23,29,0) 64%), linear-gradient(to top, rgba(20,23,29,0.9) 0%, rgba(20,23,29,0) 20%)'
         : 'linear-gradient(to bottom, rgba(20,23,29,0.8) 0%, rgba(20,23,29,0) 16%), linear-gradient(to top, #14171D 0%, rgba(20,23,29,0.92) 26%, rgba(20,23,29,0.42) 42%, rgba(20,23,29,0) 60%)',
