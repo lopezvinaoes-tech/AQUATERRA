@@ -21,7 +21,7 @@
 <meta property="og:image" content="https://aquaterra-beta.vercel.app/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Aquaterra: ciudad en 3D y el titular Una Nueva Dimensión del Real Estate">
+<meta property="og:image:alt" content="Aquaterra: invierte en Paraguay desde España y cobra tu renta en dólares">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
@@ -69,7 +69,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
 [data-hero-t]{animation:aq-hero-t 1.2s cubic-bezier(.16,1,.3,1) .15s both}
 @media (prefers-reduced-motion:reduce){[data-hero],[data-hero-t]{animation:none}}
 /* Las secciones de abajo no se maquetan ni pintan hasta que se acercan a la pantalla. */
-#proyectos,#simulador,#nosotros,#testimonios,#preguntas,#contacto,footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 900px}
+#problema,#proyectos,#simulador,#nosotros,#testimonios,#preguntas,#contacto,footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 900px}
 /* Sistema común a todas las páginas (mismo bloque en cada una):
    data-kicker  etiqueta de sección con rombo lima y número de capítulo en negrita; data-kicker="oscuro" sobre fondos oscuros
    data-nav     enlace del menú; con aria-current lleva debajo el rombo lima de "estás aquí" */
@@ -144,12 +144,12 @@ select option{color:#1D1D1F;background:#FFFFFF}
       <div data-hero="" style="--d:100ms;display:flex;flex-direction:column;gap:16px;max-width:760px;padding:{{ heroPad }};border-radius:20px;background:{{ heroGlass }};border:1px solid {{ heroGlassBd }};backdrop-filter:{{ heroBlur }};-webkit-backdrop-filter:{{ heroBlur }}">
         <span style="width:56px;height:2px;background:#C9F15D"></span>
         <div style="display:flex;align-items:flex-start;gap:clamp(20px,3vw,48px);flex-wrap:wrap">
-          <h1 data-hero-t="" style="margin:0;font-size:clamp(34px,4.2vw,64px);line-height:1;letter-spacing:-0.035em;font-weight:700;color:{{ ink }};transition:color .9s">Una <span data-accent="" style="color:{{ limeText }};transition:color .9s">Nueva</span> Dimensión<br>del <span data-accent="" style="color:{{ grayText }};transition:color .9s">Real Estate</span></h1>
-          <span style="padding-top:14px;font-size:13px;font-weight:500;line-height:1.4;color:{{ sub }};transition:color .9s">Compras en pozo<br>e inversión inteligente</span>
+          <h1 data-hero-t="" style="margin:0;font-size:clamp(32px,3.9vw,58px);line-height:1.02;letter-spacing:-0.035em;font-weight:700;color:{{ ink }};transition:color .9s;text-wrap:balance">Invierte en <span data-accent="" style="color:{{ limeText }};transition:color .9s">Paraguay</span> desde España y cobra tu renta <span data-accent="" style="color:{{ grayText }};transition:color .9s">en dólares</span></h1>
         </div>
-        <p style="margin:0;font-size:clamp(15px,1.2vw,18px);line-height:1.5;color:{{ sub }};transition:color .9s">El futuro de la inversión inmobiliaria en Paraguay empieza aquí.</p>
+        <p style="margin:0;max-width:620px;font-size:clamp(15px,1.2vw,18px);line-height:1.5;color:{{ sub }};transition:color .9s;text-wrap:pretty">Te ayudamos a elegir, comprar a distancia y alquilar un piso en Asunción, con una renta estimada del 6 al 8 % neto al año e impuestos bajos.</p>
+        <span style="display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;font-weight:500;color:{{ sub }};transition:color .9s"><span><span style="color:{{ limeText }}">✓</span> Grado de inversión</span><span><span style="color:{{ limeText }}">✓</span> Compra sin viajar</span><span><span style="color:{{ limeText }}">✓</span> Acompañamiento hasta la renta</span></span>
         <div style="pointer-events:auto;display:flex;flex-wrap:wrap;gap:10px;padding-top:6px">
-          <a href="#proyectos" data-magnet="" style="display:inline-flex;align-items:center;gap:6px;height:46px;padding:0 22px;border-radius:999px;background:{{ ink }};color:{{ heroBtnInk }};font-size:15px;font-weight:600;letter-spacing:-0.01em" style-hover="opacity:0.85;color:{{ heroBtnInk }}">Ver proyectos <span>›</span></a>
+          <button onClick="{{ openModal }}" data-magnet="" style="display:inline-flex;align-items:center;gap:6px;height:46px;padding:0 22px;border-radius:999px;border:0;cursor:pointer;background:{{ ink }};color:{{ heroBtnInk }};font-size:15px;font-weight:600;letter-spacing:-0.01em" style-hover="opacity:0.85">Agenda tu asesoría <span>›</span></button>
           <a href="#simulador" data-magnet="" style="display:inline-flex;align-items:center;gap:6px;height:46px;padding:0 22px;border-radius:999px;border:1px solid {{ heroGlassBd2 }};background:rgba(201,241,93,0.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:{{ ink }};font-size:15px;font-weight:600;letter-spacing:-0.01em" style-hover="background:rgba(201,241,93,0.28);color:{{ ink }}">Calcula tu renta</a>
         </div>
       </div>
@@ -180,10 +180,38 @@ select option{color:#1D1D1F;background:#FFFFFF}
   </div>
 </section>
 
+<section id="problema" data-screen-label="02 El problema" style="background:{{ th.bg2 }};color:{{ th.ink }};transition:background .6s;padding:clamp(88px,12vw,160px) clamp(20px,3.2vw,48px)">
+  <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(36px,5vw,64px)">
+    <div data-reveal="" style="display:flex;flex-direction:column;gap:22px;max-width:820px">
+      <span data-kicker=""><b>01</b>Invertir desde España</span>
+      <h2 data-fx="" style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Tus ahorros pueden <span data-accent="" data-mark="" style="background:linear-gradient(transparent 60%,{{ th.mark }} 60%,{{ th.mark }} 92%,transparent 92%);padding:0 .06em">trabajar más</span></h2>
+      <p style="margin:0;max-width:600px;font-size:18px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">Si te suena alguna de estas situaciones, esta página es para ti.</p>
+    </div>
+    <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px">
+      <div style="position:relative;display:flex;flex-direction:column;gap:14px;padding:clamp(24px,2.4vw,32px);border-radius:28px;background:{{ th.bg }};box-shadow:{{ th.tileSh }};overflow:hidden">
+        <span data-mono="" style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:{{ th.chipInk }};font-size:12px;font-weight:600">01</span>
+        <span style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(21px,1.8vw,25px);line-height:1.15;font-weight:600;letter-spacing:-0.025em;text-wrap:balance">El dinero parado pierde valor</span>
+        <span style="font-size:15px;line-height:1.55;color:{{ th.mute2 }};text-wrap:pretty">La inflación se come lo que tienes en el banco y los depósitos apenas la compensan.</span>
+      </div>
+      <div style="position:relative;display:flex;flex-direction:column;gap:14px;padding:clamp(24px,2.4vw,32px);border-radius:28px;background:{{ th.bg }};box-shadow:{{ th.tileSh }};overflow:hidden">
+        <span data-mono="" style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:{{ th.chipInk }};font-size:12px;font-weight:600">02</span>
+        <span style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(21px,1.8vw,25px);line-height:1.15;font-weight:600;letter-spacing:-0.025em;text-wrap:balance">Comprar en España cuesta cada vez más</span>
+        <span style="font-size:15px;line-height:1.55;color:{{ th.mute2 }};text-wrap:pretty">Un piso para alquilar en una gran ciudad exige mucha entrada, hipoteca y años de pagos.</span>
+      </div>
+      <div style="position:relative;display:flex;flex-direction:column;gap:14px;padding:clamp(24px,2.4vw,32px);border-radius:28px;background:{{ th.bg }};box-shadow:{{ th.tileSh }};overflow:hidden">
+        <span data-mono="" style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);color:{{ th.chipInk }};font-size:12px;font-weight:600">03</span>
+        <span style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(21px,1.8vw,25px);line-height:1.15;font-weight:600;letter-spacing:-0.025em;text-wrap:balance">Invertir fuera da respeto</span>
+        <span style="font-size:15px;line-height:1.55;color:{{ th.mute2 }};text-wrap:pretty">Otro país, otras leyes y nadie de confianza sobre el terreno. Es normal no saber por dónde empezar.</span>
+      </div>
+    </div>
+    <a data-reveal="" href="#inversiones" style="align-self:flex-start;display:inline-flex;align-items:center;gap:8px;font-size:clamp(18px,1.6vw,22px);font-weight:600;letter-spacing:-0.02em;color:{{ th.ink }}" style-hover="opacity:0.7;color:{{ th.ink }}">Paraguay resuelve las dos primeras. Nosotros, la tercera. <span aria-hidden="true">↓</span></a>
+  </div>
+</section>
+
 <section id="inversiones" data-screen-label="02 Por qué Paraguay" style="background:{{ th.bg }};transition:background .6s;padding:clamp(88px,12vw,168px) clamp(20px,3.2vw,48px)">
   <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:clamp(48px,7vw,112px)">
     <div data-reveal="" style="position:{{ stickyPos }};top:120px;align-self:start;display:flex;flex-direction:column;gap:22px">
-      <span data-kicker=""><b>01</b>Por qué Paraguay</span>
+      <span data-kicker=""><b>02</b>Por qué Paraguay</span>
       <h2 data-fx="" style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Un mercado con <span data-accent="" style="color:#86868B">ventajas reales</span> para el inversor</h2>
       <p style="margin:0;max-width:440px;font-size:17px;line-height:1.6;color:{{ th.mute }};text-wrap:pretty">Lo que hace de Paraguay uno de los destinos más atractivos de la región para invertir en propiedades. Cada dato lleva su fuente.</p>
     </div>
@@ -238,6 +266,19 @@ select option{color:#1D1D1F;background:#FFFFFF}
   </div>
 </section>
 
+<section data-screen-label="03 Llamada a la acción" style="background:{{ th.bg }};transition:background .6s;padding:0 clamp(20px,3.2vw,48px) clamp(88px,12vw,160px)">
+  <div data-reveal="" data-grain="" style="max-width:1280px;margin:0 auto;border-radius:clamp(28px,3vw,40px);background:{{ th.deep }};color:{{ th.deepInk }};overflow:hidden;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:28px;padding:clamp(28px,4vw,56px)">
+    <div style="flex:1 1 420px;display:flex;flex-direction:column;gap:12px">
+      <h2 style="margin:0;font-size:clamp(28px,3vw,44px);line-height:1.08;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">¿Encaja Paraguay con <span data-accent="" style="color:#E4F7B0">tu perfil</span>?</h2>
+      <p style="margin:0;max-width:520px;font-size:17px;line-height:1.6;color:rgba(245,245,247,0.75);text-wrap:pretty">Cuéntanos tu objetivo y tu presupuesto y te decimos con claridad si tiene sentido para ti, antes de comprometer nada.</p>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">
+      <button onClick="{{ openModal }}" data-magnet="" style="height:52px;padding:0 24px;border-radius:999px;border:0;cursor:pointer;background:#C9F15D;color:#1D1D1F;font-size:16px;font-weight:600" style-hover="opacity:0.85">Agenda tu asesoría</button>
+      <a href="{{ waHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;height:52px;padding:0 22px;border-radius:999px;border:1px solid rgba(245,245,247,0.24);color:#F5F5F7;font-size:16px;font-weight:500" style-hover="background:rgba(255,255,255,0.08);color:#F5F5F7">Escríbenos por WhatsApp</a>
+    </div>
+  </div>
+</section>
+
 <section id="edificio" ref="{{ towerSecRef }}" data-screen-label="03 Edificio" style="position:relative;height:940vh;background:{{ tw.bg }};transition:background .6s">
   <div id="cocheras" style="position:absolute;left:0;top:53.6%;width:1px;height:1px;pointer-events:none"></div>
   <div style="position:sticky;top:0;height:100svh;overflow:hidden">
@@ -262,7 +303,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
 
     <div ref="{{ twInfoRef }}" style="position:absolute;left:clamp(20px,3.2vw,48px);top:0;bottom:0;width:{{ twInfoW }};padding:{{ twInfoPad }};display:flex;flex-direction:column;justify-content:{{ twInfoJustify }};gap:28px;color:#F5F5F7;pointer-events:none">
       <div style="display:flex;flex-direction:column;gap:18px">
-        <span style="display:flex;align-items:center;flex-wrap:wrap;gap:10px"><span data-kicker="oscuro" style="align-self:center"><b>02</b>El proyecto, piso por piso</span><span style="padding:4px 10px;border-radius:999px;background:#C9F15D;color:#1D1D1F;font-size:12px;font-weight:600;letter-spacing:0">Ejemplo ilustrativo</span></span>
+        <span style="display:flex;align-items:center;flex-wrap:wrap;gap:10px"><span data-kicker="oscuro" style="align-self:center"><b>03</b>El proyecto, piso por piso</span><span style="padding:4px 10px;border-radius:999px;background:#C9F15D;color:#1D1D1F;font-size:12px;font-weight:600;letter-spacing:0">Ejemplo ilustrativo</span></span>
         <h2 data-fx="" style="margin:0;font-size:clamp(30px,3.6vw,54px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Recorre una inversión <span data-accent="" style="color:#86868B">de arriba a abajo</span></h2>
         <sc-if value="{{ twWide }}" hint-placeholder-val="{{ true }}">
           <p style="margin:0;max-width:380px;font-size:16px;line-height:1.6;color:rgba(245,245,247,0.72);text-wrap:pretty">Así presentamos cada desarrollo, desde las amenities hasta la calle. Este edificio es un ejemplo ilustrativo, no un proyecto en venta.</p>
@@ -347,7 +388,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
   <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(36px,5vw,56px)">
     <div data-reveal="" style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px">
       <div style="display:flex;flex-direction:column;gap:20px;max-width:720px">
-        <span data-kicker=""><b>03</b>Proyectos</span>
+        <span data-kicker=""><b>04</b>Proyectos</span>
         <h2 data-fx="" style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Oportunidades para <span data-accent="" data-mark="" style="background:linear-gradient(transparent 60%,{{ th.mark }} 60%,{{ th.mark }} 92%,transparent 92%);padding:0 .06em">invertir hoy</span></h2>
         <p style="margin:0;font-size:18px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">Departamentos en pozo, barrios cerrados y lotes. Por ahora mostramos proyectos de otras desarrolladoras como referencia, cada uno con su fuente.</p>
       </div>
@@ -387,7 +428,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
   <div data-reveal="" data-grain="" data-aurora="" style="max-width:1280px;margin:0 auto;border-radius:clamp(28px,3vw,40px);background:{{ th.deep }};color:{{ th.deepInk }};overflow:hidden;display:flex;flex-wrap:wrap">
     <div style="flex:1 1 440px;display:flex;flex-direction:column;gap:28px;padding:clamp(28px,4vw,56px)">
       <div style="display:flex;flex-direction:column;gap:16px">
-        <span data-kicker="oscuro"><b>04</b>Simulador</span>
+        <span data-kicker="oscuro"><b>05</b>Simulador</span>
         <h2 data-fx="" style="margin:0;font-size:clamp(32px,3.6vw,52px);line-height:1.04;letter-spacing:-0.03em;font-weight:700">¿Cuánto podría <span data-accent="" style="color:#E4F7B0">rentarte</span>?</h2>
         <p style="margin:0;font-size:17px;line-height:1.6;color:rgba(245,245,247,0.75);text-wrap:pretty">Mueve el monto y elige si compras terminado o en pozo. Usamos los rangos publicados para Asunción.</p>
       </div>
@@ -431,7 +472,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
     <div style="display:flex;flex-direction:column;gap:clamp(32px,4vw,56px)">
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));align-items:end;gap:clamp(28px,5vw,80px)">
         <div data-reveal="" style="display:flex;flex-direction:column;gap:22px">
-          <span data-kicker=""><b>05</b>Sobre nosotros</span>
+          <span data-kicker=""><b>06</b>Sobre nosotros</span>
           <h2 data-fx="" style="margin:0;font-size:clamp(40px,4.8vw,70px);line-height:0.98;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Asesoramos inversiones con <span data-accent="" data-mark="" style="color:{{ th.ink }};background:linear-gradient(transparent 60%,{{ th.mark }} 60%,{{ th.mark }} 92%,transparent 92%);padding:0 .06em">criterio de largo plazo</span></h2>
         </div>
         <p data-reveal="150" style="margin:0;max-width:540px;font-size:clamp(18px,1.5vw,21px);line-height:1.55;color:{{ th.mute2 }};text-wrap:pretty">{{ marca }} acompaña a inversores locales y del exterior en la compra de propiedades en Paraguay, con foco en desarrollos en pozo. Analizamos cada caso antes de recomendar un proyecto.</p>
@@ -520,7 +561,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
 <section id="preguntas" data-screen-label="07 Preguntas" style="background:{{ th.bg }};transition:background .6s;padding:clamp(88px,12vw,160px) clamp(20px,3.2vw,48px)">
   <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:clamp(40px,6vw,96px)">
     <div data-reveal="" style="position:{{ stickyPos }};top:120px;align-self:start;display:flex;flex-direction:column;gap:22px">
-      <span data-kicker=""><b>06</b>Preguntas frecuentes</span>
+      <span data-kicker=""><b>07</b>Preguntas frecuentes</span>
       <h2 data-fx="" style="margin:0;font-size:clamp(40px,4.8vw,70px);line-height:0.98;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Lo que todo inversor <span data-accent="" data-mark="" style="background:linear-gradient(transparent 60%,{{ th.mark }} 60%,{{ th.mark }} 92%,transparent 92%);padding:0 .06em">nos pregunta</span></h2>
       <p style="margin:0;font-size:18px;line-height:1.6;color:{{ th.mute2 }};text-wrap:pretty">Respuestas cortas, con su fuente. Para tu caso concreto, te lo explicamos en la asesoría.</p>
     </div>
@@ -549,7 +590,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
     <span ref="{{ ctaGlowRef }}" aria-hidden="true" style="position:absolute;left:50%;top:clamp(40px,8vw,120px);width:min(900px,120vw);height:420px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(201,241,93,0.22),rgba(201,241,93,0));pointer-events:none"></span>
     <div style="position:relative;max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(44px,5vw,64px)">
       <div style="display:flex;flex-direction:column;align-items:center;gap:26px;text-align:center">
-        <span data-reveal="" data-kicker="oscuro" style="align-self:center"><b>07</b>Asesoría personalizada</span>
+        <span data-reveal="" data-kicker="oscuro" style="align-self:center"><b>08</b>Asesoría personalizada</span>
         <h2 ref="{{ ctaTitleRef }}" aria-label="Analicemos tu caso." style="margin:0;font-size:clamp(52px,8vw,124px);line-height:1.02;letter-spacing:-0.045em;font-weight:700"><span aria-hidden="true" data-w="0" style="display:inline-block">Analicemos</span> <span aria-hidden="true" style="position:relative;display:inline-block;padding:0 0.14em;white-space:nowrap"><span data-pill="" style="position:absolute;left:0;right:0;top:0.1em;bottom:0.02em;border-radius:0.22em;background:rgba(201,241,93,0.14);border:1px solid rgba(201,241,93,0.38);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%)"></span><span data-w="1" data-accent="" style="position:relative;display:inline-block;color:#E4F7B0">tu</span> <span data-w="2" data-accent="" style="position:relative;display:inline-block;color:#E4F7B0">caso.</span></span></h2>
         <p data-reveal="500" style="margin:0;max-width:560px;font-size:19px;line-height:1.6;color:rgba(245,245,247,0.82);text-wrap:pretty">Cada inversión empieza con una conversación. Déjanos tus datos y un asesor te presentará opciones a tu medida.</p>
       </div>
