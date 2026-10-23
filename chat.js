@@ -25,7 +25,8 @@
     '.aqc-dot{width:30px;height:30px;border-radius:50%;background:#C9F15D;display:grid;place-items:center;flex:none}',
     '.aqc-dot svg{width:17px;height:17px}',
     '.aqc-pulse{position:absolute;top:8px;left:38px;width:10px;height:10px;border-radius:50%;background:#C9F15D;border:2px solid #1D1D1F}',
-    '.aqc-open .aqc-btn{opacity:0;pointer-events:none;transform:scale(.9)}',
+    '.aqc-open .aqc-btn,.aqc-menu .aqc-btn{opacity:0;pointer-events:none;transform:scale(.9)}',
+    '.aqc-logo{display:none;width:100%;height:100%}',
     '.aqc-win{position:fixed;right:20px;bottom:calc(20px + var(--aqc-off,0px) + env(safe-area-inset-bottom));z-index:91;width:380px;max-width:calc(100vw - 32px);height:min(620px,calc(100vh - 120px));display:flex;flex-direction:column;background:#fff;color:#1D1D1F;border-radius:22px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.3);opacity:0;transform:translateY(16px) scale(.98);pointer-events:none;transition:opacity .25s,transform .25s}',
     '.aqc-open .aqc-win{opacity:1;transform:none;pointer-events:auto}',
     '.aqc-head{display:flex;align-items:center;gap:12px;padding:16px 16px 14px 18px;background:#1D1D1F;color:#fff}',
@@ -57,11 +58,13 @@
     '.aqc-send svg{width:18px;height:18px}',
     '.aqc-legal{margin:8px 4px 0;font-size:11px;line-height:1.35;color:#86868B}',
     '.aqc-legal a{color:#6E6E73}',
-    '@media (max-width:560px){.aqc-btn{right:16px;padding:0 16px 0 13px}.aqc-win{right:0;bottom:0;width:100%;max-width:none;height:100%;height:100dvh;border-radius:0}.aqc-head{padding-top:calc(14px + env(safe-area-inset-top))}.aqc-foot{padding-bottom:calc(12px + env(safe-area-inset-bottom))}}',
+    '@media (max-width:560px){.aqc-btn{right:16px;width:48px;height:48px;padding:0;justify-content:center;border-radius:50%;background:#0B0C0F;overflow:hidden}.aqc-btn>.aqc-dot,.aqc-btn>.aqc-txt,.aqc-pulse{display:none}.aqc-logo{display:block}.aqc-win{right:0;bottom:0;width:100%;max-width:none;height:100%;height:100dvh;border-radius:0}.aqc-head{padding-top:calc(14px + env(safe-area-inset-top))}.aqc-foot{padding-bottom:calc(12px + env(safe-area-inset-bottom))}}',
     '@media (prefers-reduced-motion:reduce){.aqc-btn,.aqc-win{transition:none}.aqc-typing i{animation:none}}'
   ].join('\n');
 
   var ICON_CHAT = '<svg viewBox="0 0 24 24" fill="none" stroke="#1D1D1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>';
+  // Logo de la marca (el mismo que el favicon): en móvil el botón es solo este círculo.
+  var LOGO = '<svg class="aqc-logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" fill="#0B0C0F"/><path d="M32 16 48 32 32 48 16 32Z" fill="#C9F15D"/></svg>';
   var ICON_SEND = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -85,7 +88,7 @@
     if (offset) root.style.setProperty('--aqc-off', offset + 'px');
     root.innerHTML =
       '<button class="aqc-btn" type="button" aria-label="Abrir el asistente virtual"><span class="aqc-dot">' + ICON_CHAT + '</span>' +
-      (estado.mensajes.length ? '' : '<span class="aqc-pulse"></span>') + '<span>¿Dudas? Pregúntame</span></button>' +
+      (estado.mensajes.length ? '' : '<span class="aqc-pulse"></span>') + '<span class="aqc-txt">¿Dudas? Pregúntame</span>' + LOGO + '</button>' +
       '<section class="aqc-win" role="dialog" aria-label="Asistente virtual de ' + esc(marca) + '" aria-hidden="true" inert>' +
         '<header class="aqc-head"><span class="aqc-dot">' + ICON_CHAT + '</span><div><b>Asistente ' + esc(marca) + '</b><small>Asistente con IA · responde al momento</small></div>' +
         '<button class="aqc-x" type="button" aria-label="Cerrar">✕</button></header>' +
@@ -138,6 +141,10 @@
       if (v) { render(); if (window.matchMedia('(min-width:561px)').matches) setTimeout(function () { input.focus(); }, 200); }
       else btn.focus({ preventScroll: true });
     }
+    // Con el menú desplegable abierto (elemento data-aq-menu de cada página) el botón se oculta.
+    function menu() { root.classList.toggle('aqc-menu', !!document.querySelector('[data-aq-menu]')); }
+    new MutationObserver(menu).observe(document.body, { childList: true, subtree: true });
+    menu();
     function ajustar() { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 120) + 'px'; }
 
     function enviar(texto) {

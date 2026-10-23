@@ -117,7 +117,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
   </div>
 </header>
 <sc-if value="{{ menu }}" hint-placeholder-val="{{ false }}">
-  <div style="position:fixed;inset:0;z-index:49;background:{{ menuBg }};backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);padding:calc(72px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom));display:flex;flex-direction:column;overflow:auto;overscroll-behavior:contain">
+  <div data-aq-menu="" style="position:fixed;inset:0;z-index:49;background:{{ menuBg }};backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);padding:calc(72px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom));display:flex;flex-direction:column;overflow:auto;overscroll-behavior:contain">
     <sc-for list="{{ menuItems }}" as="m" hint-placeholder-count="6">
       <a href="{{ m.href }}" onClick="{{ closeMenu }}" style="display:flex;align-items:center;justify-content:space-between;min-height:60px;font-size:28px;font-weight:600;letter-spacing:-0.025em;color:{{ th.ink }};border-bottom:1px solid {{ th.line }}">{{ m.label }}<span style="font-size:24px;font-weight:400;color:{{ th.mute }}">›</span></a>
     </sc-for>
