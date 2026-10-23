@@ -15,7 +15,9 @@ const MODEL = process.env.CHAT_MODEL || (PROVEEDOR === 'gemini' ? 'gemini-3.8-fl
 // Si el modelo principal de Gemini está saturado, se prueba con este (CHAT_MODEL_RESPALDO; vacío lo desactiva).
 const MODEL_RESPALDO = PROVEEDOR === 'gemini' ? (process.env.CHAT_MODEL_RESPALDO ?? 'gemini-flash-lite-latest') : '';
 // Errores pasajeros del proveedor (saturado o con demasiadas peticiones): se reintenta.
-const SATURADO = [429, 500, 503, 529];
+const SATURADO = [429, 500, 503, 504, 529];
+// Cada llamada al proveedor se corta a los 20 s: si Gemini se cuelga, la función no espera hasta el límite de Vercel.
+const ESPERA_MAX = 20000;
 const POR_IP_HORA = parseInt(process.env.CHAT_LIMITE_IP_HORA || '40', 10);
 const POR_DIA = parseInt(process.env.CHAT_LIMITE_DIARIO || '3000', 10);
 const MAX_MENSAJES = 40;
@@ -201,11 +203,18 @@ async function guardarContacto(input, ctx) {
 async function pedir(url, headers, body) {
   // Hasta 2 reintentos (a los 1 y 2,5 s) si el proveedor está saturado.
   for (let intento = 0; ; intento++) {
-    const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) });
+    let r;
+    try {
+      r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body), signal: AbortSignal.timeout(ESPERA_MAX) });
+    } catch (e) {
+      // Sin respuesta a tiempo: no se reintenta con el mismo modelo, se pasa directamente al de respaldo.
+      if (e.name === 'TimeoutError' || e.name === 'AbortError') throw Object.assign(new Error(`${PROVEEDOR} sin respuesta en ${ESPERA_MAX / 1000} s`), { status: 504 });
+      throw e;
+    }
     const data = await r.json().catch(() => ({}));
     if (r.ok) return data;
     const err = Object.assign(new Error((data.error && data.error.message) || `${PROVEEDOR} ${r.status}`), { status: r.status });
-    if (!SATURADO.includes(r.status) || intento >= 2) throw err;
+    if (!SATURADO.includes(r.status) || r.status === 504 || intento >= 2) throw err;
     console.warn('chat reintento', r.status, err.message);
     await new Promise((ok) => setTimeout(ok, intento ? 2500 : 1000));
   }

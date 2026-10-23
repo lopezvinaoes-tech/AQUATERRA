@@ -161,8 +161,12 @@
       body.appendChild(typing);
       body.scrollTop = body.scrollHeight;
 
+      // Si el servidor no contesta en 75 s se corta la espera y se muestra el error.
+      var corte = window.AbortController ? new AbortController() : null;
+      var reloj = corte && setTimeout(function () { corte.abort(); }, 75000);
       fetch('/api/chat', {
         method: 'POST',
+        signal: corte ? corte.signal : undefined,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mensajes: estado.mensajes.slice(-40), lead: estado.lead, pagina: location.pathname + location.search })
       })
@@ -177,12 +181,13 @@
         })
         .catch(function (e) {
           typing.remove();
+          if (e.name === 'AbortError') e = new Error('El asistente está tardando demasiado. Prueba de nuevo en un momento.');
           // El mensaje no respondido se quita del historial para poder reintentar.
           estado.mensajes.pop(); guardar();
           burbuja(e.message + (wa ? ' También puedes escribirnos por [WhatsApp](https://wa.me/' + wa + ').' : ''), 'aqc-err');
           input.value = texto; ajustar();
         })
-        .then(function () { ocupado = false; send.disabled = false; body.scrollTop = body.scrollHeight; });
+        .then(function () { clearTimeout(reloj); ocupado = false; send.disabled = false; body.scrollTop = body.scrollHeight; });
     }
 
     btn.onclick = function () { abrir(true); };
