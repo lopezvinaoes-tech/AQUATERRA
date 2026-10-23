@@ -45,9 +45,24 @@ ul.check li:before{content:"";position:absolute;left:0;top:3.1mm;width:3.2mm;hei
 .nota{border-left:3px solid #C9F15D;background:#F7FBEA;padding:3.5mm 4.5mm;border-radius:0 3mm 3mm 0;font-size:9.6pt;margin:4mm 0}
 .oscuro{background:#111316;color:#F5F5F7}
 .oscuro .pie{border-top-color:rgba(255,255,255,.12);color:rgba(245,245,247,.5)}
-.portada{display:flex;flex-direction:column;justify-content:space-between;padding:22mm 20mm 24mm;background:radial-gradient(120% 70% at 85% 0%,rgba(201,241,93,.22),rgba(201,241,93,0) 60%),#111316;color:#F5F5F7}
-.portada h1{font-size:44pt;line-height:.98}
-.portada h1 em{color:#C9F15D}
+.portada{display:flex;flex-direction:column;gap:9mm;padding:16mm 18mm 14mm;background:radial-gradient(90% 50% at 90% 0%,rgba(242,193,78,.18),rgba(242,193,78,0) 70%),#FBF5EC;color:#1F3A2E}
+.pt-top{display:flex;align-items:center;justify-content:space-between}
+.pt-ed{padding:3px 12px;border-radius:999px;border:1px solid rgba(200,100,59,.35);background:rgba(200,100,59,.08);color:#A4502E;font-size:8.5pt;font-weight:600;letter-spacing:.02em}
+.pt-foto{position:relative;margin:0;height:98mm;border-radius:7mm;overflow:hidden;box-shadow:0 18px 40px -22px rgba(142,74,58,.55)}
+.pt-foto img{width:100%;height:100%;object-fit:cover;object-position:50% 38%;display:block;filter:saturate(1.05) sepia(.12)}
+.pt-foto:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(251,245,236,0) 55%,rgba(31,58,46,.55) 100%),linear-gradient(90deg,rgba(242,193,78,.10),rgba(200,100,59,.08))}
+.pt-foto figcaption{position:absolute;left:6mm;bottom:5mm;z-index:1;padding:2.2mm 4.5mm;border-radius:999px;background:rgba(251,245,236,.94);color:#1F3A2E;font-size:9.5pt;font-weight:600}
+.pt-tit h1{font-size:40pt;line-height:1;color:#1F3A2E;letter-spacing:-0.04em}
+.pt-tit h1 em{color:#C8643B;font-size:1.06em}
+.pt-tit p{margin:5mm 0 0;max-width:150mm;font-size:12.5pt;line-height:1.55;color:#4A5A50}
+.pt-confianza{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm;margin-top:auto}
+.pt-confianza div{padding:4mm 4.5mm;border-radius:4mm;background:#FFFFFF;border:1px solid #EADFCF;display:flex;flex-direction:column;gap:1mm}
+.pt-confianza b{font-size:10pt;color:#1F3A2E;display:flex;align-items:center;gap:6px}
+.pt-confianza b:before{content:"";width:7px;height:7px;background:#C9F15D;transform:rotate(45deg);border-radius:1.5px;box-shadow:0 0 0 1px rgba(90,120,10,.35)}
+.pt-confianza span{font-size:8.5pt;color:#6E6A60}
+.pt-cita{margin:0;padding:5mm 6mm;border-left:3px solid #C8643B;background:rgba(200,100,59,.06);border-radius:0 4mm 4mm 0;font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:14pt;line-height:1.4;color:#3A4A40}
+.pt-cita span{display:block;margin-top:2mm;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;font-style:normal;font-size:8.5pt;font-weight:600;color:#A4502E}
+.pt-pie{display:flex;justify-content:space-between;font-size:8pt;color:#8C8475;border-top:1px solid #EADFCF;padding-top:3mm}
 .btn{display:inline-block;margin-top:3mm;padding:3.5mm 7mm;border-radius:999px;background:#C9F15D;color:#1D1D1F;font-weight:700;text-decoration:none;font-size:11pt}
 a{color:#3B5A06}
 .oscuro a{color:#E4F7B0}
@@ -57,18 +72,29 @@ a{color:#3B5A06}
 </head>
 <body>
 
-<!-- 1. Portada -->
+<!-- 1. Portada: cálida y cercana (atardecer en Asunción con lapachos en flor) -->
 <section class="pg portada">
-  <span class="marca">Aquaterra</span>
-  <div>
-    <span class="kick" style="background:rgba(201,241,93,.14);border-color:rgba(201,241,93,.4);color:#E4F7B0">Guía gratuita · Edición 2026</span>
-    <h1 style="margin-top:7mm">Cómo invertir<br>en Paraguay<br><em>desde España</em></h1>
-    <p style="margin-top:8mm;max-width:130mm;font-size:13pt;line-height:1.5;color:rgba(245,245,247,.78)">Rentabilidad, costes, impuestos en los dos países, cómo comprar sin viajar y qué documentos pedir. Con la fuente de cada dato.</p>
+  <div class="pt-top">
+    <span class="marca" style="color:#1F3A2E">Aquaterra</span>
+    <span class="pt-ed">Guía gratuita · Edición 2026</span>
   </div>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5mm;border-top:1px solid rgba(255,255,255,.14);padding-top:6mm">
-    <div><div class="dato" style="color:#C9F15D">6 – 8 %</div><div style="font-size:9pt;color:rgba(245,245,247,.65)">renta neta anual en dólares</div></div>
-    <div><div class="dato" style="color:#C9F15D">USD 1.000</div><div style="font-size:9pt;color:rgba(245,245,247,.65)">reserva mínima habitual en pozo</div></div>
-    <div><div class="dato" style="color:#C9F15D">0 viajes</div><div style="font-size:9pt;color:rgba(245,245,247,.65)">compra con poder notarial apostillado</div></div>
+  <figure class="pt-foto">
+    <img src="portada-llaves.jpg" alt="Un asesor entrega las llaves de una vivienda a su nueva propietaria">
+    <figcaption>Te acompañamos hasta la entrega de llaves</figcaption>
+  </figure>
+  <div class="pt-tit">
+    <h1>Cómo invertir en Paraguay <em>desde España</em></h1>
+    <p>Lo que contamos cada semana a inversores españoles, explicado con calma: rentabilidad, impuestos, cómo comprar sin viajar y qué documentos pedir.</p>
+  </div>
+  <blockquote class="pt-cita">«Queremos que inviertas en Paraguay con la misma tranquilidad con la que comprarías en tu ciudad: con datos claros, sin prisas y con alguien de confianza al otro lado.»<span>Equipo Aquaterra · Asunción</span></blockquote>
+  <div class="pt-confianza">
+    <div><b>Cada dato con su fuente</b><span>Prensa económica y normativa oficial</span></div>
+    <div><b>Escrita desde Asunción</b><span>Por un equipo que vive el mercado</span></div>
+    <div><b>Sin letra pequeña</b><span>También lo que conviene vigilar</span></div>
+  </div>
+  <div class="pt-pie">
+    <span>aquaterra-beta.vercel.app</span>
+    <span>Asunción, Paraguay · Para inversores en España</span>
   </div>
 </section>
 

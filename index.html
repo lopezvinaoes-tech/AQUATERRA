@@ -397,7 +397,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
       <div data-node="4" style="position:absolute;left:0;top:0;width:0;height:0;opacity:0"><span style="position:absolute;left:-8px;top:-8px;width:16px;height:16px;border-radius:50%;background:#C9F15D;box-shadow:0 0 0 6px rgba(201,241,93,0.22), 0 0 26px rgba(201,241,93,0.65)"></span></div>
     </div>
 
-    <div ref="{{ twInfoRef }}" style="position:absolute;left:clamp(20px,3.2vw,48px);top:0;bottom:0;width:{{ twInfoW }};padding:{{ twInfoPad }};display:flex;flex-direction:column;justify-content:{{ twInfoJustify }};gap:28px;color:#F5F5F7;pointer-events:none">
+    <div ref="{{ twInfoRef }}" style="position:absolute;left:max(clamp(20px,3.2vw,48px),calc((100% - 1280px) / 2));top:0;bottom:0;width:{{ twInfoW }};padding:{{ twInfoPad }};display:flex;flex-direction:column;justify-content:{{ twInfoJustify }};gap:28px;color:#F5F5F7;pointer-events:none">
       <div style="display:flex;flex-direction:column;gap:18px">
         <span style="display:flex;align-items:center;flex-wrap:wrap;gap:10px"><span data-kicker="oscuro" style="align-self:center"><b>05</b>El proyecto, piso por piso</span><span style="padding:4px 10px;border-radius:999px;background:#C9F15D;color:#1D1D1F;font-size:12px;font-weight:600;letter-spacing:0">Ejemplo ilustrativo</span></span>
         <h2 data-fx="" style="margin:0;font-size:clamp(30px,3.6vw,54px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Recorre una inversión <span data-accent="" style="color:#86868B">de arriba a abajo</span></h2>
@@ -444,7 +444,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
     <div ref="{{ pkLayerRef }}" style="position:absolute;inset:0;z-index:7;opacity:0;visibility:hidden;background:#0D0F12">
       <div ref="{{ parkRef }}" style="position:absolute;inset:0"></div>
       <div style="position:absolute;inset:0;pointer-events:none;background:{{ pkGrad }}"></div>
-      <div style="position:absolute;left:clamp(20px,3.2vw,48px);right:{{ pkRight }};top:0;bottom:0;width:{{ pkW }};padding:{{ pkPad }};display:flex;flex-direction:column;justify-content:{{ pkJustify }};gap:28px;color:#F5F5F7;pointer-events:none">
+      <div style="position:absolute;left:max(clamp(20px,3.2vw,48px),calc((100% - 1280px) / 2));right:{{ pkRight }};top:0;bottom:0;width:{{ pkW }};padding:{{ pkPad }};display:flex;flex-direction:column;justify-content:{{ pkJustify }};gap:28px;color:#F5F5F7;pointer-events:none">
         <div style="display:flex;flex-direction:column;gap:14px">
           <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:#C9F15D">Subsuelos · Cocheras</span>
           <h2 data-fx="" style="margin:0;font-size:clamp(30px,3.6vw,54px);line-height:1.05;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Una plaza <span data-accent="" style="color:#86868B">por departamento.</span></h2>
@@ -610,13 +610,11 @@ select option{color:#1D1D1F;background:#FFFFFF}
       </div>
     </div>
     <div aria-hidden="true" style="flex:0 1 300px;margin:0 auto;display:flex;justify-content:center">
-      <div style="position:relative;width:min(240px,62vw);aspect-ratio:210/297;border-radius:10px;background:linear-gradient(160deg,#1D1D1F 0%,#2A2D33 100%);color:#F5F5F7;padding:22px 20px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 30px 60px -20px rgba(0,0,0,0.45),0 0 0 1px rgba(255,255,255,0.06) inset;transform:rotate(-3deg)">
-        <span style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600"><span style="width:9px;height:9px;background:#C9F15D;transform:rotate(45deg);border-radius:1.5px"></span>{{ marca }}</span>
-        <span style="display:flex;flex-direction:column;gap:10px">
-          <span style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#C9F15D">Guía 2026</span>
-          <span style="font-family:'Bricolage Grotesque',sans-serif;font-size:24px;line-height:1.05;font-weight:700;letter-spacing:-0.03em">Cómo invertir en Paraguay desde España</span>
-        </span>
-        <span style="font-size:10px;color:rgba(245,245,247,0.6)">Rentabilidad · Impuestos · Compra a distancia</span>
+      <div style="position:relative;width:min(240px,62vw);aspect-ratio:210/297;border-radius:10px;background:#3A3430 url(/guia-portada-llaves.jpg) 42% 50%/cover no-repeat;color:#FFFFFF;padding:16px 15px;display:flex;flex-direction:column;gap:10px;box-shadow:0 30px 60px -20px rgba(0,0,0,0.45);transform:rotate(-3deg);overflow:hidden">
+        <span style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,16,0.45) 0%,rgba(20,18,16,0) 28%,rgba(20,18,16,0) 45%,rgba(24,20,16,0.88) 100%),linear-gradient(90deg,rgba(242,193,78,0.10),rgba(200,100,59,0.10))"></span>
+        <span style="position:relative;display:flex;align-items:center;gap:6px;font-size:10px;font-weight:600"><span style="width:7px;height:7px;background:#C9F15D;transform:rotate(45deg);border-radius:1.5px"></span>{{ marca }}<span style="margin-left:auto;font-size:8px;color:#FBE3C8">Edición 2026</span></span>
+        <span style="position:relative;margin-top:auto;font-family:'Bricolage Grotesque',sans-serif;font-size:21px;line-height:1.02;font-weight:700;letter-spacing:-0.03em">Cómo invertir en Paraguay <span style="font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-weight:400;color:#F2B48C">desde España</span></span>
+        <span style="position:relative;font-size:8.5px;color:rgba(255,255,255,0.8)">Con fuentes · Escrita desde Asunción</span>
       </div>
     </div>
   </div>
