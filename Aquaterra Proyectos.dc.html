@@ -99,7 +99,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
           <span style="position:relative;width:58px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:{{ nightInk }};transition:color .3s">Noche</span>
         </button>
       </sc-if>
-      <a href="index.html#asesoria" style="display:flex;align-items:center;height:32px;padding:0 15px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:13px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap" style-hover="background:#0077ED;color:#FFFFFF">{{ ctaLabel }}</a>
+      <button onClick="{{ openModal }}" style="display:flex;align-items:center;height:32px;padding:0 15px;border-radius:999px;border:0;cursor:pointer;background:#0071E3;color:#FFFFFF;font-size:13px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap" style-hover="background:#0077ED;color:#FFFFFF">{{ ctaLabel }}</button>
       <sc-if value="{{ navNarrow }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ toggleMenu }}" aria-label="Menú" style="width:44px;height:44px;margin-right:-10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:0;background:transparent;cursor:pointer">
           <span style="width:18px;height:1.5px;border-radius:1px;background:{{ th.ink }};transform:{{ burgerA }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
@@ -122,7 +122,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
         <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ nightInk }}">Noche</span>
       </button>
     </div>
-    <a href="index.html#asesoria" onClick="{{ closeMenu }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Agenda una asesoría</a>
+    <button onClick="{{ openModal }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;border:0;cursor:pointer;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Agenda una asesoría</button>
   </div>
 </sc-if>
 
@@ -297,7 +297,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:10px">
         <button onClick="{{ openAlerta }}" style="display:flex;align-items:center;gap:8px;height:50px;padding:0 24px;border-radius:999px;border:1px solid rgba(245,245,247,0.28);background:transparent;color:#F5F5F7;font-size:17px;font-weight:500;cursor:pointer"><span style="width:8px;height:8px;background:#C9F15D;transform:rotate(45deg);border-radius:1px"></span>Avísame de proyectos nuevos</button>
-        <a href="index.html#asesoria" style="display:flex;align-items:center;height:50px;padding:0 28px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Agenda una asesoría</a>
+        <button onClick="{{ openModal }}" style="display:flex;align-items:center;height:50px;padding:0 28px;border-radius:999px;border:0;cursor:pointer;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Agenda una asesoría</button>
       </div>
     </div>
   </div>
@@ -347,6 +347,61 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
   </div>
 </footer>
 
+<!-- Ventana "Agenda una asesoría": la misma de la portada, para pedir la asesoría sin salir de Proyectos. -->
+<sc-if value="{{ modal }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:{{ shAlign }};justify-content:center;padding:{{ shOuter }}">
+    <div onClick="{{ stop }}" role="dialog" aria-modal="true" style="width:{{ shW }};max-height:{{ shMaxH }};overflow:auto;overscroll-behavior:contain;background:{{ th.modal }};border-radius:{{ shRadius }};padding:{{ shPad }};display:flex;flex-direction:column;gap:24px;box-shadow:0 30px 80px -20px rgba(0,0,0,0.45)">
+      <sc-if value="{{ sheetNarrow }}" hint-placeholder-val="{{ false }}">
+        <span style="align-self:center;width:36px;height:5px;border-radius:3px;background:{{ th.grab }};margin:-6px 0 -10px"></span>
+      </sc-if>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:28px;line-height:1.1;letter-spacing:-0.025em;font-weight:700">Agenda una asesoría</span>
+          <span style="font-size:15px;line-height:1.45;color:{{ th.mute }}">Unas preguntas para preparar tu caso antes de la llamada.</span>
+        </div>
+        <button onClick="{{ closeModal }}" aria-label="Cerrar" style="width:44px;height:44px;flex:0 0 auto;margin:-6px -8px 0 0;display:flex;align-items:center;justify-content:center;border:0;background:transparent;cursor:pointer">
+          <span style="width:30px;height:30px;border-radius:50%;background:{{ th.fill }};color:{{ th.mute }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">✕</span>
+        </button>
+      </div>
+      <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:22px">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Tus datos</span>
+            <div style="display:flex;flex-direction:column;border-radius:12px;overflow:hidden;background:{{ th.input }}">
+              <input value="{{ nombre }}" onChange="{{ onNombre }}" aria-label="Nombre y apellido" placeholder="Nombre y apellido" autocomplete="name" style="height:50px;padding:0 16px;border:0;background:transparent;font-size:17px;outline:none;color:{{ th.ink }}">
+              <span style="height:1px;margin-left:16px;background:{{ th.line }}"></span>
+              <div style="display:flex;align-items:center"><span class="aqp" style="height:50px;padding:0 2px 0 16px;font-size:17px;color:{{ th.ink }}"><span>{{ telPreTxt }}</span><select data-aqp value="{{ telPre }}" onChange="{{ onTelPre }}" aria-label="Prefijo del teléfono"><sc-for list="{{ preOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.c }}">{{ o.t }}</option></sc-for></select></span><span style="width:1px;height:24px;margin-left:12px;background:{{ th.line }}"></span><input value="{{ tel }}" onChange="{{ onTel }}" aria-label="WhatsApp" placeholder="WhatsApp" type="tel" inputmode="tel" autocomplete="tel-national" style="flex:1;min-width:0;height:50px;padding:0 16px 0 12px;border:0;background:transparent;font-size:17px;outline:none;color:{{ th.ink }}"></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px"><span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Monto aproximado a invertir</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ montoOpts }}" as="o" hint-placeholder-count="4">
+                <button onClick="{{ o.pick }}" style="min-height:44px;padding:0 16px;border-radius:999px;font-size:15px;cursor:pointer;background:{{ o.bg }};color:{{ o.ink }};border:0;transition:background .2s, color .2s">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px"><span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Objetivo principal</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ objOpts }}" as="o" hint-placeholder-count="4">
+                <button onClick="{{ o.pick }}" style="min-height:44px;padding:0 16px;border-radius:999px;font-size:15px;cursor:pointer;background:{{ o.bg }};color:{{ o.ink }};border:0;transition:background .2s, color .2s">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <button onClick="{{ submit }}" style="height:50px;border-radius:14px;border:0;background:{{ submitBg }};color:{{ submitInk }};font-size:17px;font-weight:600;cursor:{{ submitCursor }};transition:background .25s">Enviar solicitud</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:12px 0 4px">
+          <span style="width:56px;height:56px;border-radius:50%;background:#C9F15D;color:#1D1D1F;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700">✓</span>
+          <span style="font-size:22px;letter-spacing:-0.02em;font-weight:700">Recibimos tu solicitud</span>
+          <span style="max-width:360px;font-size:15px;line-height:1.5;color:{{ th.mute }}">Un asesor de {{ marca }} te contactará por WhatsApp a la brevedad para analizar tu caso.</span>
+          <button onClick="{{ closeModal }}" style="align-self:stretch;margin-top:8px;height:50px;border-radius:14px;border:0;background:{{ th.fill }};font-size:17px;font-weight:600;cursor:pointer;color:#0071E3">Listo</button>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</sc-if>
+
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
@@ -360,8 +415,12 @@ class Component extends DCLogic {
     sort: (() => { try { return new URLSearchParams(window.location.search).get('orden') || ''; } catch (e) { return ''; } })(),
     // Gráficos abiertos en pantallas anchas; en el móvil, cerrados hasta que se pidan (y se recuerda la elección).
     charts: (() => { try { const v = localStorage.getItem('aquaterra-cifras'); if (v) return v === 'si'; } catch (e) {} return typeof window === 'undefined' || window.innerWidth >= 640; })(),
-    metric: ''
+    metric: '',
+    // Formulario "Agenda una asesoría" (ventana emergente).
+    modal: false, sent: false, sending: false, nombre: '', tel: '', telPre: (window.AQPrefijos ? window.AQPrefijos.porDefecto() : 'ES'), monto: '', obj: ''
   };
+  MONTOS = ['Hasta USD 50.000', 'USD 50.000 – 100.000', 'USD 100.000 – 250.000', 'Más de USD 250.000'];
+  OBJS = ['Renta por alquiler', 'Revalorización', 'Vivienda propia', 'Aún no lo sé'];
   SORTS = [['', 'Destacados'], ['precio-asc', 'Precio: menor a mayor'], ['precio-desc', 'Precio: mayor a menor'], ['entrega', 'Entrega más próxima']];
 
   PROJECTS = window.PROYECTOS || [];
@@ -377,14 +436,14 @@ class Component extends DCLogic {
   // Mismo menú y en el mismo orden en todas las páginas: primero los capítulos del inicio (en el orden en que aparecen), luego las otras páginas.
   NAV = [['index.html#inversiones', 'Inversiones'], ['index.html#edificio', 'El edificio'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#simulador', 'Simulador'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
   THEMES = {
-    dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', cardSh: '0 1px 2px rgba(0,0,0,0.04), 0 12px 32px -24px rgba(0,0,0,0.25)', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' , deep: '#0B0C0F', deepInk: '#F5F5F7'},
-    noche: { bg: '#17191E', ink: '#ECECEE', mute: '#A4A7AE', mute2: '#CACCD1', line: 'rgba(255,255,255,0.10)', card: '#212329', cardSh: 'inset 0 0 0 1px rgba(255,255,255,0.07)', ph: '#262930', phInk: '#9A9DA4', panel: '#24272E', foot: '#121418', chip: 'rgba(150,152,160,0.20)' , deep: '#1E2127', deepInk: '#E9EAEC'}
+    dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', cardSh: '0 1px 2px rgba(0,0,0,0.04), 0 12px 32px -24px rgba(0,0,0,0.25)', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' , deep: '#0B0C0F', deepInk: '#F5F5F7', modal: '#F2F2F7', input: '#FFFFFF', grab: 'rgba(60,60,67,0.3)', fill: 'rgba(118,118,128,0.12)'},
+    noche: { bg: '#17191E', ink: '#ECECEE', mute: '#A4A7AE', mute2: '#CACCD1', line: 'rgba(255,255,255,0.10)', card: '#212329', cardSh: 'inset 0 0 0 1px rgba(255,255,255,0.07)', ph: '#262930', phInk: '#9A9DA4', panel: '#24272E', foot: '#121418', chip: 'rgba(150,152,160,0.20)' , deep: '#1E2127', deepInk: '#E9EAEC', modal: '#212329', input: '#2C2F36', grab: 'rgba(235,235,245,0.3)', fill: 'rgba(150,152,160,0.22)'}
   };
 
   componentDidMount() {
     this._onResize = () => this.setState((st) => ({ w: window.innerWidth, menu: window.innerWidth >= 1140 ? false : st.menu }));
     window.addEventListener('resize', this._onResize);
-    this._onKey = (e) => { if (e.key === 'Escape' && this.state.menu) this.setState({ menu: false }); };
+    this._onKey = (e) => { if (e.key === 'Escape' && (this.state.modal || this.state.menu)) this.setState({ modal: false, menu: false }); };
     window.addEventListener('keydown', this._onKey);
     this._onCmp = () => this.setState((st) => ({ cmpV: (st.cmpV || 0) + 1 }));
     window.addEventListener('aq-comparar', this._onCmp);
@@ -456,6 +515,43 @@ class Component extends DCLogic {
     } catch (e) {}
   }
   componentWillUnmount() { if (this._io) this._io.disconnect(); clearTimeout(this._entradaT); window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); window.removeEventListener('aq-moneda', this._onMon); }
+
+  // Envío del formulario "Agenda una asesoría" a la base de leads (leads.js -> /api/leads), sin salir de la página.
+  enviarAgenda() {
+    if (this.state.sending) return;
+    if (typeof window.enviarLead !== 'function') { window.alert('No pudimos enviar tu solicitud. Escríbenos por WhatsApp.'); return; }
+    this.setState({ sending: true });
+    const whatsapp = window.AQPrefijos ? window.AQPrefijos.unir(this.state.telPre, this.state.tel) : this.state.tel;
+    window.enviarLead({ nombre: this.state.nombre, whatsapp, monto: this.state.monto, objetivo: this.state.obj, origen: 'Agenda una asesoría (Proyectos)' })
+      .then(() => this.setState({ sent: true, sending: false }))
+      .catch((e) => { this.setState({ sending: false }); window.alert(e.message); });
+  }
+
+  // Lo que necesita la ventana "Agenda una asesoría" (mismo diseño que en la portada).
+  agenda(th) {
+    const s = this.state, n = s.w < 640;
+    const valid = s.nombre.trim().length > 1 && s.tel.trim().length > 5;
+    const chip = (key, label) => { const on = s[key] === label; return { label, bg: on ? '#0071E3' : th.input, ink: on ? '#FFFFFF' : th.ink, pick: () => this.setState({ [key]: label }) }; };
+    return {
+      modal: s.modal, sent: s.sent, notSent: !s.sent, sheetNarrow: n,
+      openModal: () => this.setState({ modal: true, sent: false, menu: false }),
+      closeModal: () => this.setState({ modal: false }),
+      stop: (e) => e.stopPropagation(),
+      shAlign: n ? 'flex-end' : 'center', shOuter: n ? '0' : '20px', shW: n ? '100%' : 'min(520px, 100%)',
+      shMaxH: n ? '92svh' : 'calc(100svh - 40px)', shRadius: n ? '22px 22px 0 0' : '22px',
+      shPad: n ? '20px 20px calc(24px + env(safe-area-inset-bottom))' : 'clamp(24px,4vw,32px)',
+      nombre: s.nombre, tel: s.tel, telPre: s.telPre,
+      onNombre: (e) => this.setState({ nombre: e.target.value }),
+      onTel: (e) => this.setState({ tel: e.target.value }),
+      onTelPre: (e) => this.setState({ telPre: e.target.value }),
+      telPreTxt: window.AQPrefijos ? window.AQPrefijos.corto(s.telPre) : '',
+      preOpts: window.AQPrefijos ? window.AQPrefijos.opciones : [],
+      montoOpts: this.MONTOS.map((l) => chip('monto', l)),
+      objOpts: this.OBJS.map((l) => chip('obj', l)),
+      submitBg: valid ? '#0071E3' : th.fill, submitInk: valid ? '#FFFFFF' : th.mute, submitCursor: valid ? 'pointer' : 'not-allowed',
+      submit: () => { if (valid) this.enviarAgenda(); }
+    };
+  }
 
   mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
 
@@ -623,6 +719,7 @@ class Component extends DCLogic {
       chartsToggleText: s.charts ? 'Ocultar gráficos' : 'Ver gráficos',
       chartsToggle: () => { const v = !this.state.charts; try { localStorage.setItem('aquaterra-cifras', v ? 'si' : 'no'); } catch (e) {} this.setState({ charts: v }); },
       th, themeName: night ? 'noche' : 'dia',
+      ...this.agenda(th),
       marca: (window.MARCA && window.MARCA.nombre) || 'Aquaterra',
       wide: s.w >= 980, narrow: s.w < 980, menu: s.menu,
       toggleMenu: () => this.setState((st) => ({ menu: !st.menu })),
