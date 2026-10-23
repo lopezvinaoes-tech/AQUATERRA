@@ -12,6 +12,10 @@ const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY || '';
 const PROVEEDOR = GEMINI_KEY ? 'gemini' : ANTHROPIC_KEY ? 'claude' : null;
 // Modelo configurable desde Vercel (CHAT_MODEL).
 const MODEL = process.env.CHAT_MODEL || (PROVEEDOR === 'gemini' ? 'gemini-3.8-flash' : 'claude-haiku-5-5');
+// Si el modelo principal de Gemini está saturado, se prueba con este (CHAT_MODEL_RESPALDO; vacío lo desactiva).
+const MODEL_RESPALDO = PROVEEDOR === 'gemini' ? (process.env.CHAT_MODEL_RESPALDO ?? 'gemini-flash-lite-latest') : '';
+// Errores pasajeros del proveedor (saturado o con demasiadas peticiones): se reintenta.
+const SATURADO = [429, 500, 503, 529];
 const POR_IP_HORA = parseInt(process.env.CHAT_LIMITE_IP_HORA || '40', 10);
 const POR_DIA = parseInt(process.env.CHAT_LIMITE_DIARIO || '3000', 10);
 const MAX_MENSAJES = 40;
@@ -195,10 +199,16 @@ async function guardarContacto(input, ctx) {
 }
 
 async function pedir(url, headers, body) {
-  const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) });
-  const data = await r.json().catch(() => ({}));
-  if (!r.ok) throw Object.assign(new Error((data.error && data.error.message) || `${PROVEEDOR} ${r.status}`), { status: r.status });
-  return data;
+  // Hasta 2 reintentos (a los 1 y 2,5 s) si el proveedor está saturado.
+  for (let intento = 0; ; intento++) {
+    const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) });
+    const data = await r.json().catch(() => ({}));
+    if (r.ok) return data;
+    const err = Object.assign(new Error((data.error && data.error.message) || `${PROVEEDOR} ${r.status}`), { status: r.status });
+    if (!SATURADO.includes(r.status) || intento >= 2) throw err;
+    console.warn('chat reintento', r.status, err.message);
+    await new Promise((ok) => setTimeout(ok, intento ? 2500 : 1000));
+  }
 }
 
 // Cada proveedor expone el mismo par de funciones:
@@ -231,15 +241,26 @@ function proveedorClaude(sistema, mensajes) {
 
 function proveedorGemini(sistema, mensajes) {
   const contents = mensajes.map((m) => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.content }] }));
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(MODEL)}:generateContent`;
+  const url = (m) => `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(m)}:generateContent`;
+  let modelo = MODEL;
   return {
     async turno() {
-      const r = await pedir(url, { 'x-goog-api-key': GEMINI_KEY }, {
+      const cuerpo = {
         systemInstruction: { parts: [{ text: sistema }] },
         contents,
         tools: GEMINI_HERRAMIENTAS,
         generationConfig: { maxOutputTokens: 2048 }
-      });
+      };
+      let r;
+      try {
+        r = await pedir(url(modelo), { 'x-goog-api-key': GEMINI_KEY }, cuerpo);
+      } catch (e) {
+        // Modelo principal saturado tras los reintentos: el resto de la conversación sigue con el de respaldo.
+        if (!SATURADO.includes(e.status) || !MODEL_RESPALDO || modelo === MODEL_RESPALDO) throw e;
+        console.warn('chat respaldo', MODEL_RESPALDO);
+        modelo = MODEL_RESPALDO;
+        r = await pedir(url(modelo), { 'x-goog-api-key': GEMINI_KEY }, cuerpo);
+      }
       const cand = (r.candidates || [])[0];
       if (!cand || !cand.content) return (r.promptFeedback && r.promptFeedback.blockReason) || (cand && cand.finishReason === 'SAFETY') ? { rechazo: true } : { texto: '' };
       const parts = cand.content.parts || [];
@@ -336,7 +357,7 @@ module.exports = async (req, res) => {
     return send(res, 200, { respuesta: 'Listo. ¿Hay algo más en lo que te pueda ayudar?', lead: lead ? firmar(lead) : undefined, guardado: Boolean(lead) });
   } catch (e) {
     console.error('chat', e.status, e.message);
-    const ocupado = e.status === 429 || e.status === 529;
+    const ocupado = SATURADO.includes(e.status) && e.status !== 500;
     return send(res, ocupado ? 503 : 500, { error: ocupado ? 'El asistente está muy solicitado ahora mismo. Prueba en unos segundos.' : 'No pude responder ahora. Escríbenos por WhatsApp o deja tus datos en el formulario.' });
   }
 };
