@@ -48,7 +48,10 @@ ul.check li:before{content:"";position:absolute;left:0;top:3.1mm;width:3.2mm;hei
 .portada{display:flex;flex-direction:column;gap:9mm;padding:16mm 18mm 14mm;background:radial-gradient(90% 50% at 90% 0%,rgba(242,193,78,.18),rgba(242,193,78,0) 70%),#FBF5EC;color:#1F3A2E}
 .pt-top{display:flex;align-items:center;justify-content:space-between}
 .pt-ed{padding:3px 12px;border-radius:999px;border:1px solid rgba(200,100,59,.35);background:rgba(200,100,59,.08);color:#A4502E;font-size:8.5pt;font-weight:600;letter-spacing:.02em}
-.pt-ilus{width:100%;height:auto;display:block;border-radius:7mm;box-shadow:0 18px 40px -22px rgba(142,74,58,.55)}
+.pt-foto{position:relative;margin:0;height:98mm;border-radius:7mm;overflow:hidden;box-shadow:0 18px 40px -22px rgba(142,74,58,.55)}
+.pt-foto img{width:100%;height:100%;object-fit:cover;object-position:50% 38%;display:block;filter:saturate(1.05) sepia(.12)}
+.pt-foto:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(251,245,236,0) 55%,rgba(31,58,46,.55) 100%),linear-gradient(90deg,rgba(242,193,78,.10),rgba(200,100,59,.08))}
+.pt-foto figcaption{position:absolute;left:6mm;bottom:5mm;z-index:1;padding:2.2mm 4.5mm;border-radius:999px;background:rgba(251,245,236,.94);color:#1F3A2E;font-size:9.5pt;font-weight:600}
 .pt-tit h1{font-size:40pt;line-height:1;color:#1F3A2E;letter-spacing:-0.04em}
 .pt-tit h1 em{color:#C8643B;font-size:1.06em}
 .pt-tit p{margin:5mm 0 0;max-width:150mm;font-size:12.5pt;line-height:1.55;color:#4A5A50}
@@ -75,44 +78,10 @@ a{color:#3B5A06}
     <span class="marca" style="color:#1F3A2E">Aquaterra</span>
     <span class="pt-ed">Guía gratuita · Edición 2026</span>
   </div>
-  <svg class="pt-ilus" viewBox="0 0 600 330" aria-hidden="true">
-    <defs>
-      <linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F7D9B8"/><stop offset=".55" stop-color="#F3B98A"/><stop offset="1" stop-color="#E9956A"/></linearGradient>
-      <linearGradient id="rio" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E7A47A"/><stop offset="1" stop-color="#C9785A"/></linearGradient>
-      <radialGradient id="sol" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF4DC"/><stop offset=".6" stop-color="#FFE2A8"/><stop offset="1" stop-color="#FFE2A8" stop-opacity="0"/></radialGradient>
-      <clipPath id="marco"><rect x="0" y="0" width="600" height="330" rx="26"/></clipPath>
-    </defs>
-    <g clip-path="url(#marco)">
-      <rect width="600" height="330" fill="url(#cielo)"/>
-      <circle cx="330" cy="205" r="120" fill="url(#sol)"/>
-      <circle cx="330" cy="205" r="46" fill="#FFF1D2"/>
-      <g fill="#FFFFFF" opacity=".55"><ellipse cx="120" cy="70" rx="58" ry="10"/><ellipse cx="160" cy="58" rx="34" ry="9"/><ellipse cx="470" cy="92" rx="64" ry="9"/></g>
-      <!-- colinas a contraluz -->
-      <path d="M0 210 C70 180 140 196 210 206 S330 214 400 196 S530 170 600 196 L600 245 L0 245Z" fill="#D88A68" opacity=".6"/>
-      <path d="M0 228 C90 214 170 226 250 232 S420 222 480 216 S570 220 600 226 L600 245 L0 245Z" fill="#B8664C" opacity=".75"/>
-      <!-- pájaros -->
-      <g stroke="#8E4A3A" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".75">
-        <path d="M232 118 q8 -7 16 0 q8 -7 16 0"/><path d="M276 98 q6 -5 12 0 q6 -5 12 0"/><path d="M412 128 q7 -6 14 0 q7 -6 14 0"/>
-      </g>
-      <!-- río Paraguay -->
-      <rect y="240" width="600" height="90" fill="url(#rio)"/>
-      <g stroke="#FFE9C8" stroke-width="3" stroke-linecap="round" opacity=".7"><line x1="290" y1="258" x2="372" y2="258"/><line x1="306" y1="274" x2="356" y2="274"/><line x1="318" y1="290" x2="344" y2="290"/></g>
-      <!-- canoa -->
-      <path d="M392 266 L456 266 C450 276 400 276 392 266Z" fill="#6B3A2C"/>
-      <path d="M420 266 L420 246" stroke="#6B3A2C" stroke-width="2.4" stroke-linecap="round"/><circle cx="420" cy="242" r="4.5" fill="#6B3A2C"/>
-      <path d="M0 296 C120 284 220 306 320 298 S500 286 600 300 L600 330 L0 330Z" fill="#2E5240"/>
-      <!-- lapacho en flor (izquierda) -->
-      <path d="M70 330 C74 290 70 262 84 236 M84 236 C70 222 58 214 44 210 M84 236 C96 220 108 212 124 206" stroke="#3A2A22" stroke-width="7" fill="none" stroke-linecap="round"/>
-      <g fill="#E87FA6"><circle cx="40" cy="196" r="26"/><circle cx="74" cy="182" r="30"/><circle cx="112" cy="190" r="27"/><circle cx="132" cy="210" r="18"/><circle cx="22" cy="218" r="16"/></g>
-      <g fill="#F4A9C4"><circle cx="58" cy="178" r="14"/><circle cx="96" cy="172" r="13"/><circle cx="120" cy="196" r="10"/><circle cx="34" cy="204" r="9"/></g>
-      <!-- lapacho amarillo (derecha) -->
-      <path d="M560 330 C556 300 560 280 548 258 M548 258 C560 246 572 240 586 238" stroke="#3A2A22" stroke-width="6" fill="none" stroke-linecap="round"/>
-      <g fill="#F2C14E"><circle cx="550" cy="236" r="24"/><circle cx="582" cy="226" r="22"/><circle cx="526" cy="250" r="15"/></g>
-      <g fill="#F8D77E"><circle cx="560" cy="226" r="10"/><circle cx="590" cy="218" r="8"/></g>
-      <!-- pétalos -->
-      <g fill="#E87FA6" opacity=".85"><ellipse cx="170" cy="262" rx="4" ry="2.4" transform="rotate(-25 170 262)"/><ellipse cx="200" cy="284" rx="4" ry="2.4" transform="rotate(20 200 284)"/><ellipse cx="150" cy="300" rx="4" ry="2.4"/></g>
-    </g>
-  </svg>
+  <figure class="pt-foto">
+    <img src="portada-llaves.jpg" alt="Un asesor entrega las llaves de una vivienda a su nueva propietaria">
+    <figcaption>Te acompañamos hasta la entrega de llaves</figcaption>
+  </figure>
   <div class="pt-tit">
     <h1>Cómo invertir en Paraguay <em>desde España</em></h1>
     <p>Lo que contamos cada semana a inversores españoles, explicado con calma: rentabilidad, impuestos, cómo comprar sin viajar y qué documentos pedir.</p>
