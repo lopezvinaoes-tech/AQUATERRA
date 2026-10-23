@@ -6,7 +6,7 @@
 <title>Proyectos para invertir en Paraguay | Aquaterra</title>
 <meta name="description" content="Departamentos, barrios cerrados, countries y lotes en Asunción y el interior de Paraguay. Proyectos reales de otras desarrolladoras, con fuente y fecha de cada dato.">
 <link rel="canonical" href="https://aquaterra-beta.vercel.app/Aquaterra%20Proyectos.dc.html">
-<meta name="theme-color" content="#F5F5F7">
+<meta name="theme-color" content="#17191E">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -20,6 +20,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <style>x-dc{display:none}</style>
 <!-- Carga: React se sirve desde /vendor y todos los scripts van con defer, en orden, para no frenar el primer pintado. -->
+<script>try { if (localStorage.getItem('aquaterra-modo') !== 'dia') document.documentElement.setAttribute('data-modo', 'noche'); } catch (e) { document.documentElement.setAttribute('data-modo', 'noche'); }</script>
 <script>window.__resources = {};</script>
 <script src="./marca.js" defer></script>
 <script src="./cookies.js" defer></script>
@@ -35,16 +36,18 @@
 <script src="./chat.js" defer></script>
 <script src="./comparador.js" defer></script>
 <script src="./alertas.js" defer></script>
+<script src="./asesoria.js" data-barra defer></script>
 <script src="./seo.js" defer></script>
 </head>
 <body>
 <x-dc>
 <helmet>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#F5F5F7">
+<meta name="theme-color" content="#17191E">
 <style>
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{margin:0;background:#F5F5F7;color:#1D1D1F;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-tap-highlight-color:transparent}
+html[data-modo="noche"] body{background:#17191E;color:#ECECEE}
 *{box-sizing:border-box}
 a{color:#0066CC;text-decoration:none}
 a:hover{color:#0077ED}
@@ -122,16 +125,16 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
         <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ nightInk }}">Noche</span>
       </button>
     </div>
-    <button onClick="{{ openModal }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;border:0;cursor:pointer;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Agenda una asesoría</button>
+    <button onClick="{{ openModal }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;border:0;cursor:pointer;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Reserva tu llamada gratis de 20 min</button>
   </div>
 </sc-if>
 
 <section data-screen-label="01 Catálogo" style="padding:calc(52px + env(safe-area-inset-top) + clamp(40px,8vw,96px)) clamp(20px,3.2vw,48px) 28px">
   <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
     <span data-kicker="">Catálogo</span>
-    <h1 data-fx="" style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1.02;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">Proyectos para <span data-accent="" style="color:#86868B">invertir hoy.</span></h1>
+    <h1 data-fx="" style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1.02;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">Proyectos que <span data-accent="" style="color:#86868B">analizamos para ti.</span></h1>
     <p style="margin:0;max-width:560px;font-size:clamp(17px,1.6vw,21px);line-height:1.45;color:{{ th.mute2 }};text-wrap:pretty">Departamentos, barrios cerrados, countries, casas y lotes en Asunción y el interior del país.</p>
-    <p style="margin:0;max-width:620px;font-size:15px;line-height:1.5;color:{{ th.mute }};text-wrap:pretty">Por ahora mostramos proyectos reales de otras desarrolladoras como referencia del mercado. Cada uno indica de quién es, la fuente del dato y su fecha.</p>
+    <p style="margin:0;max-width:620px;font-size:15px;line-height:1.5;color:{{ th.mute }};text-wrap:pretty">Antes de enseñarte un proyecto revisamos la trayectoria de la desarrolladora, la ubicación y su demanda de alquiler, el plan de pagos y la documentación del terreno. Cada ficha indica la fuente y la fecha de sus datos.</p>
   </div>
 </section>
 
@@ -297,7 +300,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:10px">
         <button onClick="{{ openAlerta }}" style="display:flex;align-items:center;gap:8px;height:50px;padding:0 24px;border-radius:999px;border:1px solid rgba(245,245,247,0.28);background:transparent;color:#F5F5F7;font-size:17px;font-weight:500;cursor:pointer"><span style="width:8px;height:8px;background:#C9F15D;transform:rotate(45deg);border-radius:1px"></span>Avísame de proyectos nuevos</button>
-        <button onClick="{{ openModal }}" style="display:flex;align-items:center;height:50px;padding:0 28px;border-radius:999px;border:0;cursor:pointer;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Agenda una asesoría</button>
+        <button onClick="{{ openModal }}" style="display:flex;align-items:center;height:50px;padding:0 28px;border-radius:999px;border:0;cursor:pointer;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500" style-hover="background:#0077ED;color:#FFFFFF">Reserva tu llamada gratis de 20 min</button>
       </div>
     </div>
   </div>
@@ -340,7 +343,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
     <span style="max-width:720px;font-size:13px;line-height:1.55;color:rgba(245,245,247,0.68)">Los proyectos del catálogo son de otras desarrolladoras. Indicamos la fuente y la fecha de cada dato; pueden haber cambiado.</span>
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:rgba(245,245,247,0.75)">
       <span>© 2026 {{ marca }}. Todos los derechos reservados.</span>
-      <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
+      <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="privacidad.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de privacidad</a><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
       <span>Asunción, Paraguay</span>
     </div>
     </div>
@@ -348,60 +351,6 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
 </footer>
 
 <!-- Ventana "Agenda una asesoría": la misma de la portada, para pedir la asesoría sin salir de Proyectos. -->
-<sc-if value="{{ modal }}" hint-placeholder-val="{{ false }}">
-  <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:{{ shAlign }};justify-content:center;padding:{{ shOuter }}">
-    <div onClick="{{ stop }}" role="dialog" aria-modal="true" style="width:{{ shW }};max-height:{{ shMaxH }};overflow:auto;overscroll-behavior:contain;background:{{ th.modal }};border-radius:{{ shRadius }};padding:{{ shPad }};display:flex;flex-direction:column;gap:24px;box-shadow:0 30px 80px -20px rgba(0,0,0,0.45)">
-      <sc-if value="{{ sheetNarrow }}" hint-placeholder-val="{{ false }}">
-        <span style="align-self:center;width:36px;height:5px;border-radius:3px;background:{{ th.grab }};margin:-6px 0 -10px"></span>
-      </sc-if>
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <span style="font-size:28px;line-height:1.1;letter-spacing:-0.025em;font-weight:700">Agenda una asesoría</span>
-          <span style="font-size:15px;line-height:1.45;color:{{ th.mute }}">Unas preguntas para preparar tu caso antes de la llamada.</span>
-        </div>
-        <button onClick="{{ closeModal }}" aria-label="Cerrar" style="width:44px;height:44px;flex:0 0 auto;margin:-6px -8px 0 0;display:flex;align-items:center;justify-content:center;border:0;background:transparent;cursor:pointer">
-          <span style="width:30px;height:30px;border-radius:50%;background:{{ th.fill }};color:{{ th.mute }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">✕</span>
-        </button>
-      </div>
-      <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
-        <div style="display:flex;flex-direction:column;gap:22px">
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Tus datos</span>
-            <div style="display:flex;flex-direction:column;border-radius:12px;overflow:hidden;background:{{ th.input }}">
-              <input value="{{ nombre }}" onChange="{{ onNombre }}" aria-label="Nombre y apellido" placeholder="Nombre y apellido" autocomplete="name" style="height:50px;padding:0 16px;border:0;background:transparent;font-size:17px;outline:none;color:{{ th.ink }}">
-              <span style="height:1px;margin-left:16px;background:{{ th.line }}"></span>
-              <div style="display:flex;align-items:center"><span class="aqp" style="height:50px;padding:0 2px 0 16px;font-size:17px;color:{{ th.ink }}"><span>{{ telPreTxt }}</span><select data-aqp value="{{ telPre }}" onChange="{{ onTelPre }}" aria-label="Prefijo del teléfono"><sc-for list="{{ preOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.c }}">{{ o.t }}</option></sc-for></select></span><span style="width:1px;height:24px;margin-left:12px;background:{{ th.line }}"></span><input value="{{ tel }}" onChange="{{ onTel }}" aria-label="WhatsApp" placeholder="WhatsApp" type="tel" inputmode="tel" autocomplete="tel-national" style="flex:1;min-width:0;height:50px;padding:0 16px 0 12px;border:0;background:transparent;font-size:17px;outline:none;color:{{ th.ink }}"></div>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:10px"><span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Monto aproximado a invertir</span>
-            <div style="display:flex;flex-wrap:wrap;gap:8px">
-              <sc-for list="{{ montoOpts }}" as="o" hint-placeholder-count="4">
-                <button onClick="{{ o.pick }}" style="min-height:44px;padding:0 16px;border-radius:999px;font-size:15px;cursor:pointer;background:{{ o.bg }};color:{{ o.ink }};border:0;transition:background .2s, color .2s">{{ o.label }}</button>
-              </sc-for>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:10px"><span style="padding-left:16px;font-size:13px;color:{{ th.mute }}">Objetivo principal</span>
-            <div style="display:flex;flex-wrap:wrap;gap:8px">
-              <sc-for list="{{ objOpts }}" as="o" hint-placeholder-count="4">
-                <button onClick="{{ o.pick }}" style="min-height:44px;padding:0 16px;border-radius:999px;font-size:15px;cursor:pointer;background:{{ o.bg }};color:{{ o.ink }};border:0;transition:background .2s, color .2s">{{ o.label }}</button>
-              </sc-for>
-            </div>
-          </div>
-          <button onClick="{{ submit }}" style="height:50px;border-radius:14px;border:0;background:{{ submitBg }};color:{{ submitInk }};font-size:17px;font-weight:600;cursor:{{ submitCursor }};transition:background .25s">Enviar solicitud</button>
-        </div>
-      </sc-if>
-      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:12px 0 4px">
-          <span style="width:56px;height:56px;border-radius:50%;background:#C9F15D;color:#1D1D1F;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700">✓</span>
-          <span style="font-size:22px;letter-spacing:-0.02em;font-weight:700">Recibimos tu solicitud</span>
-          <span style="max-width:360px;font-size:15px;line-height:1.5;color:{{ th.mute }}">Un asesor de {{ marca }} te contactará por WhatsApp a la brevedad para analizar tu caso.</span>
-          <button onClick="{{ closeModal }}" style="align-self:stretch;margin-top:8px;height:50px;border-radius:14px;border:0;background:{{ th.fill }};font-size:17px;font-weight:600;cursor:pointer;color:#0071E3">Listo</button>
-        </div>
-      </sc-if>
-    </div>
-  </div>
-</sc-if>
-
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
@@ -415,12 +364,8 @@ class Component extends DCLogic {
     sort: (() => { try { return new URLSearchParams(window.location.search).get('orden') || ''; } catch (e) { return ''; } })(),
     // Gráficos abiertos en pantallas anchas; en el móvil, cerrados hasta que se pidan (y se recuerda la elección).
     charts: (() => { try { const v = localStorage.getItem('aquaterra-cifras'); if (v) return v === 'si'; } catch (e) {} return typeof window === 'undefined' || window.innerWidth >= 640; })(),
-    metric: '',
-    // Formulario "Agenda una asesoría" (ventana emergente).
-    modal: false, sent: false, sending: false, nombre: '', tel: '', telPre: (window.AQPrefijos ? window.AQPrefijos.porDefecto() : 'ES'), monto: '', obj: ''
+    metric: ''
   };
-  MONTOS = ['Hasta USD 50.000', 'USD 50.000 – 100.000', 'USD 100.000 – 250.000', 'Más de USD 250.000'];
-  OBJS = ['Renta por alquiler', 'Revalorización', 'Vivienda propia', 'Aún no lo sé'];
   SORTS = [['', 'Destacados'], ['precio-asc', 'Precio: menor a mayor'], ['precio-desc', 'Precio: mayor a menor'], ['entrega', 'Entrega más próxima']];
 
   PROJECTS = window.PROYECTOS || [];
@@ -432,9 +377,9 @@ class Component extends DCLogic {
     ['dorm', 'Dormitorios', [['', 'Indistinto'], ['1', '1 dormitorio'], ['2', '2 dormitorios'], ['3', '3 dormitorios'], ['4', '4 o más']]]
   ];
   // Menú del móvil: el mismo en todas las páginas (algo más descriptivo que el de escritorio e incluye Preguntas).
-  MENU = [['index.html#inversiones', 'Por qué Paraguay'], ['index.html#edificio', 'El edificio'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#simulador', 'Simulador de renta'], ['index.html#nosotros', 'Nosotros'], ['index.html#preguntas', 'Preguntas'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  MENU = [['index.html#inversiones', 'Por qué Paraguay'], ['index.html#simulador', 'Simulador de renta'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['index.html#preguntas', 'Preguntas'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
   // Mismo menú y en el mismo orden en todas las páginas: primero los capítulos del inicio (en el orden en que aparecen), luego las otras páginas.
-  NAV = [['index.html#inversiones', 'Inversiones'], ['index.html#edificio', 'El edificio'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#simulador', 'Simulador'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  NAV = [['index.html#inversiones', 'Inversiones'], ['index.html#simulador', 'Simulador'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
   THEMES = {
     dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', cardSh: '0 1px 2px rgba(0,0,0,0.04), 0 12px 32px -24px rgba(0,0,0,0.25)', ph: '#E8E8ED', phInk: '#6E6E73', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)' , deep: '#0B0C0F', deepInk: '#F5F5F7', modal: '#F2F2F7', input: '#FFFFFF', grab: 'rgba(60,60,67,0.3)', fill: 'rgba(118,118,128,0.12)'},
     noche: { bg: '#17191E', ink: '#ECECEE', mute: '#A4A7AE', mute2: '#CACCD1', line: 'rgba(255,255,255,0.10)', card: '#212329', cardSh: 'inset 0 0 0 1px rgba(255,255,255,0.07)', ph: '#262930', phInk: '#9A9DA4', panel: '#24272E', foot: '#121418', chip: 'rgba(150,152,160,0.20)' , deep: '#1E2127', deepInk: '#E9EAEC', modal: '#212329', input: '#2C2F36', grab: 'rgba(235,235,245,0.3)', fill: 'rgba(150,152,160,0.22)'}
@@ -443,7 +388,7 @@ class Component extends DCLogic {
   componentDidMount() {
     this._onResize = () => this.setState((st) => ({ w: window.innerWidth, menu: window.innerWidth >= 1140 ? false : st.menu }));
     window.addEventListener('resize', this._onResize);
-    this._onKey = (e) => { if (e.key === 'Escape' && (this.state.modal || this.state.menu)) this.setState({ modal: false, menu: false }); };
+    this._onKey = (e) => { if (e.key === 'Escape' && this.state.menu) this.setState({ menu: false }); };
     window.addEventListener('keydown', this._onKey);
     this._onCmp = () => this.setState((st) => ({ cmpV: (st.cmpV || 0) + 1 }));
     window.addEventListener('aq-comparar', this._onCmp);
@@ -516,44 +461,15 @@ class Component extends DCLogic {
   }
   componentWillUnmount() { if (this._io) this._io.disconnect(); clearTimeout(this._entradaT); window.removeEventListener('resize', this._onResize); window.removeEventListener('keydown', this._onKey); window.removeEventListener('aq-comparar', this._onCmp); window.removeEventListener('aq-moneda', this._onMon); }
 
-  // Envío del formulario "Agenda una asesoría" a la base de leads (leads.js -> /api/leads), sin salir de la página.
-  enviarAgenda() {
-    if (this.state.sending) return;
-    if (typeof window.enviarLead !== 'function') { window.alert('No pudimos enviar tu solicitud. Escríbenos por WhatsApp.'); return; }
-    this.setState({ sending: true });
-    const whatsapp = window.AQPrefijos ? window.AQPrefijos.unir(this.state.telPre, this.state.tel) : this.state.tel;
-    window.enviarLead({ nombre: this.state.nombre, whatsapp, monto: this.state.monto, objetivo: this.state.obj, origen: 'Agenda una asesoría (Proyectos)' })
-      .then(() => this.setState({ sent: true, sending: false }))
-      .catch((e) => { this.setState({ sending: false }); window.alert(e.message); });
-  }
-
-  // Lo que necesita la ventana "Agenda una asesoría" (mismo diseño que en la portada).
-  agenda(th) {
-    const s = this.state, n = s.w < 640;
-    const valid = s.nombre.trim().length > 1 && s.tel.trim().length > 5;
-    const chip = (key, label) => { const on = s[key] === label; return { label, bg: on ? '#0071E3' : th.input, ink: on ? '#FFFFFF' : th.ink, pick: () => this.setState({ [key]: label }) }; };
+  // Botones de asesoría: abren la ventana en dos pasos de asesoria.js, la misma de toda la web.
+  agenda() {
     return {
-      modal: s.modal, sent: s.sent, notSent: !s.sent, sheetNarrow: n,
-      openModal: () => this.setState({ modal: true, sent: false, menu: false }),
-      closeModal: () => this.setState({ modal: false }),
-      stop: (e) => e.stopPropagation(),
-      shAlign: n ? 'flex-end' : 'center', shOuter: n ? '0' : '20px', shW: n ? '100%' : 'min(520px, 100%)',
-      shMaxH: n ? '92svh' : 'calc(100svh - 40px)', shRadius: n ? '22px 22px 0 0' : '22px',
-      shPad: n ? '20px 20px calc(24px + env(safe-area-inset-bottom))' : 'clamp(24px,4vw,32px)',
-      nombre: s.nombre, tel: s.tel, telPre: s.telPre,
-      onNombre: (e) => this.setState({ nombre: e.target.value }),
-      onTel: (e) => this.setState({ tel: e.target.value }),
-      onTelPre: (e) => this.setState({ telPre: e.target.value }),
-      telPreTxt: window.AQPrefijos ? window.AQPrefijos.corto(s.telPre) : '',
-      preOpts: window.AQPrefijos ? window.AQPrefijos.opciones : [],
-      montoOpts: this.MONTOS.map((l) => chip('monto', l)),
-      objOpts: this.OBJS.map((l) => chip('obj', l)),
-      submitBg: valid ? '#0071E3' : th.fill, submitInk: valid ? '#FFFFFF' : th.mute, submitCursor: valid ? 'pointer' : 'not-allowed',
-      submit: () => { if (valid) this.enviarAgenda(); }
+      openModal: () => { this.setState({ menu: false }); if (window.AQAsesoria) window.AQAsesoria.abrir({ origen: 'Agenda una asesoría (Proyectos)' }); }
     };
   }
 
-  mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
+  // Modo noche por defecto; el botón día / noche guarda la elección de cada visitante.
+  mode() { return this.state.mode === 'dia' ? 'dia' : 'noche'; }
 
   // sin: un filtro que se ignora (las cifras de cada gráfico se cruzan con los demás filtros, no con el suyo).
   filtered(sin) {
@@ -733,7 +649,7 @@ class Component extends DCLogic {
       barBg: night ? 'rgba(23,25,30,0.8)' : 'rgba(245,245,247,0.8)',
       burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
       burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
-      ctaLabel: s.w >= 520 ? 'Agenda una asesoría' : 'Asesoría',
+      ctaLabel: s.w >= 520 ? 'Reserva tu llamada gratis' : 'Llamada gratis',
       linkC: night ? '#2997FF' : '#0066CC',
       segTrack: night ? 'rgba(118,118,128,0.32)' : 'rgba(118,118,128,0.16)',
       knobBg: night ? '#636366' : '#FFFFFF',
