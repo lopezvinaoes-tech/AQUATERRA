@@ -6,7 +6,7 @@
 <title>Comprar en Paraguay desde España | Aquaterra</title>
 <meta name="description" content="Distancia, diferencia horaria y cambio del día; comparativa de impuestos y trámites entre España y Paraguay, qué puedes resolver sin viajar y asesoramiento por escrito.">
 <link rel="canonical" href="https://aquaterra-beta.vercel.app/Aquaterra%20Desde%20Espana.dc.html">
-<meta name="theme-color" content="#F5F5F7">
+<meta name="theme-color" content="#17191E">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -20,6 +20,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <style>x-dc{display:none}</style>
 <!-- Carga: React se sirve desde /vendor y todos los scripts van con defer, en orden, para no frenar el primer pintado. -->
+<script>try { if (localStorage.getItem('aquaterra-modo') !== 'dia') document.documentElement.setAttribute('data-modo', 'noche'); } catch (e) { document.documentElement.setAttribute('data-modo', 'noche'); }</script>
 <script>window.__resources = {};</script>
 <script src="./marca.js" defer></script>
 <script src="./proyectos.js" defer></script>
@@ -40,10 +41,11 @@
 <x-dc>
 <helmet>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#F5F5F7">
+<meta name="theme-color" content="#17191E">
 <style>
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{margin:0;background:#F5F5F7;color:#1D1D1F;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-tap-highlight-color:transparent}
+html[data-modo="noche"] body{background:#17191E;color:#ECECEE}
 *{box-sizing:border-box}
 a{color:#0066CC;text-decoration:none}
 a:hover{color:#0077ED}
@@ -388,7 +390,8 @@ class Component extends DCLogic {
     if (this._globo) this._globo.destruir();
   }
 
-  mode() { return this.state.mode || (this.props.modo === 'Noche' ? 'noche' : 'dia'); }
+  // Modo noche por defecto; el botón día / noche guarda la elección de cada visitante.
+  mode() { return this.state.mode === 'dia' ? 'dia' : 'noche'; }
 
   // Minutos de diferencia con UTC de una zona horaria en este momento.
   offset(tz, t) {
