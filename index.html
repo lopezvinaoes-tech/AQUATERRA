@@ -397,7 +397,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
       <div data-node="4" style="position:absolute;left:0;top:0;width:0;height:0;opacity:0"><span style="position:absolute;left:-8px;top:-8px;width:16px;height:16px;border-radius:50%;background:#C9F15D;box-shadow:0 0 0 6px rgba(201,241,93,0.22), 0 0 26px rgba(201,241,93,0.65)"></span></div>
     </div>
 
-    <div ref="{{ twInfoRef }}" style="position:absolute;left:clamp(20px,3.2vw,48px);top:0;bottom:0;width:{{ twInfoW }};padding:{{ twInfoPad }};display:flex;flex-direction:column;justify-content:{{ twInfoJustify }};gap:28px;color:#F5F5F7;pointer-events:none">
+    <div ref="{{ twInfoRef }}" style="position:absolute;left:max(clamp(20px,3.2vw,48px),calc((100% - 1280px) / 2));top:0;bottom:0;width:{{ twInfoW }};padding:{{ twInfoPad }};display:flex;flex-direction:column;justify-content:{{ twInfoJustify }};gap:28px;color:#F5F5F7;pointer-events:none">
       <div style="display:flex;flex-direction:column;gap:18px">
         <span style="display:flex;align-items:center;flex-wrap:wrap;gap:10px"><span data-kicker="oscuro" style="align-self:center"><b>05</b>El proyecto, piso por piso</span><span style="padding:4px 10px;border-radius:999px;background:#C9F15D;color:#1D1D1F;font-size:12px;font-weight:600;letter-spacing:0">Ejemplo ilustrativo</span></span>
         <h2 data-fx="" style="margin:0;font-size:clamp(30px,3.6vw,54px);line-height:1.02;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Recorre una inversión <span data-accent="" style="color:#86868B">de arriba a abajo</span></h2>
@@ -444,7 +444,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
     <div ref="{{ pkLayerRef }}" style="position:absolute;inset:0;z-index:7;opacity:0;visibility:hidden;background:#0D0F12">
       <div ref="{{ parkRef }}" style="position:absolute;inset:0"></div>
       <div style="position:absolute;inset:0;pointer-events:none;background:{{ pkGrad }}"></div>
-      <div style="position:absolute;left:clamp(20px,3.2vw,48px);right:{{ pkRight }};top:0;bottom:0;width:{{ pkW }};padding:{{ pkPad }};display:flex;flex-direction:column;justify-content:{{ pkJustify }};gap:28px;color:#F5F5F7;pointer-events:none">
+      <div style="position:absolute;left:max(clamp(20px,3.2vw,48px),calc((100% - 1280px) / 2));right:{{ pkRight }};top:0;bottom:0;width:{{ pkW }};padding:{{ pkPad }};display:flex;flex-direction:column;justify-content:{{ pkJustify }};gap:28px;color:#F5F5F7;pointer-events:none">
         <div style="display:flex;flex-direction:column;gap:14px">
           <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em;color:#C9F15D">Subsuelos · Cocheras</span>
           <h2 data-fx="" style="margin:0;font-size:clamp(30px,3.6vw,54px);line-height:1.05;letter-spacing:-0.03em;font-weight:600;text-wrap:balance">Una plaza <span data-accent="" style="color:#86868B">por departamento.</span></h2>
