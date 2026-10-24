@@ -23,7 +23,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Aquaterra: invierte en Paraguay desde España">
 <meta name="twitter:card" content="summary_large_image">
-<script>try { if (localStorage.getItem('aquaterra-modo') !== 'dia') document.documentElement.setAttribute('data-modo', 'noche'); } catch (e) { document.documentElement.setAttribute('data-modo', 'noche'); }</script>
+<script>try { if (sessionStorage.getItem('aquaterra-modo') !== 'dia') document.documentElement.setAttribute('data-modo', 'noche'); } catch (e) { document.documentElement.setAttribute('data-modo', 'noche'); }</script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
 {"@type":"RealEstateAgent","@id":"https://aquaterra-beta.vercel.app/#empresa","name":"Aquaterra","url":"https://aquaterra-beta.vercel.app/","logo":"https://aquaterra-beta.vercel.app/icon-512.png","image":"https://aquaterra-beta.vercel.app/og.jpg","description":"Inversión inmobiliaria en Paraguay para inversores en España: proyectos en Asunción y el interior, compras en pozo y acompañamiento de principio a fin.","address":{"@type":"PostalAddress","addressLocality":"Asunción","addressCountry":"PY"},"areaServed":[{"@type":"Country","name":"Paraguay"},{"@type":"Country","name":"España"}],"knowsLanguage":"es"},
@@ -686,7 +686,7 @@ select option{color:#1D1D1F;background:#FFFFFF}
 <script type="text/x-dc" data-dc-script data-props="{&quot;modo&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Día&quot;,&quot;Noche&quot;],&quot;default&quot;:&quot;Día&quot;,&quot;tsType&quot;:&quot;'Día' | 'Noche'&quot;,&quot;section&quot;:&quot;Ciudad 3D&quot;},&quot;autoRotar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Ciudad 3D&quot;},&quot;velocidad&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.2,&quot;max&quot;:4,&quot;step&quot;:0.1,&quot;default&quot;:1.5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Ciudad 3D&quot;}}">
 class Component extends DCLogic {
   state = {
-    mode: (() => { try { return localStorage.getItem('aquaterra-modo'); } catch (e) { return null; } })(), scrolled: false, sec: null, twFloor: 'Rooftop', twStep: 0, w: typeof window !== 'undefined' ? window.innerWidth : 1280,
+    mode: (() => { try { return sessionStorage.getItem('aquaterra-modo'); } catch (e) { return null; } })(), scrolled: false, sec: null, twFloor: 'Rooftop', twStep: 0, w: typeof window !== 'undefined' ? window.innerWidth : 1280,
     ti: 0, tVis: true,
     simMonto: 80000, simPozo: false, faqOpen: 0,
     tlOn: 0
@@ -823,7 +823,7 @@ class Component extends DCLogic {
   }
 
   componentDidUpdate(pp) {
-    if (pp.modo !== this.props.modo) { const pm = this.props.modo === 'Noche' ? 'noche' : 'dia'; try { localStorage.setItem('aquaterra-modo', pm); } catch (e) {} this.setState({ mode: pm }); return; }
+    if (pp.modo !== this.props.modo) { const pm = this.props.modo === 'Noche' ? 'noche' : 'dia'; try { sessionStorage.setItem('aquaterra-modo', pm); } catch (e) {} this.setState({ mode: pm }); return; }
     const m = this.mode();
     if (m !== this._lastMode) { this._lastMode = m; if (this.city) this.city.setMode(m === 'noche' ? 1 : 0); if (this.tower) this.tower.setMode(m === 'noche' ? 1 : 0); }
     this.scanReveal();
@@ -1765,7 +1765,7 @@ class Component extends DCLogic {
       knobLeft: night ? '88px' : '2px',
       dayInk: night ? 'rgba(245,245,247,0.75)' : '#1D1D1F',
       nightInk: night ? '#ECECEE' : 'rgba(29,29,31,0.7)',
-      toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { localStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
+      toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { sessionStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); },
       tlLime: night ? '#C9F15D' : '#9BC734',
       t1: dot(1), t2: dot(2), t3: dot(3), t4: dot(4), t5: dot(5), t6: dot(6),
       parkSecRef: this.parkSecRef, parkRef: this.parkRef, twCurtRef: this.twCurtRef, twInfoRef: this.twInfoRef, pkCurtRef: this.pkCurtRef, pkFillRef: this.pkFillRef, pkChipRef: this.pkChipRef,
