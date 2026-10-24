@@ -6,22 +6,25 @@
 // API: window.AQCookies.ok('preferencias' | 'medicion' | 'terceros') → true/false,
 //      window.AQCookies.permitir(cat), window.AQCookies.abrir() abre la configuración.
 //      Cada cambio dispara el evento 'aq-consent' en window.
+// Microsoft Clarity (mapas de calor y grabaciones) solo se carga con permiso de 'medicion'.
+// Formularios y chat van con data-clarity-mask para que no se grabe lo que escribe nadie.
 // Cualquier elemento con data-aq-cookies abre la configuración al hacer clic (p. ej. en el pie).
 (function () {
   if (window.AQCookies) return;
 
   var KEY = 'aquaterra-consentimiento';
-  var VERSION = 1;
+  var VERSION = 2; // 2: Medición incluye Microsoft Clarity, hay que volver a preguntar.
   var DURACION = 365 * 24 * 3600 * 1000;
   var CATS = [
     { id: 'necesarias', t: 'Necesarias', d: 'Hacen funcionar la web y recuerdan lo que tú eliges: modo día o noche, el prefijo de teléfono, los proyectos que comparas, la conversación del chat y esta misma elección. No se pueden desactivar.', fija: true },
     { id: 'preferencias', t: 'Preferencias', d: 'Recordar en este navegador tu nombre y contacto tras enviar un formulario, para no tener que escribirlos otra vez.' },
-    { id: 'medicion', t: 'Medición', d: 'Saber de qué campaña o enlace llegaste (parámetros utm) y contar las consultas que recibimos, para mejorar la web. No usamos publicidad.' },
+    { id: 'medicion', t: 'Medición', d: 'Saber de qué campaña o enlace llegaste (parámetros utm), contar las consultas que recibimos y ver con Microsoft Clarity dónde se hace clic y hasta dónde se baja en cada página, para mejorar la web. Lo que escribes en formularios y chat no se graba. No usamos publicidad.' },
     { id: 'terceros', t: 'Mapas de Google', d: 'Mostrar el mapa de Google Maps en la ficha de cada proyecto. Google puede instalar sus propias cookies al cargarlo.' }
   ];
   var OPCIONALES = ['preferencias', 'medicion', 'terceros'];
   // Lo que se borra al retirar cada permiso.
   var LIMPIAR = { preferencias: [['local', 'aquaterra-contacto']], medicion: [['session', 'aquaterra-utm']] };
+  var CLARITY_ID = 'z2okpcj7rj';
 
   function leer() {
     try {
@@ -47,7 +50,41 @@
     if (typeof window.gtag === 'function') {
       try { window.gtag('consent', 'update', { analytics_storage: consent.medicion ? 'granted' : 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' }); } catch (e) {}
     }
+    clarity();
     try { window.dispatchEvent(new CustomEvent('aq-consent', { detail: { antes: antes, ahora: consent } })); } catch (e) {}
+  }
+
+  // Microsoft Clarity: se carga al dar permiso de medición y se apaga (y borra sus cookies) al retirarlo.
+  var clarityCargado = false, mascaraObs;
+  function enmascarar(n) {
+    if (!n.querySelectorAll) return;
+    if (n.matches && n.matches('form, .aqc')) n.setAttribute('data-clarity-mask', 'true');
+    n.querySelectorAll('form, .aqc').forEach(function (el) { el.setAttribute('data-clarity-mask', 'true'); });
+  }
+  function clarity() {
+    if (!ok('medicion')) {
+      if (clarityCargado && typeof window.clarity === 'function') try { window.clarity('consent', false); } catch (e) {}
+      ['_clck', '_clsk', 'CLID', 'MUID'].forEach(function (n) {
+        var h = location.hostname;
+        document.cookie = n + '=; Max-Age=0; path=/';
+        document.cookie = n + '=; Max-Age=0; path=/; domain=' + h;
+        document.cookie = n + '=; Max-Age=0; path=/; domain=.' + h.split('.').slice(-2).join('.');
+      });
+      return;
+    }
+    if (clarityCargado) { try { window.clarity('consent'); } catch (e) {} return; }
+    if (!document.body) { document.addEventListener('DOMContentLoaded', clarity); return; }
+    clarityCargado = true;
+    // El observador va antes que Clarity para que marque los formularios nuevos antes de que se graben.
+    enmascarar(document.body);
+    mascaraObs = new MutationObserver(function (ms) { ms.forEach(function (m) { m.addedNodes.forEach(enmascarar); }); });
+    mascaraObs.observe(document.body, { childList: true, subtree: true });
+    window.clarity = window.clarity || function () { (window.clarity.q = window.clarity.q || []).push(arguments); };
+    window.clarity('consent');
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.clarity.ms/tag/' + CLARITY_ID;
+    document.head.appendChild(s);
   }
 
   function todas(v) { var o = {}; OPCIONALES.forEach(function (c) { o[c] = v; }); return o; }
@@ -107,7 +144,7 @@
       '<section class="aqk-bar" role="region" aria-label="Aviso de cookies" hidden>' +
         '<button class="aqk-x" type="button" data-k="rechazar" aria-label="Cerrar y rechazar las opcionales">✕</button>' +
         '<h2>Tu privacidad</h2>' +
-        '<p>Usamos almacenamiento propio para que la web funcione y, solo si lo aceptas, para recordar tus datos de contacto, medir de dónde llegan las visitas y mostrar mapas de Google. Puedes cambiarlo cuando quieras. <a href="cookies.html">Política de cookies</a></p>' +
+        '<p>Usamos almacenamiento propio para que la web funcione y, solo si lo aceptas, para recordar tus datos de contacto, medir de dónde llegan las visitas y cómo se usa la web, y mostrar mapas de Google. Puedes cambiarlo cuando quieras. <a href="cookies.html">Política de cookies</a></p>' +
         '<div class="aqk-row"><button class="aqk-b" type="button" data-k="rechazar">Rechazar</button><button class="aqk-b aqk-main" type="button" data-k="aceptar">Aceptar</button>' +
         '<button class="aqk-link" type="button" data-k="configurar">Configurar</button></div>' +
       '</section>' +
@@ -194,7 +231,7 @@
   });
 
   function init() {
-    if (consent) return;
+    if (consent) { clarity(); return; }
     montar();
     mostrarBarra();
   }
