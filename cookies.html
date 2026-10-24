@@ -10,7 +10,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<script>try { if (localStorage.getItem('aquaterra-modo') !== 'dia') document.documentElement.setAttribute('data-modo', 'noche'); } catch (e) { document.documentElement.setAttribute('data-modo', 'noche'); }</script>
+<script>try { if (sessionStorage.getItem('aquaterra-modo') !== 'dia') document.documentElement.setAttribute('data-modo', 'noche'); } catch (e) { document.documentElement.setAttribute('data-modo', 'noche'); }</script>
 <script src="./marca.js" defer></script>
 <script src="./cookies.js" defer></script>
 <style>
