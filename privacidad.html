@@ -64,6 +64,7 @@ footer{max-width:880px;margin:0 auto;padding:24px 20px calc(32px + env(safe-area
     <p>Documento identificativo: <span class="dato" data-marca="documento"></span></p>
     <p>Domicilio: <span class="dato" data-marca="domicilio"></span></p>
     <p>Email de protección de datos: <span class="dato" data-marca="emailPrivacidad"></span></p>
+    <p data-sin-datos hidden>Aquaterra · Asunción, Paraguay. Para cualquier consulta sobre tus datos, escríbenos desde el <a href="index.html#contacto">formulario de contacto</a> de esta web.</p>
   </div>
 
   <h2>2. Qué datos recogemos</h2>
@@ -113,7 +114,7 @@ footer{max-width:880px;margin:0 auto;padding:24px 20px calc(32px + env(safe-area
     <li><b>Portabilidad</b>: recibirlos en un formato que puedas llevar a otra empresa.</li>
     <li><b>Retirar tu consentimiento</b>, sin que afecte a lo hecho antes de retirarlo.</li>
   </ul>
-  <p>Escríbenos a <span class="dato" data-marca="emailPrivacidad"></span> indicando qué derecho quieres ejercer. Te responderemos en un plazo máximo de un mes. Si crees que no hemos tratado bien tus datos, puedes reclamar ante la <a href="https://www.aepd.es" target="_blank" rel="noopener">Agencia Española de Protección de Datos</a>.</p>
+  <p>Escríbenos <span data-con-email>a <span class="dato" data-marca="emailPrivacidad"></span></span><span data-sin-email hidden>desde el <a href="index.html#contacto">formulario de contacto</a></span> indicando qué derecho quieres ejercer. Te responderemos en un plazo máximo de un mes. Si crees que no hemos tratado bien tus datos, puedes reclamar ante la <a href="https://www.aepd.es" target="_blank" rel="noopener">Agencia Española de Protección de Datos</a>.</p>
 
   <h2>8. Seguridad</h2>
   <p>Los datos viajan cifrados (HTTPS), se guardan en una base de datos con acceso restringido y solo los ven las personas del equipo que lo necesitan, con usuario propio.</p>
@@ -128,10 +129,14 @@ document.addEventListener('DOMContentLoaded', function () {
   var M = window.MARCA || {};
   Array.prototype.forEach.call(document.querySelectorAll('[data-marca]'), function (el) {
     var k = el.getAttribute('data-marca'), v = String(M[k] || '').trim();
-    if (!v) { el.className = 'pend'; el.textContent = 'pendiente de publicar'; return; }
+    // Sin dato: se oculta la línea en vez de mostrar un hueco.
+    if (!v) { var fila = el.closest('.caja p'); if (fila) fila.hidden = true; return; }
     if (k === 'emailPrivacidad') { var a = document.createElement('a'); a.href = 'mailto:' + v; a.textContent = v; el.appendChild(a); }
     else el.textContent = v;
   });
+  var hay = function (k) { return !!String(M[k] || '').trim(); };
+  if (!['titular', 'documento', 'domicilio', 'emailPrivacidad'].some(hay)) document.querySelector('[data-sin-datos]').hidden = false;
+  if (!hay('emailPrivacidad')) { document.querySelector('[data-con-email]').hidden = true; document.querySelector('[data-sin-email]').hidden = false; }
 });
 </script>
 </body>
