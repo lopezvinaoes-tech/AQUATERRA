@@ -35,7 +35,7 @@
     return fetch('/api/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       .then(function (r) {
         return r.json().catch(function () { return {}; }).then(function (j) {
-          if (!r.ok) throw new Error(j.error || 'No pudimos enviar tu solicitud. Escríbenos por WhatsApp.');
+          if (!r.ok) throw new Error(j.error || 'No pudimos enviar tu solicitud. Inténtalo de nuevo en unos minutos.');
           if (permite('preferencias')) try {
             var prev = window.contactoGuardado();
             localStorage.setItem(CKEY, JSON.stringify({

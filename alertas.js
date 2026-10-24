@@ -111,7 +111,7 @@
     leerForm(form);
     error = validar();
     if (error) { render(); return; }
-    if (typeof window.enviarLead !== 'function') { error = 'No pudimos guardar tu alerta. Escríbenos por WhatsApp.'; render(); return; }
+    if (typeof window.enviarLead !== 'function') { error = 'No pudimos guardar tu alerta. Inténtalo de nuevo en unos minutos.'; render(); return; }
     enviando = true; render();
     var busca = [
       'Zona: ' + f.ciudad,

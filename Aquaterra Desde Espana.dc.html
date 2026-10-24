@@ -288,7 +288,9 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
         <div style="display:flex;flex-direction:column;gap:12px">
           <span data-mono="" style="font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:rgba(228,247,176,0.75)">Contacto</span>
           <a href="index.html#contacto" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Formulario de asesoría</a>
+          <sc-if value="{{ hayWa }}" hint-placeholder-val="{{ false }}">
           <a href="{{ footWa }}" target="_blank" rel="noopener" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">WhatsApp</a>
+          </sc-if>
           <span style="font-size:15px">Asunción, Paraguay</span>
         </div>
         <div style="display:flex;flex-direction:column;gap:12px">
@@ -431,6 +433,7 @@ class Component extends DCLogic {
       wide: s.w >= 980, narrow: s.w < 980, menu: s.menu,
       toggleMenu: () => this.setState((st) => ({ menu: !st.menu })),
       closeMenu: () => { if (this.state.menu) this.setState({ menu: false }); },
+      hayWa: !!String((window.MARCA && window.MARCA.whatsapp) || '').replace(/\D/g, ''),
       footWa: 'https://wa.me/' + String((window.MARCA && window.MARCA.whatsapp) || '').replace(/\D/g, ''),
       navWide: s.w >= 1140, navNarrow: s.w < 1140,
       menuItems: this.MENU.map(([href, label]) => ({ href, label })),
