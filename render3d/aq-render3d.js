@@ -9,7 +9,8 @@ import { EffectComposer } from './vendor/three/EffectComposer.js';
 import { RenderPass } from './vendor/three/RenderPass.js';
 import { UnrealBloomPass } from './vendor/three/UnrealBloomPass.js';
 import { OutputPass } from './vendor/three/OutputPass.js';
-import { analyze } from './aq-plan.js';
+import { mergeGeometries } from './vendor/three/BufferGeometryUtils.js';
+import { analyze, inPoly } from './aq-plan.js';
 import { makeTextures, loadManifest, applyRealTextures } from './aq-r3d-mats.js';
 import { buildExterior, buildNight, wind, windify } from './aq-r3d-env.js';
 
@@ -181,6 +182,35 @@ export async function createViewer(el, input, cb = {}) {
   scene.fog = new THREE.FogExp2(0xc5d3dc, 0.0011);
   let hour = cb.hour ?? 10.5, lightsMode = 'auto', lf = 0, lTarget = 0, dayF = 1;
   const fogDay = new THREE.Color(0xc4d2dc), fogDusk = new THREE.Color(0xd8a77e), fogNight = new THREE.Color(0x0b1222), tmpC = new THREE.Color();
+
+  // — fondo precalculado: cerros y bosque lejano horneados en dos imágenes (fondo/aq-pano-0/1.webp) —
+  // RGB = color con luz de mediodía (a mitad de intensidad) · A = 1 − 0,96 × niebla (0 = cielo)
+  const PANO = { tanTop: 0.6249, tanBot: -0.0875, R: 4000, files: ['aq-pano-0.webp', 'aq-pano-1.webp'] };
+  const panoU = { tint: { value: new THREE.Color(2, 2, 2) }, fogC: { value: new THREE.Color() } };
+  let pano = null;
+  const loadPano = () => cb.pano === false ? Promise.resolve(null) : Promise.all(PANO.files.map(f => new Promise(res => new THREE.TextureLoader().load(BASE + 'fondo/' + f, t => res(t), undefined, () => res(null))))).then(ts => ts.every(Boolean) ? ts : null);
+  function makePano(ts) {
+    const g = new THREE.Group(), N = 96;
+    ts.forEach((t, k) => {
+      t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; t.generateMipmaps = true; t.minFilter = THREE.LinearMipmapLinearFilter;
+      const pos = [], uv = [], idx = [];
+      for (let j = 0; j <= N; j++) { const a = (k + j / N) * PI, x = Math.cos(a) * PANO.R, z = Math.sin(a) * PANO.R; pos.push(x, PANO.tanBot * PANO.R, z, x, PANO.tanTop * PANO.R, z); uv.push(j / N, 0, j / N, 1); if (j < N) { const b = j * 2; idx.push(b, b + 2, b + 1, b + 1, b + 2, b + 3); } }
+      const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); geo.setIndex(idx);
+      const mat = new THREE.ShaderMaterial({
+        uniforms: { map: { value: t }, tint: panoU.tint, fogC: panoU.fogC }, side: THREE.DoubleSide, fog: false,
+        vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+        fragmentShader: `uniform sampler2D map; uniform vec3 tint; uniform vec3 fogC; varying vec2 vUv;
+          void main(){ vec4 t = texture2D(map, vUv); if (t.a < 0.02) discard; float f = clamp((1.0 - t.a) / 0.96, 0.0, 1.0);
+            gl_FragColor = vec4(mix(t.rgb * tint, fogC, f), 1.0);
+            #include <tonemapping_fragment>
+            #include <colorspace_fragment>
+          }`
+      });
+      const m = new THREE.Mesh(geo, mat); m.frustumCulled = false; m.renderOrder = -1; g.add(m);
+    });
+    return g;
+  }
+  const panoP = loadPano();
   function applyTime() {
     const lat = -25.3 * D2R, dec = -9 * D2R, H = (hour - 12.25) * 15 * D2R;
     const E = -Math.cos(dec) * Math.sin(H), Nn = Math.sin(dec) * Math.cos(lat) - Math.cos(dec) * Math.sin(lat) * Math.cos(H), U = Math.sin(dec) * Math.sin(lat) + Math.cos(dec) * Math.cos(lat) * Math.cos(H);
@@ -195,6 +225,8 @@ export async function createViewer(el, input, cb = {}) {
     renderer.toneMappingExposure = 0.72 + (1 - day) * 0.34;
     scene.fog.color.copy(fogNight).lerp(fogDusk, smooth(-0.12, 0.02, U)).lerp(fogDay, smooth(0.05, 0.3, U));
     night.set(1 - smooth(-0.16, 0.0, U), moonDir);
+    // el panorama se horneó a mediodía con media luz: se reescala y se tiñe como el sol y el cielo
+    panoU.fogC.value.copy(scene.fog.color); panoU.tint.value.setRGB(0.05, 0.06, 0.1).lerp(tmpC.setRGB(1.8, 1.75, 1.7).lerp(new THREE.Color(1.9, 1.35, 0.95), gold * 0.7), smooth(-0.12, 0.25, U));
     if (bloom) { bloom.strength = 0.06 + 0.32 * (1 - day); bloom.threshold = 0.9 + 1.6 * day; }
     lTarget = lightsMode === 'on' ? 1 : lightsMode === 'off' ? 0 : (U < 0.14 ? 1 : 0);
     envDirty = true;
@@ -229,7 +261,7 @@ export async function createViewer(el, input, cb = {}) {
     if (lf !== lTarget) { lf += clamp(lTarget - lf, -dt * 1.5, dt * 1.5); }
     for (const l of pool) l.intensity = l.userData.base * lf;
     for (const m of glowMats) m.emissiveIntensity = m.userData.glow * lf;
-    wind.value = now / 1000; for (const b of fans) b.rotation.y += dt * 2.4;
+    wind.value = now / 1000; if (pano) pano.position.copy(camera.position); for (const b of fans) b.rotation.y += dt * 2.4;
     if (envDirty && now - envAt > (low ? 400 : 160)) regenEnv();
     if (cb.minimap && ++mmFrame % 2 === 0) drawMinimap();
     draw();
@@ -240,7 +272,7 @@ export async function createViewer(el, input, cb = {}) {
   const wx = x => x - cx, wz = z => z - cz;
   const doorBlocks = (x, z, r) => doors.some(d => d.a < 0.6 && d.box && x > d.box[0] - r && x < d.box[1] + r && z > d.box[2] - r && z < d.box[3] + r);
   const collide = (x, z, r = 0.22) => solids.some(b => x > b[0] - r && x < b[1] + r && z > b[2] - r && z < b[3] + r) || doorBlocks(x, z, r);
-  const roomAt = (x, z) => rooms.find(R => x + cx >= R.x && x + cx <= R.x + R.w && z + cz >= R.y && z + cz <= R.y + R.d) || null;
+  const roomAt = (x, z) => rooms.find(R => x + cx >= R.x && x + cx <= R.x + R.w && z + cz >= R.y && z + cz <= R.y + R.d) || ((an && an.polys) || []).find(R => inPoly(R.pts, x + cx, z + cz)) || null;
   const into = (o, R) => { const s = o.seg, sg = s.pos === R ? 1 : -1; return s.o === 'h' ? [0, sg] : [sg, 0]; };
   function viewOf(R) {
     const ctr = [R.x + R.w / 2, R.y + R.d / 2];
@@ -280,7 +312,7 @@ export async function createViewer(el, input, cb = {}) {
     applyPlayer();
   }
   let ext = null; const groundAt = (x, z) => (roomAt(x, z) || !ext) ? 0 : Math.max(0, ext.gh(x, z) + 0.06);
-  function detectRoom() { const R = roomAt(camera.position.x, camera.position.z); if (R !== curRoom) { curRoom = R; cb.onRoom && cb.onRoom(R ? { id: R.id, nombre: R.nombre, area: R.w * R.d, dbl: R.dbl } : null); } }
+  function detectRoom() { const R = roomAt(camera.position.x, camera.position.z); if (R !== curRoom) { curRoom = R; cb.onRoom && cb.onRoom(R ? { id: R.id, nombre: R.nombre, area: R.area || R.w * R.d, dbl: R.dbl } : null); } }
 
   // — entrada: teclado, ratón/táctil, clic en puertas —
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
@@ -346,10 +378,11 @@ export async function createViewer(el, input, cb = {}) {
     const ox = (W - (b.x1 - b.x0) * s) / 2 - b.x0 * s, oy = (H - (b.y1 - b.y0) * s) / 2 - b.y0 * s, X = x => ox + x * s, Y = y => oy + y * s;
     mm._map = { ox, oy, s };
     g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
-    rooms.forEach(R => { g.fillStyle = R === curRoom ? '#f0c9a6' : (R.tipo === 'terraza' ? '#c6d1b1' : '#f4ede1'); g.fillRect(X(R.x), Y(R.y), R.w * s, R.d * s); });
+    rooms.forEach(R => { g.fillStyle = R === curRoom ? '#f0c9a6' : (R.tipo === 'terraza' ? '#c6d1b1' : '#f4ede1'); g.fillRect(X(R.x), Y(R.y), R.w * s, R.d * s); }); ((an && an.polys) || []).forEach(R => { g.fillStyle = R === curRoom ? '#f0c9a6' : '#f4ede1'; g.beginPath(); R.pts.forEach(([x, y], i) => i ? g.lineTo(X(x), Y(y)) : g.moveTo(X(x), Y(y))); g.closePath(); g.fill(); });
     g.lineCap = 'butt'; g.strokeStyle = '#2d2924';
     an.segs.forEach(sg => { g.lineWidth = Math.max(1.5, sg.t * s); g.beginPath(); if (sg.o === 'h') { g.moveTo(X(sg.a), Y(sg.c)); g.lineTo(X(sg.b), Y(sg.c)); } else { g.moveTo(X(sg.c), Y(sg.a)); g.lineTo(X(sg.c), Y(sg.b)); } g.stroke(); });
-    an.ops.forEach(o => { const sg = o.seg, d = doors.find(d => d.o === o), shut = d && d.a < 0.5; g.strokeStyle = o.kind === 'window' ? '#8db3c2' : shut ? '#8a6a4a' : (o.kind === 'entry' ? '#c67139' : '#f4ede1'); g.lineWidth = Math.max(2, sg.t * s + 1); g.beginPath(); if (sg.o === 'h') { g.moveTo(X(o.s), Y(sg.c)); g.lineTo(X(o.e), Y(sg.c)); } else { g.moveTo(X(sg.c), Y(o.s)); g.lineTo(X(sg.c), Y(o.e)); } g.stroke(); });
+    (an.free || []).forEach(sg => { g.lineWidth = Math.max(1.5, sg.t * s); g.beginPath(); g.moveTo(X(sg.x1), Y(sg.y1)); g.lineTo(X(sg.x2), Y(sg.y2)); g.stroke(); });
+    an.ops.forEach(o => { const sg = o.seg, d = doors.find(d => d.o === o), shut = d && d.a < 0.5; g.strokeStyle = o.kind === 'window' ? '#8db3c2' : shut ? '#8a6a4a' : (o.kind === 'entry' ? '#c67139' : '#f4ede1'); g.lineWidth = Math.max(2, sg.t * s + 1); g.beginPath(); if (sg.free) { g.moveTo(X(sg.x1 + sg.ux * o.s), Y(sg.y1 + sg.uy * o.s)); g.lineTo(X(sg.x1 + sg.ux * o.e), Y(sg.y1 + sg.uy * o.e)); } else if (sg.o === 'h') { g.moveTo(X(o.s), Y(sg.c)); g.lineTo(X(o.e), Y(sg.c)); } else { g.moveTo(X(sg.c), Y(o.s)); g.lineTo(X(sg.c), Y(o.e)); } g.stroke(); });
     const px = X(camera.position.x + cx), py = Y(camera.position.z + cz), e = new THREE.Euler().setFromQuaternion(camera.quaternion, 'YXZ'), a = -e.y - PI / 2;
     g.fillStyle = 'rgba(198,113,57,.25)'; g.beginPath(); g.moveTo(px, py); g.arc(px, py, 26, a - 0.5, a + 0.5); g.fill();
     g.fillStyle = '#c67139'; g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.arc(px, py, 5, 0, PI * 2); g.fill(); g.stroke();
@@ -379,7 +412,8 @@ export async function createViewer(el, input, cb = {}) {
     o.position.set(0, 0, 0); o.rotation.set(0, (meta.rot || 0) * D2R, 0); o.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(o), c = box.getCenter(new THREE.Vector3()), s = box.getSize(new THREE.Vector3());
     o.position.set(-c.x, meta.hang ? -box.max.y : -box.min.y, -c.z); o.updateMatrixWorld(true);
-    o.traverse(m => { if (m.isMesh) { m.castShadow = !(m.material && m.material.userData && m.material.userData.glow); m.receiveShadow = true; } });
+    // sólo proyectan sombra las piezas grandes (manillas, tornillos o cojines pequeños no se notan y cuestan una llamada de dibujo más)
+    const ws = new THREE.Vector3(); o.traverse(m => { if (m.isMesh) { if (!m.geometry.boundingSphere) m.geometry.computeBoundingSphere(); m.getWorldScale(ws); const big = m.geometry.boundingSphere.radius * Math.max(ws.x, ws.y, ws.z) > 0.14; m.castShadow = big && !(m.material && m.material.userData && m.material.userData.glow); m.receiveShadow = true; } });
     const g = new THREE.Group(); g.userData.model = true; g.add(o); g.updateMatrixWorld(true);
     const it = { g, w: s.x, d: s.z, h: s.y, model: true, meta, root: o };
     let lp = null; if (meta.light === 'node:light' || meta.light === undefined) { const n = o.getObjectByName('light'); if (n) lp = n.getWorldPosition(new THREE.Vector3()); } else if (Array.isArray(meta.light)) lp = new THREE.Vector3(...meta.light).applyMatrix4(o.matrixWorld);
@@ -396,7 +430,18 @@ export async function createViewer(el, input, cb = {}) {
   let ctx = null;
   const fpOf = (w, d, x, z, ry) => { const c = Math.abs(Math.cos(ry)), s = Math.abs(Math.sin(ry)), hw = (w * c + d * s) / 2, hd = (w * s + d * c) / 2; return [x - hw, x + hw, z - hd, z + hd]; };
   const over = (a, b, t = 0.015) => a[0] < b[1] - t && a[1] > b[0] + t && a[2] < b[3] - t && a[3] > b[2] + t;
+  // une las piezas de un mueble procedural que comparten material: muchas menos llamadas de dibujo
+  function compact(g) {
+    g.updateMatrixWorld(true); const inv = g.matrixWorld.clone().invert(), buckets = new Map();
+    g.traverse(m => { if (!m.isMesh || m.isInstancedMesh || Array.isArray(m.material) || !m.geometry.index) return; const k = m.material.uuid + '|' + Object.keys(m.geometry.attributes).sort().join(',') + '|' + m.castShadow; if (!buckets.has(k)) buckets.set(k, []); buckets.get(k).push(m); });
+    buckets.forEach(list => {
+      if (list.length < 2) return; const geos = list.map(m => m.geometry.clone().applyMatrix4(new THREE.Matrix4().multiplyMatrices(inv, m.matrixWorld))), merged = mergeGeometries(geos); geos.forEach(q => q.dispose()); if (!merged) return;
+      const n = new THREE.Mesh(merged, list[0].material); n.castShadow = list[0].castShadow; n.receiveShadow = true;
+      list.forEach(m => { m.parent.remove(m); if (!m.userData.shared) m.geometry.dispose(); }); g.add(n);
+    });
+  }
   function place(it, x, z, ry, solid, y = 0, o = {}) {
+    if (!it.model && !it.packed) { try { compact(it.g); } catch (e) { /* se queda sin unir */ } it.packed = true; }
     if (it.w0 === undefined) { it.w0 = it.w; it.d0 = it.d; it.h0 = it.h; }
     if (!o.keepScale) { const s0 = o.scale || 1; it.w = it.w0 * s0; it.d = it.d0 * s0; it.h = (it.h0 || 0) * s0; it.g.scale.setScalar(s0); }
     if (ctx && !o.free) {
@@ -496,6 +541,11 @@ export async function createViewer(el, input, cb = {}) {
       const dep = o.kind === 'door' ? o.w + 0.1 : o.kind === 'entry' ? 1.2 : o.kind === 'slide' ? 0.8 : 0.55;
       const a0 = o.s - 0.05, a1 = o.e + 0.05, c0 = s.c, c1 = s.c + (s.o === 'h' ? n[1] : n[0]) * dep;
       ctx.occ.push({ tag: 'door', b: s.o === 'h' ? [a0, a1, Math.min(c0, c1), Math.max(c0, c1)] : [Math.min(c0, c1), Math.max(c0, c1), a0, a1] });
+    });
+    // paredes libres que cruzan la estancia: ningún mueble se mete en ellas ni delante de sus puertas
+    (an.free || []).forEach(s => {
+      for (let u = 0; u <= s.len + 1e-6; u += 0.2) { const x = s.x1 + s.ux * u, z = s.y1 + s.uy * u; if (x < R.x - 0.2 || x > R.x + R.w + 0.2 || z < R.y - 0.2 || z > R.y + R.d + 0.2) continue; ctx.occ.push({ tag: 'wall', b: [x - 0.12, x + 0.12, z - 0.12, z + 0.12] }); }
+      s.ops.forEach(o => { const r = o.w / 2 + 0.6; ctx.occ.push({ tag: 'door', b: [o.x - r, o.x + r, o.y - r, o.y + r] }); });
     });
     const plant = (where = 'end', k = 'plant') => tryWalls(R, sd, { need: 0.6, at: c => where === 'end' ? c.iv[1] - 0.35 : c.iv[0] + 0.35, gap: 0.12, minScale: 0.6 }, () => inst(has(k) ? k : 'plant'));
     const isNS = k => k === 'N' || k === 'S';
@@ -646,12 +696,14 @@ export async function createViewer(el, input, cb = {}) {
       else [1, -1].forEach(sd => { add(pv, cyl(0.012, 0.13, 10), M.steel, lw - 0.08, 1.0, sd * (th / 2 + 0.03)).rotation.z = PI / 2; add(pv, cyl(0.025, 0.012, 16), M.steel, lw - 0.08, 0.994, sd * (th / 2 + 0.006)).rotation.x = PI / 2; });
       g.add(pv); d = { kind: o.kind, pv, maxA: o.kind === 'entry' ? -1.35 : -1.55, hit: pv };
     }
-    if (s.o === 'h') g.position.set(wx(o.mid), 0, wz(s.c)); else { g.position.set(wx(s.c), 0, wz(o.mid)); g.rotation.y = -PI / 2; }
+    if (s.free) { g.position.set(wx(o.x), 0, wz(o.y)); g.rotation.y = -s.ang; }
+    else if (s.o === 'h') g.position.set(wx(o.mid), 0, wz(s.c)); else { g.position.set(wx(s.c), 0, wz(o.mid)); g.rotation.y = -PI / 2; }
     if (d) {
       const key = doorKey(o), open = doorState.has(key) ? doorState.get(key) : (o.kind === 'door' || o.kind === 'slide');
       Object.assign(d, { key, o, open, a: open ? 1 : 0, wx: g.position.x, wz: g.position.z });
       const half = 0.09, a0 = o.kind === 'slide' ? o.mid : o.s, a1 = o.e;
-      d.box = s.o === 'h' ? [wx(a0), wx(a1), wz(s.c) - half, wz(s.c) + half] : [wx(s.c) - half, wx(s.c) + half, wz(a0), wz(a1)];
+      if (s.free) { const xa = s.x1 + s.ux * a0, za = s.y1 + s.uy * a0, xb = s.x1 + s.ux * a1, zb = s.y1 + s.uy * a1; d.box = [wx(Math.min(xa, xb)) - half, wx(Math.max(xa, xb)) + half, wz(Math.min(za, zb)) - half, wz(Math.max(za, zb)) + half]; }
+      else d.box = s.o === 'h' ? [wx(a0), wx(a1), wz(s.c) - half, wz(s.c) + half] : [wx(s.c) - half, wx(s.c) + half, wz(a0), wz(a1)];
       d.hit.userData.door = d; setDoorPose(d); doors.push(d);
     }
     grp.add(g); return g;
@@ -682,8 +734,23 @@ export async function createViewer(el, input, cb = {}) {
         if (y0 < 0.9) solids.push(s.o === 'h' ? [wx(p), wx(q), wz(s.c) - s.t / 2, wz(s.c) + s.t / 2] : [wx(s.c) - s.t / 2, wx(s.c) + s.t / 2, wz(p), wz(q)]);
       });
     });
+    // paredes libres (cualquier ángulo): tramos girados entre puertas, con dintel encima de cada hueco
+    (an.free || []).forEach(s => {
+      const H = s.h + 0.2, ops = s.ops.slice().sort((a, b) => a.s - b.s), pcs = []; let cur = -s.t / 2;
+      ops.forEach(o => { if (o.s > cur + 0.005) pcs.push([cur, o.s, 0, H]); if (o.bot > 0.01) pcs.push([o.s, o.e, 0, o.bot]); if (o.top < H - 0.01) pcs.push([o.s, o.e, o.top, H]); cur = Math.max(cur, o.e); });
+      const sm = v => v ? M.paint : M.facade, endM = s.inL && s.inR ? M.paint : M.facade;
+      if (s.len + s.t / 2 > cur + 0.005) pcs.push([cur, s.len + s.t / 2, 0, H]);
+      pcs.forEach(([p, q, y0, y1]) => {
+        const L = q - p, hh = y1 - y0, k = (p + q) / 2, px = s.x1 + s.ux * k, pz = s.y1 + s.uy * k;
+        const geo = boxGeo(L, hh, s.t); worldUV(geo, px, y0, pz);
+        const m = new THREE.Mesh(geo, [endM, endM, M.roof, M.paint, sm(s.inL), sm(s.inR)]);
+        m.castShadow = m.receiveShadow = true; m.position.set(wx(px), y0, wz(pz)); m.rotation.y = -s.ang;
+        house.add(m); walls.push({ m, d: (m.position.x + m.position.z + size) / (size * 2) });
+        if (y0 < 0.9) for (let u = p; u <= q + 1e-6; u += 0.2) { const ux = s.x1 + s.ux * Math.min(u, q), uz = s.y1 + s.uy * Math.min(u, q); solids.push([wx(ux) - 0.08, wx(ux) + 0.08, wz(uz) - 0.08, wz(uz) + 0.08]); }
+      });
+    });
     an.rails.forEach(r => { const L = r.b - r.a, g = new THREE.Group(); const gl = add(g, boxGeo(L, 1.0, 0.02), M.glass, 0, 0, 0); gl.castShadow = false; add(g, boxGeo(L, 0.04, 0.06), M.steel, 0, 1.0, 0); if (r.o === 'h') g.position.set(wx((r.a + r.b) / 2), 0, wz(r.c)); else { g.position.set(wx(r.c), 0, wz((r.a + r.b) / 2)); g.rotation.y = PI / 2; } house.add(g); walls.push({ m: g, d: 1, rail: 1 }); solids.push(r.o === 'h' ? [wx(r.a), wx(r.b), wz(r.c) - 0.05, wz(r.c) + 0.05] : [wx(r.c) - 0.05, wx(r.c) + 0.05, wz(r.a), wz(r.b)]); });
-    an.ops.forEach(o => { if (o.kind === 'open') return; const g = opening(o, house); opG.push(g); if (o.kind === 'slide') { const s = o.seg; solids.push(s.o === 'h' ? [wx(o.s), wx(o.mid), wz(s.c) - 0.1, wz(s.c) + 0.1] : [wx(s.c) - 0.1, wx(s.c) + 0.1, wz(o.s), wz(o.mid)]); } if (o.kind === 'window') { const s = o.seg; if (o.bot < 0.9) solids.push(s.o === 'h' ? [wx(o.s), wx(o.e), wz(s.c) - 0.1, wz(s.c) + 0.1] : [wx(s.c) - 0.1, wx(s.c) + 0.1, wz(o.s), wz(o.e)]); } });
+    an.ops.forEach(o => { if (o.kind === 'open') return; const g = opening(o, house); opG.push(g); if (o.kind === 'slide') { const s = o.seg; solids.push(s.o === 'h' ? [wx(o.s), wx(o.mid), wz(s.c) - 0.1, wz(s.c) + 0.1] : [wx(s.c) - 0.1, wx(s.c) + 0.1, wz(o.s), wz(o.mid)]); } if (o.kind === 'window' && !o.seg.free) { const s = o.seg; if (o.bot < 0.9) solids.push(s.o === 'h' ? [wx(o.s), wx(o.e), wz(s.c) - 0.1, wz(s.c) + 0.1] : [wx(s.c) - 0.1, wx(s.c) + 0.1, wz(o.s), wz(o.e)]); } });
     rooms.forEach(R => {
       const fm = R.tipo === 'terraza' ? M.deck : R.tipo === 'bano' ? M.bathFloor : (['cocina', 'lavadero'].includes(R.tipo) ? M.tile : M.wood);
       const fg = boxGeo(R.w, 0.03, R.d); worldUV(fg, R.x + R.w / 2, -0.03, R.y + R.d / 2);
@@ -691,6 +758,16 @@ export async function createViewer(el, input, cb = {}) {
       if (R.tipo !== 'terraza') { const cg = boxGeo(R.w, 0.2, R.d); worldUV(cg, R.x + R.w / 2, R.h, R.y + R.d / 2); const c = new THREE.Mesh(cg, [M.facade, M.facade, M.roof, M.ceil, M.facade, M.facade]); c.position.set(wx(R.x + R.w / 2), R.h, wz(R.y + R.d / 2)); c.castShadow = true; c.receiveShadow = true; c.visible = mode !== 'orbit' || !!tour; house.add(c); ceilings.push(c); }
     });
     rooms.forEach(R => { try { furnish(R); } catch (e) { console.warn('furnish', R.id, e); ctx = null; } });
+    // habitaciones cerradas con paredes: suelo y techo con la forma del polígono y una luz de techo
+    (an.polys || []).forEach(R => {
+      const cxp = R.ix, czp = R.iy, shp = sg => new THREE.Shape(R.pts.map(([x, y]) => new THREE.Vector2(x - cxp, sg * (y - czp))));
+      const up = g => { g.rotateX(-PI / 2); const uv = g.attributes.uv, p = g.attributes.position; for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) + R.ix, p.getZ(i) + R.iy); return g; };
+      const fg = up(new THREE.ShapeGeometry(shp(-1))), fl = mesh(fg, M.wood, wx(cxp), 0.001, wz(czp)); fl.castShadow = false; house.add(fl); floors.push(fl);
+      const dn = new THREE.ShapeGeometry(shp(1)); dn.rotateX(PI / 2);
+      const c = new THREE.Group(), c1 = new THREE.Mesh(dn, M.ceil), c2 = new THREE.Mesh(up(new THREE.ShapeGeometry(shp(-1))), M.roof); c2.position.y = 0.2; c1.receiveShadow = true; c2.castShadow = true;
+      c.add(c1, c2); c.position.set(wx(cxp), R.h, wz(czp)); c.visible = mode !== 'orbit' || !!tour; house.add(c); ceilings.push(c);
+      try { ceilingLight(R, 'plafon', [R.ix, R.iy]); } catch (e) { console.warn('luz', R.id, e); }
+    });
     // farol exterior junto a la puerta de entrada
     if (an.entry) {
       const o = an.entry, n = into(o, o.room), s = o.seg, sideA = o.e + 0.25, y = 1.75;
@@ -722,7 +799,8 @@ export async function createViewer(el, input, cb = {}) {
     const sc = sun.shadow.camera, ex = size / 2 + 6; sc.left = -ex; sc.right = ex; sc.top = ex; sc.bottom = -ex; sc.near = 1; sc.far = size * 3 + 90; sc.updateProjectionMatrix(); scene.add(sun, sun.target, hemi);
     const plinth = mesh(boxGeo(b.x1 - b.x0 + 1.6, 0.42, b.y1 - b.y0 + 1.6), M.sidewalk, 0, -0.45, 0); worldUV(plinth.geometry, 0, 0, 0); scene.add(plinth);
     let entryW = null; if (an.entry) { const o = an.entry, n = into(o, o.room); entryW = { x: wx(o.x), z: wz(o.y), nx: n[0], nz: n[1] }; }
-    ext = buildExterior({ T, M, low, hx: (b.x1 - b.x0) / 2 + 0.8, hz: (b.y1 - b.y0) / 2 + 0.8, entry: entryW, camDir: { x: 0.62, z: 0.86 }, maxH }); scene.add(ext.group); ['grass', 'terrainRock'].forEach(k => REAL[k] && ext.setGround(k, REAL[k]));
+    const pt = await panoP; if (pt && !pano) { pano = makePano(pt); scene.add(pano); }
+    ext = buildExterior({ T, M, low, hx: (b.x1 - b.x0) / 2 + 0.8, hz: (b.y1 - b.y0) / 2 + 0.8, entry: entryW, camDir: { x: 0.62, z: 0.86 }, maxH, far: !pano }); scene.add(ext.group); ['grass', 'terrainRock'].forEach(k => REAL[k] && ext.setGround(k, REAL[k]));
     await anim(700, k => { prog(1, k); });
     await modelsP;
     // muros, aberturas, suelos y muebles
@@ -737,7 +815,7 @@ export async function createViewer(el, input, cb = {}) {
     await anim(600, k => prog(7, k)); renderer.compile(scene, camera);
     // vegetación y rocas reales: se cargan después, sin bloquear la vista
     if (ext.upgrade) ext.upgrade({ load: loadId, meta: metaOf }).then(() => { envDirty = true; cb.onExterior && cb.onExterior(true); }).catch(e => console.warn('exterior', e));
-    return { rooms: rooms.map(R => ({ id: R.id, nombre: R.nombre, tipo: R.tipo, area: Math.round(R.w * R.d * 10) / 10, dbl: R.dbl })), H: plan.H, doors: doors.length };
+    return { rooms: rooms.concat(an.polys || []).map(R => ({ id: R.id, nombre: R.nombre, tipo: R.tipo, area: Math.round((R.area || R.w * R.d) * 10) / 10, dbl: R.dbl })), H: plan.H, doors: doors.length };
   }
 
   async function buildGlb(url) {
@@ -748,7 +826,8 @@ export async function createViewer(el, input, cb = {}) {
     o.position.sub(new THREE.Vector3(c.x, box.min.y, c.z)); o.traverse(m => { if (m.isMesh) { m.castShadow = m.receiveShadow = true; } }); scene.add(o);
     size = Math.max(s.x, s.z, 4); center.set(0, s.y * 0.3, 0);
     const sc = sun.shadow.camera, ex = size / 2 + 4; sc.left = -ex; sc.right = ex; sc.top = ex; sc.bottom = -ex; sc.far = size * 3 + 60; sc.updateProjectionMatrix(); scene.add(sun, sun.target, hemi);
-    ext = buildExterior({ T, M, low, hx: s.x / 2 + 0.5, hz: s.z / 2 + 0.5, entry: null, camDir: { x: 0.6, z: 0.8 }, maxH: s.y }); scene.add(ext.group); fixtures = ext.fixtures.slice(); assignLights();
+    const pt = await panoP; if (pt && !pano) { pano = makePano(pt); scene.add(pano); }
+    ext = buildExterior({ T, M, low, hx: s.x / 2 + 0.5, hz: s.z / 2 + 0.5, entry: null, camDir: { x: 0.6, z: 0.8 }, maxH: s.y, far: !pano }); scene.add(ext.group); fixtures = ext.fixtures.slice(); assignLights();
     const D = size * 1.2 + 4; camera.position.set(D * 0.6, D * 0.6, D * 0.8); controls.target.copy(center); controls.maxDistance = Math.max(D * 3, 120); controls.update();
     await anim(500, k => prog(7, k));
     return { rooms: [], H: null, doors: 0 };
@@ -796,7 +875,7 @@ export async function createViewer(el, input, cb = {}) {
       cb.onMode && cb.onMode(m);
     },
     goRoom(id, instant) {
-      const R = rooms.find(r => r.id === id); if (!R) return; if (tour) { tour = null; cb.onTour && cb.onTour(false); }
+      const R = rooms.find(r => r.id === id) || ((an && an.polys) || []).find(r => r.id === id); if (!R) return; if (tour) { tour = null; cb.onTour && cb.onTour(false); }
       if (mode === 'orbit') { const t = new THREE.Vector3(wx(R.x + R.w / 2), R.h * 0.25, wz(R.y + R.d / 2)), dir = camera.position.clone().sub(controls.target).setY(0).normalize(), D = Math.max(R.w, R.d) * 1.3 + 4; tweenTo(t.clone().add(dir.multiplyScalar(D)).setY(D * 0.95), t, 1100); }
       else { const v = viewOf(R); if (instant) { tw = null; camera.position.copy(v.pos); camera.lookAt(v.look); syncPlayer(); } else tweenTo(v.pos, v.look, 1200); }
     },
@@ -826,6 +905,37 @@ export async function createViewer(el, input, cb = {}) {
     // fachada: 'revoque' | 'ladrillo' | 'piedra'
     setFacade(k) { if (!facadeKeys[k]) return; facade = k; refreshFacade(); },
     photo() { draw(); return cv.toDataURL('image/jpeg', 0.92); },
+    // herramienta interna: hornea el fondo lejano (> 600 m) en dos imágenes WebP de 4096 px. Requiere el modo 3D completo (pano: false)
+    bakePano(W = 8192, slices = 128) {
+      const Hh = Math.round(W / (2 * PI) * (PANO.tanTop - PANO.tanBot) / 2) * 2, sw = W / slices, d = 2 * PI / slices, near = 600, far = 29000, eye = 1.7;
+      const keep = { fog: scene.fog, tm: renderer.toneMapping, hour, si: 0, hi: 0, ei: 0 };
+      hour = 12.25; applyTime(); sun.intensity *= 0.5; hemi.intensity *= 0.5; scene.environmentIntensity *= 0.5;
+      const hidden = [sky, night.group, house, furn].filter(o => o.visible); hidden.forEach(o => { o.visible = false; });
+      scene.fog = null; renderer.toneMapping = THREE.NoToneMapping; const bg = scene.background; scene.background = null; renderer.setClearColor(0x000000, 0);
+      const rtC = new THREE.WebGLRenderTarget(sw, Hh), rtF = new THREE.WebGLRenderTarget(sw, Hh); rtC.texture.colorSpace = THREE.SRGBColorSpace;
+      const distM = new THREE.ShaderMaterial({ uniforms: { dens: { value: 0.0011 } }, side: THREE.DoubleSide,
+        vertexShader: '#include <common>\nvarying vec3 vW; void main(){ vec4 p = vec4(position, 1.0);\n#ifdef USE_INSTANCING\np = instanceMatrix * p;\n#endif\np = modelMatrix * p; vW = p.xyz; gl_Position = projectionMatrix * viewMatrix * p; }',
+        fragmentShader: 'uniform float dens; varying vec3 vW; void main(){ float dd = length(vW - cameraPosition) * dens; float f = 1.0 - exp(-dd * dd); gl_FragColor = vec4(f, f, f, 1.0); }' });
+      const cam = new THREE.PerspectiveCamera(), bufC = new Uint8Array(sw * Hh * 4), bufF = new Uint8Array(sw * Hh * 4), half = W / 2;
+      const outs = [0, 1].map(() => { const c = document.createElement('canvas'); c.width = half; c.height = Hh; return c; }), imgs = outs.map(c => c.getContext('2d').createImageData(half, Hh));
+      const gy = ext && ext.gh ? Math.max(0, ext.gh(0, 0)) : 0;
+      for (let i = 0; i < slices; i++) {
+        const a = (i + 0.5) * d, tw = Math.tan(d / 2);
+        cam.position.set(0, gy + eye, 0); cam.up.set(0, 1, 0); cam.lookAt(Math.cos(a), gy + eye, Math.sin(a));
+        cam.projectionMatrix.makePerspective(-near * tw, near * tw, near * PANO.tanTop, near * PANO.tanBot, near, far); cam.projectionMatrixInverse.copy(cam.projectionMatrix).invert();
+        renderer.setRenderTarget(rtC); renderer.clear(); renderer.render(scene, cam); renderer.readRenderTargetPixels(rtC, 0, 0, sw, Hh, bufC);
+        scene.overrideMaterial = distM; renderer.setRenderTarget(rtF); renderer.clear(); renderer.render(scene, cam); renderer.readRenderTargetPixels(rtF, 0, 0, sw, Hh, bufF); scene.overrideMaterial = null;
+        const k = Math.floor(i * sw / half), img = imgs[k], x0 = i * sw - k * half;
+        for (let y = 0; y < Hh; y++) for (let x = 0; x < sw; x++) {
+          const s4 = ((Hh - 1 - y) * sw + x) * 4, o4 = (y * half + x0 + x) * 4, cov = bufC[s4 + 3] > 127;
+          img.data[o4] = bufC[s4]; img.data[o4 + 1] = bufC[s4 + 1]; img.data[o4 + 2] = bufC[s4 + 2]; img.data[o4 + 3] = cov ? Math.round(255 * (1 - 0.96 * bufF[s4] / 255)) : 0;
+        }
+      }
+      renderer.setRenderTarget(null); rtC.dispose(); rtF.dispose(); distM.dispose();
+      outs.forEach((c, k) => c.getContext('2d').putImageData(imgs[k], 0, 0));
+      scene.fog = keep.fog; renderer.toneMapping = keep.tm; scene.background = bg; hidden.forEach(o => { o.visible = true; }); hour = keep.hour; applyTime();
+      return outs.map(c => c.toDataURL('image/webp', 0.9));
+    },
     get three() { return { THREE, camera, controls, scene, renderer, doors, fixtures, pool, items }; },
     dispose() { dead = true; renderer.setAnimationLoop(null); ro.disconnect(); clearTimeout(hT); removeEventListener('keydown', onKey); removeEventListener('keyup', onKey); removeEventListener('blur', onBlur); if (mm) mm.removeEventListener('click', onMM); controls.dispose(); if (envRT) envRT.dispose(); pmrem.dispose(); if (composer) composer.dispose(); renderer.dispose(); try { renderer.forceContextLoss(); } catch (e) {} el.innerHTML = ''; }
   };
