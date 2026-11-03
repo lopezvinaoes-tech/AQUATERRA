@@ -250,12 +250,17 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
             <sc-for list="{{ edRooms }}" as="r" hint-placeholder-count="6">
               <rect data-rid="{{ r.id }}" x="{{ r.x }}" y="{{ r.y }}" width="{{ r.w }}" height="{{ r.d }}" fill="{{ r.fill }}" stroke="{{ r.stroke }}" stroke-width="0.08" stroke-dasharray="{{ r.dash }}"></rect>
             </sc-for>
+            <sc-for list="{{ edPolys }}" as="q" hint-placeholder-count="0"><polygon points="{{ q.pts }}" fill="var(--color-accent-100)" stroke="none" style="pointer-events:none"></polygon></sc-for>
             <sc-for list="{{ edSegs }}" as="l" hint-placeholder-count="0"><line x1="{{ l.x1 }}" y1="{{ l.y1 }}" x2="{{ l.x2 }}" y2="{{ l.y2 }}" stroke="var(--color-neutral-900)" stroke-width="{{ l.w }}" stroke-linecap="square" style="pointer-events:none"></line></sc-for>
-            <sc-for list="{{ edWalls }}" as="w" hint-placeholder-count="0"><line x1="{{ w.x1 }}" y1="{{ w.y1 }}" x2="{{ w.x2 }}" y2="{{ w.y2 }}" stroke="var(--color-neutral-900)" stroke-width="0.12" stroke-linecap="round" style="pointer-events:none"></line></sc-for>
+            <sc-for list="{{ edWalls }}" as="w" hint-placeholder-count="0"><line x1="{{ w.x1 }}" y1="{{ w.y1 }}" x2="{{ w.x2 }}" y2="{{ w.y2 }}" stroke="var(--color-neutral-900)" stroke-width="{{ w.t }}" stroke-linecap="round" style="pointer-events:none"></line></sc-for>
             <sc-for list="{{ edOps }}" as="l" hint-placeholder-count="0"><line x1="{{ l.x1 }}" y1="{{ l.y1 }}" x2="{{ l.x2 }}" y2="{{ l.y2 }}" stroke="{{ l.c }}" stroke-width="{{ l.w }}" style="pointer-events:none"></line></sc-for>
             <sc-for list="{{ edRooms }}" as="r" hint-placeholder-count="0">
               <text x="{{ r.lx }}" y="{{ r.ly }}" text-anchor="middle" font-size="{{ r.fs }}" font-weight="700" fill="var(--color-neutral-900)" style="pointer-events:none">{{ r.name }}</text>
               <text x="{{ r.lx }}" y="{{ r.l2 }}" text-anchor="middle" font-size="{{ r.fs2 }}" fill="var(--color-neutral-700)" style="pointer-events:none">{{ r.dims }}</text>
+            </sc-for>
+            <sc-for list="{{ edPolys }}" as="q" hint-placeholder-count="0">
+              <text x="{{ q.lx }}" y="{{ q.ly }}" text-anchor="middle" font-size="0.36" font-weight="700" fill="var(--color-neutral-900)" style="pointer-events:none">{{ q.name }}</text>
+              <text x="{{ q.lx }}" y="{{ q.l2 }}" text-anchor="middle" font-size="0.3" fill="var(--color-neutral-700)" style="pointer-events:none">{{ q.area }}</text>
             </sc-for>
             <sc-if value="{{ hasDraft }}" hint-placeholder-val="{{ false }}"><rect x="{{ draft.x }}" y="{{ draft.y }}" width="{{ draft.w }}" height="{{ draft.d }}" fill="var(--color-accent-200)" fill-opacity="0.6" stroke="var(--color-accent)" stroke-width="0.06" stroke-dasharray="0.2 0.12" style="pointer-events:none"></rect><text x="{{ draft.lx }}" y="{{ draft.ly }}" text-anchor="middle" font-size="0.4" font-weight="700" fill="var(--color-accent-800)" style="pointer-events:none">{{ draft.dims }}</text></sc-if>
             <sc-for list="{{ edWalls }}" as="w" hint-placeholder-count="0"><line data-wall="{{ w.i }}" x1="{{ w.x1 }}" y1="{{ w.y1 }}" x2="{{ w.x2 }}" y2="{{ w.y2 }}" stroke="transparent" stroke-width="0.5" stroke-linecap="round" style="pointer-events:{{ w.hit }};cursor:{{ w.cur }}"></line></sc-for>
@@ -283,7 +288,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
             </div>
           </sc-if>
           <sc-if value="{{ noSel }}" hint-placeholder-val="{{ true }}">
-            <p style="margin:0;font-size:15px;line-height:1.55;color:var(--color-neutral-800)">Con «Estancia» arrastra sobre la cuadrícula para dibujar una habitación (cada cuadro es 1 m). Con «Pared» trazas paredes sueltas en cualquier dirección y con «Puerta» colocas las puertas donde quieras; si no pones ninguna, se colocan solas. «Mover» desplaza estancias, paredes y puertas, y «Borrar» las quita.</p>
+            <p style="margin:0;font-size:15px;line-height:1.55;color:var(--color-neutral-800)">Con «Estancia» arrastra sobre la cuadrícula para dibujar una habitación (cada cuadro es 1 m). Con «Pared» trazas paredes en cualquier dirección (si las cierras, forman una habitación) y con «Puerta» colocas las puertas donde quieras; si no pones ninguna, se colocan solas. «Mover» desplaza estancias, paredes y puertas, y «Borrar» las quita.</p>
           </sc-if>
           <dl style="margin:0;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-top:14px;border-top:1px solid var(--color-divider)">
             <div><dt style="font-size:13px;color:var(--color-neutral-700)">Superficie útil</dt><dd style="margin:2px 0 0;font-weight:600;letter-spacing:-0.02em;font-size:24px">{{ sumArea }}</dd></div>
@@ -349,7 +354,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
               <li>Muros automáticos sobre los bordes: 24 cm en fachada y 12 cm entre estancias.</li>
               <li>Puertas de 80–90 × 210 cm y ventanas según el uso. Salón, comedor y cocina contiguos quedan abiertos entre sí.</li>
               <li>La entrada se coloca en el recibidor, el pasillo o el salón que dé a fachada.</li>
-              <li>"paredes" (opcional): muros sueltos en cualquier ángulo, cada uno con x1, y1, x2 e y2. Sirven para tabiques en diagonal, muros de jardín o formas que no son rectángulos.</li>
+              <li>"paredes" (opcional): muros sueltos en cualquier ángulo, cada uno con x1, y1, x2 e y2. Sirven para tabiques en diagonal, muros de jardín o formas que no son rectángulos. Si las paredes cierran un espacio, ese espacio es una habitación: lleva suelo, techo, luz, ventanas y fachada por fuera, y si no le pones puerta se le coloca una sola.</li>
               <li>"puertas" (opcional): cada puerta con x, y y "ancho" (0,60 a 1,60 m) sobre cualquier muro. Si la lista existe, el 3D pone solo esas puertas; la primera que dé a fachada es la entrada.</li>
             </ul>
           </div>
@@ -537,7 +542,7 @@ class Component extends DCLogic {
     import(new URL('render3d/aq-plan.js', document.baseURI).href).then(m => {
       this.P = m; let saved = null;
       try { saved = JSON.parse(localStorage.getItem('aq_r3d_plan') || 'null'); } catch (e) {}
-      const t = m.PLANTILLAS[0], ok = saved && Array.isArray(saved.rooms) && saved.rooms.length;
+      const t = m.PLANTILLAS[0], ok = saved && Array.isArray(saved.rooms) && (saved.rooms.length || (Array.isArray(saved.walls) && saved.walls.length));
       this.setState({ ready: true, rooms: ok ? saved.rooms : t.estancias.map(e => Object.assign({}, e)), walls: (ok && Array.isArray(saved.walls) && saved.walls) || [], doors: (ok && Array.isArray(saved.doors) && saved.doors) || [], nombre: (ok && saved.nombre) || t.nombre, alto: (ok && +saved.alto) || 2.7 });
       if (this._demo) { this._demo = false; this.renderDemo(); }
     }).catch(e => console.error(e));
@@ -756,14 +761,15 @@ class Component extends DCLogic {
     const FL = (f, a, b, w, col) => ({ x1: f.x1 + f.ux * a, y1: f.y1 + f.uy * a, x2: f.x1 + f.ux * b, y2: f.y1 + f.uy * b, w, c: col });
     const edOps = an ? an.ops.map(o => { const s = o.seg, col = o.kind === 'window' ? 'var(--color-accent-2-300)' : o.kind === 'entry' ? 'var(--color-accent)' : 'var(--color-neutral-100)', w = o.kind === 'window' ? s.t * 0.45 : s.t + 0.04; return s.free ? FL(s, o.s, o.e, w, col) : L(s.o, s.c, o.s, o.e, w, col); }) : [];
     const mv = s.tool === 'move', er = s.tool === 'erase', dr = s.tool === 'door';
-    const edWalls = s.walls.map((w, i) => ({ i, x1: w.x1, y1: w.y1, x2: w.x2, y2: w.y2, hit: mv || er ? 'stroke' : 'none', cur: er ? 'not-allowed' : mv ? 'move' : 'inherit' }));
+    const edPolys = an && an.polys ? an.polys.map(q => ({ pts: q.pts.map(p => p.join(',')).join(' '), lx: q.ix, ly: q.iy - 0.05, l2: q.iy + 0.38, name: q.nombre, area: fmt(q.area) + ' m²' })) : [];
+    const edWalls = s.walls.map((w, i) => ({ i, t: (an && an.free && an.free[i] && an.free[i].t) || 0.12, x1: w.x1, y1: w.y1, x2: w.x2, y2: w.y2, hit: mv || er ? 'stroke' : 'none', cur: er ? 'not-allowed' : mv ? 'move' : 'inherit' }));
     const edEnds = mv ? s.walls.flatMap((w, i) => [{ k: i + ':1', x: w.x1, y: w.y1 }, { k: i + ':2', x: w.x2, y: w.y2 }]) : [];
     const edDoors = an ? an.ops.filter(o => o.manual).map(o => ({ i: o.pi, x: o.x, y: o.y, fill: o.kind === 'entry' ? 'var(--color-accent)' : '#0071E3', cur: er ? 'not-allowed' : 'grab', ev: mv || er || dr ? 'auto' : 'none' })) : [];
     const wd = s.wdraft, wdLen = wd ? Math.hypot(wd.x2 - wd.x1, wd.y2 - wd.y1) : 0;
     const selRaw = s.rooms.find(r => r.id === s.sel), selR = selRaw ? { nombre: selRaw.nombre, tipo: selRaw.tipo, ancho: selRaw.ancho, fondo: selRaw.fondo, x: selRaw.x, y: selRaw.y, dbl: !!selRaw.dobleAltura, altura: selRaw.altura || '' } : {};
     const d = s.draft;
     const row = (t, m) => ({ m, i: t === 'ok' ? '✓' : t === 'warn' ? '!' : '✕', bg: t === 'ok' ? 'var(--color-accent-2-500)' : t === 'warn' ? 'var(--color-accent-200)' : '#FF3B30', fg: t === 'warn' ? 'var(--color-accent-900)' : '#FFFFFF' });
-    const valRows = !val ? [] : [].concat(val.errors.map(m => row('err', m)), val.warnings.filter(m => !/formato/.test(m)).map(m => row('warn', m)), an ? an.warnings.map(m => row('warn', m)) : [], !val.errors.length && s.rooms.length ? [row('ok', 'Listo para renderizar')] : []);
+    const valRows = !val ? [] : [].concat(val.errors.map(m => row('err', m)), val.warnings.filter(m => !/formato/.test(m)).map(m => row('warn', m)), an ? an.warnings.map(m => row('warn', m)) : [], !val.errors.length && (s.rooms.length || s.walls.length) ? [row('ok', 'Listo para renderizar')] : []);
     const up = s.up; let upRows = [];
     if (up) {
       upRows = up.errors.map(m => row('err', m)).concat(up.warnings.map(m => row('warn', m)));
@@ -814,7 +820,7 @@ class Component extends DCLogic {
       upImg: !!(up && up.kind === 'img' && !up.errors.length), upGlb: !!(up && up.kind === 'glb' && !up.errors.length), upCanRender: !!(up && up.kind === 'json' && !up.errors.length), upToEditor: !!(up && (up.kind === 'json' || (up.kind === 'img' && !up.errors.length))), upEditLabel: up && up.kind === 'img' ? 'Calcar en Crear plano' : 'Editar en Crear plano',
       tools, setTool: this.setTool, isDraw: s.tool === 'draw', typeChips, setNewType: this.setNewType, nombre: s.nombre, onNombre: this.onNombre, clearPlan: this.clearPlan, downloadPlan: this.downloadPlan, downloadTemplate: this.downloadTemplate,
       svgRef: this.svgRef, vb: `-1 -1 ${W + 1} ${H + 1}`, edDown: this.edDown, edMove: this.edMove, edUp: this.edUp, cursor: s.tool === 'draw' || s.tool === 'wall' ? 'crosshair' : s.tool === 'door' ? 'copy' : s.tool === 'erase' ? 'not-allowed' : 'grab',
-      edRooms, edSegs, edOps, edWalls, edEnds, edDoors, hasWDraft: wdLen > 0.05, wdraft: wd ? { x1: wd.x1, y1: wd.y1, x2: wd.x2, y2: wd.y2, lx: (wd.x1 + wd.x2) / 2, ly: (wd.y1 + wd.y2) / 2 - 0.25, len: fmt(wdLen) + ' m' } : {},
+      edRooms, edPolys, edSegs, edOps, edWalls, edEnds, edDoors, hasWDraft: wdLen > 0.05, wdraft: wd ? { x1: wd.x1, y1: wd.y1, x2: wd.x2, y2: wd.y2, lx: (wd.x1 + wd.x2) / 2, ly: (wd.y1 + wd.y2) / 2 - 0.25, len: fmt(wdLen) + ' m' } : {},
       isWall: s.tool === 'wall', isDoorT: dr, doorWs: [[0.7, '70 cm'], [0.8, '80 cm'], [0.9, '90 cm'], [1.2, '120 cm']].map(([k, l]) => Object.assign({ k, l }, pill(s.doorW === k))), setDoorW: this.setDoorW,
       hasManual: s.doors.length > 0, autoDoors: this.autoDoors, hasWalls: s.walls.length > 0, clearWalls: this.clearWalls, nWalls: String(s.walls.length),
       hasDraft: !!(d && d.w > 0 && d.d > 0), draft: d ? { x: d.x, y: d.y, w: d.w, d: d.d, lx: d.x + d.w / 2, ly: d.y + d.d / 2 + 0.14, dims: fmt(d.w) + ' × ' + fmt(d.d) + ' m' } : {},

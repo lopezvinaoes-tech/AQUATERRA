@@ -27,7 +27,7 @@ export function normalize(raw) {
   if (p.unidad && p.unidad !== 'm') errors.push('Las medidas deben ir en metros ("unidad": "m").');
   const H = r2(Math.min(4.5, Math.max(2.2, num(p.alturaLibre, 2.7))));
   const list = Array.isArray(p.estancias) ? p.estancias : [];
-  if (!list.length) errors.push('No hay estancias: añade al menos una en "estancias".');
+  if (!list.length && !(Array.isArray(p.paredes) && p.paredes.length >= 3)) errors.push('No hay estancias: añade al menos una en "estancias" o cierra una habitación con "paredes".');
   if (list.length > 40) errors.push('Máximo 40 estancias por planta.');
   const ids = new Set();
   const rooms = list.slice(0, 40).map((e, i) => {
@@ -66,8 +66,8 @@ export function normalize(raw) {
     d = d || {}; const x = snap(num(d.x, NaN)), y = snap(num(d.y, NaN));
     return Number.isFinite(x) && Number.isFinite(y) ? { x, y, ancho: r2(Math.min(1.6, Math.max(0.6, num(d.ancho, 0.9)))) } : null;
   }).filter(Boolean);
-  const area = rooms.filter(ins).reduce((s, r) => s + r.w * r.d, 0), terr = rooms.filter(r => r.tipo === 'terraza').reduce((s, r) => s + r.w * r.d, 0);
-  return { errors, warnings, plan: errors.length ? null : { nombre: String(p.nombre || 'Mi plano').slice(0, 60), H, rooms, paredes, puertas }, stats: { n: rooms.length, area: r2(area), terraza: r2(terr), dbl: rooms.some(r => r.dbl) } };
+  const area = rooms.filter(ins).reduce((s, r) => s + r.w * r.d, 0) + wallRooms(paredes).reduce((s, p) => s + p.area, 0), terr = rooms.filter(r => r.tipo === 'terraza').reduce((s, r) => s + r.w * r.d, 0);
+  return { errors, warnings, plan: errors.length ? null : { nombre: String(p.nombre || 'Mi plano').slice(0, 60), H, rooms, paredes, puertas }, stats: { n: rooms.length + wallRooms(paredes).length, area: r2(area), terraza: r2(terr), dbl: rooms.some(r => r.dbl) } };
 }
 
 const HUB = ['salon', 'comedor', 'pasillo', 'recibidor'];
@@ -79,6 +79,48 @@ const PREF = {
   lavadero: ['cocina', 'pasillo', 'recibidor', 'comedor', 'salon'],
   bano: ['pasillo', 'recibidor', 'dormitorio', 'salon', 'comedor']
 };
+
+// Punto dentro de un polígono [[x, y], ...] (regla par-impar)
+export function inPoly(pts, x, y) {
+  let c = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) { const [xi, yi] = pts[i], [xj, yj] = pts[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c; }
+  return c;
+}
+// Habitaciones cerradas con paredes libres: caras interiores del grafo plano que forman las paredes
+// (se parten donde el extremo de una pared cae sobre otra). Devuelve polígonos con área ≥ 1 m².
+export function wallRooms(paredes) {
+  const P = [], key = (x, y) => Math.round(x * 20) + ':' + Math.round(y * 20), idx = new Map();
+  const node = (x, y) => { const k = key(x, y); if (!idx.has(k)) { idx.set(k, P.length); P.push([x, y]); } return idx.get(k); };
+  const ends = paredes.flatMap(w => [[w.x1, w.y1], [w.x2, w.y2]]);
+  const E = new Set();
+  paredes.forEach(w => {
+    const dx = w.x2 - w.x1, dy = w.y2 - w.y1, L = Math.hypot(dx, dy); if (L < 1e-6) return;
+    const ts = [0, 1];
+    ends.forEach(([x, y]) => { const t = ((x - w.x1) * dx + (y - w.y1) * dy) / (L * L), d = Math.abs((x - w.x1) * dy - (y - w.y1) * dx) / L; if (t > 0.01 && t < 0.99 && d < 0.06) ts.push(t); });
+    ts.sort((a, b) => a - b);
+    for (let i = 0; i < ts.length - 1; i++) { const a = node(w.x1 + dx * ts[i], w.y1 + dy * ts[i]), b = node(w.x1 + dx * ts[i + 1], w.y1 + dy * ts[i + 1]); if (a !== b) E.add(Math.min(a, b) + '-' + Math.max(a, b)); }
+  });
+  const out = new Map(); P.forEach((p, i) => out.set(i, []));
+  E.forEach(e => { const [a, b] = e.split('-').map(Number); out.get(a).push(b); out.get(b).push(a); });
+  const ang = (a, b) => Math.atan2(P[b][1] - P[a][1], P[b][0] - P[a][0]);
+  out.forEach((l, a) => l.sort((p, q) => ang(a, p) - ang(a, q)));
+  const used = new Set(), rooms = [];
+  out.forEach((l, a) => l.forEach(b0 => {
+    if (used.has(a + '>' + b0)) return;
+    const cyc = []; let u = a, v = b0, guard = 0;
+    while (!used.has(u + '>' + v) && guard++ < 400) {
+      used.add(u + '>' + v); cyc.push(u);
+      const l2 = out.get(v), i = l2.indexOf(u), w = l2[(i - 1 + l2.length) % l2.length];
+      u = v; v = w;
+    }
+    if (u !== a || v !== b0 || cyc.length < 3) return;
+    const pts = cyc.map(i => P[i]); let A = 0;
+    for (let i = 0; i < pts.length; i++) { const [x1, y1] = pts[i], [x2, y2] = pts[(i + 1) % pts.length]; A += x1 * y2 - x2 * y1; }
+    A /= 2; if (A < 1) return;
+    rooms.push({ pts: pts.map(p => [r2(p[0]), r2(p[1])]), area: r2(A) });
+  }));
+  return rooms;
+}
 
 // Muros, puertas, ventanas y conexiones generados automáticamente a partir de estancias rectangulares.
 export function analyze(plan) {
@@ -125,6 +167,27 @@ export function analyze(plan) {
     const dx = w.x2 - w.x1, dy = w.y2 - w.y1, len = r2(Math.hypot(dx, dy));
     let h = 0; [0.1, 0.5, 0.9].forEach(k => { const R = roomAtP(w.x1 + dx * k, w.y1 + dy * k); if (R) h = Math.max(h, R.h); });
     return { free: true, i, o: 'f', c: 'f' + i, x1: w.x1, y1: w.y1, x2: w.x2, y2: w.y2, len, ux: dx / len, uy: dy / len, ang: Math.atan2(dy, dx), t: 0.12, h: h || plan.H || 2.7, ops: [] };
+  });
+  // Habitaciones cerradas con paredes libres (fuera de las estancias rectangulares)
+  const polys = wallRooms(plan.paredes || []).map(p => {
+    const xs = p.pts.map(q => q[0]), ys = p.pts.map(q => q[1]);
+    let ix = xs.reduce((a, b) => a + b, 0) / xs.length, iy = ys.reduce((a, b) => a + b, 0) / ys.length;
+    if (!inPoly(p.pts, ix, iy)) for (let i = 0; i < p.pts.length; i++) { const [x1, y1] = p.pts[i], [x2, y2] = p.pts[(i + 1) % p.pts.length], L = Math.hypot(x2 - x1, y2 - y1), mx = (x1 + x2) / 2, my = (y1 + y2) / 2, nx = -(y2 - y1) / L * 0.2, ny = (x2 - x1) / L * 0.2; if (inPoly(p.pts, mx + nx, my + ny)) { ix = mx + nx; iy = my + ny; break; } if (inPoly(p.pts, mx - nx, my - ny)) { ix = mx - nx; iy = my - ny; break; } }
+    return Object.assign(p, { ix: r2(ix), iy: r2(iy), x: Math.min(...xs), y: Math.min(...ys), w: r2(Math.max(...xs) - Math.min(...xs)), d: r2(Math.max(...ys) - Math.min(...ys)) });
+  }).filter(p => !roomAtP(p.ix, p.iy)).map((p, k) => Object.assign(p, { id: 'pared' + (k + 1), nombre: 'Habitación ' + (k + 1), tipo: 'salon', poly: true, dbl: false, alt: 0, h: plan.H || 2.7 }));
+  const inside = (x, y) => !!roomAtP(x, y) || polys.some(p => inPoly(p.pts, x, y));
+  // a lo largo de cada pared (cada 25 cm) se mira qué hay a cada lado: estancia, habitación de paredes o exterior
+  free.forEach(f => {
+    const nx = -f.uy * 0.2, ny = f.ux * 0.2, n = Math.max(2, Math.ceil(f.len / 0.25)); let L = 0, R = 0;
+    f.spans = new Map();
+    for (let k = 0; k <= n; k++) {
+      const t = Math.min(f.len - 0.05, Math.max(0.05, f.len * k / n)), x = f.x1 + f.ux * t, y = f.y1 + f.uy * t, a = inside(x + nx, y + ny), b = inside(x - nx, y - ny);
+      if (a) L++; if (b) R++;
+      polys.forEach(p => { if (inPoly(p.pts, x + nx, y + ny) || inPoly(p.pts, x - nx, y - ny)) { const sp = f.spans.get(p); if (sp) sp[1] = t; else f.spans.set(p, [t, t]); } });
+    }
+    f.inL = L > n / 2; f.inR = R > n / 2; f.ext = !(L > 0 && R > 0) || !(f.inL && f.inR);
+    f.t = f.inL !== f.inR ? 0.2 : 0.12;
+    f.polys = [...f.spans.keys()];
   });
   // Puertas a mano: cada una se apoya en la pared (de estancia o libre) más cercana a su punto.
   const manual = (plan.puertas || []).length > 0;
@@ -179,7 +242,7 @@ export function analyze(plan) {
     const c = segs.filter(s => s.ext && !(s.pos && s.neg) && s.len >= 1.3 && (s.pos || s.neg).tipo === t).sort((a, b) => b.len - a.len)[0];
     if (c) { const R = c.pos || c.neg; entry = opAt(c, 'entry', 1, 0, 2.2, c.len >= 3.4 ? c.a + 1.05 : null); entry.rooms = [R]; entry.room = R; break; }
   }
-  if (!entry && rooms.some(ins)) warnings.push(manual ? 'Ninguna puerta da al exterior: pon una en una fachada para la entrada.' : 'No se encontró un muro exterior para la puerta de entrada.');
+  if (!entry && rooms.some(ins) && !polys.length) warnings.push(manual ? 'Ninguna puerta da al exterior: pon una en una fachada para la entrada.' : 'No se encontró un muro exterior para la puerta de entrada.');
 
   const reach = () => {
     const start = entry ? entry.room : rooms.find(ins), seen = new Set();
@@ -216,8 +279,25 @@ export function analyze(plan) {
     opAt(s, 'window', r2(w), spec.bot, spec.top, (lo + hi) / 2); nWin.set(R.id, n + 1);
   });
 
+  // Habitaciones de paredes: puerta automática en la pared exterior más larga (si no hay puertas a mano) y ventanas
+  const freeOp = (f, kind, w, bot, top, m) => { const o = { kind, s: r2(m - w / 2), e: r2(m + w / 2), w, bot, top, seg: f, mid: m, x: r2(f.x1 + f.ux * m), y: r2(f.y1 + f.uy * m), rooms: [] }; f.ops.push(o); ops.push(o); return o; };
+  const gap = (f, need, P) => { const sp = P && f.spans.get(P); let iv = [[Math.max(0.3, sp ? sp[0] + 0.2 : 0), Math.min(f.len - 0.3, sp ? sp[1] - 0.2 : f.len)]]; f.ops.forEach(o => { iv = iv.flatMap(([p, q]) => (o.e + 0.3 <= p || o.s - 0.3 >= q) ? [[p, q]] : [[p, o.s - 0.3], [o.e + 0.3, q]]); }); return iv.filter(([p, q]) => q - p >= need).sort((a, b) => (b[1] - b[0]) - (a[1] - a[0]))[0] || null; };
+  polys.forEach(P => {
+    const mine = free.filter(f => f.polys.includes(P));
+    if (!manual && !mine.some(f => f.ops.some(o => o.kind === 'door' && o.mid >= f.spans.get(P)[0] - 0.5 && o.mid <= f.spans.get(P)[1] + 0.5))) {
+      const sl = f => { const sp = f.spans.get(P); return sp[1] - sp[0]; }, f = mine.filter(f => f.ext && sl(f) >= 1.3).sort((a, b) => sl(b) - sl(a))[0] || mine.filter(f => sl(f) >= 1.3).sort((a, b) => sl(b) - sl(a))[0], g = f && gap(f, 1, P);
+      if (g) freeOp(f, 'door', 0.9, 0, 2.1, r2(g[0] + 0.5));
+    }
+    if (manual && !mine.some(f => f.ops.some(o => o.kind === 'door' && o.mid >= f.spans.get(P)[0] - 0.5 && o.mid <= f.spans.get(P)[1] + 0.5))) warnings.push(`Sin puerta: «${P.nombre}».`);
+    let n = 0;
+    mine.filter(f => f.ext).sort((a, b) => b.len - a.len).forEach(f => {
+      if (n >= 2) return; const g = gap(f, 0.8, P); if (!g) return;
+      const w = r2(Math.min(2.2, (g[1] - g[0]) * 0.7)); freeOp(f, 'window', w, 0.9, 2.2, r2((g[0] + g[1]) / 2)); n++;
+    });
+  });
+
   const xs = rooms.flatMap(r => [r.x, r.x + r.w]).concat(free.flatMap(f => [f.x1, f.x2])), ys = rooms.flatMap(r => [r.y, r.y + r.d]).concat(free.flatMap(f => [f.y1, f.y2]));
-  return { rooms, segs, free, rails, ops, edges, adj, entry, manual, warnings, bounds: { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) } };
+  return { rooms, polys, segs, free, rails, ops, edges, adj, entry, manual, warnings, bounds: { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) } };
 }
 
 export function toFile(nombre, rooms, alturaLibre, paredes, puertas) {

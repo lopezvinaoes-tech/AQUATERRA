@@ -10,7 +10,7 @@ import { RenderPass } from './vendor/three/RenderPass.js';
 import { UnrealBloomPass } from './vendor/three/UnrealBloomPass.js';
 import { OutputPass } from './vendor/three/OutputPass.js';
 import { mergeGeometries } from './vendor/three/BufferGeometryUtils.js';
-import { analyze } from './aq-plan.js';
+import { analyze, inPoly } from './aq-plan.js';
 import { makeTextures, loadManifest, applyRealTextures } from './aq-r3d-mats.js';
 import { buildExterior, buildNight, wind, windify } from './aq-r3d-env.js';
 
@@ -272,7 +272,7 @@ export async function createViewer(el, input, cb = {}) {
   const wx = x => x - cx, wz = z => z - cz;
   const doorBlocks = (x, z, r) => doors.some(d => d.a < 0.6 && d.box && x > d.box[0] - r && x < d.box[1] + r && z > d.box[2] - r && z < d.box[3] + r);
   const collide = (x, z, r = 0.22) => solids.some(b => x > b[0] - r && x < b[1] + r && z > b[2] - r && z < b[3] + r) || doorBlocks(x, z, r);
-  const roomAt = (x, z) => rooms.find(R => x + cx >= R.x && x + cx <= R.x + R.w && z + cz >= R.y && z + cz <= R.y + R.d) || null;
+  const roomAt = (x, z) => rooms.find(R => x + cx >= R.x && x + cx <= R.x + R.w && z + cz >= R.y && z + cz <= R.y + R.d) || ((an && an.polys) || []).find(R => inPoly(R.pts, x + cx, z + cz)) || null;
   const into = (o, R) => { const s = o.seg, sg = s.pos === R ? 1 : -1; return s.o === 'h' ? [0, sg] : [sg, 0]; };
   function viewOf(R) {
     const ctr = [R.x + R.w / 2, R.y + R.d / 2];
@@ -312,7 +312,7 @@ export async function createViewer(el, input, cb = {}) {
     applyPlayer();
   }
   let ext = null; const groundAt = (x, z) => (roomAt(x, z) || !ext) ? 0 : Math.max(0, ext.gh(x, z) + 0.06);
-  function detectRoom() { const R = roomAt(camera.position.x, camera.position.z); if (R !== curRoom) { curRoom = R; cb.onRoom && cb.onRoom(R ? { id: R.id, nombre: R.nombre, area: R.w * R.d, dbl: R.dbl } : null); } }
+  function detectRoom() { const R = roomAt(camera.position.x, camera.position.z); if (R !== curRoom) { curRoom = R; cb.onRoom && cb.onRoom(R ? { id: R.id, nombre: R.nombre, area: R.area || R.w * R.d, dbl: R.dbl } : null); } }
 
   // — entrada: teclado, ratón/táctil, clic en puertas —
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
@@ -378,7 +378,7 @@ export async function createViewer(el, input, cb = {}) {
     const ox = (W - (b.x1 - b.x0) * s) / 2 - b.x0 * s, oy = (H - (b.y1 - b.y0) * s) / 2 - b.y0 * s, X = x => ox + x * s, Y = y => oy + y * s;
     mm._map = { ox, oy, s };
     g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
-    rooms.forEach(R => { g.fillStyle = R === curRoom ? '#f0c9a6' : (R.tipo === 'terraza' ? '#c6d1b1' : '#f4ede1'); g.fillRect(X(R.x), Y(R.y), R.w * s, R.d * s); });
+    rooms.forEach(R => { g.fillStyle = R === curRoom ? '#f0c9a6' : (R.tipo === 'terraza' ? '#c6d1b1' : '#f4ede1'); g.fillRect(X(R.x), Y(R.y), R.w * s, R.d * s); }); ((an && an.polys) || []).forEach(R => { g.fillStyle = R === curRoom ? '#f0c9a6' : '#f4ede1'; g.beginPath(); R.pts.forEach(([x, y], i) => i ? g.lineTo(X(x), Y(y)) : g.moveTo(X(x), Y(y))); g.closePath(); g.fill(); });
     g.lineCap = 'butt'; g.strokeStyle = '#2d2924';
     an.segs.forEach(sg => { g.lineWidth = Math.max(1.5, sg.t * s); g.beginPath(); if (sg.o === 'h') { g.moveTo(X(sg.a), Y(sg.c)); g.lineTo(X(sg.b), Y(sg.c)); } else { g.moveTo(X(sg.c), Y(sg.a)); g.lineTo(X(sg.c), Y(sg.b)); } g.stroke(); });
     (an.free || []).forEach(sg => { g.lineWidth = Math.max(1.5, sg.t * s); g.beginPath(); g.moveTo(X(sg.x1), Y(sg.y1)); g.lineTo(X(sg.x2), Y(sg.y2)); g.stroke(); });
@@ -737,19 +737,20 @@ export async function createViewer(el, input, cb = {}) {
     // paredes libres (cualquier ángulo): tramos girados entre puertas, con dintel encima de cada hueco
     (an.free || []).forEach(s => {
       const H = s.h + 0.2, ops = s.ops.slice().sort((a, b) => a.s - b.s), pcs = []; let cur = -s.t / 2;
-      ops.forEach(o => { if (o.s > cur + 0.005) pcs.push([cur, o.s, 0, H]); if (o.top < H - 0.01) pcs.push([o.s, o.e, o.top, H]); cur = Math.max(cur, o.e); });
+      ops.forEach(o => { if (o.s > cur + 0.005) pcs.push([cur, o.s, 0, H]); if (o.bot > 0.01) pcs.push([o.s, o.e, 0, o.bot]); if (o.top < H - 0.01) pcs.push([o.s, o.e, o.top, H]); cur = Math.max(cur, o.e); });
+      const sm = v => v ? M.paint : M.facade, endM = s.inL && s.inR ? M.paint : M.facade;
       if (s.len + s.t / 2 > cur + 0.005) pcs.push([cur, s.len + s.t / 2, 0, H]);
       pcs.forEach(([p, q, y0, y1]) => {
         const L = q - p, hh = y1 - y0, k = (p + q) / 2, px = s.x1 + s.ux * k, pz = s.y1 + s.uy * k;
         const geo = boxGeo(L, hh, s.t); worldUV(geo, px, y0, pz);
-        const m = new THREE.Mesh(geo, [M.paint, M.paint, M.roof, M.paint, M.paint, M.paint]);
+        const m = new THREE.Mesh(geo, [endM, endM, M.roof, M.paint, sm(s.inL), sm(s.inR)]);
         m.castShadow = m.receiveShadow = true; m.position.set(wx(px), y0, wz(pz)); m.rotation.y = -s.ang;
         house.add(m); walls.push({ m, d: (m.position.x + m.position.z + size) / (size * 2) });
         if (y0 < 0.9) for (let u = p; u <= q + 1e-6; u += 0.2) { const ux = s.x1 + s.ux * Math.min(u, q), uz = s.y1 + s.uy * Math.min(u, q); solids.push([wx(ux) - 0.08, wx(ux) + 0.08, wz(uz) - 0.08, wz(uz) + 0.08]); }
       });
     });
     an.rails.forEach(r => { const L = r.b - r.a, g = new THREE.Group(); const gl = add(g, boxGeo(L, 1.0, 0.02), M.glass, 0, 0, 0); gl.castShadow = false; add(g, boxGeo(L, 0.04, 0.06), M.steel, 0, 1.0, 0); if (r.o === 'h') g.position.set(wx((r.a + r.b) / 2), 0, wz(r.c)); else { g.position.set(wx(r.c), 0, wz((r.a + r.b) / 2)); g.rotation.y = PI / 2; } house.add(g); walls.push({ m: g, d: 1, rail: 1 }); solids.push(r.o === 'h' ? [wx(r.a), wx(r.b), wz(r.c) - 0.05, wz(r.c) + 0.05] : [wx(r.c) - 0.05, wx(r.c) + 0.05, wz(r.a), wz(r.b)]); });
-    an.ops.forEach(o => { if (o.kind === 'open') return; const g = opening(o, house); opG.push(g); if (o.kind === 'slide') { const s = o.seg; solids.push(s.o === 'h' ? [wx(o.s), wx(o.mid), wz(s.c) - 0.1, wz(s.c) + 0.1] : [wx(s.c) - 0.1, wx(s.c) + 0.1, wz(o.s), wz(o.mid)]); } if (o.kind === 'window') { const s = o.seg; if (o.bot < 0.9) solids.push(s.o === 'h' ? [wx(o.s), wx(o.e), wz(s.c) - 0.1, wz(s.c) + 0.1] : [wx(s.c) - 0.1, wx(s.c) + 0.1, wz(o.s), wz(o.e)]); } });
+    an.ops.forEach(o => { if (o.kind === 'open') return; const g = opening(o, house); opG.push(g); if (o.kind === 'slide') { const s = o.seg; solids.push(s.o === 'h' ? [wx(o.s), wx(o.mid), wz(s.c) - 0.1, wz(s.c) + 0.1] : [wx(s.c) - 0.1, wx(s.c) + 0.1, wz(o.s), wz(o.mid)]); } if (o.kind === 'window' && !o.seg.free) { const s = o.seg; if (o.bot < 0.9) solids.push(s.o === 'h' ? [wx(o.s), wx(o.e), wz(s.c) - 0.1, wz(s.c) + 0.1] : [wx(s.c) - 0.1, wx(s.c) + 0.1, wz(o.s), wz(o.e)]); } });
     rooms.forEach(R => {
       const fm = R.tipo === 'terraza' ? M.deck : R.tipo === 'bano' ? M.bathFloor : (['cocina', 'lavadero'].includes(R.tipo) ? M.tile : M.wood);
       const fg = boxGeo(R.w, 0.03, R.d); worldUV(fg, R.x + R.w / 2, -0.03, R.y + R.d / 2);
@@ -757,6 +758,16 @@ export async function createViewer(el, input, cb = {}) {
       if (R.tipo !== 'terraza') { const cg = boxGeo(R.w, 0.2, R.d); worldUV(cg, R.x + R.w / 2, R.h, R.y + R.d / 2); const c = new THREE.Mesh(cg, [M.facade, M.facade, M.roof, M.ceil, M.facade, M.facade]); c.position.set(wx(R.x + R.w / 2), R.h, wz(R.y + R.d / 2)); c.castShadow = true; c.receiveShadow = true; c.visible = mode !== 'orbit' || !!tour; house.add(c); ceilings.push(c); }
     });
     rooms.forEach(R => { try { furnish(R); } catch (e) { console.warn('furnish', R.id, e); ctx = null; } });
+    // habitaciones cerradas con paredes: suelo y techo con la forma del polígono y una luz de techo
+    (an.polys || []).forEach(R => {
+      const cxp = R.ix, czp = R.iy, shp = sg => new THREE.Shape(R.pts.map(([x, y]) => new THREE.Vector2(x - cxp, sg * (y - czp))));
+      const up = g => { g.rotateX(-PI / 2); const uv = g.attributes.uv, p = g.attributes.position; for (let i = 0; i < p.count; i++) uv.setXY(i, p.getX(i) + R.ix, p.getZ(i) + R.iy); return g; };
+      const fg = up(new THREE.ShapeGeometry(shp(-1))), fl = mesh(fg, M.wood, wx(cxp), 0.001, wz(czp)); fl.castShadow = false; house.add(fl); floors.push(fl);
+      const dn = new THREE.ShapeGeometry(shp(1)); dn.rotateX(PI / 2);
+      const c = new THREE.Group(), c1 = new THREE.Mesh(dn, M.ceil), c2 = new THREE.Mesh(up(new THREE.ShapeGeometry(shp(-1))), M.roof); c2.position.y = 0.2; c1.receiveShadow = true; c2.castShadow = true;
+      c.add(c1, c2); c.position.set(wx(cxp), R.h, wz(czp)); c.visible = mode !== 'orbit' || !!tour; house.add(c); ceilings.push(c);
+      try { ceilingLight(R, 'plafon', [R.ix, R.iy]); } catch (e) { console.warn('luz', R.id, e); }
+    });
     // farol exterior junto a la puerta de entrada
     if (an.entry) {
       const o = an.entry, n = into(o, o.room), s = o.seg, sideA = o.e + 0.25, y = 1.75;
@@ -804,7 +815,7 @@ export async function createViewer(el, input, cb = {}) {
     await anim(600, k => prog(7, k)); renderer.compile(scene, camera);
     // vegetación y rocas reales: se cargan después, sin bloquear la vista
     if (ext.upgrade) ext.upgrade({ load: loadId, meta: metaOf }).then(() => { envDirty = true; cb.onExterior && cb.onExterior(true); }).catch(e => console.warn('exterior', e));
-    return { rooms: rooms.map(R => ({ id: R.id, nombre: R.nombre, tipo: R.tipo, area: Math.round(R.w * R.d * 10) / 10, dbl: R.dbl })), H: plan.H, doors: doors.length };
+    return { rooms: rooms.concat(an.polys || []).map(R => ({ id: R.id, nombre: R.nombre, tipo: R.tipo, area: Math.round((R.area || R.w * R.d) * 10) / 10, dbl: R.dbl })), H: plan.H, doors: doors.length };
   }
 
   async function buildGlb(url) {
@@ -864,7 +875,7 @@ export async function createViewer(el, input, cb = {}) {
       cb.onMode && cb.onMode(m);
     },
     goRoom(id, instant) {
-      const R = rooms.find(r => r.id === id); if (!R) return; if (tour) { tour = null; cb.onTour && cb.onTour(false); }
+      const R = rooms.find(r => r.id === id) || ((an && an.polys) || []).find(r => r.id === id); if (!R) return; if (tour) { tour = null; cb.onTour && cb.onTour(false); }
       if (mode === 'orbit') { const t = new THREE.Vector3(wx(R.x + R.w / 2), R.h * 0.25, wz(R.y + R.d / 2)), dir = camera.position.clone().sub(controls.target).setY(0).normalize(), D = Math.max(R.w, R.d) * 1.3 + 4; tweenTo(t.clone().add(dir.multiplyScalar(D)).setY(D * 0.95), t, 1100); }
       else { const v = viewOf(R); if (instant) { tw = null; camera.position.copy(v.pos); camera.lookAt(v.look); syncPlayer(); } else tweenTo(v.pos, v.look, 1200); }
     },
