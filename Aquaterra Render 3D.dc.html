@@ -33,6 +33,7 @@
 <script src="./fx.js" defer></script>
 <script src="./chat.js" defer></script>
 <script src="./seo.js" defer></script>
+<script src="./menu-render3d.js" defer></script>
 <!-- Render 3D: el motor (render3d/aq-render3d.js) y sus modelos se cargan solo al abrir el visor. -->
 <link rel="modulepreload" href="render3d/aq-plan.js">
 </head>
@@ -510,8 +511,9 @@ class Component extends DCLogic {
       try { saved = JSON.parse(localStorage.getItem('aq_r3d_plan') || 'null'); } catch (e) {}
       const t = m.PLANTILLAS[0], ok = saved && Array.isArray(saved.rooms) && saved.rooms.length;
       this.setState({ ready: true, rooms: ok ? saved.rooms : t.estancias.map(e => Object.assign({}, e)), nombre: (ok && saved.nombre) || t.nombre, alto: (ok && +saved.alto) || 2.7 });
+      if (this._demo) { this._demo = false; this.renderDemo(); }
     }).catch(e => console.error(e));
-    this.onHash = () => { const k = location.hash.slice(1); if (['subir', 'crear', 'plantillas', 'estandares'].includes(k)) this.setState({ tab: k }); };
+    this.onHash = () => { const k = location.hash.slice(1); if (['subir', 'crear', 'plantillas', 'estandares'].includes(k)) this.setState({ tab: k }); else if (k === 'ejemplo') { history.replaceState(null, '', location.pathname + location.search); if (this.P) this.renderDemo(); else this._demo = true; } };
     this.onHash(); addEventListener('hashchange', this.onHash);
     this.onEsc = e => { if (e.key !== 'Escape') return; if (this.state.v) this.closeViewer(); else if (this.state.menu) this.setState({ menu: false }); };
     addEventListener('keydown', this.onEsc);
