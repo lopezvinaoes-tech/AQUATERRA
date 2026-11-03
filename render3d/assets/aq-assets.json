@@ -1,0 +1,1491 @@
+{
+ "version": 2,
+ "notes": {
+  "units": "metros; size = [ancho X, alto Y, fondo Z]",
+  "origin": "centrado en X/Z, base en y=0; frente hacia +Z. Colgantes (hang): parte superior en y=0. Apliques (wall): pared en -Z.",
+  "variants": "si hay variants, el archivo trae todas superpuestas en el origen: clonar y dejar visible solo una (getObjectByName).",
+  "light": "node:light = Object3D vacío llamado \"light\" en la posición de la bombilla; [x,y,z] = posición de la bombilla en coordenadas del modelo.",
+  "doors": "doors[] = nodos que giran en rotation.y. 0 = cerrada; open_y = abierta 90° hacia el frente (+Z). En puertas de paso el valor opuesto (-open_y) abre hacia el otro lado. Animar con lerp de 0 a open_y.",
+  "foliage": "hojas con alphaMode MASK y doubleSided; arbustos propios usan colores de vértice (COLOR_0).",
+  "mountains": "mountains_ring centrado en la casa; falda a -0,3 m dentro de 450 m; usar niebla (Fog) para fundir con el cielo.",
+  "textures": "files.* son WebP (diff y nor 1024 px, rough/arm 512 px). files.nor = normal OpenGL (+Y). span = metros que cubre una repetición: repeat = medida_superficie / span. Mapas \"arm\" = AO(R) Rough(G) Metal(B).",
+  "loader": "GLTFLoader estándar de three r170, sin decodificadores extra: GLB con texturas WebP embebidas (EXT_texture_webp), KHR_mesh_quantization y KHR_texture_transform. Sin Draco, Meshopt ni KTX2."
+ },
+ "models": {
+  "bed_double_160": {
+   "cat": "bed",
+   "uso": "Cama doble 160×200 con edredón, almohadas, cojín y manta",
+   "size": [
+    2.124,
+    1.264,
+    2.401
+   ],
+   "tris": 29320,
+   "kb": 1608,
+   "file": "models/bed_double_160/bed_double_160.glb",
+   "license": "Propio (Aquaterra, uso libre)",
+   "source": "Modelado en Blender para este proyecto"
+  },
+  "bed_single_90": {
+   "cat": "bed",
+   "uso": "Cama simple 90×200 con edredón, almohada, cojín y manta",
+   "size": [
+    1.426,
+    1.078,
+    2.355
+   ],
+   "tris": 17492,
+   "kb": 1330,
+   "file": "models/bed_single_90/bed_single_90.glb",
+   "license": "Propio (Aquaterra, uso libre)",
+   "source": "Modelado en Blender para este proyecto"
+  },
+  "wardrobe_100": {
+   "cat": "wardrobe",
+   "uso": "Armario 2 puertas, 1,00 m (blanco + roble), con estante y barra",
+   "size": [
+    1,
+    2.2,
+    0.615
+   ],
+   "tris": 372,
+   "kb": 303,
+   "file": "models/wardrobe_100/wardrobe_100.glb",
+   "doors": [
+    {
+     "node": "puerta_0",
+     "hinge": "left",
+     "open_y": -1.5708
+    },
+    {
+     "node": "puerta_1",
+     "hinge": "right",
+     "open_y": 1.5708
+    }
+   ],
+   "license": "Propio (Aquaterra, uso libre)",
+   "source": "Modelado en Blender para este proyecto"
+  },
+  "wardrobe_150": {
+   "cat": "wardrobe",
+   "uso": "Armario 3 puertas, 1,50 m (blanco + roble), con estantes y barra",
+   "size": [
+    1.5,
+    2.2,
+    0.615
+   ],
+   "tris": 532,
+   "kb": 307,
+   "file": "models/wardrobe_150/wardrobe_150.glb",
+   "doors": [
+    {
+     "node": "puerta_0",
+     "hinge": "left",
+     "open_y": -1.5708
+    },
+    {
+     "node": "puerta_1",
+     "hinge": "left",
+     "open_y": -1.5708
+    },
+    {
+     "node": "puerta_2",
+     "hinge": "right",
+     "open_y": 1.5708
+    }
+   ],
+   "license": "Propio (Aquaterra, uso libre)",
+   "source": "Modelado en Blender para este proyecto"
+  },
+  "side_table_01": {
+   "cat": "table_side",
+   "uso": "Mesita de noche / mesa auxiliar",
+   "size": [
+    0.55,
+    0.551,
+    0.45
+   ],
+   "tris": 2756,
+   "kb": 134,
+   "file": "models/side_table_01/side_table_01.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/side_table_01"
+  },
+  "drawer_cabinet": {
+   "cat": "cabinet",
+   "uso": "Cómoda alta de cajones",
+   "size": [
+    1.141,
+    1.881,
+    0.488
+   ],
+   "tris": 25766,
+   "kb": 613,
+   "file": "models/drawer_cabinet/drawer_cabinet.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/drawer_cabinet"
+  },
+  "sofa_2p_156": {
+   "cat": "sofa",
+   "uso": "Sofá 2 plazas 1,56 m (lino gris + cojín terracota)",
+   "size": [
+    1.56,
+    0.979,
+    0.86
+   ],
+   "tris": 15064,
+   "kb": 1213,
+   "file": "models/sofa_2p_156/sofa_2p_156.glb",
+   "license": "Propio (Aquaterra, uso libre)",
+   "source": "Modelado en Blender para este proyecto"
+  },
+  "sofa_02": {
+   "cat": "sofa",
+   "uso": "Sofá 3 plazas bajo 1,80 m",
+   "size": [
+    1.807,
+    0.71,
+    0.818
+   ],
+   "tris": 2728,
+   "kb": 133,
+   "file": "models/sofa_02/sofa_02.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/sofa_02"
+  },
+  "modern_arm_chair_01": {
+   "cat": "armchair",
+   "uso": "Sillón tapizado moderno",
+   "size": [
+    0.82,
+    1.023,
+    0.987
+   ],
+   "tris": 8916,
+   "kb": 303,
+   "file": "models/modern_arm_chair_01/modern_arm_chair_01.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/modern_arm_chair_01"
+  },
+  "mid_century_lounge_chair": {
+   "cat": "armchair",
+   "uso": "Sillón lounge de madera y cuero",
+   "size": [
+    1.009,
+    1.169,
+    1.19
+   ],
+   "tris": 6148,
+   "kb": 255,
+   "file": "models/mid_century_lounge_chair/mid_century_lounge_chair.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/mid_century_lounge_chair"
+  },
+  "Ottoman_01": {
+   "cat": "ottoman",
+   "uso": "Puf / reposapiés",
+   "size": [
+    0.885,
+    0.624,
+    0.621
+   ],
+   "tris": 4240,
+   "kb": 206,
+   "file": "models/Ottoman_01/Ottoman_01.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/Ottoman_01"
+  },
+  "coffee_table_round_01": {
+   "cat": "table_coffee",
+   "uso": "Mesa de centro redonda 1,30 m",
+   "size": [
+    1.301,
+    0.491,
+    1.301
+   ],
+   "tris": 4044,
+   "kb": 162,
+   "file": "models/coffee_table_round_01/coffee_table_round_01.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/coffee_table_round_01"
+  },
+  "wooden_table_02": {
+   "cat": "table_dining",
+   "uso": "Mesa de comedor/cocina 4 personas 1,13×0,71",
+   "size": [
+    1.134,
+    0.8,
+    0.706
+   ],
+   "tris": 196,
+   "kb": 133,
+   "file": "models/wooden_table_02/wooden_table_02.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/wooden_table_02"
+  },
+  "modern_wooden_cabinet": {
+   "cat": "cabinet",
+   "uso": "Aparador / mueble de TV 2,44 m",
+   "size": [
+    2.44,
+    0.68,
+    0.52
+   ],
+   "tris": 24976,
+   "kb": 867,
+   "file": "models/modern_wooden_cabinet/modern_wooden_cabinet.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/modern_wooden_cabinet"
+  },
+  "bar_chair_round_01": {
+   "cat": "chair_bar",
+   "uso": "Taburete de barra / isla de cocina",
+   "size": [
+    0.483,
+    0.751,
+    0.486
+   ],
+   "tris": 14373,
+   "kb": 446,
+   "file": "models/bar_chair_round_01/bar_chair_round_01.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/bar_chair_round_01"
+  },
+  "outdoor_table_chair_set_01": {
+   "cat": "outdoor",
+   "uso": "Mesa con 2 sillas de exterior (galería/patio)",
+   "size": [
+    0.742,
+    0.859,
+    1.717
+   ],
+   "tris": 9828,
+   "kb": 426,
+   "file": "models/outdoor_table_chair_set_01/outdoor_table_chair_set_01.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/outdoor_table_chair_set_01"
+  },
+  "lamp_table_01": {
+   "cat": "lamp_table",
+   "uso": "Lámpara de mesa (mesita de noche)",
+   "size": [
+    0.345,
+    0.532,
+    0.345
+   ],
+   "tris": 2532,
+   "kb": 125,
+   "file": "models/lamp_table_01/lamp_table_01.glb",
+   "light": "node:light",
+   "license": "Propio (Aquaterra, uso libre)",
+   "source": "Modelado en Blender para este proyecto"
+  },
+  "lamp_floor_01": {
+   "cat": "lamp_floor",
+   "uso": "Lámpara de pie (salón)",
+   "size": [
+    0.465,
+    1.622,
+    0.465
+   ],
+   "tris": 2064,
+   "kb": 260,
+   "file": "models/lamp_floor_01/lamp_floor_01.glb",
+   "light": "node:light",
+   "license": "Propio (Aquaterra, uso libre)",
+   "source": "Modelado en Blender para este proyecto"
+  },
+  "lamp_pendant_01": {
+   "cat": "lamp_pendant",
+   "uso": "Lámpara colgante sobre mesa de comedor (cuelga 0,90 m)",
+   "size": [
+    0.43,
+    0.902,
+    0.43
+   ],
+   "tris": 2320,
+   "kb": 43,
+   "file": "models/lamp_pendant_01/lamp_pendant_01.glb",
+   "light": "node:light",
+   "hang": true,
+   "license": "Propio (Aquaterra, uso libre)",
+   "source": "Modelado en Blender para este proyecto"
+  },
+  "hanging_industrial_lamp": {
+   "cat": "lamp_pendant",
+   "uso": "Colgante industrial de vidrio (cocina / isla)",
+   "size": [
+    0.55,
+    1.355,
+    0.55
+   ],
+   "tris": 9530,
+   "kb": 429,
+   "file": "models/hanging_industrial_lamp/hanging_industrial_lamp.glb",
+   "light": [
+    0,
+    -1.198,
+    0
+   ],
+   "hang": true,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/hanging_industrial_lamp"
+  },
+  "ceiling_fan": {
+   "cat": "ceiling_fan",
+   "uso": "Ventilador de techo (dormitorios, sin luz)",
+   "size": [
+    1.463,
+    0.516,
+    1.463
+   ],
+   "tris": 16356,
+   "kb": 399,
+   "file": "models/ceiling_fan/ceiling_fan.glb",
+   "hang": true,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/ceiling_fan"
+  },
+  "desk_lamp_arm_01": {
+   "cat": "lamp_desk",
+   "uso": "Flexo de escritorio",
+   "size": [
+    0.202,
+    0.893,
+    0.614
+   ],
+   "tris": 24102,
+   "kb": 675,
+   "file": "models/desk_lamp_arm_01/desk_lamp_arm_01.glb",
+   "light": [
+    0.013,
+    0.784,
+    -0.187
+   ],
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/desk_lamp_arm_01"
+  },
+  "industrial_wall_sconce": {
+   "cat": "sconce",
+   "uso": "Aplique de pared interior (pasillo, baño, cabecero)",
+   "size": [
+    0.15,
+    0.342,
+    0.252
+   ],
+   "tris": 9826,
+   "kb": 238,
+   "file": "models/industrial_wall_sconce/industrial_wall_sconce.glb",
+   "light": [
+    -0.002,
+    0.127,
+    0.059
+   ],
+   "wall": true,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/industrial_wall_sconce"
+  },
+  "industrial_wall_lamp": {
+   "cat": "sconce",
+   "uso": "Aplique de pared exterior tipo tortuga (galería, entrada)",
+   "size": [
+    0.273,
+    0.43,
+    0.14
+   ],
+   "tris": 4446,
+   "kb": 224,
+   "file": "models/industrial_wall_lamp/industrial_wall_lamp.glb",
+   "light": [
+    0,
+    0.215,
+    0.006
+   ],
+   "wall": true,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/industrial_wall_lamp"
+  },
+  "street_lamp_01": {
+   "cat": "lamp_garden",
+   "uso": "Farola de jardín / calle 3,9 m",
+   "size": [
+    0.704,
+    3.871,
+    0.387
+   ],
+   "tris": 30610,
+   "kb": 588,
+   "file": "models/street_lamp_01/street_lamp_01.glb",
+   "light": [
+    0,
+    3.324,
+    0
+   ],
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/street_lamp_01"
+  },
+  "door_interior_80": {
+   "cat": "door",
+   "uso": "Puerta interior 80×203 (roble) con marco, para muro de 12 cm",
+   "size": [
+    0.976,
+    2.128,
+    0.198
+   ],
+   "tris": 1076,
+   "kb": 324,
+   "file": "models/door_interior_80/door_interior_80.glb",
+   "doors": [
+    {
+     "node": "door_pivot",
+     "hinge": "left",
+     "open_y": -1.5708
+    }
+   ],
+   "wall": 0.12,
+   "license": "Propio (Aquaterra, uso libre)",
+   "source": "Modelado en Blender para este proyecto"
+  },
+  "door_entry_90": {
+   "cat": "door",
+   "uso": "Puerta de entrada 90×210 (nogal, listones) con marco, para muro de 15 cm",
+   "size": [
+    1.076,
+    2.198,
+    0.223
+   ],
+   "tris": 1764,
+   "kb": 220,
+   "file": "models/door_entry_90/door_entry_90.glb",
+   "doors": [
+    {
+     "node": "door_pivot",
+     "hinge": "left",
+     "open_y": -1.5708
+    }
+   ],
+   "wall": 0.15,
+   "license": "Propio (Aquaterra, uso libre)",
+   "source": "Modelado en Blender para este proyecto"
+  },
+  "potted_plant_04": {
+   "cat": "plant_indoor",
+   "uso": "Planta pequeña en maceta (mesa, estante)",
+   "size": [
+    0.168,
+    0.267,
+    0.185
+   ],
+   "tris": 8929,
+   "kb": 289,
+   "file": "models/potted_plant_04/potted_plant_04.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/potted_plant_04"
+  },
+  "calathea_orbifolia_01": {
+   "cat": "plant_indoor",
+   "uso": "Calathea (5 variantes)",
+   "size": [
+    0.601,
+    0.424,
+    0.526
+   ],
+   "tris": 16688,
+   "kb": 348,
+   "file": "models/calathea_orbifolia_01/calathea_orbifolia_01.glb",
+   "variants": [
+    "calathea_orbifolia_01_a",
+    "calathea_orbifolia_01_b",
+    "calathea_orbifolia_01_c",
+    "calathea_orbifolia_01_d",
+    "calathea_orbifolia_01_e"
+   ],
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/calathea_orbifolia_01"
+  },
+  "anthurium_botany_01": {
+   "cat": "plant_indoor",
+   "uso": "Anturio (6 variantes)",
+   "size": [
+    0.896,
+    0.5,
+    1.141
+   ],
+   "tris": 33573,
+   "kb": 647,
+   "file": "models/anthurium_botany_01/anthurium_botany_01.glb",
+   "variants": [
+    "anthurium_botany_01_a",
+    "anthurium_botany_01_b",
+    "anthurium_botany_04_d",
+    "anthurium_botany_01_c",
+    "anthurium_botany_05_e",
+    "anthurium_botany_06_f"
+   ],
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/anthurium_botany_01"
+  },
+  "jacaranda_tree": {
+   "cat": "tree",
+   "uso": "Jacarandá (árbol emblemático de Asunción). Real: 25 m; escala sugerida 0,4–0,6",
+   "size": [
+    25.158,
+    19.685,
+    18.551
+   ],
+   "tris": 79124,
+   "kb": 2920,
+   "file": "models/jacaranda_tree/jacaranda_tree.glb",
+   "scale_hint": [
+    0.4,
+    0.6
+   ],
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/jacaranda_tree"
+  },
+  "island_tree_01": {
+   "cat": "tree",
+   "uso": "Árbol frondoso mediano 5 m",
+   "size": [
+    4.756,
+    5.004,
+    4.88
+   ],
+   "tris": 88723,
+   "kb": 3381,
+   "file": "models/island_tree_01/island_tree_01.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/island_tree_01"
+  },
+  "island_tree_02": {
+   "cat": "tree",
+   "uso": "Árbol mediano 3,5 m",
+   "size": [
+    3.966,
+    3.444,
+    4.031
+   ],
+   "tris": 67078,
+   "kb": 2452,
+   "file": "models/island_tree_02/island_tree_02.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/island_tree_02"
+  },
+  "tree_small_02": {
+   "cat": "tree",
+   "uso": "Árbol joven 4,6 m",
+   "size": [
+    2.914,
+    4.574,
+    4.233
+   ],
+   "tris": 59747,
+   "kb": 2118,
+   "file": "models/tree_small_02/tree_small_02.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/tree_small_02"
+  },
+  "bush_large_01": {
+   "cat": "shrub",
+   "uso": "Arbusto redondo grande 1,8 m",
+   "size": [
+    2.033,
+    1.822,
+    2.001
+   ],
+   "tris": 4088,
+   "kb": 276,
+   "file": "models/bush_large_01/bush_large_01.glb",
+   "license": "Propio (Aquaterra, uso libre)",
+   "source": "Modelado en Blender para este proyecto"
+  },
+  "bush_small_01": {
+   "cat": "shrub",
+   "uso": "Arbusto redondo pequeño 1,2 m",
+   "size": [
+    1.22,
+    1.18,
+    1.238
+   ],
+   "tris": 2150,
+   "kb": 153,
+   "file": "models/bush_small_01/bush_small_01.glb",
+   "license": "Propio (Aquaterra, uso libre)",
+   "source": "Modelado en Blender para este proyecto"
+  },
+  "shrub_02": {
+   "cat": "shrub",
+   "uso": "Arbusto silvestre (4 variantes)",
+   "size": [
+    1.767,
+    1.689,
+    2.285
+   ],
+   "tris": 27254,
+   "kb": 615,
+   "file": "models/shrub_02/shrub_02.glb",
+   "variants": [
+    "shrub_02_a",
+    "shrub_02_b",
+    "shrub_02_c",
+    "shrub_02_d"
+   ],
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/shrub_02"
+  },
+  "hedge_01": {
+   "cat": "hedge",
+   "uso": "Seto recortado 2,5 m de largo (encadenar para cercos)",
+   "size": [
+    2.492,
+    1.472,
+    1.126
+   ],
+   "tris": 5552,
+   "kb": 313,
+   "file": "models/hedge_01/hedge_01.glb",
+   "license": "Propio (Aquaterra, uso libre)",
+   "source": "Modelado en Blender para este proyecto"
+  },
+  "shrub_04": {
+   "cat": "grass",
+   "uso": "Grupo de 4 plantines bajos",
+   "size": [
+    0.584,
+    0.219,
+    0.146
+   ],
+   "tris": 13636,
+   "kb": 348,
+   "file": "models/shrub_04/shrub_04.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/shrub_04"
+  },
+  "grass_medium_01": {
+   "cat": "grass",
+   "uso": "Matas de hierba (17 variantes)",
+   "size": [
+    0.317,
+    0.323,
+    0.327
+   ],
+   "tris": 24730,
+   "kb": 818,
+   "file": "models/grass_medium_01/grass_medium_01.glb",
+   "variants": [
+    "grass_medium_01_small_a_LOD0",
+    "grass_medium_01_large_b_LOD0",
+    "grass_medium_01_mid_b_LOD0",
+    "grass_medium_01_tall_b_LOD0",
+    "grass_medium_01_tall_a_LOD0",
+    "grass_medium_01_tall_c_LOD0",
+    "grass_medium_01_small_b_LOD0",
+    "grass_medium_01_mid_c_LOD0",
+    "grass_medium_01_mid_a_LOD0",
+    "grass_medium_01_large_a_LOD0",
+    "grass_medium_01_large_c_LOD0",
+    "grass_medium_01_tiny_c_LOD0",
+    "grass_medium_01_tiny_a_LOD0",
+    "grass_medium_01_tiny_b_LOD0",
+    "grass_medium_01_tiny_d_LOD0",
+    "grass_medium_01_tiny_e_LOD0",
+    "grass_medium_01_tiny_f_LOD0"
+   ],
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/grass_medium_01"
+  },
+  "grass_medium_02": {
+   "cat": "grass",
+   "uso": "Matas de hierba alta (5 variantes)",
+   "size": [
+    0.356,
+    0.403,
+    0.433
+   ],
+   "tris": 7842,
+   "kb": 215,
+   "file": "models/grass_medium_02/grass_medium_02.glb",
+   "variants": [
+    "grass_medium_02_a",
+    "grass_medium_02_b",
+    "grass_medium_02_c",
+    "grass_medium_02_d",
+    "grass_medium_02_e"
+   ],
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/grass_medium_02"
+  },
+  "fern_02": {
+   "cat": "grass",
+   "uso": "Helechos (4 variantes, zonas de sombra)",
+   "size": [
+    0.99,
+    0.428,
+    0.894
+   ],
+   "tris": 6232,
+   "kb": 190,
+   "file": "models/fern_02/fern_02.glb",
+   "variants": [
+    "fern_02_b",
+    "fern_02_c",
+    "fern_02_a",
+    "fern_02_d"
+   ],
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/fern_02"
+  },
+  "flower_gazania": {
+   "cat": "flower",
+   "uso": "Gazanias en flor (8 variantes)",
+   "size": [
+    0.338,
+    0.166,
+    0.326
+   ],
+   "tris": 14340,
+   "kb": 530,
+   "file": "models/flower_gazania/flower_gazania.glb",
+   "variants": [
+    "flower_gazania_a_LOD0",
+    "flower_gazania_b_LOD0",
+    "flower_gazania_c_LOD0",
+    "flower_gazania_d_LOD0",
+    "flower_gazania_h_LOD0",
+    "flower_gazania_g_LOD0",
+    "flower_gazania_f_LOD0",
+    "flower_gazania_e_LOD0"
+   ],
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/flower_gazania"
+  },
+  "flower_ursinia": {
+   "cat": "flower",
+   "uso": "Flores amarillas (5 variantes)",
+   "size": [
+    0.425,
+    0.164,
+    0.343
+   ],
+   "tris": 24933,
+   "kb": 602,
+   "file": "models/flower_ursinia/flower_ursinia.glb",
+   "variants": [
+    "flower_ursinia_a_LOD0",
+    "flower_ursinia_b_LOD0",
+    "flower_ursinia_c_LOD0",
+    "flower_ursinia_d_LOD0",
+    "flower_ursinia_e_LOD0"
+   ],
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/flower_ursinia"
+  },
+  "flower_empodium": {
+   "cat": "flower",
+   "uso": "Flores amarillas pequeñas (5 variantes)",
+   "size": [
+    0.217,
+    0.267,
+    0.251
+   ],
+   "tris": 3053,
+   "kb": 125,
+   "file": "models/flower_empodium/flower_empodium.glb",
+   "variants": [
+    "flower_empodium_a_LOD0",
+    "flower_empodium_b_LOD0",
+    "flower_empodium_c_LOD0",
+    "flower_empodium_d_LOD0",
+    "flower_empodium_e_LOD0"
+   ],
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/flower_empodium"
+  },
+  "dandelion_01": {
+   "cat": "flower",
+   "uso": "Dientes de león (5 variantes)",
+   "size": [
+    0.22,
+    0.164,
+    0.258
+   ],
+   "tris": 26187,
+   "kb": 718,
+   "file": "models/dandelion_01/dandelion_01.glb",
+   "variants": [
+    "dandelion_01_a_LOD0",
+    "dandelion_01_b_LOD0",
+    "dandelion_01_c_LOD0",
+    "dandelion_01_d_LOD0",
+    "dandelion_01_e_LOD0"
+   ],
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/dandelion_01"
+  },
+  "rock_moss_set_01": {
+   "cat": "rock",
+   "uso": "Rocas con musgo (6 variantes)",
+   "size": [
+    2.655,
+    1.768,
+    3.369
+   ],
+   "tris": 35344,
+   "kb": 763,
+   "file": "models/rock_moss_set_01/rock_moss_set_01.glb",
+   "variants": [
+    "rock_moss_set_01_rock01",
+    "rock_moss_set_01_rock02",
+    "rock_moss_set_01_rock03",
+    "rock_moss_set_01_rock04",
+    "rock_moss_set_01_rock05",
+    "rock_moss_set_01_rock06"
+   ],
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/rock_moss_set_01"
+  },
+  "coast_rocks_05": {
+   "cat": "rock",
+   "uso": "Grupo de rocas grande 4 m",
+   "size": [
+    4.036,
+    1.33,
+    3.747
+   ],
+   "tris": 38570,
+   "kb": 1079,
+   "file": "models/coast_rocks_05/coast_rocks_05.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/coast_rocks_05"
+  },
+  "namaqualand_boulder_02": {
+   "cat": "rock",
+   "uso": "Roca plana 2,5 m",
+   "size": [
+    2.532,
+    0.883,
+    1.23
+   ],
+   "tris": 14692,
+   "kb": 641,
+   "file": "models/namaqualand_boulder_02/namaqualand_boulder_02.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/namaqualand_boulder_02"
+  },
+  "namaqualand_boulder_05": {
+   "cat": "rock",
+   "uso": "Roca plana 1,4 m",
+   "size": [
+    1.364,
+    0.534,
+    0.748
+   ],
+   "tris": 13434,
+   "kb": 567,
+   "file": "models/namaqualand_boulder_05/namaqualand_boulder_05.glb",
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/namaqualand_boulder_05"
+  },
+  "mountains_ring": {
+   "cat": "mountains",
+   "uso": "Anillo de cerros de fondo (radio 250–2600 m, hasta 317 m de alto)",
+   "size": [
+    5200,
+    317.392,
+    5200
+   ],
+   "tris": 67680,
+   "kb": 1348,
+   "file": "models/mountains_ring/mountains_ring.glb",
+   "ring": [
+    250,
+    2600
+   ],
+   "license": "Propio (Aquaterra, uso libre)",
+   "source": "Modelado en Blender para este proyecto"
+  }
+ },
+ "textures": {
+  "white_plaster_02": {
+   "cat": "facade",
+   "uso": "Fachada: revoque blanco liso (también interior)",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/white_plaster_02/white_plaster_02_diff_1k.webp",
+    "nor": "textures/white_plaster_02/white_plaster_02_nor_gl_1k.webp",
+    "rough": "textures/white_plaster_02/white_plaster_02_rough_512.webp"
+   },
+   "span": 1.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/white_plaster_02",
+   "authors": [
+    "Rob Tuytel"
+   ]
+  },
+  "brick_wall_001": {
+   "cat": "facade",
+   "uso": "Fachada: ladrillo visto claro",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/brick_wall_001/brick_wall_001_diff_1k.webp",
+    "nor": "textures/brick_wall_001/brick_wall_001_nor_gl_1k.webp",
+    "rough": "textures/brick_wall_001/brick_wall_001_rough_512.webp"
+   },
+   "span": 1.05,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/brick_wall_001",
+   "authors": [
+    "Rob Tuytel",
+    "Dimitrios Savva"
+   ]
+  },
+  "stacked_stone_wall": {
+   "cat": "facade",
+   "uso": "Fachada/zócalo: piedra apilada",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/stacked_stone_wall/stacked_stone_wall_diff_1k.webp",
+    "nor": "textures/stacked_stone_wall/stacked_stone_wall_nor_gl_1k.webp",
+    "rough": "textures/stacked_stone_wall/stacked_stone_wall_rough_512.webp"
+   },
+   "span": 2.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/stacked_stone_wall",
+   "authors": [
+    "Dimitrios Savva"
+   ]
+  },
+  "painted_plaster_wall": {
+   "cat": "interior",
+   "uso": "Paredes interiores: pintura lisa",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/painted_plaster_wall/painted_plaster_wall_diff_1k.webp",
+    "nor": "textures/painted_plaster_wall/painted_plaster_wall_nor_gl_1k.webp",
+    "rough": "textures/painted_plaster_wall/painted_plaster_wall_rough_512.webp"
+   },
+   "span": 2.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/painted_plaster_wall",
+   "authors": [
+    "Amal Kumar"
+   ]
+  },
+  "long_white_tiles": {
+   "cat": "tile",
+   "uso": "Baño: azulejo blanco rectangular",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/long_white_tiles/long_white_tiles_diff_1k.webp",
+    "nor": "textures/long_white_tiles/long_white_tiles_nor_gl_1k.webp",
+    "rough": "textures/long_white_tiles/long_white_tiles_rough_512.webp"
+   },
+   "span": 1.27,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/long_white_tiles",
+   "authors": [
+    "Jenelle van Heerden",
+    "Sergej Majboroda"
+   ]
+  },
+  "square_tiles_03": {
+   "cat": "tile",
+   "uso": "Baño/cocina: azulejo cuadrado",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/square_tiles_03/square_tiles_03_diff_1k.webp",
+    "nor": "textures/square_tiles_03/square_tiles_03_nor_gl_1k.webp",
+    "rough": "textures/square_tiles_03/square_tiles_03_rough_512.webp"
+   },
+   "span": 2.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/square_tiles_03",
+   "authors": [
+    "Charlotte Baglioni"
+   ]
+  },
+  "marble_tiles": {
+   "cat": "tile",
+   "uso": "Baño: mármol",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/marble_tiles/marble_tiles_diff_1k.webp",
+    "nor": "textures/marble_tiles/marble_tiles_nor_gl_1k.webp",
+    "rough": "textures/marble_tiles/marble_tiles_rough_512.webp"
+   },
+   "span": 2.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/marble_tiles",
+   "authors": [
+    "Charlotte Baglioni"
+   ]
+  },
+  "wood_floor": {
+   "cat": "floor",
+   "uso": "Suelo: tarima de madera",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/wood_floor/wood_floor_diff_1k.webp",
+    "nor": "textures/wood_floor/wood_floor_nor_gl_1k.webp",
+    "rough": "textures/wood_floor/wood_floor_rough_512.webp"
+   },
+   "span": 1.7,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/wood_floor",
+   "authors": [
+    "Dimitrios Savva"
+   ]
+  },
+  "wooden_floor_02": {
+   "cat": "floor",
+   "uso": "Suelo: parqué claro",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/wooden_floor_02/wooden_floor_02_diff_1k.webp",
+    "nor": "textures/wooden_floor_02/wooden_floor_02_nor_gl_1k.webp",
+    "rough": "textures/wooden_floor_02/wooden_floor_02_rough_512.webp"
+   },
+   "span": 1.942,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/wooden_floor_02",
+   "authors": [
+    "Charlotte Baglioni",
+    "Rico Cilliers"
+   ]
+  },
+  "herringbone_parquet": {
+   "cat": "floor",
+   "uso": "Suelo: parqué en espiga",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/herringbone_parquet/herringbone_parquet_diff_1k.webp",
+    "nor": "textures/herringbone_parquet/herringbone_parquet_nor_gl_1k.webp",
+    "rough": "textures/herringbone_parquet/herringbone_parquet_rough_512.webp"
+   },
+   "span": 3.4,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/herringbone_parquet",
+   "authors": [
+    "Jenelle van Heerden",
+    "Sergej Majboroda"
+   ]
+  },
+  "floor_tiles_06": {
+   "cat": "kitchen",
+   "uso": "Cocina: baldosa",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/floor_tiles_06/floor_tiles_06_diff_1k.webp",
+    "nor": "textures/floor_tiles_06/floor_tiles_06_nor_gl_1k.webp",
+    "rough": "textures/floor_tiles_06/floor_tiles_06_rough_512.webp"
+   },
+   "span": 3.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/floor_tiles_06",
+   "authors": [
+    "Rob Tuytel"
+   ]
+  },
+  "terrazzo_tiles": {
+   "cat": "kitchen",
+   "uso": "Cocina/salón: terrazo",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/terrazzo_tiles/terrazzo_tiles_diff_1k.webp",
+    "nor": "textures/terrazzo_tiles/terrazzo_tiles_nor_gl_1k.webp",
+    "rough": "textures/terrazzo_tiles/terrazzo_tiles_rough_512.webp"
+   },
+   "span": 2.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/terrazzo_tiles",
+   "authors": [
+    "Amal Kumar"
+   ]
+  },
+  "terracotta_floor_tiles": {
+   "cat": "path",
+   "uso": "Terraza/galería: baldosa de terracota",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/terracotta_floor_tiles/terracotta_floor_tiles_diff_1k.webp",
+    "nor": "textures/terracotta_floor_tiles/terracotta_floor_tiles_nor_gl_1k.webp",
+    "rough": "textures/terracotta_floor_tiles/terracotta_floor_tiles_rough_512.webp"
+   },
+   "span": 2.08,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/terracotta_floor_tiles",
+   "authors": [
+    "Dimitrios Savva"
+   ]
+  },
+  "grass_ground": {
+   "cat": "grass",
+   "uso": "Jardín: césped",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/grass_ground/grass_ground_diff_1k.webp",
+    "nor": "textures/grass_ground/grass_ground_nor_gl_1k.webp",
+    "rough": "textures/grass_ground/grass_ground_rough_512.webp"
+   },
+   "span": 2.51,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/grass_ground",
+   "authors": [
+    "Charlotte Baglioni"
+   ]
+  },
+  "brick_pavement": {
+   "cat": "path",
+   "uso": "Camino/patio: adoquín de ladrillo",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/brick_pavement/brick_pavement_diff_1k.webp",
+    "nor": "textures/brick_pavement/brick_pavement_nor_gl_1k.webp",
+    "rough": "textures/brick_pavement/brick_pavement_rough_512.webp"
+   },
+   "span": 2.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/brick_pavement",
+   "authors": [
+    "Charlotte Baglioni"
+   ]
+  },
+  "concrete": {
+   "cat": "roof",
+   "uso": "Losa/tejado plano y aceras: hormigón",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/concrete/concrete_diff_1k.webp",
+    "nor": "textures/concrete/concrete_nor_gl_1k.webp",
+    "rough": "textures/concrete/concrete_rough_512.webp"
+   },
+   "span": 4.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/concrete",
+   "authors": [
+    "Rob Tuytel"
+   ]
+  },
+  "brushed_concrete": {
+   "cat": "roof",
+   "uso": "Hormigón cepillado (aceras, vereda)",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/brushed_concrete/brushed_concrete_diff_1k.webp",
+    "nor": "textures/brushed_concrete/brushed_concrete_nor_gl_1k.webp",
+    "rough": "textures/brushed_concrete/brushed_concrete_rough_512.webp"
+   },
+   "span": 2.5,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/brushed_concrete",
+   "authors": [
+    "Dario Barresi",
+    "Dimitrios Savva"
+   ]
+  },
+  "fabric_pattern_05": {
+   "cat": "fabric",
+   "uso": "Tapizado: tela gris",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/fabric_pattern_05/fabric_pattern_05_diff_1k.webp",
+    "nor": "textures/fabric_pattern_05/fabric_pattern_05_nor_gl_1k.webp",
+    "rough": "textures/fabric_pattern_05/fabric_pattern_05_rough_512.webp"
+   },
+   "span": 0.5,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/fabric_pattern_05",
+   "authors": [
+    "Rob Tuytel"
+   ]
+  },
+  "fabric_pattern_07": {
+   "cat": "fabric",
+   "uso": "Tapizado: tela beige",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/fabric_pattern_07/fabric_pattern_07_diff_1k.webp",
+    "nor": "textures/fabric_pattern_07/fabric_pattern_07_nor_gl_1k.webp",
+    "rough": "textures/fabric_pattern_07/fabric_pattern_07_rough_512.webp"
+   },
+   "span": 0.4,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/fabric_pattern_07",
+   "authors": [
+    "Rob Tuytel"
+   ]
+  },
+  "fabric_leather_01": {
+   "cat": "fabric",
+   "uso": "Tapizado: cuero",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/fabric_leather_01/fabric_leather_01_diff_1k.webp",
+    "nor": "textures/fabric_leather_01/fabric_leather_01_nor_gl_1k.webp",
+    "rough": "textures/fabric_leather_01/fabric_leather_01_rough_512.webp"
+   },
+   "span": 0.4,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/fabric_leather_01",
+   "authors": [
+    "Rob Tuytel"
+   ]
+  },
+  "fine_grained_wood": {
+   "cat": "wood",
+   "uso": "Madera de muebles (roble claro)",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/fine_grained_wood/fine_grained_wood_diff_1k.webp",
+    "nor": "textures/fine_grained_wood/fine_grained_wood_nor_gl_1k.webp",
+    "rough": "textures/fine_grained_wood/fine_grained_wood_rough_512.webp"
+   },
+   "span": 0.6,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/fine_grained_wood",
+   "authors": [
+    "Rob Tuytel"
+   ]
+  },
+  "oak_wood_planks": {
+   "cat": "wood",
+   "uso": "Madera: tablas de roble (deck, puertas)",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/oak_wood_planks/oak_wood_planks_diff_1k.webp",
+    "nor": "textures/oak_wood_planks/oak_wood_planks_nor_gl_1k.webp",
+    "rough": "textures/oak_wood_planks/oak_wood_planks_rough_512.webp"
+   },
+   "span": 1.2,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/oak_wood_planks",
+   "authors": [
+    "Dimitrios Savva"
+   ]
+  },
+  "plastered_wall_02": {
+   "cat": "facade",
+   "uso": "Fachada: revoque texturizado",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/plastered_wall_02/plastered_wall_02_diff_1k.webp",
+    "nor": "textures/plastered_wall_02/plastered_wall_02_nor_gl_1k.webp",
+    "rough": "textures/plastered_wall_02/plastered_wall_02_rough_512.webp"
+   },
+   "span": 2.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/plastered_wall_02"
+  },
+  "clay_roof_tiles": {
+   "cat": "roof",
+   "uso": "Tejado: teja cerámica",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/clay_roof_tiles/clay_roof_tiles_diff_1k.webp",
+    "nor": "textures/clay_roof_tiles/clay_roof_tiles_nor_gl_1k.webp",
+    "rough": "textures/clay_roof_tiles/clay_roof_tiles_rough_512.webp"
+   },
+   "span": 5.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/clay_roof_tiles"
+  },
+  "rocky_terrain_02": {
+   "cat": "rock",
+   "uso": "Montaña/roca: terreno rocoso",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/rocky_terrain_02/rocky_terrain_02_diff_1k.webp",
+    "nor": "textures/rocky_terrain_02/rocky_terrain_02_nor_gl_1k.webp",
+    "rough": "textures/rocky_terrain_02/rocky_terrain_02_rough_512.webp"
+   },
+   "span": 4.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/rocky_terrain_02"
+  },
+  "aerial_grass_rock": {
+   "cat": "grass",
+   "uso": "Terreno lejano: hierba con roca",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/aerial_grass_rock/aerial_grass_rock_diff_1k.webp",
+    "nor": "textures/aerial_grass_rock/aerial_grass_rock_nor_gl_1k.webp",
+    "rough": "textures/aerial_grass_rock/aerial_grass_rock_rough_512.webp"
+   },
+   "span": 8.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/aerial_grass_rock"
+  },
+  "red_brick_03": {
+   "cat": "facade",
+   "uso": "Fachada: ladrillo visto rojo (típico en Paraguay)",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/red_brick_03/red_brick_03_diff_1k.webp",
+    "nor": "textures/red_brick_03/red_brick_03_nor_gl_1k.webp",
+    "rough": "textures/red_brick_03/red_brick_03_rough_512.webp"
+   },
+   "span": 1.05,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/red_brick_03"
+  },
+  "sandy_gravel": {
+   "cat": "path",
+   "uso": "Camino: grava arenosa",
+   "maps": [
+    "diff",
+    "nor",
+    "arm"
+   ],
+   "files": {
+    "diff": "textures/sandy_gravel/sandy_gravel_diff_1k.webp",
+    "nor": "textures/sandy_gravel/sandy_gravel_nor_gl_1k.webp",
+    "arm": "textures/sandy_gravel/sandy_gravel_arm_512.webp"
+   },
+   "span": 2.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/sandy_gravel"
+  },
+  "granite_tile": {
+   "cat": "kitchen",
+   "uso": "Encimera/suelo: granito",
+   "maps": [
+    "diff",
+    "nor",
+    "arm"
+   ],
+   "files": {
+    "diff": "textures/granite_tile/granite_tile_diff_1k.webp",
+    "nor": "textures/granite_tile/granite_tile_nor_gl_1k.webp",
+    "arm": "textures/granite_tile/granite_tile_arm_512.webp"
+   },
+   "span": 1.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/granite_tile"
+  },
+  "forrest_ground_03": {
+   "cat": "ground",
+   "uso": "Canteros/jardín: tierra con hojarasca",
+   "maps": [
+    "diff",
+    "nor",
+    "rough"
+   ],
+   "files": {
+    "diff": "textures/forrest_ground_03/forrest_ground_03_diff_1k.webp",
+    "nor": "textures/forrest_ground_03/forrest_ground_03_nor_gl_1k.webp",
+    "rough": "textures/forrest_ground_03/forrest_ground_03_rough_512.webp"
+   },
+   "span": 2.0,
+   "license": "CC0 1.0 (Poly Haven)",
+   "source": "https://polyhaven.com/a/forrest_ground_03"
+  }
+ }
+}
