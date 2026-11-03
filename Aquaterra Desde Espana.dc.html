@@ -296,6 +296,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
           <a href="index.html#simulador" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Simulador de renta</a>
           <a href="index.html#preguntas" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Preguntas frecuentes</a>
           <a href="Aquaterra%20Blog.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Guías del blog</a>
+          <a href="Aquaterra%20Render%203D.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Render 3D de planos</a>
           <a href="Aquaterra%20Desde%20Espana.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Comprar desde España</a>
         </div>
       </div>
@@ -328,9 +329,9 @@ class Component extends DCLogic {
   globoRef = React.createRef(); asesoriaRef = React.createRef();
 
   // Menú del móvil: el mismo en todas las páginas (algo más descriptivo que el de escritorio e incluye Preguntas).
-  MENU = [['index.html#inversiones', 'Por qué Paraguay'], ['index.html#simulador', 'Simulador de renta'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['index.html#preguntas', 'Preguntas'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  MENU = [['index.html#inversiones', 'Por qué Paraguay'], ['index.html#simulador', 'Simulador de renta'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['index.html#preguntas', 'Preguntas'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['Aquaterra%20Render%203D.dc.html', 'Render 3D de tu plano'], ['index.html#contacto', 'Contacto']];
   // Mismo menú y en el mismo orden en todas las páginas: primero los capítulos del inicio (en el orden en que aparecen), luego las otras páginas.
-  NAV = [['index.html#inversiones', 'Inversiones'], ['index.html#simulador', 'Simulador'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['index.html#contacto', 'Contacto']];
+  NAV = [['index.html#inversiones', 'Inversiones'], ['index.html#simulador', 'Simulador'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['Aquaterra%20Render%203D.dc.html', 'Render 3D'], ['index.html#contacto', 'Contacto']];
   THEMES = {
     dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', cardSh: '0 1px 2px rgba(0,0,0,0.04), 0 12px 32px -24px rgba(0,0,0,0.25)', ph: '#E8E8ED', panel: '#1D1D1F', foot: '#1D1D1F', chip: 'rgba(118,118,128,0.12)', deep: '#0B0C0F', deepInk: '#F5F5F7' },
     noche: { bg: '#17191E', ink: '#ECECEE', mute: '#A4A7AE', mute2: '#CACCD1', line: 'rgba(255,255,255,0.10)', card: '#212329', cardSh: 'inset 0 0 0 1px rgba(255,255,255,0.07)', ph: '#262930', panel: '#24272E', foot: '#121418', chip: 'rgba(150,152,160,0.20)', deep: '#1E2127', deepInk: '#E9EAEC' }
@@ -366,7 +367,7 @@ class Component extends DCLogic {
   ];
 
   componentDidMount() {
-    this._onResize = () => this.setState((st) => ({ w: window.innerWidth, menu: window.innerWidth >= 1140 ? false : st.menu }));
+    this._onResize = () => this.setState((st) => ({ w: window.innerWidth, menu: window.innerWidth >= 1240 ? false : st.menu }));
     window.addEventListener('resize', this._onResize);
     this._onKey = (e) => { if (e.key === 'Escape' && this.state.menu) this.setState({ menu: false }); };
     window.addEventListener('keydown', this._onKey);
@@ -432,7 +433,7 @@ class Component extends DCLogic {
       toggleMenu: () => this.setState((st) => ({ menu: !st.menu })),
       closeMenu: () => { if (this.state.menu) this.setState({ menu: false }); },
       footWa: 'https://wa.me/' + String((window.MARCA && window.MARCA.whatsapp) || '').replace(/\D/g, ''),
-      navWide: s.w >= 1140, navNarrow: s.w < 1140,
+      navWide: s.w >= 1240, navNarrow: s.w < 1240,
       menuItems: this.MENU.map(([href, label]) => ({ href, label })),
       navItems: this.NAV.map(([href, label]) => ({ href, label, cur: label === 'Desde España' ? 'page' : undefined, ink: label === 'Desde España' ? th.ink : th.mute2, fw: label === 'Desde España' ? '600' : '400' })),
       hdrBg: night ? 'rgba(28,30,36,0.82)' : 'rgba(251,251,253,0.8)',

@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Render 3D de planos · Aquaterra</title>
+<meta name="description" content="Sube o dibuja el plano de una vivienda y recórrelo en 3D: muros, puertas que se abren, muebles, luces y la luz del sol a cualquier hora.">
+<meta name="theme-color" content="#17191E">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:title" content="Render 3D de planos · Aquaterra">
+<meta property="og:description" content="Sube o dibuja el plano de una vivienda y recórrelo en 3D: muros, puertas que se abren, muebles, luces y la luz del sol a cualquier hora.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="Aquaterra">
+<meta property="og:image" content="https://aquaterra-beta.vercel.app/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>x-dc{display:none}</style>
+<!-- Carga: React se sirve desde /vendor y todos los scripts van con defer, en orden, para no frenar el primer pintado. -->
+<script>try { if (sessionStorage.getItem('aquaterra-modo') !== 'dia') document.documentElement.setAttribute('data-modo', 'noche'); } catch (e) { document.documentElement.setAttribute('data-modo', 'noche'); }</script>
+<script>window.__resources = {};</script>
+<script src="./marca.js" defer></script>
+<script src="./cookies.js" defer></script>
+<script src="./leads.js" defer></script>
+<script src="./prefijos.js" defer></script>
+<script src="./asesoria.js" data-barra defer></script>
+<script src="/vendor/react.production.min.js" defer></script>
+<script src="/vendor/react-dom.production.min.js" defer></script>
+<script src="./arranque.js" defer></script>
+<script src="./support.js" defer></script>
+<script src="./fx.js" defer></script>
+<script src="./chat.js" defer></script>
+<script src="./seo.js" defer></script>
+<!-- Render 3D: el motor (render3d/aq-render3d.js) y sus modelos se cargan solo al abrir el visor. -->
+<link rel="modulepreload" href="render3d/aq-plan.js">
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17191E">
+<style>
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:#F5F5F7;color:#1D1D1F;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-tap-highlight-color:transparent}
+html[data-modo="noche"] body{background:#17191E;color:#ECECEE}
+*{box-sizing:border-box}
+a{color:#0066CC;text-decoration:none}
+a:hover{color:#0077ED}
+[data-theme="noche"] a{color:#2997FF}
+button,a{touch-action:manipulation}
+button{-webkit-user-select:none;user-select:none}
+button,select,input{font-family:inherit}
+::selection{background:#C9F15D;color:#1D1D1F}
+/* Sistema común a todas las páginas (mismo bloque en cada una):
+   data-kicker  etiqueta de sección con rombo lima y número de capítulo en negrita; data-kicker="oscuro" sobre fondos oscuros
+   data-nav     enlace del menú; con aria-current lleva debajo el rombo lima de "estás aquí" */
+[data-kicker]{align-self:flex-start;display:inline-flex;align-items:center;gap:9px;width:max-content;max-width:100%;padding:6px 14px 6px 12px;border-radius:999px;background:rgba(201,241,93,.22);border:1px solid rgba(120,160,20,.3);color:#3F5A06;font:600 12px/1.3 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em;text-transform:uppercase}
+[data-kicker]::before{content:"";flex:0 0 auto;width:7px;height:7px;border-radius:1.5px;background:#C9F15D;transform:rotate(45deg);box-shadow:0 0 0 1px rgba(90,120,10,.4)}
+[data-kicker] b{font-weight:500;opacity:.62}
+[data-theme="noche"] [data-kicker],[data-kicker="oscuro"]{background:rgba(201,241,93,.14);border-color:rgba(201,241,93,.38);color:#E4F7B0}
+[data-theme="noche"] [data-kicker]::before,[data-kicker="oscuro"]::before{box-shadow:none}
+[data-nav]{position:relative}
+[data-nav]::after{content:"";position:absolute;left:50%;bottom:-6px;width:5px;height:5px;margin-left:-2.5px;border-radius:1px;background:#C9F15D;transform:rotate(45deg) scale(0);transition:transform .35s cubic-bezier(.16,1,.3,1)}
+[data-nav][aria-current]::after{transform:rotate(45deg) scale(1)}
+/* El pie (con su fondo animado) no se pinta hasta que se acerca a la pantalla. */
+footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 760px}
+/* Render 3D: tokens del editor y del visor con la paleta de la web (lima #C9F15D, azul #0071E3, grises de día / noche). */
+[data-r3d]{--color-bg:#F5F5F7;--color-text:#1D1D1F;--color-surface:#FFFFFF;--color-divider:rgba(0,0,0,0.1);--color-neutral-100:#FBFBFD;--color-neutral-200:#E8E8ED;--color-neutral-300:#D2D2D7;--color-neutral-400:#AEAEB2;--color-neutral-600:#6E6E73;--color-neutral-700:#6E6E73;--color-neutral-800:#424245;--color-neutral-900:#1D1D1F;--color-accent:#C9F15D;--color-on-accent:#1D1D1F;--color-accent-100:rgba(201,241,93,0.22);--color-accent-200:#E4F7B0;--color-accent-700:#4F7A0A;--color-accent-800:#3F5A06;--color-accent-900:#2B3D04;--color-accent-2-100:#DCEBFF;--color-accent-2-200:#C4DDFB;--color-accent-2-300:#64B5FF;--color-accent-2-500:#248A3D;--color-input:#FFFFFF;--radius-lg:18px;--shadow-md:0 8px 24px -12px rgba(0,0,0,0.35);--shadow-lg:0 24px 60px -24px rgba(0,0,0,0.5);--font-heading:inherit}
+[data-theme="noche"] [data-r3d]{--color-bg:#17191E;--color-text:#ECECEE;--color-surface:#212329;--color-divider:rgba(255,255,255,0.10);--color-neutral-100:#1E2127;--color-neutral-200:#2C2F36;--color-neutral-300:#3A3D45;--color-neutral-400:#5A5E66;--color-neutral-600:#A4A7AE;--color-neutral-700:#A4A7AE;--color-neutral-800:#CACCD1;--color-neutral-900:#ECECEE;--color-accent-100:rgba(201,241,93,0.14);--color-accent-700:#C9F15D;--color-accent-800:#E4F7B0;--color-accent-2-500:#30D158;--color-input:#2C2F36}
+/* El plano y el visor se ven siempre en claro, como papel, también en modo noche. */
+[data-r3d] [data-r3d-claro],[data-theme="noche"] [data-r3d] [data-r3d-claro]{--color-bg:#F5F5F7;--color-text:#1D1D1F;--color-surface:#FFFFFF;--color-divider:rgba(0,0,0,0.1);--color-neutral-100:#FBFBFD;--color-neutral-200:#E8E8ED;--color-neutral-300:#D2D2D7;--color-neutral-400:#AEAEB2;--color-neutral-600:#6E6E73;--color-neutral-700:#6E6E73;--color-neutral-800:#424245;--color-neutral-900:#1D1D1F;--color-accent-100:rgba(201,241,93,0.22);--color-accent-700:#4F7A0A;--color-accent-800:#3F5A06;--color-accent-2-100:#DCEBFF;--color-accent-2-200:#C4DDFB;--color-accent-2-500:#248A3D;--color-input:#FFFFFF}
+[data-r3d] .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;border:1px solid transparent;font:inherit;font-weight:500;letter-spacing:-0.01em;cursor:pointer;text-decoration:none;transition:background .2s,color .2s,border-color .2s,transform .2s}
+[data-r3d] .btn:active{transform:scale(.98)}
+[data-r3d] .btn-primary{background:#0071E3;color:#FFFFFF}
+[data-r3d] .btn-primary:hover{background:#0077ED;color:#FFFFFF}
+[data-r3d] .btn-secondary{background:rgba(118,118,128,0.12);color:var(--color-text)}
+[data-r3d] .btn-secondary:hover{background:rgba(118,118,128,0.2)}
+[data-theme="noche"] [data-r3d] .btn-secondary{background:rgba(150,152,160,0.20)}
+[data-theme="noche"] [data-r3d] .btn-secondary:hover{background:rgba(150,152,160,0.3)}
+[data-r3d] .btn-ghost{background:transparent;color:var(--color-text);border-color:var(--color-divider)}
+[data-r3d] .btn-ghost:hover{background:rgba(118,118,128,0.12)}
+[data-r3d] .input{box-sizing:border-box;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--color-divider);background:var(--color-input);color:var(--color-text);font:inherit;font-size:15px;font-weight:400}
+[data-r3d] select.input{padding-right:8px}
+[data-r3d] .tag{display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:999px;font:500 12px/1 "JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap}
+[data-r3d] .tag-accent{background:rgba(201,241,93,.22);border:1px solid rgba(120,160,20,.3);color:var(--color-accent-800)}
+[data-r3d] .tag-accent-2{background:rgba(0,113,227,.12);border:1px solid rgba(0,113,227,.3);color:#0066CC}
+[data-theme="noche"] [data-r3d] .tag-accent-2{color:#2997FF}
+[data-r3d] .tag-neutral{background:rgba(118,118,128,0.12);color:var(--color-text)}
+[data-r3d] input[type=range]{accent-color:#C9F15D}
+</style>
+</helmet>
+<div data-theme="{{ themeName }}" style="min-height:100svh;background:{{ th.bg }};color:{{ th.ink }};font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Helvetica,sans-serif;overflow-x:clip;transition:background .5s">
+
+<header style="position:fixed;top:0;left:0;right:0;z-index:50;padding-top:env(safe-area-inset-top);background:{{ hdrBg }};border-bottom:1px solid {{ th.line }};backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);transition:background .35s">
+  <div style="max-width:calc(1280px + 2 * clamp(20px,3.2vw,48px));margin:0 auto;height:52px;padding:0 clamp(20px,3.2vw,48px);display:flex;align-items:center;justify-content:space-between;gap:20px">
+    <a href="index.html" style="display:flex;align-items:center;gap:9px;min-height:44px;color:{{ th.ink }};font-weight:600;font-size:18px;letter-spacing:-0.02em">
+      <span style="width:12px;height:12px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>
+      <span>{{ marca }}</span>
+    </a>
+    <sc-if value="{{ navWide }}" hint-placeholder-val="{{ true }}">
+      <nav style="display:flex;align-items:center;gap:clamp(14px,1.8vw,26px)">
+        <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
+          <a href="{{ n.href }}" data-nav="" aria-current="{{ n.cur }}" style="white-space:nowrap;font-size:13px;letter-spacing:-0.01em;color:{{ n.ink }};font-weight:{{ n.fw }}" style-hover="opacity:0.7">{{ n.label }}</a>
+        </sc-for>
+      </nav>
+    </sc-if>
+    <div style="display:flex;align-items:center;gap:8px">
+      <sc-if value="{{ navWide }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ toggleMode }}" aria-label="Cambiar modo día / noche" style="position:relative;display:flex;align-items:center;padding:2px;border-radius:9px;border:0;background:{{ segTrack }};cursor:pointer">
+          <span style="position:absolute;top:2px;left:{{ knobLeft }};width:58px;height:28px;border-radius:7px;background:{{ knobBg }};box-shadow:0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);transition:left .35s cubic-bezier(.3,.7,.2,1), background .35s"></span>
+          <span style="position:relative;width:58px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:{{ dayInk }};transition:color .3s">Día</span>
+          <span style="position:relative;width:58px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:{{ nightInk }};transition:color .3s">Noche</span>
+        </button>
+      </sc-if>
+      <a href="index.html#asesoria" style="display:flex;align-items:center;height:32px;padding:0 15px;border-radius:999px;background:#0071E3;color:#FFFFFF;font-size:13px;font-weight:500;letter-spacing:-0.01em;white-space:nowrap" style-hover="background:#0077ED;color:#FFFFFF">{{ ctaLabel }}</a>
+      <sc-if value="{{ navNarrow }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleMenu }}" aria-label="Menú" style="width:44px;height:44px;margin-right:-10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:0;background:transparent;cursor:pointer">
+          <span style="width:18px;height:1.5px;border-radius:1px;background:{{ th.ink }};transform:{{ burgerA }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
+          <span style="width:18px;height:1.5px;border-radius:1px;background:{{ th.ink }};transform:{{ burgerB }};transition:transform .3s cubic-bezier(.3,.7,.2,1)"></span>
+        </button>
+      </sc-if>
+    </div>
+  </div>
+</header>
+<sc-if value="{{ menu }}" hint-placeholder-val="{{ false }}">
+  <div data-aq-menu="" style="position:fixed;inset:0;z-index:49;background:{{ menuBg }};backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);padding:calc(72px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom));display:flex;flex-direction:column;overflow:auto;overscroll-behavior:contain">
+    <sc-for list="{{ menuItems }}" as="m" hint-placeholder-count="6">
+      <a href="{{ m.href }}" onClick="{{ closeMenu }}" style="display:flex;align-items:center;justify-content:space-between;min-height:60px;font-size:28px;font-weight:600;letter-spacing:-0.025em;color:{{ th.ink }};border-bottom:1px solid {{ th.line }}">{{ m.label }}<span style="font-size:24px;font-weight:400;color:{{ th.mute }}">›</span></a>
+    </sc-for>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:76px;border-bottom:1px solid {{ th.line }}">
+      <span style="font-size:17px;color:{{ th.mute2 }}">Apariencia</span>
+      <button onClick="{{ toggleMode }}" aria-label="Cambiar modo día / noche" style="position:relative;display:flex;align-items:center;padding:2px;border-radius:10px;border:0;background:{{ segTrack }};cursor:pointer">
+        <span style="position:absolute;top:2px;left:{{ knobLeftL }};width:84px;height:40px;border-radius:8px;background:{{ knobBg }};box-shadow:0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);transition:left .35s cubic-bezier(.3,.7,.2,1), background .35s"></span>
+        <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ dayInk }}">Día</span>
+        <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ nightInk }}">Noche</span>
+      </button>
+    </div>
+    <a href="index.html#asesoria" onClick="{{ closeMenu }}" style="margin-top:28px;display:flex;align-items:center;justify-content:center;height:50px;border-radius:14px;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500">Reserva tu llamada gratis de 20 min</a>
+  </div>
+</sc-if>
+
+<main data-r3d="" style="padding:calc(52px + env(safe-area-inset-top) + clamp(40px,8vw,96px)) clamp(16px,3.2vw,48px) clamp(80px,10vw,140px)">
+  <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(24px,3vw,36px)">
+    <section data-screen-label="01 Render 3D" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:28px;align-items:end">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <span data-kicker="">Render 3D</span>
+        <h1 data-fx="" style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1.02;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">Sube tu plano y <span data-accent="" style="color:#86868B">recórrelo por dentro.</span></h1>
+        <p style="margin:0;max-width:600px;font-size:clamp(17px,1.6vw,21px);line-height:1.45;color:{{ th.mute2 }};text-wrap:pretty">Levantamos los muros, colocamos puertas que se abren y amueblamos cada estancia con objetos 3D realistas. Después puedes caminar por la casa, cambiar la altura del techo y ver cómo entra el sol a cualquier hora.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
+          <span style="display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;border-radius:999px;background:{{ glassBg }};border:1px solid {{ glassLine }};color:{{ glassInk }};font-size:13px;font-weight:500"><span style="width:7px;height:7px;border-radius:2px;transform:rotate(45deg);background:{{ glassInk }}"></span>Funciona en el navegador</span>
+          <span style="display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:999px;background:{{ th.chip }};color:{{ th.mute2 }};font-size:13px;font-weight:500">Sin instalar nada · también en el móvil</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-start">
+        <button type="button" class="btn btn-primary" onClick="{{ renderPlan }}" style="min-height:50px;padding:0 24px;font-size:17px;white-space:nowrap">Renderizar mi plano</button>
+        <button type="button" class="btn btn-secondary" onClick="{{ renderDemo }}" style="min-height:50px;padding:0 22px;font-size:17px;white-space:nowrap">Ver un ejemplo en 3D</button>
+      </div>
+    </section>
+
+    <div role="tablist" aria-label="Render 3D" style="display:flex;gap:4px;padding:5px;border-radius:999px;background:var(--color-neutral-200);overflow-x:auto;align-self:flex-start;max-width:100%">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+        <button type="button" role="tab" aria-selected="{{ t.on }}" data-k="{{ t.k }}" onClick="{{ setTab }}" style="flex:none;min-height:44px;padding:0 20px;border:0;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};font:inherit;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap">{{ t.l }}</button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ tabSubir }}" hint-placeholder-val="{{ true }}">
+      <section aria-label="Subir plano" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:20px">
+        <label onDragOver="{{ onDragOver }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDrop }}" style="display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:14px;min-height:300px;padding:clamp(24px,4vw,40px);border-radius:var(--radius-lg);border:2px dashed {{ dropBd }};background:{{ dropBg }};cursor:pointer;box-sizing:border-box">
+          <input type="file" accept=".json,.png,.jpg,.jpeg,.webp,.glb,application/json,image/*" onChange="{{ onFile }}" style="position:absolute;width:1px;height:1px;opacity:0">
+          <span style="width:56px;height:56px;border-radius:50%;background:var(--color-accent-100);color:var(--color-accent-700);display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"></path><path d="m7 8 5-5 5 5"></path><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path></svg></span>
+          <span style="font-weight:600;letter-spacing:-0.02em;font-size:26px;line-height:1.15">Arrastra tu plano aquí</span>
+          <span style="font-size:16px;line-height:1.5;color:var(--color-neutral-700);max-width:40ch">o pulsa para elegir un archivo. Plano Aquaterra (.json), imagen del plano para calcar (.jpg, .png, .webp) o modelo 3D (.glb).</span>
+          <span class="btn btn-secondary" style="min-height:44px;padding:0 18px;font-size:15px;white-space:nowrap">Elegir archivo</span>
+        </label>
+        <div style="display:flex;flex-direction:column;gap:14px;padding:clamp(22px,3vw,32px);border-radius:var(--radius-lg);background:var(--color-surface)">
+          <sc-if value="{{ noUp }}" hint-placeholder-val="{{ true }}">
+            <h2 style="font-weight:600;letter-spacing:-0.025em;font-size:24px;margin:0">Así lo revisamos</h2>
+            <ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:16px;line-height:1.5;color:var(--color-neutral-800)">
+              <li>Comprobamos el formato, las medidas y que ninguna estancia se solape.</li>
+              <li>Generamos muros de 24 cm (fachada) y 12 cm (tabiques), puertas y ventanas.</li>
+              <li>Pulsas «Renderizar 3D» y ves cómo se levanta la casa.</li>
+            </ol>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px">
+              <button type="button" class="btn btn-ghost" data-k="estandares" onClick="{{ setTab }}" style="min-height:44px;padding:0 16px;font-size:15px;white-space:nowrap">Ver estándares de subida</button>
+              <button type="button" class="btn btn-ghost" data-k="plantillas" onClick="{{ setTab }}" style="min-height:44px;padding:0 16px;font-size:15px;white-space:nowrap">Empezar con una plantilla</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ hasUp }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--color-neutral-600)">{{ upKind }}</span>
+            <h2 style="font-weight:600;letter-spacing:-0.025em;font-size:24px;margin:0;overflow-wrap:anywhere">{{ upName }}</h2>
+            <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ upRows }}" as="r" hint-placeholder-count="3">
+                <li style="display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.45"><span aria-hidden="true" style="flex:none;width:22px;height:22px;border-radius:50%;background:{{ r.bg }};color:{{ r.fg }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">{{ r.i }}</span><span>{{ r.m }}</span></li>
+              </sc-for>
+            </ul>
+            <sc-if value="{{ upImg }}" hint-placeholder-val="{{ false }}">
+              <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600">Ancho real que representa la imagen (m)<input type="number" min="3" max="60" step="0.5" value="{{ underW }}" onChange="{{ onUnderW }}" class="input" style="max-width:160px"></label>
+            </sc-if>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px">
+              <sc-if value="{{ upCanRender }}" hint-placeholder-val="{{ false }}"><button type="button" class="btn btn-primary" onClick="{{ renderPlan }}" style="min-height:48px;padding:0 22px;font-size:15px;white-space:nowrap">Renderizar 3D</button></sc-if>
+              <sc-if value="{{ upGlb }}" hint-placeholder-val="{{ false }}"><button type="button" class="btn btn-primary" onClick="{{ renderGlb }}" style="min-height:48px;padding:0 22px;font-size:15px;white-space:nowrap">Abrir en el visor 3D</button></sc-if>
+              <sc-if value="{{ upToEditor }}" hint-placeholder-val="{{ false }}"><button type="button" class="btn btn-secondary" data-k="crear" onClick="{{ setTab }}" style="min-height:48px;padding:0 20px;font-size:15px;white-space:nowrap">{{ upEditLabel }}</button></sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ tabCrear }}" hint-placeholder-val="{{ false }}">
+      <section aria-label="Crear plano" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px;align-items:start">
+        <div style="grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <div role="group" aria-label="Herramienta" style="display:flex;gap:4px;padding:4px;border-radius:999px;background:var(--color-neutral-200)">
+            <sc-for list="{{ tools }}" as="t" hint-placeholder-count="3"><button type="button" aria-pressed="{{ t.on }}" data-k="{{ t.k }}" onClick="{{ setTool }}" style="min-height:40px;padding:0 16px;border:0;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};font:inherit;font-size:14px;font-weight:600;cursor:pointer">{{ t.l }}</button></sc-for>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600">Nombre<input type="text" value="{{ nombre }}" onChange="{{ onNombre }}" maxLength="60" class="input" style="width:200px;min-height:40px"></label>
+          <label title="Altura libre de suelo a techo para todas las estancias" style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;white-space:nowrap">Altura del techo<input type="number" min="2.2" max="4.5" step="0.05" value="{{ alto }}" onChange="{{ onAlto }}" class="input" aria-label="Altura del techo en metros" style="width:92px;min-height:40px">m</label>
+          <span style="flex:1"></span>
+          <button type="button" class="btn btn-ghost" onClick="{{ clearPlan }}" style="min-height:44px;padding:0 14px;font-size:14px;white-space:nowrap">Vaciar</button>
+          <button type="button" class="btn btn-secondary" onClick="{{ downloadPlan }}" style="min-height:44px;padding:0 16px;font-size:14px;white-space:nowrap">Descargar .json</button>
+          <button type="button" class="btn btn-primary" onClick="{{ renderPlan }}" style="min-height:44px;padding:0 20px;font-size:15px;white-space:nowrap">Renderizar 3D</button>
+        </div>
+        <sc-if value="{{ isDraw }}" hint-placeholder-val="{{ true }}">
+          <div style="grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+            <span style="font-size:13px;font-weight:600;color:var(--color-neutral-700);margin-right:4px">Tipo de la nueva estancia</span>
+            <sc-for list="{{ typeChips }}" as="c" hint-placeholder-count="10"><button type="button" aria-pressed="{{ c.on }}" data-k="{{ c.k }}" onClick="{{ setNewType }}" style="display:flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:var(--color-text);font:inherit;font-size:13px;font-weight:600;cursor:pointer"><span aria-hidden="true" style="width:10px;height:10px;border-radius:50%;background:{{ c.sw }};border:1px solid var(--color-neutral-400)"></span>{{ c.l }}</button></sc-for>
+          </div>
+        </sc-if>
+        <div data-r3d-claro="" style="grid-column:span 2;min-width:0;border-radius:var(--radius-lg);background:var(--color-neutral-100);border:1px solid var(--color-divider);overflow:hidden">
+          <svg ref="{{ svgRef }}" viewBox="{{ vb }}" onPointerDown="{{ edDown }}" onPointerMove="{{ edMove }}" onPointerUp="{{ edUp }}" onPointerCancel="{{ edUp }}" role="img" aria-label="Plano editable. Cada cuadro mide 1 metro." style="display:block;width:100%;height:auto;max-height:70vh;touch-action:none;user-select:none;cursor:{{ cursor }}">
+            <defs><pattern id="aqgrid" width="1" height="1" patternUnits="userSpaceOnUse"><path d="M1 0H0V1" fill="none" stroke="var(--color-neutral-300)" stroke-width="0.02"></path></pattern></defs>
+            <rect x="-1" y="-1" width="200" height="200" fill="url(#aqgrid)"></rect>
+            <sc-if value="{{ hasUnder }}" hint-placeholder-val="{{ false }}"><image ref="{{ underRef }}" x="0" y="0" width="{{ underW }}" height="{{ underH }}" opacity="0.45" preserveAspectRatio="none" style="pointer-events:none"></image></sc-if>
+            <sc-for list="{{ edRooms }}" as="r" hint-placeholder-count="6">
+              <rect data-rid="{{ r.id }}" x="{{ r.x }}" y="{{ r.y }}" width="{{ r.w }}" height="{{ r.d }}" fill="{{ r.fill }}" stroke="{{ r.stroke }}" stroke-width="0.08" stroke-dasharray="{{ r.dash }}"></rect>
+            </sc-for>
+            <sc-for list="{{ edSegs }}" as="l" hint-placeholder-count="0"><line x1="{{ l.x1 }}" y1="{{ l.y1 }}" x2="{{ l.x2 }}" y2="{{ l.y2 }}" stroke="var(--color-neutral-900)" stroke-width="{{ l.w }}" stroke-linecap="square" style="pointer-events:none"></line></sc-for>
+            <sc-for list="{{ edOps }}" as="l" hint-placeholder-count="0"><line x1="{{ l.x1 }}" y1="{{ l.y1 }}" x2="{{ l.x2 }}" y2="{{ l.y2 }}" stroke="{{ l.c }}" stroke-width="{{ l.w }}" style="pointer-events:none"></line></sc-for>
+            <sc-for list="{{ edRooms }}" as="r" hint-placeholder-count="0">
+              <text x="{{ r.lx }}" y="{{ r.ly }}" text-anchor="middle" font-size="{{ r.fs }}" font-weight="700" fill="var(--color-neutral-900)" style="pointer-events:none">{{ r.name }}</text>
+              <text x="{{ r.lx }}" y="{{ r.l2 }}" text-anchor="middle" font-size="{{ r.fs2 }}" fill="var(--color-neutral-700)" style="pointer-events:none">{{ r.dims }}</text>
+            </sc-for>
+            <sc-if value="{{ hasDraft }}" hint-placeholder-val="{{ false }}"><rect x="{{ draft.x }}" y="{{ draft.y }}" width="{{ draft.w }}" height="{{ draft.d }}" fill="var(--color-accent-200)" fill-opacity="0.6" stroke="var(--color-accent)" stroke-width="0.06" stroke-dasharray="0.2 0.12" style="pointer-events:none"></rect><text x="{{ draft.lx }}" y="{{ draft.ly }}" text-anchor="middle" font-size="0.4" font-weight="700" fill="var(--color-accent-800)" style="pointer-events:none">{{ draft.dims }}</text></sc-if>
+            <sc-if value="{{ hasHandle }}" hint-placeholder-val="{{ false }}"><circle data-h="1" cx="{{ handle.x }}" cy="{{ handle.y }}" r="0.28" fill="var(--color-accent)" stroke="#fff" stroke-width="0.06" style="cursor:nwse-resize"></circle></sc-if>
+          </svg>
+        </div>
+        <aside style="display:flex;flex-direction:column;gap:16px;padding:20px;border-radius:var(--radius-lg);background:var(--color-surface);min-width:0">
+          <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <span style="font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--color-neutral-600)">Estancia seleccionada</span>
+              <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600">Nombre<input type="text" class="input" data-f="nombre" value="{{ selR.nombre }}" onChange="{{ onField }}" maxLength="40"></label>
+              <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600">Tipo<select class="input" data-f="tipo" value="{{ selR.tipo }}" onChange="{{ onField }}"><sc-for list="{{ typeChips }}" as="c" hint-placeholder-count="10"><option value="{{ c.k }}">{{ c.l }}</option></sc-for></select></label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600">Ancho (m)<input type="number" class="input" data-f="ancho" min="1.2" max="30" step="0.05" value="{{ selR.ancho }}" onChange="{{ onField }}"></label>
+                <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600">Fondo (m)<input type="number" class="input" data-f="fondo" min="1.2" max="30" step="0.05" value="{{ selR.fondo }}" onChange="{{ onField }}"></label>
+                <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600">X (m)<input type="number" class="input" data-f="x" min="0" step="0.05" value="{{ selR.x }}" onChange="{{ onField }}"></label>
+                <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600">Y (m)<input type="number" class="input" data-f="y" min="0" step="0.05" value="{{ selR.y }}" onChange="{{ onField }}"></label>
+              </div>
+              <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600">Altura propia de esta estancia (m)<input type="number" class="input" data-f="altura" min="2.2" max="9" step="0.05" value="{{ selR.altura }}" placeholder="{{ altoPh }}" onChange="{{ onField }}"><span style="font-size:13px;font-weight:600;color:var(--color-neutral-600)">Déjalo vacío para usar la altura general.</span></label>
+              <label style="display:flex;align-items:center;gap:10px;min-height:44px;font-size:15px;font-weight:600;cursor:pointer"><input type="checkbox" data-f="dobleAltura" checked="{{ selR.dbl }}" onChange="{{ onField }}" style="width:20px;height:20px;accent-color:var(--color-accent)">Doble altura ({{ dblL }})</label>
+              <button type="button" class="btn btn-ghost" onClick="{{ delSel }}" style="min-height:44px;font-size:14px;align-self:flex-start;color:var(--color-accent-800);white-space:nowrap">Eliminar estancia</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noSel }}" hint-placeholder-val="{{ true }}">
+            <p style="margin:0;font-size:15px;line-height:1.55;color:var(--color-neutral-800)">Arrastra sobre la cuadrícula para dibujar una estancia (cada cuadro es 1 m). Con «Mover» seleccionas, desplazas y estiras desde el punto naranja. Los muros, puertas y ventanas se colocan solos.</p>
+          </sc-if>
+          <dl style="margin:0;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-top:14px;border-top:1px solid var(--color-divider)">
+            <div><dt style="font-size:13px;color:var(--color-neutral-700)">Superficie útil</dt><dd style="margin:2px 0 0;font-weight:600;letter-spacing:-0.02em;font-size:24px">{{ sumArea }}</dd></div>
+            <div><dt style="font-size:13px;color:var(--color-neutral-700)">Estancias</dt><dd style="margin:2px 0 0;font-weight:600;letter-spacing:-0.02em;font-size:24px">{{ sumN }}</dd></div>
+            <div><dt style="font-size:13px;color:var(--color-neutral-700)">Puertas</dt><dd style="margin:2px 0 0;font-weight:600;letter-spacing:-0.02em;font-size:24px">{{ sumDoors }}</dd></div>
+            <div><dt style="font-size:13px;color:var(--color-neutral-700)">Ventanas</dt><dd style="margin:2px 0 0;font-weight:600;letter-spacing:-0.02em;font-size:24px">{{ sumWins }}</dd></div>
+          </dl>
+          <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ valRows }}" as="r" hint-placeholder-count="1">
+              <li style="display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45"><span aria-hidden="true" style="flex:none;width:20px;height:20px;border-radius:50%;background:{{ r.bg }};color:{{ r.fg }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">{{ r.i }}</span><span>{{ r.m }}</span></li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hasUnder }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;padding-top:14px;border-top:1px solid var(--color-divider)">
+              <label style="display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600">Calco: ancho real (m)<input type="number" min="3" max="60" step="0.5" value="{{ underW }}" onChange="{{ onUnderW }}" class="input" style="width:120px"></label>
+              <button type="button" class="btn btn-ghost" onClick="{{ dropUnder }}" style="min-height:44px;font-size:14px;white-space:nowrap">Quitar calco</button>
+            </div>
+          </sc-if>
+        </aside>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ tabPlantillas }}" hint-placeholder-val="{{ false }}">
+      <section aria-label="Plantillas" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:20px">
+        <sc-for list="{{ tpls }}" as="t" hint-placeholder-count="3">
+          <article style="display:flex;flex-direction:column;gap:14px;padding:20px;border-radius:var(--radius-lg);background:var(--color-surface)">
+            <svg data-r3d-claro="" viewBox="{{ t.vb }}" role="img" aria-label="Vista previa del plano {{ t.nombre }}" style="display:block;width:100%;height:auto;aspect-ratio:4 / 3;background:var(--color-neutral-100);border-radius:12px">
+              <sc-for list="{{ t.rects }}" as="r" hint-placeholder-count="6"><rect x="{{ r.x }}" y="{{ r.y }}" width="{{ r.w }}" height="{{ r.d }}" fill="{{ r.fill }}" stroke="var(--color-neutral-900)" stroke-width="0.12"></rect></sc-for>
+            </svg>
+            <div>
+              <h2 style="font-weight:600;letter-spacing:-0.025em;font-size:23px;line-height:1.15;margin:0">{{ t.nombre }}</h2>
+              <p style="margin:6px 0 0;font-size:15px;line-height:1.45;color:var(--color-neutral-700)">{{ t.sub }}</p>
+              <p style="margin:8px 0 0;font-size:14px;font-weight:600">{{ t.stats }}</p>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:auto">
+              <button type="button" class="btn btn-primary" data-id="{{ t.id }}" onClick="{{ renderTpl }}" style="min-height:46px;padding:0 20px;font-size:15px;white-space:nowrap">Ver en 3D</button>
+              <button type="button" class="btn btn-secondary" data-id="{{ t.id }}" onClick="{{ editTpl }}" style="min-height:46px;padding:0 18px;font-size:15px;white-space:nowrap">Editar</button>
+            </div>
+          </article>
+        </sc-for>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ tabEstandares }}" hint-placeholder-val="{{ false }}">
+      <section aria-label="Estándares de subida" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:20px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div style="padding:clamp(22px,3vw,32px);border-radius:var(--radius-lg);background:var(--color-surface)">
+            <h2 style="font-weight:600;letter-spacing:-0.025em;font-size:26px;margin:0 0 16px">Formatos aceptados</h2>
+            <div style="display:flex;flex-direction:column;gap:16px">
+              <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 14px"><span class="tag tag-accent" style="grid-row:span 2;align-self:start">.json</span><strong style="font-size:16px">Plano Aquaterra (aq-plano v1)</strong><span style="font-size:15px;line-height:1.5;color:var(--color-neutral-700)">Render automático completo: muros, puertas, ventanas y muebles. Máximo 2 MB.</span></div>
+              <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 14px"><span class="tag tag-accent-2" style="grid-row:span 2;align-self:start">.jpg .png .webp</span><strong style="font-size:16px">Imagen del plano</strong><span style="font-size:15px;line-height:1.5;color:var(--color-neutral-700)">Se usa como calco en «Crear plano». Vista cenital sin perspectiva, mínimo 1600 px de lado y una medida conocida. Máximo 20 MB.</span></div>
+              <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 14px"><span class="tag tag-neutral" style="grid-row:span 2;align-self:start">.glb</span><strong style="font-size:16px">Modelo 3D ya hecho</strong><span style="font-size:15px;line-height:1.5;color:var(--color-neutral-700)">Se abre directamente en el visor. En metros, eje Y hacia arriba. Máximo 50 MB.</span></div>
+            </div>
+          </div>
+          <div style="padding:clamp(22px,3vw,32px);border-radius:var(--radius-lg);background:var(--color-surface)">
+            <h2 style="font-weight:600;letter-spacing:-0.025em;font-size:26px;margin:0 0 16px">Reglas del plano</h2>
+            <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.55">
+              <li>Medidas en metros. El origen (0, 0) es la esquina superior izquierda; x crece a la derecha e y hacia abajo.</li>
+              <li>Una planta por archivo. Estancias rectangulares: una estancia en L se divide en dos rectángulos.</li>
+              <li>Cada estancia lleva id, nombre, tipo, x, y, ancho y fondo. Mínimo 1,2 × 1,2 m y sin solapes.</li>
+              <li>Tipos: salon, comedor, cocina, dormitorio, bano, estudio, pasillo, recibidor, lavadero y terraza.</li>
+              <li>"alturaLibre": altura de suelo a techo para toda la casa, 2,70 m por defecto (entre 2,20 y 4,50). Cada estancia puede llevar su propia "altura" (hasta 9 m). Con "dobleAltura": true la estancia sube al doble de la altura libre. En el visor 3D también se cambia en vivo desde Ajustes.</li>
+              <li>Muros automáticos sobre los bordes: 24 cm en fachada y 12 cm entre estancias.</li>
+              <li>Puertas de 80–90 × 210 cm y ventanas según el uso. Salón, comedor y cocina contiguos quedan abiertos entre sí.</li>
+              <li>La entrada se coloca en el recibidor, el pasillo o el salón que dé a fachada.</li>
+            </ul>
+          </div>
+        </div>
+        <div style="padding:clamp(22px,3vw,32px);border-radius:var(--radius-lg);background:#0B0C0F;color:#F5F5F7;display:flex;flex-direction:column;gap:16px;min-width:0">
+          <h2 style="font-weight:600;letter-spacing:-0.025em;font-size:26px;margin:0">Ejemplo de archivo</h2>
+          <pre style="margin:0;padding:16px;border-radius:12px;background:rgba(255,255,255,0.07);font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.6;overflow-x:auto;white-space:pre">{
+  "formato": "aq-plano",
+  "version": 1,
+  "unidad": "m",
+  "nombre": "Casa Lambaré",
+  "alturaLibre": 2.7,
+  "estancias": [
+    { "id": "salon", "nombre": "Salón", "tipo": "salon",
+      "x": 3, "y": 5.5, "ancho": 6, "fondo": 5.5,
+      "dobleAltura": true },
+    { "id": "cocina", "nombre": "Cocina", "tipo": "cocina",
+      "x": 9, "y": 5.5, "ancho": 5, "fondo": 2.75 }
+  ]
+}</pre>
+          <button type="button" class="btn btn-primary" onClick="{{ downloadTemplate }}" style="min-height:48px;padding:0 22px;font-size:15px;align-self:flex-start;white-space:nowrap">Descargar plantilla .json</button>
+        </div>
+      </section>
+    </sc-if>
+  </div>
+</main>
+<div data-r3d="">
+<sc-if value="{{ vOpen }}" hint-placeholder-val="{{ false }}">
+    <div data-r3d-claro="" role="dialog" aria-modal="true" aria-label="Visor 3D" style="position:fixed;inset:0;z-index:200;background:var(--color-neutral-900);color:var(--color-neutral-100);font-family:var(--font-body);overflow:hidden">
+      <div ref="{{ stageRef }}" style="position:absolute;inset:0"></div>
+      <div style="position:absolute;top:0;left:0;right:0;display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px clamp(12px,2vw,20px);background:linear-gradient(rgba(20,18,16,.55),rgba(20,18,16,0));pointer-events:none">
+        <button type="button" onClick="{{ closeViewer }}" aria-label="Cerrar visor" style="pointer-events:auto;width:46px;height:46px;border-radius:999px;border:0;background:var(--color-neutral-100);color:var(--color-neutral-900);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+        <span style="font-weight:600;letter-spacing:-0.02em;font-size:20px;text-shadow:0 1px 6px rgba(0,0,0,.5);max-width:40vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ vName }}</span>
+        <span style="flex:1"></span>
+        <sc-if value="{{ vReady }}" hint-placeholder-val="{{ false }}">
+          <div role="group" aria-label="Modo de vista" style="pointer-events:auto;display:flex;gap:3px;padding:4px;border-radius:999px;background:var(--color-neutral-100)">
+            <sc-for list="{{ modes }}" as="m" hint-placeholder-count="3"><button type="button" aria-pressed="{{ m.on }}" data-k="{{ m.k }}" onClick="{{ setMode }}" style="min-height:40px;padding:0 14px;border:0;border-radius:999px;background:{{ m.bg }};color:{{ m.fg }};font:inherit;font-size:14px;font-weight:600;cursor:pointer">{{ m.l }}</button></sc-for>
+          </div>
+          <sc-if value="{{ hasRooms }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ toggleTour }}" class="btn btn-primary" style="pointer-events:auto;min-height:48px;padding:0 18px;font-size:14px;white-space:nowrap">{{ tourLabel }}</button></sc-if>
+          <button type="button" onClick="{{ togglePanel }}" aria-pressed="{{ panelOn }}" aria-label="Ajustes de la escena" title="Hora, luces, techo, puertas y fachada" style="pointer-events:auto;min-height:48px;padding:0 16px;border-radius:999px;border:0;background:{{ panelBg }};color:{{ panelFg }};display:flex;align-items:center;gap:8px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"></path><circle cx="16" cy="6" r="2"></circle><circle cx="10" cy="12" r="2"></circle><circle cx="18" cy="18" r="2"></circle></svg>Ajustes</button>
+          <button type="button" onClick="{{ photo }}" aria-label="Descargar foto de la vista" title="Foto" style="pointer-events:auto;width:48px;height:48px;border-radius:999px;border:0;background:var(--color-neutral-100);color:var(--color-neutral-900);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg></button>
+        </sc-if>
+      </div>
+      <sc-if value="{{ hasCaption }}" hint-placeholder-val="{{ false }}">
+        <div aria-live="polite" style="position:absolute;top:84px;left:50%;transform:translateX(-50%);padding:10px 18px;border-radius:999px;background:var(--color-neutral-100);color:var(--color-neutral-900);font-weight:600;font-size:15px;white-space:nowrap;box-shadow:var(--shadow-md);pointer-events:none">{{ caption }}</div>
+      </sc-if>
+      <sc-if value="{{ vReady }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;left:clamp(12px,2vw,20px);right:clamp(12px,2vw,20px);bottom:calc(14px + env(safe-area-inset-bottom));display:flex;align-items:flex-end;gap:12px;pointer-events:none">
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+            <sc-if value="{{ panelOpen }}" hint-placeholder-val="{{ true }}">
+              <div role="group" aria-label="Ajustes de la escena" style="pointer-events:auto;align-self:flex-start;width:min(480px,100%);box-sizing:border-box;padding:12px 14px;border-radius:18px;background:rgba(20,18,16,.66);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#f6f0e7;display:flex;flex-direction:column;gap:10px;font-size:13px;font-weight:600">
+                <label style="display:grid;grid-template-columns:92px 1fr 46px 40px;align-items:center;gap:8px">Hora del día<input type="range" min="0" max="24" step="0.25" value="{{ vHour }}" onChange="{{ onHour }}" aria-valuetext="{{ vHourL }}" style="width:100%;min-width:0;accent-color:var(--color-accent)"><span style="font-variant-numeric:tabular-nums;text-align:right">{{ vHourL }}</span><button type="button" onClick="{{ togglePlay }}" aria-label="{{ playAria }}" title="{{ playAria }}" style="width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:inherit;font:inherit;font-size:14px;cursor:pointer">{{ playIcon }}</button></label>
+                <sc-if value="{{ hasRooms }}" hint-placeholder-val="{{ true }}"><label style="display:grid;grid-template-columns:92px 1fr 46px 40px;align-items:center;gap:8px">Altura techo<input type="range" min="2.2" max="4.5" step="0.05" value="{{ vH }}" onChange="{{ onHeight }}" aria-valuetext="{{ vHL }}" style="width:100%;min-width:0;accent-color:var(--color-accent)"><span style="font-variant-numeric:tabular-nums;text-align:right">{{ vHL }}</span><span></span></label></sc-if>
+                <div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center">
+                  <span style="display:flex;align-items:center;gap:8px">Luces<span role="group" aria-label="Luces interiores" style="display:flex;gap:2px;padding:3px;border-radius:999px;background:rgba(255,255,255,.14)"><sc-for list="{{ lightOpts }}" as="o" hint-placeholder-count="3"><button type="button" aria-pressed="{{ o.on }}" data-k="{{ o.k }}" onClick="{{ setLights }}" style="min-height:32px;padding:0 11px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};font:inherit;font-size:12px;cursor:pointer">{{ o.l }}</button></sc-for></span></span>
+                  <span style="display:flex;align-items:center;gap:8px">Fachada<span role="group" aria-label="Acabado de la fachada" style="display:flex;gap:2px;padding:3px;border-radius:999px;background:rgba(255,255,255,.14)"><sc-for list="{{ facadeOpts }}" as="o" hint-placeholder-count="3"><button type="button" aria-pressed="{{ o.on }}" data-k="{{ o.k }}" onClick="{{ setFacade }}" style="min-height:32px;padding:0 11px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};font:inherit;font-size:12px;cursor:pointer">{{ o.l }}</button></sc-for></span></span>
+                  <sc-if value="{{ hasDoors }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ toggleDoors }}" style="min-height:34px;padding:0 13px;border:0;border-radius:999px;background:rgba(255,255,255,.9);color:#1f1c19;font:inherit;font-size:12px;cursor:pointer;white-space:nowrap">{{ doorsLabel }}</button></sc-if>
+                </div>
+              </div>
+            </sc-if>
+            <span style="font-size:13px;line-height:1.4;text-shadow:0 1px 4px rgba(0,0,0,.7);color:var(--color-neutral-100)">{{ hint }}</span>
+          </div>
+          <sc-if value="{{ showMM }}" hint-placeholder-val="{{ true }}">
+            <canvas ref="{{ mmRef }}" aria-label="Minimapa: toca una estancia para ir" style="pointer-events:auto;flex:none;width:clamp(130px,18vw,210px);height:clamp(100px,14vw,160px);border-radius:16px;background:rgba(245,234,216,.92);box-shadow:var(--shadow-md);cursor:pointer"></canvas>
+          </sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{ vReady }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ hasRooms }}" hint-placeholder-val="{{ false }}">
+          <div role="group" aria-label="Ir a una estancia" style="position:absolute;left:clamp(12px,2vw,20px);top:84px;bottom:{{ roomsBottom }};display:flex;flex-direction:column;justify-content:center;pointer-events:none">
+            <div style="pointer-events:auto;display:flex;flex-direction:column;gap:6px;max-height:100%;overflow-y:auto;padding:8px;border-radius:20px;background:rgba(20,18,16,.45)">
+              <span style="padding:4px 8px 2px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--color-neutral-200)">Estancias</span>
+              <sc-for list="{{ roomChips }}" as="r" hint-placeholder-count="6"><button type="button" data-id="{{ r.id }}" onClick="{{ goRoom }}" aria-pressed="{{ r.on }}" style="flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:0;background:{{ r.bg }};color:{{ r.fg }};font:inherit;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;text-align:left;max-width:min(200px,38vw);overflow:hidden;text-overflow:ellipsis">{{ r.l }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </sc-if>
+      <sc-if value="{{ flyBtns }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;right:clamp(12px,2vw,20px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px">
+          <button type="button" aria-label="Subir" data-v="1" onPointerDown="{{ liftOn }}" onPointerUp="{{ liftOff }}" onPointerLeave="{{ liftOff }}" style="width:56px;height:56px;border-radius:50%;border:0;background:var(--color-neutral-100);color:var(--color-neutral-900);font-size:22px;font-weight:700;touch-action:none">▲</button>
+          <button type="button" aria-label="Bajar" data-v="-1" onPointerDown="{{ liftOn }}" onPointerUp="{{ liftOff }}" onPointerLeave="{{ liftOff }}" style="width:56px;height:56px;border-radius:50%;border:0;background:var(--color-neutral-100);color:var(--color-neutral-900);font-size:22px;font-weight:700;touch-action:none">▼</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ vBuild }}" hint-placeholder-val="{{ true }}">
+        <div role="status" aria-live="polite" style="position:absolute;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(560px,calc(100vw - 24px));box-sizing:border-box;padding:20px 22px;border-radius:var(--radius-lg);background:var(--color-bg);color:var(--color-text);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:baseline;gap:12px"><span style="flex:1;font-weight:600;letter-spacing:-0.02em;font-size:22px;line-height:1.2">{{ vLabel }}</span><span style="font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--color-accent-700)">{{ vPct }}</span></div>
+          <div style="height:12px;border-radius:999px;background:var(--color-neutral-200);overflow:hidden"><div style="height:100%;width:{{ vPct }};border-radius:999px;background:var(--color-accent);transition:width .25s ease"></div></div>
+          <ol style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px 14px">
+            <sc-for list="{{ steps }}" as="s" hint-placeholder-count="8"><li style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:{{ s.fg }}"><span aria-hidden="true" style="flex:none;width:18px;height:18px;border-radius:50%;background:{{ s.bg }};color:{{ s.ic }};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">{{ s.i }}</span>{{ s.l }}</li></sc-for>
+          </ol>
+        </div>
+      </sc-if>
+      <sc-if value="{{ vErr }}" hint-placeholder-val="{{ false }}">
+        <div role="alert" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(460px,calc(100vw - 32px));padding:24px;border-radius:var(--radius-lg);background:var(--color-bg);color:var(--color-text);display:flex;flex-direction:column;gap:12px">
+          <strong style="font-weight:600;letter-spacing:-0.025em;font-size:22px">No se pudo generar el 3D</strong>
+          <span style="font-size:15px;line-height:1.5;color:var(--color-neutral-700)">{{ vErrMsg }}</span>
+          <button type="button" class="btn btn-primary" onClick="{{ closeViewer }}" style="min-height:46px;align-self:flex-start;padding:0 20px;white-space:nowrap">Cerrar</button>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+</div>
+
+<!-- Pie común a todas las páginas: mismas columnas, mismos enlaces y la marca grande; solo cambia la nota legal de cada página. -->
+<footer data-screen-label="03 Footer" data-grain="" data-aurora="" style="background:{{ th.deep }};transition:background .6s;color:#F5F5F7;padding:clamp(64px,8vw,104px) clamp(20px,3.2vw,48px) calc(28px + env(safe-area-inset-bottom));overflow:hidden">
+  <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(56px,8vw,96px)">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:48px">
+      <div style="flex:1 1 280px;display:flex;flex-direction:column;gap:16px;max-width:340px">
+        <span style="display:flex;align-items:center;gap:10px;font-size:20px;font-weight:600;letter-spacing:-0.035em"><span style="width:13px;height:13px;background:#C9F15D;transform:rotate(45deg);border-radius:2px"></span>{{ marca }}</span>
+        <span style="font-size:15px;line-height:1.6;color:rgba(245,245,247,0.82)">Inversión inmobiliaria en Paraguay. Asunción y el interior del país.</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:clamp(40px,6vw,88px)">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span data-mono="" style="font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:rgba(228,247,176,0.75)">Navegación</span>
+          <a href="index.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Inicio</a>
+          <a href="Aquaterra%20Proyectos.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Proyectos</a>
+          <a href="index.html#inversiones" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Inversiones</a>
+          <a href="index.html#nosotros" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Nosotros</a>
+          <a href="Aquaterra%20Blog.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Blog</a>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span data-mono="" style="font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:rgba(228,247,176,0.75)">Contacto</span>
+          <a href="index.html#contacto" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Formulario de asesoría</a>
+          <a href="{{ footWa }}" target="_blank" rel="noopener" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">WhatsApp</a>
+          <span style="font-size:15px">Asunción, Paraguay</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <span data-mono="" style="font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:rgba(228,247,176,0.75)">Recursos</span>
+          <a href="index.html#simulador" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Simulador de renta</a>
+          <a href="index.html#preguntas" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Preguntas frecuentes</a>
+          <a href="Aquaterra%20Blog.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Guías del blog</a>
+          <a href="Aquaterra%20Render%203D.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Render 3D de planos</a>
+          <a href="Aquaterra%20Render%203D.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Render 3D de planos</a>
+          <a href="Aquaterra%20Desde%20Espana.dc.html" style="align-self:flex-start;display:inline-block;font-size:15px;color:#F5F5F7;transition:color .2s, transform .3s" style-hover="color:#E4F7B0;transform:translateX(3px)">Comprar desde España</a>
+        </div>
+      </div>
+    </div>
+    <span aria-hidden="true" style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(72px,17vw,250px);line-height:0.9;letter-spacing:-0.055em;font-weight:800;margin-left:-0.04em;padding-bottom:0.06em;background:linear-gradient(180deg,rgba(245,245,247,0.92) 35%,rgba(245,245,247,0.05) 100%);-webkit-background-clip:text;background-clip:text;color:transparent">{{ marca }}</span>
+    <div style="display:flex;flex-direction:column;gap:16px;padding-top:20px;border-top:1px solid rgba(245,245,247,0.12)">
+    <span style="max-width:720px;font-size:13px;line-height:1.55;color:rgba(245,245,247,0.68)">Render orientativo generado a partir del plano: las medidas, los muebles y los acabados son ilustrativos y no sustituyen a un proyecto de arquitectura.</span>
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:rgba(245,245,247,0.75)">
+      <span>© 2026 {{ marca }}. Todos los derechos reservados.</span>
+      <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="privacidad.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de privacidad</a><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
+      <span>Asunción, Paraguay</span>
+    </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;pestanaInicial&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;subir&quot;,&quot;crear&quot;,&quot;plantillas&quot;,&quot;estandares&quot;],&quot;default&quot;:&quot;subir&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;minimapa&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = {
+    mode: (() => { try { return sessionStorage.getItem('aquaterra-modo'); } catch (e) { return null; } })(),
+    w: typeof window !== 'undefined' ? window.innerWidth : 1280,
+    menu: false,
+    tab: 'subir', rooms: [], nombre: 'Mi casa', alto: 2.7, panel: !(typeof matchMedia !== 'undefined' && matchMedia('(pointer:coarse)').matches), sel: null, tool: 'draw', newType: 'dormitorio', draft: null, up: null, under: null, underW: 12, drop: false, v: null, ready: false
+  };
+  svgRef = React.createRef(); underRef = React.createRef(); stageRef = React.createRef(); mmRef = React.createRef();
+  STEPS = ['Leyendo el plano', 'Terreno y cielo', 'Levantando muros', 'Puertas y ventanas', 'Suelos y techos', 'Muebles 3D', 'Amueblando', 'Luces y sombras'];
+
+  // Menú del móvil: el mismo en todas las páginas (algo más descriptivo que el de escritorio e incluye Preguntas).
+  MENU = [['index.html#inversiones', 'Por qué Paraguay'], ['index.html#simulador', 'Simulador de renta'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['index.html#preguntas', 'Preguntas'], ['Aquaterra%20Desde%20Espana.dc.html', 'Comprar desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['Aquaterra%20Render%203D.dc.html', 'Render 3D de tu plano'], ['index.html#contacto', 'Contacto']];
+  // Mismo menú y en el mismo orden en todas las páginas: primero los capítulos del inicio (en el orden en que aparecen), luego las otras páginas.
+  NAV = [['index.html#inversiones', 'Inversiones'], ['index.html#simulador', 'Simulador'], ['Aquaterra%20Proyectos.dc.html', 'Proyectos'], ['index.html#edificio', 'El edificio'], ['index.html#nosotros', 'Nosotros'], ['Aquaterra%20Desde%20Espana.dc.html', 'Desde España'], ['Aquaterra%20Blog.dc.html', 'Blog'], ['Aquaterra%20Render%203D.dc.html', 'Render 3D'], ['index.html#contacto', 'Contacto']];
+  THEMES = {
+    dia: { bg: '#F5F5F7', ink: '#1D1D1F', mute: '#6E6E73', mute2: '#424245', line: 'rgba(0,0,0,0.1)', card: '#FFFFFF', chip: 'rgba(118,118,128,0.12)', deep: '#0B0C0F' },
+    noche: { bg: '#17191E', ink: '#ECECEE', mute: '#A4A7AE', mute2: '#CACCD1', line: 'rgba(255,255,255,0.10)', card: '#212329', chip: 'rgba(150,152,160,0.20)', deep: '#1E2127' }
+  };
+  // Modo noche por defecto; el botón día / noche guarda la elección durante la visita.
+  mode() { return this.state.mode === 'dia' ? 'dia' : 'noche'; }
+  coarse = typeof matchMedia !== 'undefined' && matchMedia('(pointer:coarse)').matches;
+
+  componentDidMount() {
+    this._onResize = () => this.setState((st) => ({ w: window.innerWidth, menu: window.innerWidth >= 1240 ? false : st.menu }));
+    window.addEventListener('resize', this._onResize);
+    const start = this.props.pestanaInicial; if (start && start !== 'subir') this.setState({ tab: start });
+    import(new URL('render3d/aq-plan.js', document.baseURI).href).then(m => {
+      this.P = m; let saved = null;
+      try { saved = JSON.parse(localStorage.getItem('aq_r3d_plan') || 'null'); } catch (e) {}
+      const t = m.PLANTILLAS[0], ok = saved && Array.isArray(saved.rooms) && saved.rooms.length;
+      this.setState({ ready: true, rooms: ok ? saved.rooms : t.estancias.map(e => Object.assign({}, e)), nombre: (ok && saved.nombre) || t.nombre, alto: (ok && +saved.alto) || 2.7 });
+    }).catch(e => console.error(e));
+    this.onHash = () => { const k = location.hash.slice(1); if (['subir', 'crear', 'plantillas', 'estandares'].includes(k)) this.setState({ tab: k }); };
+    this.onHash(); addEventListener('hashchange', this.onHash);
+    this.onEsc = e => { if (e.key !== 'Escape') return; if (this.state.v) this.closeViewer(); else if (this.state.menu) this.setState({ menu: false }); };
+    addEventListener('keydown', this.onEsc);
+  }
+  componentDidUpdate() { const im = this.underRef.current, u = this.state.under && this.state.under.url; if (im && u && im.getAttribute('href') !== u) im.setAttribute('href', u); }
+  componentWillUnmount() { window.removeEventListener('resize', this._onResize); removeEventListener('hashchange', this.onHash); removeEventListener('keydown', this.onEsc); this.stopPlay(); if (this.api) this.api.dispose(); }
+
+  fmt = v => String(Math.round(v * 100) / 100).replace('.', ',');
+  snap = v => Math.round(v * 4) / 4;
+  save = () => { try { localStorage.setItem('aq_r3d_plan', JSON.stringify({ nombre: this.state.nombre, rooms: this.state.rooms, alto: this.state.alto })); } catch (e) {} };
+  setRooms = (fn, extra) => this.setState(s => Object.assign({ rooms: fn(s.rooms) }, extra || {}), this.save);
+  updRoom = (id, o) => this.setRooms(rs => rs.map(r => r.id === id ? Object.assign({}, r, o) : r));
+  toW = e => { const svg = this.svgRef.current, pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; return pt.matrixTransform(svg.getScreenCTM().inverse()); };
+  newId = () => 'e' + Date.now().toString(36) + Math.floor(Math.random() * 100);
+
+  setTab = e => { const k = e.currentTarget.getAttribute('data-k'); history.replaceState(null, '', '#' + k); this.setState({ tab: k }); };
+  setTool = e => this.setState({ tool: e.currentTarget.getAttribute('data-k'), draft: null });
+  setNewType = e => this.setState({ newType: e.currentTarget.getAttribute('data-k') });
+  onNombre = e => this.setState({ nombre: String(e.target.value).slice(0, 60) }, this.save);
+  onAlto = e => { const v = parseFloat(String(e.target.value).replace(',', '.')); if (Number.isFinite(v)) this.setState({ alto: Math.max(2.2, Math.min(4.5, v)) }, this.save); };
+
+  edDown = e => {
+    const svg = this.svgRef.current; if (!svg || !this.P) return;
+    const p = this.toW(e), t = e.target, rid = t.getAttribute && t.getAttribute('data-rid'), hd = t.getAttribute && t.getAttribute('data-h'), tool = this.state.tool;
+    if (tool === 'erase') { if (rid) this.setRooms(rs => rs.filter(r => r.id !== rid), { sel: null }); return; }
+    if (hd && this.state.sel) this.drag = { kind: 'resize', id: this.state.sel };
+    else if (tool === 'move' && rid) { const r = this.state.rooms.find(r => r.id === rid); this.drag = { kind: 'move', id: rid, dx: p.x - r.x, dy: p.y - r.y }; this.setState({ sel: rid }); }
+    else if (tool === 'draw') { const x = this.snap(p.x), y = this.snap(p.y); this.drag = { kind: 'draw', x0: x, y0: y, rid }; this.setState({ draft: { x, y, w: 0, d: 0 } }); }
+    else this.setState({ sel: rid || null });
+    try { svg.setPointerCapture(e.pointerId); } catch (er) {}
+  };
+  edMove = e => {
+    const D = this.drag; if (!D) return; const p = this.toW(e);
+    if (D.kind === 'draw') { const x1 = this.snap(p.x), y1 = this.snap(p.y); this.setState({ draft: { x: Math.max(0, Math.min(D.x0, x1)), y: Math.max(0, Math.min(D.y0, y1)), w: Math.abs(x1 - D.x0), d: Math.abs(y1 - D.y0) } }); }
+    else if (D.kind === 'move') this.updRoom(D.id, { x: Math.max(0, this.snap(p.x - D.dx)), y: Math.max(0, this.snap(p.y - D.dy)) });
+    else if (D.kind === 'resize') { const r = this.state.rooms.find(r => r.id === D.id); if (r) this.updRoom(D.id, { ancho: Math.max(1.25, this.snap(p.x - r.x)), fondo: Math.max(1.25, this.snap(p.y - r.y)) }); }
+  };
+  edUp = () => {
+    const D = this.drag; this.drag = null; if (!D || D.kind !== 'draw') return;
+    const d = this.state.draft; this.setState({ draft: null });
+    if (d && d.w >= 1.25 && d.d >= 1.25) {
+      const t = this.state.newType, n = this.state.rooms.filter(r => r.tipo === t).length + 1, L = this.P.TIPOS[t].l, id = this.newId();
+      this.setRooms(rs => rs.concat([{ id, nombre: n > 1 ? L + ' ' + n : L, tipo: t, x: d.x, y: d.y, ancho: d.w, fondo: d.d, dobleAltura: false }]), { sel: id });
+    } else if (D.rid) this.setState({ sel: D.rid });
+  };
+  onField = e => {
+    const f = e.target.getAttribute('data-f'), id = this.state.sel; if (!id) return;
+    let v = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    if (f === 'altura') { v = parseFloat(String(v).replace(',', '.')); v = Number.isFinite(v) && v > 0 ? Math.max(2.2, Math.min(9, v)) : null; }
+    else if (['x', 'y', 'ancho', 'fondo'].includes(f)) { v = parseFloat(String(v).replace(',', '.')); if (!Number.isFinite(v)) return; v = Math.max(f === 'x' || f === 'y' ? 0 : 1.2, Math.min(60, v)); }
+    this.updRoom(id, { [f]: v });
+  };
+  delSel = () => { const id = this.state.sel; this.setRooms(rs => rs.filter(r => r.id !== id), { sel: null }); };
+  clearPlan = () => this.setRooms(() => [], { sel: null, nombre: 'Mi casa' });
+  dl = (name, text, type) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); };
+  downloadPlan = () => { if (!this.P) return; const f = this.P.toFile(this.state.nombre, this.state.rooms, this.state.alto); this.dl((this.state.nombre || 'plano').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-').toLowerCase() + '.aqplano.json', JSON.stringify(f, null, 2), 'application/json'); };
+  downloadTemplate = () => { if (!this.P) return; const t = this.P.PLANTILLAS[0]; this.dl('plantilla.aqplano.json', JSON.stringify(this.P.toFile(t.nombre, t.estancias), null, 2), 'application/json'); };
+
+  setUp = up => this.setState({ up });
+  onFile = e => { const f = e.target.files && e.target.files[0]; if (f) this.readFile(f); e.target.value = ''; };
+  onDrop = e => { e.preventDefault(); this.setState({ drop: false }); const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) this.readFile(f); };
+  onDragOver = e => { e.preventDefault(); if (!this.state.drop) this.setState({ drop: true }); };
+  onDragLeave = () => this.setState({ drop: false });
+  readFile(f) {
+    const n = f.name.toLowerCase(), MB = f.size / 1048576, P = this.P; if (!P) return;
+    if (/\.json$/.test(n)) {
+      if (MB > 2) return this.setUp({ kind: 'json', name: f.name, errors: ['El archivo supera 2 MB.'], warnings: [] });
+      f.text().then(t => {
+        const r = P.normalize(t); let raw = null; try { raw = JSON.parse(t); } catch (e) {}
+        if (raw && Array.isArray(raw.estancias)) {
+          const tip = v => { const k = String(v || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); return P.TIPOS[k] ? k : 'salon'; };
+          const rooms = raw.estancias.slice(0, 40).map((e, i) => Object.assign({ id: String((e && e.id) || 'e' + (i + 1)), nombre: String((e && e.nombre) || ''), tipo: tip(e && e.tipo), x: +(e && e.x) || 0, y: +(e && e.y) || 0, ancho: +(e && (e.ancho ?? e.w)) || 1.2, fondo: +(e && (e.fondo ?? e.d)) || 1.2, dobleAltura: !!(e && e.dobleAltura) }, e && +e.altura > 0 ? { altura: +e.altura } : {}));
+          const al = parseFloat(String(raw.alturaLibre ?? '').replace(',', '.'));
+          this.setState({ rooms, nombre: String(raw.nombre || f.name.replace(/\.json$/i, '')).slice(0, 60), sel: null, alto: Number.isFinite(al) ? Math.max(2.2, Math.min(4.5, al)) : this.state.alto }, this.save);
+        }
+        this.setUp({ kind: 'json', name: f.name, errors: r.errors, warnings: r.warnings, stats: r.stats });
+      });
+    } else if (/\.(png|jpe?g|webp)$/.test(n)) {
+      if (MB > 20) return this.setUp({ kind: 'img', name: f.name, errors: ['La imagen supera 20 MB.'], warnings: [] });
+      const url = URL.createObjectURL(f), img = new Image();
+      img.onload = () => { const big = Math.max(img.naturalWidth, img.naturalHeight) >= 1600; this.setState({ under: { url, ar: img.naturalHeight / img.naturalWidth } }); this.setUp({ kind: 'img', name: f.name, errors: [], warnings: big ? [] : ['Resolución baja (menos de 1600 px): el calco puede verse borroso.'], px: img.naturalWidth + ' × ' + img.naturalHeight + ' px' }); };
+      img.onerror = () => this.setUp({ kind: 'img', name: f.name, errors: ['No se pudo leer la imagen.'], warnings: [] });
+      img.src = url;
+    } else if (/\.glb$/.test(n)) {
+      if (MB > 50) return this.setUp({ kind: 'glb', name: f.name, errors: ['El modelo supera 50 MB.'], warnings: [] });
+      this.glbUrl = URL.createObjectURL(f); this.setUp({ kind: 'glb', name: f.name, errors: [], warnings: [], size: MB.toFixed(1).replace('.', ',') + ' MB' });
+    } else this.setUp({ kind: 'x', name: f.name, errors: ['Formato no admitido. Usa .json, .jpg, .png, .webp o .glb.'], warnings: [] });
+  }
+  onUnderW = e => { const v = parseFloat(String(e.target.value).replace(',', '.')); if (Number.isFinite(v) && v >= 3 && v <= 60) this.setState({ underW: v }); };
+  dropUnder = () => this.setState({ under: null });
+
+  openViewer(input, name) {
+    if (this.api) { this.api.dispose(); this.api = null; }
+    document.documentElement.style.overflow = 'hidden';
+    this._last = '';
+    this.stopPlay();
+    this.setState({ v: { name, phase: 'build', pct: 0, step: -1, label: 'Cargando el motor 3D', mode: 'orbit', tour: false, rooms: [], room: null, err: '', hour: 10.5, lights: 'auto', H: (input && input.H) || 2.7, doors: { total: 0, open: 0 }, facade: 'revoque', playing: false } }, async () => {
+      const upd = o => this.setState(s => s.v ? { v: Object.assign({}, s.v, o) } : null);
+      try {
+        const E = await import(new URL('render3d/aq-render3d.js', document.baseURI).href);
+        const el = this.stageRef.current; if (!el || !this.state.v) return;
+        const api = await E.createViewer(el, input, {
+          minimap: () => this.props.minimapa === false ? null : this.mmRef.current,
+          onProgress: p => { const k = p.step + '|' + p.pct + '|' + p.label; if (k !== this._last) { this._last = k; upd(p); } },
+          onReady: info => upd({ phase: 'ready', pct: 100, rooms: info.rooms, H: info.H || 2.7, doors: { total: info.doors || 0, open: 0 } }),
+          onMode: m => upd({ mode: m }), onTour: t => upd({ tour: t }), onRoom: r => upd({ room: r }), onDoors: d => upd({ doors: d }), hour: 10.5
+        });
+        if (!this.state.v) { api.dispose(); return; }
+        this.api = api;
+      } catch (e) { console.error(e); upd({ phase: 'error', err: String((e && e.message) || e) }); }
+    });
+  }
+  closeViewer = () => { this.stopPlay(); if (this.api) { this.api.dispose(); this.api = null; } document.documentElement.style.overflow = ''; this.setState({ v: null }); };
+  renderPlan = () => {
+    if (!this.P) return; const r = this.P.normalize(this.P.toFile(this.state.nombre, this.state.rooms, this.state.alto));
+    if (!r.plan) { history.replaceState(null, '', '#crear'); this.setState({ tab: 'crear' }); return; }
+    this.openViewer(r.plan, r.plan.nombre);
+  };
+  renderDemo = () => { if (!this.P) return; const t = this.P.PLANTILLAS[0], r = this.P.normalize(this.P.toFile(t.nombre, t.estancias)); this.openViewer(r.plan, t.nombre); };
+  renderTpl = e => { const t = this.P && this.P.PLANTILLAS.find(t => t.id === e.currentTarget.getAttribute('data-id')); if (!t) return; const r = this.P.normalize(this.P.toFile(t.nombre, t.estancias)); this.openViewer(r.plan, t.nombre); };
+  editTpl = e => { const t = this.P && this.P.PLANTILLAS.find(t => t.id === e.currentTarget.getAttribute('data-id')); if (!t) return; history.replaceState(null, '', '#crear'); this.setState({ tab: 'crear', sel: null, nombre: t.nombre, rooms: t.estancias.map(x => Object.assign({}, x)) }, this.save); };
+  renderGlb = () => { if (this.glbUrl) this.openViewer({ glb: this.glbUrl }, (this.state.up && this.state.up.name) || 'Modelo 3D'); };
+  setMode = e => { if (this.api) this.api.setMode(e.currentTarget.getAttribute('data-k')); };
+  toggleTour = () => { if (!this.api) return; if (this.state.v && this.state.v.tour) this.api.stopTour(); else this.api.startTour(); };
+  goRoom = e => { if (this.api) this.api.goRoom(e.currentTarget.getAttribute('data-id')); };
+  photo = () => { if (!this.api) return; const a = document.createElement('a'); a.href = this.api.photo(); a.download = 'aquaterra-render-3d.jpg'; document.body.appendChild(a); a.click(); a.remove(); };
+  liftOn = e => { if (this.api) this.api.setLift(+e.currentTarget.getAttribute('data-v')); };
+  liftOff = () => { if (this.api) this.api.setLift(0); };
+  updV = o => this.setState(s => s.v ? { v: Object.assign({}, s.v, o) } : null);
+  togglePanel = () => this.setState(s => ({ panel: !s.panel }));
+  onHour = e => { const h = parseFloat(e.target.value); if (!Number.isFinite(h)) return; this.stopPlay(); if (this.api) this.api.setTime(h); this.updV({ hour: h, playing: false }); };
+  onHeight = e => { const h = parseFloat(e.target.value); if (!Number.isFinite(h)) return; if (this.api && this.api.setHeight) this.api.setHeight(h); this.updV({ H: h }); };
+  setLights = e => { const k = e.currentTarget.getAttribute('data-k'); if (this.api) this.api.setLights(k); this.updV({ lights: k }); };
+  setFacade = e => { const k = e.currentTarget.getAttribute('data-k'); if (this.api) this.api.setFacade(k); this.updV({ facade: k }); };
+  toggleDoors = () => { if (!this.api) return; const d = this.api.doors, open = !(d.open > d.total / 2); this.api.setDoors(open); };
+  stopPlay = () => { if (this.raf) cancelAnimationFrame(this.raf); this.raf = 0; };
+  togglePlay = () => {
+    const v = this.state.v; if (!v) return;
+    if (v.playing || this.raf) { this.stopPlay(); this.updV({ playing: false }); return; }
+    let last = performance.now(), h = v.hour, acc = 0;
+    const step = now => { const dt = Math.min(0.1, (now - last) / 1000); last = now; h = (h + dt * 0.75) % 24; if (this.api) this.api.setTime(h); acc += dt; if (acc > 0.12) { acc = 0; this.updV({ hour: Math.round(h * 4) / 4 }); } this.raf = requestAnimationFrame(step); };
+    this.updV({ playing: true }); this.raf = requestAnimationFrame(step);
+  };
+
+  renderVals() {
+    const s = this.state, P = this.P, v = s.v, fmt = this.fmt, T = P ? P.TIPOS : {};
+    const pill = on => ({ on: on ? 'true' : 'false', bg: on ? 'var(--color-text)' : 'transparent', fg: on ? 'var(--color-bg)' : 'var(--color-text)' });
+    const tabs = [['subir', 'Subir plano'], ['crear', 'Crear plano'], ['plantillas', 'Plantillas'], ['estandares', 'Estándares']].map(([k, l]) => Object.assign({ k, l }, pill(s.tab === k)));
+    const tools = [['draw', 'Dibujar'], ['move', 'Mover'], ['erase', 'Borrar']].map(([k, l]) => Object.assign({ k, l }, pill(s.tool === k)));
+    const typeChips = Object.keys(T).map(k => ({ k, l: T[k].l, sw: T[k].css, on: s.newType === k ? 'true' : 'false', bd: s.newType === k ? 'var(--color-text)' : 'var(--color-divider)', bg: s.newType === k ? 'var(--color-neutral-200)' : 'var(--color-bg)' }));
+    let val = null, an = null;
+    if (P) { val = P.normalize(P.toFile(s.nombre, s.rooms, s.alto)); if (val.plan) { try { an = P.analyze(val.plan); } catch (e) { an = null; } } }
+    const maxX = Math.max(0, ...s.rooms.map(r => r.x + r.ancho)), maxY = Math.max(0, ...s.rooms.map(r => r.y + r.fondo));
+    const uW = s.under ? s.underW : 0, uH = s.under ? s.underW * s.under.ar : 0;
+    const W = Math.max(20, maxX + 3, uW + 1), H = Math.max(13, maxY + 3, uH + 1);
+    const edRooms = s.rooms.map(r => { const fs = Math.max(0.24, Math.min(0.42, Math.min(r.ancho, r.fondo) * 0.15)), sel = r.id === s.sel; return { id: r.id, x: r.x, y: r.y, w: r.ancho, d: r.fondo, fill: (T[r.tipo] || {}).css || 'var(--color-neutral-200)', stroke: sel ? 'var(--color-accent)' : 'var(--color-neutral-400)', dash: sel ? '0.2 0.12' : '0', lx: r.x + r.ancho / 2, ly: r.y + r.fondo / 2 - fs * 0.15, l2: r.y + r.fondo / 2 + fs * 1.05, fs, fs2: fs * 0.8, name: r.nombre + (r.dobleAltura ? ' ↑' : ''), dims: fmt(r.ancho) + ' × ' + fmt(r.fondo) + ' m' }; });
+    const L = (o, c, a, b, w, col) => o === 'h' ? { x1: a, y1: c, x2: b, y2: c, w, c: col } : { x1: c, y1: a, x2: c, y2: b, w, c: col };
+    const edSegs = an ? an.segs.map(g => L(g.o, g.c, g.a, g.b, g.t)) : [];
+    const edOps = an ? an.ops.map(o => o.kind === 'window' ? L(o.seg.o, o.seg.c, o.s, o.e, o.seg.t * 0.45, 'var(--color-accent-2-300)') : L(o.seg.o, o.seg.c, o.s, o.e, o.seg.t + 0.04, o.kind === 'entry' ? 'var(--color-accent)' : 'var(--color-neutral-100)')) : [];
+    const selRaw = s.rooms.find(r => r.id === s.sel), selR = selRaw ? { nombre: selRaw.nombre, tipo: selRaw.tipo, ancho: selRaw.ancho, fondo: selRaw.fondo, x: selRaw.x, y: selRaw.y, dbl: !!selRaw.dobleAltura, altura: selRaw.altura || '' } : {};
+    const d = s.draft;
+    const row = (t, m) => ({ m, i: t === 'ok' ? '✓' : t === 'warn' ? '!' : '✕', bg: t === 'ok' ? 'var(--color-accent-2-500)' : t === 'warn' ? 'var(--color-accent-200)' : '#FF3B30', fg: t === 'warn' ? 'var(--color-accent-900)' : '#FFFFFF' });
+    const valRows = !val ? [] : [].concat(val.errors.map(m => row('err', m)), val.warnings.filter(m => !/formato/.test(m)).map(m => row('warn', m)), an ? an.warnings.map(m => row('warn', m)) : [], !val.errors.length && s.rooms.length ? [row('ok', 'Listo para renderizar')] : []);
+    const up = s.up; let upRows = [];
+    if (up) {
+      upRows = up.errors.map(m => row('err', m)).concat(up.warnings.map(m => row('warn', m)));
+      if (!up.errors.length) {
+        if (up.kind === 'json' && up.stats) upRows = [row('ok', 'Formato aq-plano v1 válido'), row('ok', up.stats.n + ' estancias · ' + fmt(up.stats.area) + ' m² útiles' + (up.stats.terraza ? ' + ' + fmt(up.stats.terraza) + ' m² de terraza' : '')), row('ok', up.stats.dbl ? 'Incluye doble altura' : 'Altura estándar en todas las estancias')].concat(upRows);
+        if (up.kind === 'img') upRows = [row('ok', 'Imagen cargada · ' + up.px), row('ok', 'Indica su ancho real y dibuja encima en «Crear plano»')].concat(upRows);
+        if (up.kind === 'glb') upRows = [row('ok', 'Modelo 3D listo · ' + up.size)];
+      }
+    }
+    const tpls = P ? P.PLANTILLAS.map(t => { const r = P.normalize(P.toFile(t.nombre, t.estancias)), rs = r.plan ? r.plan.rooms : []; const bx = Math.max(...rs.map(q => q.x + q.w)), by = Math.max(...rs.map(q => q.y + q.d)), side = Math.max(bx / 4, by / 3) + 0.6; return { id: t.id, nombre: t.nombre, sub: t.sub, stats: fmt(r.stats.area) + ' m² útiles · ' + r.stats.n + ' estancias', vb: `${(bx - side * 4) / 2} ${(by - side * 3) / 2} ${side * 4} ${side * 3}`, rects: rs.map(q => ({ x: q.x, y: q.y, w: q.w, d: q.d, fill: T[q.tipo].css })) }; }) : [];
+    const mode = v ? v.mode : 'orbit', cz = this.coarse;
+    const hint = mode === 'orbit' ? (cz ? 'Arrastra para girar · pellizca para acercar · toca una puerta para abrirla o cerrarla' : 'Arrastra para girar · rueda para acercar · haz clic en una puerta para abrirla o cerrarla') : mode === 'walk' ? (cz ? 'Joystick a la izquierda para andar · arrastra a la derecha para mirar · toca una puerta para abrirla' : 'WASD o flechas para andar · arrastra para mirar · Mayús para correr · F o clic abre y cierra puertas') : (cz ? 'Joystick para volar · ▲▼ para subir y bajar' : 'WASD para volar · E / Q subir y bajar · arrastra para mirar · F abre puertas');
+    const step = v ? v.step : -1;
+    const hh = v ? v.hour : 10.5, hm = Math.round(hh * 60) % 1440, vHourL = String(Math.floor(hm / 60)).padStart(2, '0') + ':' + String(hm % 60).padStart(2, '0');
+    const dark = on => ({ on: on ? 'true' : 'false', bg: on ? 'var(--color-neutral-100)' : 'transparent', fg: on ? 'var(--color-neutral-900)' : '#f6f0e7' });
+    const panelOpen = !!(v && v.phase === 'ready' && s.panel), doorsTot = v && v.doors ? v.doors.total : 0;
+    const night = this.mode() === 'noche', th = this.THEMES[night ? 'noche' : 'dia'];
+    const shell = {
+      th, themeName: night ? 'noche' : 'dia',
+      marca: (window.MARCA && window.MARCA.nombre) || 'Aquaterra',
+      menu: s.menu,
+      toggleMenu: () => this.setState((st) => ({ menu: !st.menu })),
+      closeMenu: () => { if (this.state.menu) this.setState({ menu: false }); },
+      footWa: 'https://wa.me/' + String((window.MARCA && window.MARCA.whatsapp) || '').replace(/\D/g, ''),
+      navWide: s.w >= 1240, navNarrow: s.w < 1240,
+      menuItems: this.MENU.map(([href, label]) => ({ href, label })),
+      navItems: this.NAV.map(([href, label]) => ({ href, label, cur: label === 'Render 3D' ? 'page' : undefined, ink: label === 'Render 3D' ? th.ink : th.mute2, fw: label === 'Render 3D' ? '600' : '400' })),
+      hdrBg: night ? 'rgba(28,30,36,0.82)' : 'rgba(251,251,253,0.8)',
+      menuBg: night ? 'rgba(23,25,30,0.94)' : 'rgba(251,251,253,0.92)',
+      burgerA: s.menu ? 'translateY(3.75px) rotate(45deg)' : 'none',
+      burgerB: s.menu ? 'translateY(-3.75px) rotate(-45deg)' : 'none',
+      ctaLabel: s.w >= 520 ? 'Reserva tu llamada gratis' : 'Llamada gratis',
+      glassBg: night ? 'rgba(201,241,93,0.14)' : 'rgba(111,154,31,0.10)',
+      glassLine: night ? 'rgba(201,241,93,0.38)' : 'rgba(111,154,31,0.32)',
+      glassInk: night ? '#E4F7B0' : '#3F6206',
+      segTrack: night ? 'rgba(118,118,128,0.32)' : 'rgba(118,118,128,0.16)',
+      knobBg: night ? '#636366' : '#FFFFFF',
+      knobLeft: night ? '60px' : '2px', knobLeftL: night ? '88px' : '2px',
+      dayInk: night ? 'rgba(236,236,238,0.72)' : '#1D1D1F',
+      nightInk: night ? '#ECECEE' : '#636368',
+      toggleMode: () => { const nm = night ? 'dia' : 'noche'; try { sessionStorage.setItem('aquaterra-modo', nm); } catch (e) {} this.setState({ mode: nm }); }
+    };
+    return Object.assign(shell, {
+      tabs, tabSubir: s.tab === 'subir', tabCrear: s.tab === 'crear', tabPlantillas: s.tab === 'plantillas', tabEstandares: s.tab === 'estandares', setTab: this.setTab,
+      renderPlan: this.renderPlan, renderDemo: this.renderDemo, renderTpl: this.renderTpl, editTpl: this.editTpl, renderGlb: this.renderGlb,
+      onFile: this.onFile, onDrop: this.onDrop, onDragOver: this.onDragOver, onDragLeave: this.onDragLeave, dropBd: s.drop ? 'var(--color-accent)' : 'var(--color-neutral-400)', dropBg: s.drop ? 'var(--color-accent-100)' : 'var(--color-neutral-100)',
+      noUp: !up, hasUp: !!up, upKind: up ? ({ json: 'Plano Aquaterra', img: 'Imagen para calcar', glb: 'Modelo 3D', x: 'Archivo' })[up.kind] : '', upName: up ? up.name : '', upRows,
+      upImg: !!(up && up.kind === 'img' && !up.errors.length), upGlb: !!(up && up.kind === 'glb' && !up.errors.length), upCanRender: !!(up && up.kind === 'json' && !up.errors.length), upToEditor: !!(up && (up.kind === 'json' || (up.kind === 'img' && !up.errors.length))), upEditLabel: up && up.kind === 'img' ? 'Calcar en Crear plano' : 'Editar en Crear plano',
+      tools, setTool: this.setTool, isDraw: s.tool === 'draw', typeChips, setNewType: this.setNewType, nombre: s.nombre, onNombre: this.onNombre, clearPlan: this.clearPlan, downloadPlan: this.downloadPlan, downloadTemplate: this.downloadTemplate,
+      svgRef: this.svgRef, vb: `-1 -1 ${W + 1} ${H + 1}`, edDown: this.edDown, edMove: this.edMove, edUp: this.edUp, cursor: s.tool === 'draw' ? 'crosshair' : s.tool === 'erase' ? 'not-allowed' : 'grab',
+      edRooms, edSegs, edOps, hasDraft: !!(d && d.w > 0 && d.d > 0), draft: d ? { x: d.x, y: d.y, w: d.w, d: d.d, lx: d.x + d.w / 2, ly: d.y + d.d / 2 + 0.14, dims: fmt(d.w) + ' × ' + fmt(d.d) + ' m' } : {},
+      hasHandle: !!selRaw && s.tool !== 'erase', handle: selRaw ? { x: selRaw.x + selRaw.ancho, y: selRaw.y + selRaw.fondo } : {},
+      hasUnder: !!s.under, underRef: this.underRef, underW: s.underW, underH: uH, onUnderW: this.onUnderW, dropUnder: this.dropUnder,
+      hasSel: !!selRaw, noSel: !selRaw, selR, onField: this.onField, delSel: this.delSel,
+      sumArea: val && val.stats ? fmt(val.stats.area) + ' m²' : '—', sumN: String(s.rooms.length), sumDoors: an ? String(an.ops.filter(o => o.kind === 'door' || o.kind === 'entry' || o.kind === 'slide').length) : '—', sumWins: an ? String(an.ops.filter(o => o.kind === 'window').length) : '—', valRows,
+      tpls,
+      vOpen: !!v, vName: v ? v.name : '', vBuild: !!(v && v.phase === 'build'), vReady: !!(v && v.phase === 'ready'), vErr: !!(v && v.phase === 'error'), vErrMsg: v ? 'El navegador no pudo iniciar el 3D (' + v.err + '). Prueba en Chrome, Safari o Edge actualizados.' : '',
+      vLabel: v ? v.label : '', vPct: (v ? v.pct : 0) + '%', stageRef: this.stageRef, mmRef: this.mmRef, closeViewer: this.closeViewer,
+      steps: this.STEPS.map((l, i) => ({ l, i: i < step ? '✓' : String(i + 1), bg: i < step ? 'var(--color-accent-2-500)' : i === step ? 'var(--color-accent)' : 'var(--color-neutral-400)', fg: i <= step ? 'var(--color-text)' : 'var(--color-neutral-600)', ic: i === step ? 'var(--color-on-accent)' : '#FFFFFF' })),
+      modes: [['orbit', 'Maqueta'], ['walk', 'A pie'], ['fly', 'Volar']].map(([k, l]) => Object.assign({ k, l }, pill(mode === k))), setMode: this.setMode,
+      hasRooms: !!(v && v.rooms.length), tourLabel: v && v.tour ? 'Detener tour' : 'Iniciar tour', toggleTour: this.toggleTour, photo: this.photo,
+      roomChips: v ? v.rooms.map(r => { const on = !!(v.room && v.room.id === r.id); return { id: r.id, l: r.nombre, on: on ? 'true' : 'false', bg: on ? 'var(--color-accent)' : 'var(--color-neutral-100)', fg: on ? 'var(--color-on-accent)' : 'var(--color-neutral-900)' }; }) : [], goRoom: this.goRoom,
+      hasCaption: !!(v && v.room && mode !== 'orbit'), caption: v && v.room ? v.room.nombre + ' · ' + fmt(v.room.area) + ' m²' + (v.room.dbl ? ' · doble altura' : '') : '',
+      panelOpen, panelOn: s.panel ? 'true' : 'false', panelBg: s.panel ? 'var(--color-accent)' : 'var(--color-neutral-100)', panelFg: s.panel ? 'var(--color-on-accent)' : 'var(--color-neutral-900)', togglePanel: this.togglePanel,
+      roomsBottom: panelOpen ? 'calc(' + (v && v.rooms.length ? 230 : 190) + 'px + env(safe-area-inset-bottom))' : 'calc(64px + env(safe-area-inset-bottom))',
+      vHour: hh, vHourL, onHour: this.onHour, togglePlay: this.togglePlay, playIcon: v && v.playing ? '❚❚' : '▶', playAria: v && v.playing ? 'Pausar el paso del día' : 'Reproducir el paso del día',
+      vH: v ? v.H : 2.7, vHL: fmt(v ? v.H : 2.7) + ' m', onHeight: this.onHeight,
+      lightOpts: [['auto', 'Auto'], ['on', 'Encendidas'], ['off', 'Apagadas']].map(([k, l]) => Object.assign({ k, l }, dark(v && v.lights === k))), setLights: this.setLights,
+      facadeOpts: [['revoque', 'Revoque'], ['ladrillo', 'Ladrillo'], ['piedra', 'Piedra']].map(([k, l]) => Object.assign({ k, l }, dark(v && v.facade === k))), setFacade: this.setFacade,
+      hasDoors: doorsTot > 0, doorsLabel: v && v.doors && v.doors.open > v.doors.total / 2 ? 'Cerrar todas las puertas' : 'Abrir todas las puertas', toggleDoors: this.toggleDoors,
+      alto: s.alto, onAlto: this.onAlto, altoPh: 'General: ' + fmt(s.alto), dblL: fmt(s.alto * 2) + ' m',
+      hint, showMM: this.props.minimapa !== false, flyBtns: !!(v && v.phase === 'ready' && mode === 'fly' && cz), liftOn: this.liftOn, liftOff: this.liftOff
+    });
+  }
+}
+</script>
+</body>
+</html>
