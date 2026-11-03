@@ -228,6 +228,20 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
             <sc-for list="{{ typeChips }}" as="c" hint-placeholder-count="10"><button type="button" aria-pressed="{{ c.on }}" data-k="{{ c.k }}" onClick="{{ setNewType }}" style="display:flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:var(--color-text);font:inherit;font-size:13px;font-weight:600;cursor:pointer"><span aria-hidden="true" style="width:10px;height:10px;border-radius:50%;background:{{ c.sw }};border:1px solid var(--color-neutral-400)"></span>{{ c.l }}</button></sc-for>
           </div>
         </sc-if>
+        <sc-if value="{{ isWall }}" hint-placeholder-val="{{ false }}">
+          <div style="grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:14px;color:var(--color-neutral-800)">
+            <span>Arrastra para trazar una pared en cualquier dirección. Se engancha a la cuadrícula y a las esquinas; con Mayús queda recta.</span>
+            <sc-if value="{{ hasWalls }}" hint-placeholder-val="{{ false }}"><button type="button" class="btn btn-ghost" onClick="{{ clearWalls }}" style="min-height:36px;padding:0 12px;font-size:13px;white-space:nowrap">Quitar las {{ nWalls }} paredes</button></sc-if>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isDoorT }}" hint-placeholder-val="{{ false }}">
+          <div style="grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:14px;color:var(--color-neutral-800)">
+            <span style="font-weight:600">Ancho de la puerta</span>
+            <div role="group" aria-label="Ancho de la puerta" style="display:flex;gap:4px;padding:4px;border-radius:999px;background:var(--color-neutral-200)"><sc-for list="{{ doorWs }}" as="o" hint-placeholder-count="4"><button type="button" aria-pressed="{{ o.on }}" data-k="{{ o.k }}" onClick="{{ setDoorW }}" style="min-height:34px;padding:0 12px;border:0;border-radius:999px;background:{{ o.bg }};color:{{ o.fg }};font:inherit;font-size:13px;font-weight:600;cursor:pointer">{{ o.l }}</button></sc-for></div>
+            <span>Toca una pared para poner una puerta, arrástrala para moverla y tócala otra vez para quitarla.</span>
+            <sc-if value="{{ hasManual }}" hint-placeholder-val="{{ false }}"><button type="button" class="btn btn-ghost" onClick="{{ autoDoors }}" style="min-height:36px;padding:0 12px;font-size:13px;white-space:nowrap">Volver a puertas automáticas</button></sc-if>
+          </div>
+        </sc-if>
         <div data-r3d-claro="" style="grid-column:span 2;min-width:0;border-radius:var(--radius-lg);background:var(--color-neutral-100);border:1px solid var(--color-divider);overflow:hidden">
           <svg ref="{{ svgRef }}" viewBox="{{ vb }}" onPointerDown="{{ edDown }}" onPointerMove="{{ edMove }}" onPointerUp="{{ edUp }}" onPointerCancel="{{ edUp }}" role="img" aria-label="Plano editable. Cada cuadro mide 1 metro." style="display:block;width:100%;height:auto;max-height:70vh;touch-action:none;user-select:none;cursor:{{ cursor }}">
             <defs><pattern id="aqgrid" width="1" height="1" patternUnits="userSpaceOnUse"><path d="M1 0H0V1" fill="none" stroke="var(--color-neutral-300)" stroke-width="0.02"></path></pattern></defs>
@@ -237,12 +251,17 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
               <rect data-rid="{{ r.id }}" x="{{ r.x }}" y="{{ r.y }}" width="{{ r.w }}" height="{{ r.d }}" fill="{{ r.fill }}" stroke="{{ r.stroke }}" stroke-width="0.08" stroke-dasharray="{{ r.dash }}"></rect>
             </sc-for>
             <sc-for list="{{ edSegs }}" as="l" hint-placeholder-count="0"><line x1="{{ l.x1 }}" y1="{{ l.y1 }}" x2="{{ l.x2 }}" y2="{{ l.y2 }}" stroke="var(--color-neutral-900)" stroke-width="{{ l.w }}" stroke-linecap="square" style="pointer-events:none"></line></sc-for>
+            <sc-for list="{{ edWalls }}" as="w" hint-placeholder-count="0"><line x1="{{ w.x1 }}" y1="{{ w.y1 }}" x2="{{ w.x2 }}" y2="{{ w.y2 }}" stroke="var(--color-neutral-900)" stroke-width="0.12" stroke-linecap="round" style="pointer-events:none"></line></sc-for>
             <sc-for list="{{ edOps }}" as="l" hint-placeholder-count="0"><line x1="{{ l.x1 }}" y1="{{ l.y1 }}" x2="{{ l.x2 }}" y2="{{ l.y2 }}" stroke="{{ l.c }}" stroke-width="{{ l.w }}" style="pointer-events:none"></line></sc-for>
             <sc-for list="{{ edRooms }}" as="r" hint-placeholder-count="0">
               <text x="{{ r.lx }}" y="{{ r.ly }}" text-anchor="middle" font-size="{{ r.fs }}" font-weight="700" fill="var(--color-neutral-900)" style="pointer-events:none">{{ r.name }}</text>
               <text x="{{ r.lx }}" y="{{ r.l2 }}" text-anchor="middle" font-size="{{ r.fs2 }}" fill="var(--color-neutral-700)" style="pointer-events:none">{{ r.dims }}</text>
             </sc-for>
             <sc-if value="{{ hasDraft }}" hint-placeholder-val="{{ false }}"><rect x="{{ draft.x }}" y="{{ draft.y }}" width="{{ draft.w }}" height="{{ draft.d }}" fill="var(--color-accent-200)" fill-opacity="0.6" stroke="var(--color-accent)" stroke-width="0.06" stroke-dasharray="0.2 0.12" style="pointer-events:none"></rect><text x="{{ draft.lx }}" y="{{ draft.ly }}" text-anchor="middle" font-size="0.4" font-weight="700" fill="var(--color-accent-800)" style="pointer-events:none">{{ draft.dims }}</text></sc-if>
+            <sc-for list="{{ edWalls }}" as="w" hint-placeholder-count="0"><line data-wall="{{ w.i }}" x1="{{ w.x1 }}" y1="{{ w.y1 }}" x2="{{ w.x2 }}" y2="{{ w.y2 }}" stroke="transparent" stroke-width="0.5" stroke-linecap="round" style="pointer-events:{{ w.hit }};cursor:{{ w.cur }}"></line></sc-for>
+            <sc-for list="{{ edDoors }}" as="d" hint-placeholder-count="0"><circle data-door="{{ d.i }}" cx="{{ d.x }}" cy="{{ d.y }}" r="0.26" fill="{{ d.fill }}" stroke="#fff" stroke-width="0.07" style="pointer-events:{{ d.ev }};cursor:{{ d.cur }}"></circle></sc-for>
+            <sc-for list="{{ edEnds }}" as="h" hint-placeholder-count="0"><circle data-we="{{ h.k }}" cx="{{ h.x }}" cy="{{ h.y }}" r="0.2" fill="#fff" stroke="var(--color-neutral-900)" stroke-width="0.06" style="cursor:move"></circle></sc-for>
+            <sc-if value="{{ hasWDraft }}" hint-placeholder-val="{{ false }}"><line x1="{{ wdraft.x1 }}" y1="{{ wdraft.y1 }}" x2="{{ wdraft.x2 }}" y2="{{ wdraft.y2 }}" stroke="var(--color-accent-700)" stroke-width="0.12" stroke-linecap="round" stroke-dasharray="0.25 0.12" style="pointer-events:none"></line><text x="{{ wdraft.lx }}" y="{{ wdraft.ly }}" text-anchor="middle" font-size="0.4" font-weight="700" fill="var(--color-accent-800)" style="pointer-events:none">{{ wdraft.len }}</text></sc-if>
             <sc-if value="{{ hasHandle }}" hint-placeholder-val="{{ false }}"><circle data-h="1" cx="{{ handle.x }}" cy="{{ handle.y }}" r="0.28" fill="var(--color-accent)" stroke="#fff" stroke-width="0.06" style="cursor:nwse-resize"></circle></sc-if>
           </svg>
         </div>
@@ -264,7 +283,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
             </div>
           </sc-if>
           <sc-if value="{{ noSel }}" hint-placeholder-val="{{ true }}">
-            <p style="margin:0;font-size:15px;line-height:1.55;color:var(--color-neutral-800)">Arrastra sobre la cuadrícula para dibujar una estancia (cada cuadro es 1 m). Con «Mover» seleccionas, desplazas y estiras desde el punto naranja. Los muros, puertas y ventanas se colocan solos.</p>
+            <p style="margin:0;font-size:15px;line-height:1.55;color:var(--color-neutral-800)">Con «Estancia» arrastra sobre la cuadrícula para dibujar una habitación (cada cuadro es 1 m). Con «Pared» trazas paredes sueltas en cualquier dirección y con «Puerta» colocas las puertas donde quieras; si no pones ninguna, se colocan solas. «Mover» desplaza estancias, paredes y puertas, y «Borrar» las quita.</p>
           </sc-if>
           <dl style="margin:0;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-top:14px;border-top:1px solid var(--color-divider)">
             <div><dt style="font-size:13px;color:var(--color-neutral-700)">Superficie útil</dt><dd style="margin:2px 0 0;font-weight:600;letter-spacing:-0.02em;font-size:24px">{{ sumArea }}</dd></div>
@@ -330,6 +349,8 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
               <li>Muros automáticos sobre los bordes: 24 cm en fachada y 12 cm entre estancias.</li>
               <li>Puertas de 80–90 × 210 cm y ventanas según el uso. Salón, comedor y cocina contiguos quedan abiertos entre sí.</li>
               <li>La entrada se coloca en el recibidor, el pasillo o el salón que dé a fachada.</li>
+              <li>"paredes" (opcional): muros sueltos en cualquier ángulo, cada uno con x1, y1, x2 e y2. Sirven para tabiques en diagonal, muros de jardín o formas que no son rectángulos.</li>
+              <li>"puertas" (opcional): cada puerta con x, y y "ancho" (0,60 a 1,60 m) sobre cualquier muro. Si la lista existe, el 3D pone solo esas puertas; la primera que dé a fachada es la entrada.</li>
             </ul>
           </div>
         </div>
@@ -347,6 +368,13 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
       "dobleAltura": true },
     { "id": "cocina", "nombre": "Cocina", "tipo": "cocina",
       "x": 9, "y": 5.5, "ancho": 5, "fondo": 2.75 }
+  ],
+  "paredes": [
+    { "x1": 3, "y1": 11, "x2": 7, "y2": 13.5 }
+  ],
+  "puertas": [
+    { "x": 5, "y": 5.5, "ancho": 0.9 },
+    { "x": 9, "y": 7, "ancho": 0.8 }
   ]
 }</pre>
           <button type="button" class="btn btn-primary" onClick="{{ downloadTemplate }}" style="min-height:48px;padding:0 22px;font-size:15px;align-self:flex-start;white-space:nowrap">Descargar plantilla .json</button>
@@ -485,7 +513,7 @@ class Component extends DCLogic {
     mode: (() => { try { return sessionStorage.getItem('aquaterra-modo'); } catch (e) { return null; } })(),
     w: typeof window !== 'undefined' ? window.innerWidth : 1280,
     menu: false,
-    tab: 'subir', rooms: [], nombre: 'Mi casa', alto: 2.7, panel: !(typeof matchMedia !== 'undefined' && matchMedia('(pointer:coarse)').matches), sel: null, tool: 'draw', newType: 'dormitorio', draft: null, up: null, under: null, underW: 12, drop: false, v: null, ready: false
+    tab: 'subir', rooms: [], walls: [], doors: [], doorW: 0.9, nombre: 'Mi casa', alto: 2.7, panel: !(typeof matchMedia !== 'undefined' && matchMedia('(pointer:coarse)').matches), sel: null, tool: 'draw', newType: 'dormitorio', draft: null, up: null, under: null, underW: 12, drop: false, v: null, ready: false
   };
   svgRef = React.createRef(); underRef = React.createRef(); stageRef = React.createRef(); mmRef = React.createRef();
   STEPS = ['Leyendo el plano', 'Terreno y cielo', 'Levantando muros', 'Puertas y ventanas', 'Suelos y techos', 'Muebles 3D', 'Amueblando', 'Luces y sombras'];
@@ -510,7 +538,7 @@ class Component extends DCLogic {
       this.P = m; let saved = null;
       try { saved = JSON.parse(localStorage.getItem('aq_r3d_plan') || 'null'); } catch (e) {}
       const t = m.PLANTILLAS[0], ok = saved && Array.isArray(saved.rooms) && saved.rooms.length;
-      this.setState({ ready: true, rooms: ok ? saved.rooms : t.estancias.map(e => Object.assign({}, e)), nombre: (ok && saved.nombre) || t.nombre, alto: (ok && +saved.alto) || 2.7 });
+      this.setState({ ready: true, rooms: ok ? saved.rooms : t.estancias.map(e => Object.assign({}, e)), walls: (ok && Array.isArray(saved.walls) && saved.walls) || [], doors: (ok && Array.isArray(saved.doors) && saved.doors) || [], nombre: (ok && saved.nombre) || t.nombre, alto: (ok && +saved.alto) || 2.7 });
       if (this._demo) { this._demo = false; this.renderDemo(); }
     }).catch(e => console.error(e));
     this.onHash = () => { const k = location.hash.slice(1); if (['subir', 'crear', 'plantillas', 'estandares'].includes(k)) this.setState({ tab: k }); else if (k === 'ejemplo') { history.replaceState(null, '', location.pathname + location.search); if (this.P) this.renderDemo(); else this._demo = true; } };
@@ -523,7 +551,7 @@ class Component extends DCLogic {
 
   fmt = v => String(Math.round(v * 100) / 100).replace('.', ',');
   snap = v => Math.round(v * 4) / 4;
-  save = () => { try { localStorage.setItem('aq_r3d_plan', JSON.stringify({ nombre: this.state.nombre, rooms: this.state.rooms, alto: this.state.alto })); } catch (e) {} };
+  save = () => { try { localStorage.setItem('aq_r3d_plan', JSON.stringify({ nombre: this.state.nombre, rooms: this.state.rooms, walls: this.state.walls, doors: this.state.doors, alto: this.state.alto })); } catch (e) {} };
   setRooms = (fn, extra) => this.setState(s => Object.assign({ rooms: fn(s.rooms) }, extra || {}), this.save);
   updRoom = (id, o) => this.setRooms(rs => rs.map(r => r.id === id ? Object.assign({}, r, o) : r));
   toW = e => { const svg = this.svgRef.current, pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY; return pt.matrixTransform(svg.getScreenCTM().inverse()); };
@@ -535,11 +563,49 @@ class Component extends DCLogic {
   onNombre = e => this.setState({ nombre: String(e.target.value).slice(0, 60) }, this.save);
   onAlto = e => { const v = parseFloat(String(e.target.value).replace(',', '.')); if (Number.isFinite(v)) this.setState({ alto: Math.max(2.2, Math.min(4.5, v)) }, this.save); };
 
+  // Punto del plano ajustado a la cuadrícula de 25 cm, o a una esquina o extremo de pared cercano (30 cm).
+  snapPt = p => {
+    let best = null, bd = 0.3;
+    const pts = [];
+    this.state.rooms.forEach(r => { pts.push([r.x, r.y], [r.x + r.ancho, r.y], [r.x, r.y + r.fondo], [r.x + r.ancho, r.y + r.fondo]); });
+    this.state.walls.forEach(w => { pts.push([w.x1, w.y1], [w.x2, w.y2]); });
+    pts.forEach(([x, y]) => { const d = Math.hypot(p.x - x, p.y - y); if (d < bd) { bd = d; best = { x, y }; } });
+    return best || { x: this.snap(p.x), y: this.snap(p.y) };
+  };
+  setWalls = (fn, extra) => this.setState(s => Object.assign({ walls: fn(s.walls) }, extra || {}), this.save);
+  setDoors = (fn, extra) => this.setState(s => Object.assign({ doors: fn(s.doors) }, extra || {}), this.save);
+  // La primera puerta hecha a mano copia las automáticas, para poder moverlas o quitarlas una a una.
+  manualDoors = () => {
+    if (this.state.doors.length || !this._an) return this.state.doors;
+    return this._an.ops.filter(o => o.kind === 'door' || o.kind === 'entry').map(o => ({ x: o.x, y: o.y, ancho: o.kind === 'entry' ? 0.9 : o.w }));
+  };
+  // Lleva un punto a la pared más cercana (de estancia o libre) para colocar o arrastrar una puerta.
+  onWall = p => {
+    const an = this._an; let best = null;
+    if (an) {
+      an.segs.forEach(s => { const along = s.o === 'h' ? p.x : p.y, across = s.o === 'h' ? p.y : p.x, d = Math.abs(across - s.c); if (d < 0.6 && along >= s.a && along <= s.b && (!best || d < best.d)) best = { d, x: s.o === 'h' ? along : s.c, y: s.o === 'h' ? s.c : along }; });
+      (an.free || []).forEach(f => { const k = (p.x - f.x1) * f.ux + (p.y - f.y1) * f.uy, d = Math.abs((p.x - f.x1) * f.uy - (p.y - f.y1) * f.ux); if (d < 0.6 && k >= 0 && k <= f.len && (!best || d < best.d)) best = { d, x: f.x1 + f.ux * k, y: f.y1 + f.uy * k }; });
+    }
+    return best ? { x: Math.round(best.x * 20) / 20, y: Math.round(best.y * 20) / 20 } : null;
+  };
   edDown = e => {
     const svg = this.svgRef.current; if (!svg || !this.P) return;
-    const p = this.toW(e), t = e.target, rid = t.getAttribute && t.getAttribute('data-rid'), hd = t.getAttribute && t.getAttribute('data-h'), tool = this.state.tool;
-    if (tool === 'erase') { if (rid) this.setRooms(rs => rs.filter(r => r.id !== rid), { sel: null }); return; }
-    if (hd && this.state.sel) this.drag = { kind: 'resize', id: this.state.sel };
+    const p = this.toW(e), t = e.target, at = k => t.getAttribute && t.getAttribute(k);
+    const rid = at('data-rid'), hd = at('data-h'), di = at('data-door'), wi = at('data-wall'), we = at('data-we'), tool = this.state.tool;
+    if (tool === 'erase') {
+      if (di !== null && di !== undefined) this.setDoors(ds => ds.filter((d, i) => i !== +di));
+      else if (wi !== null && wi !== undefined) this.setWalls(ws => ws.filter((w, i) => i !== +wi));
+      else if (rid) this.setRooms(rs => rs.filter(r => r.id !== rid), { sel: null });
+      return;
+    }
+    if (tool === 'door') {
+      if (di !== null && di !== undefined) { this.drag = { kind: 'door', i: +di, moved: false }; }
+      else { const q = this.onWall(p); if (!q) return; const base = this.manualDoors(), near = base.findIndex(d => Math.hypot(d.x - q.x, d.y - q.y) < 0.5); if (near >= 0) { if (base !== this.state.doors) this.setState({ doors: base }, this.save); this.drag = { kind: 'door', i: near, moved: false }; } else { const i = base.length; this.setState({ doors: base.concat([{ x: q.x, y: q.y, ancho: this.state.doorW }]) }, this.save); this.drag = { kind: 'door', i, moved: true }; } }
+    } else if (tool === 'wall') { const q = this.snapPt(p); this.drag = { kind: 'wall', x0: q.x, y0: q.y }; this.setState({ wdraft: { x1: q.x, y1: q.y, x2: q.x, y2: q.y } }); }
+    else if (tool === 'move' && di !== null && di !== undefined) this.drag = { kind: 'door', i: +di, moved: true };
+    else if (tool === 'move' && we) { const [i, k] = we.split(':').map(Number); this.drag = { kind: 'wend', i, k }; }
+    else if (tool === 'move' && wi !== null && wi !== undefined) { const w = this.state.walls[+wi]; this.drag = { kind: 'wmove', i: +wi, px: p.x, py: p.y, w0: Object.assign({}, w) }; }
+    else if (hd && this.state.sel) this.drag = { kind: 'resize', id: this.state.sel };
     else if (tool === 'move' && rid) { const r = this.state.rooms.find(r => r.id === rid); this.drag = { kind: 'move', id: rid, dx: p.x - r.x, dy: p.y - r.y }; this.setState({ sel: rid }); }
     else if (tool === 'draw') { const x = this.snap(p.x), y = this.snap(p.y); this.drag = { kind: 'draw', x0: x, y0: y, rid }; this.setState({ draft: { x, y, w: 0, d: 0 } }); }
     else this.setState({ sel: rid || null });
@@ -548,17 +614,28 @@ class Component extends DCLogic {
   edMove = e => {
     const D = this.drag; if (!D) return; const p = this.toW(e);
     if (D.kind === 'draw') { const x1 = this.snap(p.x), y1 = this.snap(p.y); this.setState({ draft: { x: Math.max(0, Math.min(D.x0, x1)), y: Math.max(0, Math.min(D.y0, y1)), w: Math.abs(x1 - D.x0), d: Math.abs(y1 - D.y0) } }); }
+    else if (D.kind === 'wall') { let q = this.snapPt(p); if (e.shiftKey) { const dx = q.x - D.x0, dy = q.y - D.y0; if (Math.abs(dx) > Math.abs(dy)) q = { x: q.x, y: D.y0 }; else q = { x: D.x0, y: q.y }; } D.x2 = q.x; D.y2 = q.y; this.setState({ wdraft: { x1: D.x0, y1: D.y0, x2: q.x, y2: q.y } }); }
+    else if (D.kind === 'door') { const q = this.onWall(p); if (q) { D.moved = true; this.setDoors(ds => ds.map((d, i) => i === D.i ? Object.assign({}, d, q) : d)); } }
+    else if (D.kind === 'wend') { const q = this.snapPt(p); this.setWalls(ws => ws.map((w, i) => i !== D.i ? w : D.k === 1 ? Object.assign({}, w, { x1: q.x, y1: q.y }) : Object.assign({}, w, { x2: q.x, y2: q.y }))); }
+    else if (D.kind === 'wmove') { const dx = this.snap(p.x - D.px), dy = this.snap(p.y - D.py), w = D.w0; this.setWalls(ws => ws.map((x, i) => i === D.i ? { x1: w.x1 + dx, y1: w.y1 + dy, x2: w.x2 + dx, y2: w.y2 + dy } : x)); }
     else if (D.kind === 'move') this.updRoom(D.id, { x: Math.max(0, this.snap(p.x - D.dx)), y: Math.max(0, this.snap(p.y - D.dy)) });
     else if (D.kind === 'resize') { const r = this.state.rooms.find(r => r.id === D.id); if (r) this.updRoom(D.id, { ancho: Math.max(1.25, this.snap(p.x - r.x)), fondo: Math.max(1.25, this.snap(p.y - r.y)) }); }
   };
   edUp = () => {
-    const D = this.drag; this.drag = null; if (!D || D.kind !== 'draw') return;
+    const D = this.drag; this.drag = null; if (!D) return;
+    // Con la herramienta Puerta, tocar una puerta sin arrastrarla la quita.
+    if (D.kind === 'door' && !D.moved) { this.setDoors(ds => ds.filter((d, i) => i !== D.i)); return; }
+    if (D.kind === 'wall') { const w = D.x2 === undefined ? null : { x1: D.x0, y1: D.y0, x2: D.x2, y2: D.y2 }; this.setState({ wdraft: null }); if (w && Math.hypot(w.x2 - w.x1, w.y2 - w.y1) >= 0.3) this.setWalls(ws => ws.concat([w])); return; }
+    if (D.kind !== 'draw') return;
     const d = this.state.draft; this.setState({ draft: null });
     if (d && d.w >= 1.25 && d.d >= 1.25) {
       const t = this.state.newType, n = this.state.rooms.filter(r => r.tipo === t).length + 1, L = this.P.TIPOS[t].l, id = this.newId();
       this.setRooms(rs => rs.concat([{ id, nombre: n > 1 ? L + ' ' + n : L, tipo: t, x: d.x, y: d.y, ancho: d.w, fondo: d.d, dobleAltura: false }]), { sel: id });
     } else if (D.rid) this.setState({ sel: D.rid });
   };
+  setDoorW = e => this.setState({ doorW: +e.currentTarget.getAttribute('data-k') });
+  autoDoors = () => this.setDoors(() => []);
+  clearWalls = () => this.setWalls(() => []);
   onField = e => {
     const f = e.target.getAttribute('data-f'), id = this.state.sel; if (!id) return;
     let v = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -567,9 +644,9 @@ class Component extends DCLogic {
     this.updRoom(id, { [f]: v });
   };
   delSel = () => { const id = this.state.sel; this.setRooms(rs => rs.filter(r => r.id !== id), { sel: null }); };
-  clearPlan = () => this.setRooms(() => [], { sel: null, nombre: 'Mi casa' });
+  clearPlan = () => this.setRooms(() => [], { sel: null, nombre: 'Mi casa', walls: [], doors: [] });
   dl = (name, text, type) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); };
-  downloadPlan = () => { if (!this.P) return; const f = this.P.toFile(this.state.nombre, this.state.rooms, this.state.alto); this.dl((this.state.nombre || 'plano').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-').toLowerCase() + '.aqplano.json', JSON.stringify(f, null, 2), 'application/json'); };
+  downloadPlan = () => { if (!this.P) return; const f = this.P.toFile(this.state.nombre, this.state.rooms, this.state.alto, this.state.walls, this.state.doors); this.dl((this.state.nombre || 'plano').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-').toLowerCase() + '.aqplano.json', JSON.stringify(f, null, 2), 'application/json'); };
   downloadTemplate = () => { if (!this.P) return; const t = this.P.PLANTILLAS[0]; this.dl('plantilla.aqplano.json', JSON.stringify(this.P.toFile(t.nombre, t.estancias), null, 2), 'application/json'); };
 
   setUp = up => this.setState({ up });
@@ -587,7 +664,10 @@ class Component extends DCLogic {
           const tip = v => { const k = String(v || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); return P.TIPOS[k] ? k : 'salon'; };
           const rooms = raw.estancias.slice(0, 40).map((e, i) => Object.assign({ id: String((e && e.id) || 'e' + (i + 1)), nombre: String((e && e.nombre) || ''), tipo: tip(e && e.tipo), x: +(e && e.x) || 0, y: +(e && e.y) || 0, ancho: +(e && (e.ancho ?? e.w)) || 1.2, fondo: +(e && (e.fondo ?? e.d)) || 1.2, dobleAltura: !!(e && e.dobleAltura) }, e && +e.altura > 0 ? { altura: +e.altura } : {}));
           const al = parseFloat(String(raw.alturaLibre ?? '').replace(',', '.'));
-          this.setState({ rooms, nombre: String(raw.nombre || f.name.replace(/\.json$/i, '')).slice(0, 60), sel: null, alto: Number.isFinite(al) ? Math.max(2.2, Math.min(4.5, al)) : this.state.alto }, this.save);
+          const nn = v => { const n = parseFloat(String(v).replace(',', '.')); return Number.isFinite(n) ? n : null; };
+          const walls = (Array.isArray(raw.paredes) ? raw.paredes : []).slice(0, 200).map(w => w && { x1: nn(w.x1), y1: nn(w.y1), x2: nn(w.x2), y2: nn(w.y2) }).filter(w => w && [w.x1, w.y1, w.x2, w.y2].every(v => v !== null));
+          const doors = (Array.isArray(raw.puertas) ? raw.puertas : []).slice(0, 100).map(d => d && { x: nn(d.x), y: nn(d.y), ancho: nn(d.ancho) || 0.9 }).filter(d => d && d.x !== null && d.y !== null);
+          this.setState({ rooms, walls, doors, nombre: String(raw.nombre || f.name.replace(/\.json$/i, '')).slice(0, 60), sel: null, alto: Number.isFinite(al) ? Math.max(2.2, Math.min(4.5, al)) : this.state.alto }, this.save);
         }
         this.setUp({ kind: 'json', name: f.name, errors: r.errors, warnings: r.warnings, stats: r.stats });
       });
@@ -628,13 +708,13 @@ class Component extends DCLogic {
   }
   closeViewer = () => { this.stopPlay(); if (this.api) { this.api.dispose(); this.api = null; } document.documentElement.style.overflow = ''; this.setState({ v: null }); };
   renderPlan = () => {
-    if (!this.P) return; const r = this.P.normalize(this.P.toFile(this.state.nombre, this.state.rooms, this.state.alto));
+    if (!this.P) return; const r = this.P.normalize(this.P.toFile(this.state.nombre, this.state.rooms, this.state.alto, this.state.walls, this.state.doors));
     if (!r.plan) { history.replaceState(null, '', '#crear'); this.setState({ tab: 'crear' }); return; }
     this.openViewer(r.plan, r.plan.nombre);
   };
   renderDemo = () => { if (!this.P) return; const t = this.P.PLANTILLAS[0], r = this.P.normalize(this.P.toFile(t.nombre, t.estancias)); this.openViewer(r.plan, t.nombre); };
   renderTpl = e => { const t = this.P && this.P.PLANTILLAS.find(t => t.id === e.currentTarget.getAttribute('data-id')); if (!t) return; const r = this.P.normalize(this.P.toFile(t.nombre, t.estancias)); this.openViewer(r.plan, t.nombre); };
-  editTpl = e => { const t = this.P && this.P.PLANTILLAS.find(t => t.id === e.currentTarget.getAttribute('data-id')); if (!t) return; history.replaceState(null, '', '#crear'); this.setState({ tab: 'crear', sel: null, nombre: t.nombre, rooms: t.estancias.map(x => Object.assign({}, x)) }, this.save); };
+  editTpl = e => { const t = this.P && this.P.PLANTILLAS.find(t => t.id === e.currentTarget.getAttribute('data-id')); if (!t) return; history.replaceState(null, '', '#crear'); this.setState({ tab: 'crear', sel: null, nombre: t.nombre, rooms: t.estancias.map(x => Object.assign({}, x)), walls: [], doors: [] }, this.save); };
   renderGlb = () => { if (this.glbUrl) this.openViewer({ glb: this.glbUrl }, (this.state.up && this.state.up.name) || 'Modelo 3D'); };
   setMode = e => { if (this.api) this.api.setMode(e.currentTarget.getAttribute('data-k')); };
   toggleTour = () => { if (!this.api) return; if (this.state.v && this.state.v.tour) this.api.stopTour(); else this.api.startTour(); };
@@ -662,17 +742,24 @@ class Component extends DCLogic {
     const s = this.state, P = this.P, v = s.v, fmt = this.fmt, T = P ? P.TIPOS : {};
     const pill = on => ({ on: on ? 'true' : 'false', bg: on ? 'var(--color-text)' : 'transparent', fg: on ? 'var(--color-bg)' : 'var(--color-text)' });
     const tabs = [['subir', 'Subir plano'], ['crear', 'Crear plano'], ['plantillas', 'Plantillas'], ['estandares', 'Estándares']].map(([k, l]) => Object.assign({ k, l }, pill(s.tab === k)));
-    const tools = [['draw', 'Dibujar'], ['move', 'Mover'], ['erase', 'Borrar']].map(([k, l]) => Object.assign({ k, l }, pill(s.tool === k)));
+    const tools = [['draw', 'Estancia'], ['wall', 'Pared'], ['door', 'Puerta'], ['move', 'Mover'], ['erase', 'Borrar']].map(([k, l]) => Object.assign({ k, l }, pill(s.tool === k)));
     const typeChips = Object.keys(T).map(k => ({ k, l: T[k].l, sw: T[k].css, on: s.newType === k ? 'true' : 'false', bd: s.newType === k ? 'var(--color-text)' : 'var(--color-divider)', bg: s.newType === k ? 'var(--color-neutral-200)' : 'var(--color-bg)' }));
     let val = null, an = null;
-    if (P) { val = P.normalize(P.toFile(s.nombre, s.rooms, s.alto)); if (val.plan) { try { an = P.analyze(val.plan); } catch (e) { an = null; } } }
+    if (P) { val = P.normalize(P.toFile(s.nombre, s.rooms, s.alto, s.walls, s.doors)); if (val.plan) { try { an = P.analyze(val.plan); } catch (e) { an = null; } } }
+    this._an = an;
     const maxX = Math.max(0, ...s.rooms.map(r => r.x + r.ancho)), maxY = Math.max(0, ...s.rooms.map(r => r.y + r.fondo));
     const uW = s.under ? s.underW : 0, uH = s.under ? s.underW * s.under.ar : 0;
     const W = Math.max(20, maxX + 3, uW + 1), H = Math.max(13, maxY + 3, uH + 1);
     const edRooms = s.rooms.map(r => { const fs = Math.max(0.24, Math.min(0.42, Math.min(r.ancho, r.fondo) * 0.15)), sel = r.id === s.sel; return { id: r.id, x: r.x, y: r.y, w: r.ancho, d: r.fondo, fill: (T[r.tipo] || {}).css || 'var(--color-neutral-200)', stroke: sel ? 'var(--color-accent)' : 'var(--color-neutral-400)', dash: sel ? '0.2 0.12' : '0', lx: r.x + r.ancho / 2, ly: r.y + r.fondo / 2 - fs * 0.15, l2: r.y + r.fondo / 2 + fs * 1.05, fs, fs2: fs * 0.8, name: r.nombre + (r.dobleAltura ? ' ↑' : ''), dims: fmt(r.ancho) + ' × ' + fmt(r.fondo) + ' m' }; });
     const L = (o, c, a, b, w, col) => o === 'h' ? { x1: a, y1: c, x2: b, y2: c, w, c: col } : { x1: c, y1: a, x2: c, y2: b, w, c: col };
     const edSegs = an ? an.segs.map(g => L(g.o, g.c, g.a, g.b, g.t)) : [];
-    const edOps = an ? an.ops.map(o => o.kind === 'window' ? L(o.seg.o, o.seg.c, o.s, o.e, o.seg.t * 0.45, 'var(--color-accent-2-300)') : L(o.seg.o, o.seg.c, o.s, o.e, o.seg.t + 0.04, o.kind === 'entry' ? 'var(--color-accent)' : 'var(--color-neutral-100)')) : [];
+    const FL = (f, a, b, w, col) => ({ x1: f.x1 + f.ux * a, y1: f.y1 + f.uy * a, x2: f.x1 + f.ux * b, y2: f.y1 + f.uy * b, w, c: col });
+    const edOps = an ? an.ops.map(o => { const s = o.seg, col = o.kind === 'window' ? 'var(--color-accent-2-300)' : o.kind === 'entry' ? 'var(--color-accent)' : 'var(--color-neutral-100)', w = o.kind === 'window' ? s.t * 0.45 : s.t + 0.04; return s.free ? FL(s, o.s, o.e, w, col) : L(s.o, s.c, o.s, o.e, w, col); }) : [];
+    const mv = s.tool === 'move', er = s.tool === 'erase', dr = s.tool === 'door';
+    const edWalls = s.walls.map((w, i) => ({ i, x1: w.x1, y1: w.y1, x2: w.x2, y2: w.y2, hit: mv || er ? 'stroke' : 'none', cur: er ? 'not-allowed' : mv ? 'move' : 'inherit' }));
+    const edEnds = mv ? s.walls.flatMap((w, i) => [{ k: i + ':1', x: w.x1, y: w.y1 }, { k: i + ':2', x: w.x2, y: w.y2 }]) : [];
+    const edDoors = an ? an.ops.filter(o => o.manual).map(o => ({ i: o.pi, x: o.x, y: o.y, fill: o.kind === 'entry' ? 'var(--color-accent)' : '#0071E3', cur: er ? 'not-allowed' : 'grab', ev: mv || er || dr ? 'auto' : 'none' })) : [];
+    const wd = s.wdraft, wdLen = wd ? Math.hypot(wd.x2 - wd.x1, wd.y2 - wd.y1) : 0;
     const selRaw = s.rooms.find(r => r.id === s.sel), selR = selRaw ? { nombre: selRaw.nombre, tipo: selRaw.tipo, ancho: selRaw.ancho, fondo: selRaw.fondo, x: selRaw.x, y: selRaw.y, dbl: !!selRaw.dobleAltura, altura: selRaw.altura || '' } : {};
     const d = s.draft;
     const row = (t, m) => ({ m, i: t === 'ok' ? '✓' : t === 'warn' ? '!' : '✕', bg: t === 'ok' ? 'var(--color-accent-2-500)' : t === 'warn' ? 'var(--color-accent-200)' : '#FF3B30', fg: t === 'warn' ? 'var(--color-accent-900)' : '#FFFFFF' });
@@ -726,8 +813,11 @@ class Component extends DCLogic {
       noUp: !up, hasUp: !!up, upKind: up ? ({ json: 'Plano Aquaterra', img: 'Imagen para calcar', glb: 'Modelo 3D', x: 'Archivo' })[up.kind] : '', upName: up ? up.name : '', upRows,
       upImg: !!(up && up.kind === 'img' && !up.errors.length), upGlb: !!(up && up.kind === 'glb' && !up.errors.length), upCanRender: !!(up && up.kind === 'json' && !up.errors.length), upToEditor: !!(up && (up.kind === 'json' || (up.kind === 'img' && !up.errors.length))), upEditLabel: up && up.kind === 'img' ? 'Calcar en Crear plano' : 'Editar en Crear plano',
       tools, setTool: this.setTool, isDraw: s.tool === 'draw', typeChips, setNewType: this.setNewType, nombre: s.nombre, onNombre: this.onNombre, clearPlan: this.clearPlan, downloadPlan: this.downloadPlan, downloadTemplate: this.downloadTemplate,
-      svgRef: this.svgRef, vb: `-1 -1 ${W + 1} ${H + 1}`, edDown: this.edDown, edMove: this.edMove, edUp: this.edUp, cursor: s.tool === 'draw' ? 'crosshair' : s.tool === 'erase' ? 'not-allowed' : 'grab',
-      edRooms, edSegs, edOps, hasDraft: !!(d && d.w > 0 && d.d > 0), draft: d ? { x: d.x, y: d.y, w: d.w, d: d.d, lx: d.x + d.w / 2, ly: d.y + d.d / 2 + 0.14, dims: fmt(d.w) + ' × ' + fmt(d.d) + ' m' } : {},
+      svgRef: this.svgRef, vb: `-1 -1 ${W + 1} ${H + 1}`, edDown: this.edDown, edMove: this.edMove, edUp: this.edUp, cursor: s.tool === 'draw' || s.tool === 'wall' ? 'crosshair' : s.tool === 'door' ? 'copy' : s.tool === 'erase' ? 'not-allowed' : 'grab',
+      edRooms, edSegs, edOps, edWalls, edEnds, edDoors, hasWDraft: wdLen > 0.05, wdraft: wd ? { x1: wd.x1, y1: wd.y1, x2: wd.x2, y2: wd.y2, lx: (wd.x1 + wd.x2) / 2, ly: (wd.y1 + wd.y2) / 2 - 0.25, len: fmt(wdLen) + ' m' } : {},
+      isWall: s.tool === 'wall', isDoorT: dr, doorWs: [[0.7, '70 cm'], [0.8, '80 cm'], [0.9, '90 cm'], [1.2, '120 cm']].map(([k, l]) => Object.assign({ k, l }, pill(s.doorW === k))), setDoorW: this.setDoorW,
+      hasManual: s.doors.length > 0, autoDoors: this.autoDoors, hasWalls: s.walls.length > 0, clearWalls: this.clearWalls, nWalls: String(s.walls.length),
+      hasDraft: !!(d && d.w > 0 && d.d > 0), draft: d ? { x: d.x, y: d.y, w: d.w, d: d.d, lx: d.x + d.w / 2, ly: d.y + d.d / 2 + 0.14, dims: fmt(d.w) + ' × ' + fmt(d.d) + ' m' } : {},
       hasHandle: !!selRaw && s.tool !== 'erase', handle: selRaw ? { x: selRaw.x + selRaw.ancho, y: selRaw.y + selRaw.fondo } : {},
       hasUnder: !!s.under, underRef: this.underRef, underW: s.underW, underH: uH, onUnderW: this.onUnderW, dropUnder: this.dropUnder,
       hasSel: !!selRaw, noSel: !selRaw, selR, onField: this.onField, delSel: this.delSel,

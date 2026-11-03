@@ -89,7 +89,8 @@ function shrub(seed, r) {
 }
 function tuftGeo(w, h) { const gs = []; for (let k = 0; k < 3; k++) { const g = new THREE.PlaneGeometry(w, h); g.translate(0, h / 2, 0); g.rotateY(k * PI / 3); const n = g.attributes.normal; for (let i = 0; i < n.count; i++) n.setXYZ(i, 0, 1, 0); gs.push(g); } return mergeGeometries(gs); }
 
-export function buildExterior({ T, M, low, hx, hz, entry, camDir, maxH }) {
+// far = true: cerros y bosque lejano en 3D (hasta 2,6 km). far = false: sólo hasta ~620 m; lo demás lo pone el panorama precalculado
+export function buildExterior({ T, M, low, hx, hz, entry, camDir, maxH, far = true }) {
   const G = new THREE.Group(), R = rng(2024), fixtures = [], rockU = { value: T.rock.map }, tintU = { value: new THREE.Color(1, 1, 1) }; let terrainMat = null;
   const flatR = Math.max(hx, hz) + 10;
   const inHouse = (x, z, m) => Math.abs(x) < hx + m && Math.abs(z) < hz + m;
@@ -107,7 +108,7 @@ export function buildExterior({ T, M, low, hx, hz, entry, camDir, maxH }) {
 
   // — terreno radial (denso cerca de la casa, amplio en las montañas) —
   {
-    const NR = low ? 56 : 84, NA = low ? 96 : 160, RMAX = 2600, pos = [], uv = [], col = [], bl = [], idx = [];
+    const NR = far ? (low ? 56 : 84) : (low ? 34 : 46), NA = low ? 96 : 160, RMAX = far ? 2600 : 620, pos = [], uv = [], col = [], bl = [], idx = [];
     for (let i = 0; i <= NR; i++) {
       const r = i === 0 ? 0 : RMAX * Math.pow(i / NR, 2.35);
       for (let j = 0; j < NA; j++) {
@@ -176,10 +177,10 @@ export function buildExterior({ T, M, low, hx, hz, entry, camDir, maxH }) {
     for (let i = 0; i < p.count; i++) { const v = V(p.getX(i), p.getY(i), p.getZ(i)), k = 0.78 + N(v.x * 2.3 + 5, v.z * 2.3 + v.y * 1.7) * 0.45; p.setXYZ(i, v.x * k, v.y * k * 0.85, v.z * k); }
     crownG.computeVertexNormals(); const uv = crownG.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * 3, uv.getY(i) * 2);
     const trunkG = new THREE.CylinderGeometry(0.12, 0.2, 1, 5); trunkG.translate(0, 0.5, 0);
-    const n = low ? 700 : 2200, crowns = new THREE.InstancedMesh(crownG, M.forest, n), trunks = new THREE.InstancedMesh(trunkG, M.bark, n);
+    const n = far ? (low ? 700 : 2200) : (low ? 220 : 520), crowns = new THREE.InstancedMesh(crownG, M.forest, n), trunks = new THREE.InstancedMesh(trunkG, M.bark, n);
     const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), c = new THREE.Color(); let k = 0;
     for (let tries = 0; tries < n * 8 && k < n; tries++) {
-      const a = R() * PI * 2, r = 42 + Math.pow(R(), 1.6) * 900, x = Math.cos(a) * r, z = Math.sin(a) * r, y = gh(x, z);
+      const a = R() * PI * 2, r = 42 + Math.pow(R(), 1.6) * (far ? 900 : 540), x = Math.cos(a) * r, z = Math.sin(a) * r, y = gh(x, z);
       const dens = fbm(x * 0.012 + 50, z * 0.012 + 20, 3) + (y > 20 ? 0.18 : 0); if (dens < 0.52) continue;
       if (Math.abs(((a - cd + PI) % (2 * PI) + 2 * PI) % (2 * PI) - PI) < 0.35 && r < 80) continue;
       const h = 5 + R() * 7, cr = 2 + R() * 2.4;
@@ -293,20 +294,20 @@ export function buildExterior({ T, M, low, hx, hz, entry, camDir, maxH }) {
     }
     if (low) return;
     // flores reales en lugar de las tarjetas de flores
-    const fm = await get(['flower_gazania', 'flower_empodium', 'flower_ursinia'].filter(id => lib.meta(id)));
+    const fm = await get(['flower_gazania', 'flower_empodium'].filter(id => lib.meta(id)));
     if (fm.length && flowers) {
       const opts = []; fm.forEach(m => variantsOf(m).slice(0, 3).forEach(v => opts.push({ P: parts(m.sc, v) })));
       const slots = opts.map(() => []), sp = flowers.list.filter(f => !inHouse(f.x, f.z, 1.1));
-      sp.slice(0, 200).forEach(f => { const k = Math.floor(R() * opts.length); slots[k].push(at(f.x, gh(f.x, f.z) - 0.01, f.z, R() * 6.28, 1.0 + R() * 0.6)); });
+      sp.slice(0, 130).forEach(f => { const k = Math.floor(R() * opts.length); slots[k].push(at(f.x, gh(f.x, f.z) - 0.01, f.z, R() * 6.28, 1.0 + R() * 0.6)); });
       opts.forEach((o, k) => instanced(o.P, slots[k], false)); flowers.im.visible = false;
     }
     // hierba real cerca de la casa; las tarjetas quedan sólo en la lejanía
-    const gm = await get(['grass_medium_01', 'grass_medium_02', 'fern_02'].filter(id => lib.meta(id)));
+    const gm = await get(['grass_medium_02', 'fern_02'].filter(id => lib.meta(id)));
     if (gm.length && tufts) {
       const opts = []; gm.forEach(m => variantsOf(m).filter(v => !v || !/tiny|small/.test(v)).slice(0, 4).forEach(v => opts.push({ P: parts(m.sc, v), fern: m.id === 'fern_02' })));
       const rH = Math.max(hx, hz), near = tufts.list.filter(t => t.r < rH + 11), far = tufts.list.filter(t => t.r >= rH + 11);
       far.forEach((t, i) => tufts.im.setMatrixAt(i, t.m)); tufts.im.count = far.length; tufts.im.instanceMatrix.needsUpdate = true; tufts.im.computeBoundingSphere();
-      const slots = opts.map(() => []), cap = Math.min(near.length, 560);
+      const slots = opts.map(() => []), cap = Math.min(near.length, 300);
       near.slice(0, cap).forEach((t, i) => { let k = i % opts.length; if (opts[k].fern && R() < 0.7) k = (k + 1) % opts.length; slots[k].push(at(t.x, gh(t.x, t.z) - 0.02, t.z, R() * 6.28, (opts[k].fern ? 0.6 : 1.1) + R() * 0.7)); });
       opts.forEach((o, k) => instanced(o.P, slots[k], false));
     }
