@@ -87,7 +87,7 @@ Datos de la web (cada uno con su fuente):
 - Rangos de inversión que usamos: Hasta USD 50.000; USD 50.000 – 100.000; USD 100.000 – 250.000; Más de USD 250.000.
 - Objetivos: Renta por alquiler; Revalorización; Vivienda propia.
 
-Catálogo actual (proyectos reales de otras desarrolladoras, con fuente y fecha del dato):
+Catálogo actual (proyectos propios de Aquaterra; si alguno es de otra desarrolladora, lleva su fuente y fecha):
 {{CATALOGO}}
 
 Páginas: [Proyectos](/Aquaterra%20Proyectos.dc.html), [Comprar desde España](/Aquaterra%20Desde%20Espana.dc.html), [Blog](/Aquaterra%20Blog.dc.html), [asesoría](/#contacto).`;
