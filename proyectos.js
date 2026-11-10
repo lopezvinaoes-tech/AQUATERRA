@@ -1,110 +1,110 @@
 // Catálogo compartido por las páginas Proyectos y Ficha.
-// Por ahora son proyectos reales de otras desarrolladoras, con fuente y fecha del dato.
+// Proyectos de Grupo Eras en Paraguay, con los datos y las fotos publicados en grupoeras.com.ar.
 // Cuando haya proyectos propios, se agregan aquí con dev: window.MARCA.nombre.
 // precio: USD publicado hoy en la fuente, o null para "Consultar precio".
 // precioFiltro: USD aproximado solo para el filtro de inversión.
 // precioPyg: precio publicado en guaraníes (se convierte con el selector de moneda).
 // precioPub: último precio publicado cuando no hay uno vigente (USD, con su fecha); se muestra como referencia.
-// fotos: imágenes de referencia del tipo de propiedad (Unsplash), no del proyecto. Para usar fotos reales,
-//   cambia estas URL por las propias (p. ej. '/img/aires-pacheco-1.jpg').
+// fotos: imágenes del proyecto. Con fotosReales: true son fotos y renders publicados por la desarrolladora;
+//   sin esa marca se muestran como "imagen de referencia". fotosTxt: etiqueta de cada foto (misma posición).
 // mapa: dirección o lugar para Google Maps; sin mapa cuando no hay ubicación exacta publicada.
 window.PROYECTOS = [
   {
-    name: 'Aires Pacheco', mapa: 'Aires Pacheco, Asunción, Paraguay', dev: 'Realpy Desarrollos', tipo: 'Departamento', etapa: 'En pozo',
-    barrio: 'Mariscal', ciudad: 'Asunción',
-    precio: 48356, entrega: '2.º semestre 2029',
-    tipologia: 'Monoambiente a 2 dormitorios', dmin: 0, dmax: 2,
-    facts: [['Niveles', '21'], ['Unidades', '136'], ['Tipologías', 'Monoambiente, 1 y 2 dorm.'], ['Entrega', '2.º semestre 2029']],
-    amen: ['Piscina', 'Gimnasio', 'Spa y sauna', 'Coworking y salas de reunión', 'Sala de cine', 'Quinchos', 'Lavandería'],
+    name: 'Housing Fernando de la Mora', dev: 'Grupo Eras', tipo: 'Casa', etapa: 'En construcción',
+    barrio: 'Fernando de la Mora', ciudad: 'Fernando de la Mora',
+    precio: null, entrega: null,
+    tipologia: 'Dúplex de 2 dormitorios', dmin: 2, dmax: 2,
+    facts: [['Viviendas', '9'], ['Superficie', '150 m²'], ['Complejo', 'Housing de 9 dúplex']],
+    amen: ['Garaje', 'Cocina', 'Salón comedor', 'Zona de barbacoa', 'Piscina'],
+    pagos: 'Financiación propia de la desarrolladora. Consulta disponibilidad y precios.',
+    nota: 'Complejo de nueve viviendas dúplex pensado para familias.',
+    fotosReales: true,
+    fotos: ['https://grupoeras.com.ar/wp-content/uploads/2026/06/fernando-de-la-mora-hero.jpg', 'https://drive.google.com/thumbnail?id=1VdM7vICaJrKnDymOFDRh5aL5bz8JARtJ&sz=w1600', 'https://drive.google.com/thumbnail?id=1_mHTxi1DTXCGzoAk4TlSe_KObhfWAeWG&sz=w1600', 'https://drive.google.com/thumbnail?id=1q42XQSDbgvn7PRH1c-Lh29EEj39-DcyX&sz=w1600', 'https://drive.google.com/thumbnail?id=1z4m1csJYoaYVgt4QsrUZVH32BqASoKby&sz=w1600', 'https://drive.google.com/thumbnail?id=1KYwfaCpPtGNpNZEyy-_9Y67pjVHeBhoE&sz=w1600', 'https://drive.google.com/thumbnail?id=1vkrYG783YCk7lCCnZFFM3ICQMqGG86LT&sz=w1600', 'https://drive.google.com/thumbnail?id=1pSoZKKF5HkHboMDwBzCwUE5nTaDBDg0L&sz=w1600', 'https://drive.google.com/thumbnail?id=1jCS28mIgV96VOgaQ0WzwvmQC_uLG1IHB&sz=w1600', 'https://drive.google.com/thumbnail?id=1HVS84uI85mCFoR7iXhyncA86iKLIStK-&sz=w1600'],
+    fotosTxt: ['Imagen del proyecto', 'Foto real', 'Foto real', 'Foto real', 'Foto real', 'Foto real', 'Foto real', 'Foto real', 'Foto real', 'Render'],
+    fuentes: [{ nombre: 'Grupo Eras', url: 'https://grupoeras.com.ar/projects/fernando-de-la-mora/', fecha: 'consultado en nov. 2026' }]
+  },
+  {
+    name: 'Housing Ñanawa', dev: 'Grupo Eras', tipo: 'Casa', etapa: 'En construcción',
+    barrio: 'Asunción', ciudad: 'Asunción',
+    precio: null, entrega: null,
+    tipologia: 'Dúplex de 3 dormitorios', dmin: 3, dmax: 3,
+    facts: [['Viviendas', '9'], ['Superficie', '170 m²'], ['Complejo', 'Viviendas dúplex en cerrado']],
+    amen: ['Garaje', 'Cocina', 'Salón comedor', 'Zona de barbacoa', 'Piscina opcional'],
     pagos: 'Consultar condiciones con la desarrolladora.',
-    nota: 'A pocas cuadras de Shopping Mariscal, con acceso a las avenidas Mariscal López, España y San Martín.',
-    fotos: ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1400&q=70', 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=1400&q=70', 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1400&q=70'],
-    fuentes: [
-      { nombre: 'InfoCasas', url: 'https://www.infocasas.com.py/proyectos/aires-pacheco', fecha: 'consultado en oct. 2026' }
-    ]
+    nota: 'Viviendas modernas y funcionales en un complejo residencial cerrado, pensadas para familias.',
+    fotosReales: true,
+    fotos: ['https://grupoeras.com.ar/wp-content/uploads/2026/06/housing-nanawa.jpg', 'https://drive.google.com/thumbnail?id=1DqYT_rv7AeHYD-lkXzrQcJTYIw9g4fSU&sz=w1600', 'https://drive.google.com/thumbnail?id=12xHRFAdz44c0L96vukVf2zhHw9xU_36o&sz=w1600', 'https://drive.google.com/thumbnail?id=19-SFMZFSS4Hj3E1XPQm_cEwgSm1V0DoL&sz=w1600', 'https://drive.google.com/thumbnail?id=1BUUU7ZswNIZseXQH1NZlZagewKCKczT7&sz=w1600', 'https://drive.google.com/thumbnail?id=156oLixXR5IPxVQXF7LueUAiSqD8NpVA1&sz=w1600', 'https://drive.google.com/thumbnail?id=15plaDdfQB6F4sbaN-kdjbCOvaMGuC1WU&sz=w1600', 'https://drive.google.com/thumbnail?id=1ahU8a17brtQ_FFHwn_uNgzcr2KDPXgUE&sz=w1600', 'https://drive.google.com/thumbnail?id=13dhryysGCx09fsd9tIRZxL28x5PzcWeB&sz=w1600', 'https://drive.google.com/thumbnail?id=13A-rlaT9UmENrnzAzwIr4RJunZ-Lz4c9&sz=w1600'],
+    fotosTxt: ['Imagen del proyecto', 'Render', 'Render', 'Render', 'Render', 'Render', 'Foto real', 'Foto real', 'Foto real', 'Foto real'],
+    fuentes: [{ nombre: 'Grupo Eras', url: 'https://grupoeras.com.ar/projects/housing-nanawa/', fecha: 'consultado en nov. 2026' }]
   },
   {
-    name: 'First Mariscal', mapa: 'Quesada y Teniente Zotti, Asunción, Paraguay', dev: null, tipo: 'Departamento', etapa: 'A confirmar',
-    barrio: 'Mariscal', ciudad: 'Asunción',
-    precio: null, precioFiltro: 70720, entrega: 'Prevista para marzo de 2027',
-    tipologia: '1 a 3 dormitorios', dmin: 1, dmax: 3,
-    facts: [['Construcción', 'Benítez Bittar'], ['Comercialización', 'Era Black Paraguay'], ['Superficie total', '19.000 m²'], ['Precio publicado en oct. 2023', '1 dorm. desde USD 70.720']],
-    amen: ['Cochera incluida en cada unidad'],
-    pagos: 'Consultar condiciones con la comercializadora.',
-    nota: 'Frente a la torre B de Shopping Mariscal (Quesada y Tte. Zotti). La obra estaba prevista de marzo de 2024 a marzo de 2027.',
-    fotos: ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1400&q=70', 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1400&q=70', 'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1400&q=70'],
-    fuentes: [
-      { nombre: 'Infonegocios', url: 'https://infonegocios.com.py/infomicasa/atencion-inversores-cinco-departamentos-en-villa-morra-por-menos-de-us-200-000', fecha: 'oct. 2023' }
-    ]
+    name: 'Casas Limpio', dev: 'Grupo Eras', tipo: 'Casa', etapa: 'En construcción',
+    barrio: 'Limpio', ciudad: 'Limpio',
+    precio: null, entrega: null,
+    tipologia: 'Casas de 3 dormitorios', dmin: 3, dmax: 3,
+    facts: [['Viviendas', '6'], ['Superficie', '86 m²'], ['Complejo', 'Casas con 6 viviendas']],
+    amen: ['Garaje', 'Cocina', 'Salón comedor', 'Zona de barbacoa', 'Piscina opcional'],
+    pagos: 'Financiación propia de la desarrolladora. Consulta disponibilidad y precios.',
+    nota: 'Complejo de seis casas pensado para familias.',
+    fotosReales: true,
+    fotos: ['https://grupoeras.com.ar/wp-content/uploads/2026/06/casas-limpio.jpg', 'https://drive.google.com/thumbnail?id=10H6gvpyBIHf6gkBbnauKVNIDXzsoFIfy&sz=w1600', 'https://drive.google.com/thumbnail?id=1Idrhde8ZZywy5NF-FmBqkRqSGZj-YxcU&sz=w1600', 'https://drive.google.com/thumbnail?id=1lcd4FnLbaR3WvC_Q8fJ7LdnSQ1p_XamE&sz=w1600', 'https://drive.google.com/thumbnail?id=16XN4NJUio1wGebzc3il_42lXSNyMUPYZ&sz=w1600', 'https://drive.google.com/thumbnail?id=1KlNk5fHXn4ldWGnSs5KsRhsTt-L7kaep&sz=w1600', 'https://drive.google.com/thumbnail?id=1zNoCAE-ofo5lCGKVN0L3is-fdcu4QdOR&sz=w1600', 'https://drive.google.com/thumbnail?id=1c73-4vJLUW3iM4BiTgLXuHgelsFspsC7&sz=w1600', 'https://drive.google.com/thumbnail?id=1UjxKhdEDwcVy8p0C6OAmJYs1VlRFBQVC&sz=w1600', 'https://drive.google.com/thumbnail?id=1Z8vuM8a3lrjj98_yOHWEzFMobI3UOxgQ&sz=w1600'],
+    fotosTxt: ['Imagen del proyecto', 'Render', 'Render', 'Render', 'Foto real', 'Foto real', 'Foto real', 'Foto real', 'Foto real', 'Foto real'],
+    fuentes: [{ nombre: 'Grupo Eras', url: 'https://grupoeras.com.ar/projects/casas-limpio/', fecha: 'consultado en nov. 2026' }]
   },
   {
-    name: 'Urban Carmelitas', mapa: 'Urban Carmelitas, Las Carmelitas, Asunción, Paraguay', dev: null, tipo: 'Departamento', etapa: 'Entregado',
-    barrio: 'Las Carmelitas', ciudad: 'Asunción',
-    precio: 74000, entrega: 'Entregado en 2021',
+    name: 'Areguá Forest', dev: 'Grupo Eras', tipo: 'Country', tambien: ['Casa'], etapa: 'En construcción',
+    barrio: 'Areguá', ciudad: 'Areguá',
+    precio: null, entrega: null,
+    tipologia: 'Casas de country de 3 dormitorios', dmin: 3, dmax: 3,
+    facts: [['Tipología 1', '150 m²'], ['Tipología 2', '170 m²'], ['Tipología 3', '200 m²'], ['Complejo', 'Country con viviendas dúplex']],
+    amen: ['Garaje (doble en la tipología 3)', 'Cocina', 'Salón comedor', 'Zona de barbacoa', 'Piscina'],
+    pagos: 'Consultar condiciones con la desarrolladora.',
+    nota: 'Tres tipologías de casa de 3 dormitorios: área social, ampliada en la tipología 2 y premium en la 3.',
+    fotosReales: true,
+    fotos: ['https://grupoeras.com.ar/wp-content/uploads/2026/07/aregua-forest-hero-scaled.jpg'],
+    fotosTxt: ['Imagen del proyecto'],
+    fuentes: [{ nombre: 'Grupo Eras', url: 'https://grupoeras.com.ar/projects/aregua-forest/', fecha: 'consultado en nov. 2026' }]
+  },
+  {
+    name: 'Edificio Ykua Satí', dev: 'Grupo Eras', tipo: 'Departamento', etapa: 'Próximamente',
+    barrio: 'Ykua Satí', ciudad: 'Asunción',
+    precio: null, entrega: null,
     tipologia: '1 y 2 dormitorios', dmin: 1, dmax: 2,
-    facts: [['Pisos', '7'], ['Unidades', '70'], ['1 dormitorio', '48 m²'], ['2 dormitorios', '72 y 82 m²']],
-    amen: ['Piscina de 23 m en la azotea', 'Quinchos panorámicos', 'Gimnasio', 'Seguridad 24 h', 'Generador', 'Unidades semiamuebladas'],
-    pagos: 'Plan a medida según ingresos, a consultar.',
-    nota: null,
-    fotos: ['https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=1400&q=70', 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1400&q=70', 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1400&q=70'],
-    fuentes: [
-      { nombre: 'InfoCasas', url: 'https://www.infocasas.com.py/proyectos/urban-carmelitas', fecha: 'consultado en oct. 2026' }
-    ]
+    facts: [['Departamentos', '12'], ['Superficies', '45 a 78 m²'], ['Monoambiente', '45 m², 1 baño'], ['Tipo A', '48 m², 1 dorm., 1 baño'], ['Tipo B', '74 m², 2 dorm., 1 baño'], ['Tipo C', '78 m², 2 dorm., 2 baños']],
+    amen: ['Estacionamiento', 'Balcón en todas las unidades', 'Piscina', 'Cocina', 'Salón comedor'],
+    pagos: 'Consultar condiciones con la desarrolladora.',
+    nota: 'Edificio de 12 departamentos para familias y profesionales en Asunción.',
+    fotosReales: true,
+    fotos: ['https://grupoeras.com.ar/wp-content/uploads/2026/06/ykua-sati.jpg'],
+    fotosTxt: ['Imagen del proyecto'],
+    fuentes: [{ nombre: 'Grupo Eras', url: 'https://grupoeras.com.ar/projects/ykua-sati/', fecha: 'consultado en nov. 2026' }]
   },
   {
-    name: 'Highlands', mapa: 'Highlands, San Bernardino, Paraguay', dev: null, tipo: 'Barrio cerrado', tambien: ['Casa', 'Lote'], etapa: 'En venta',
-    barrio: 'Ruta 2', ciudad: 'San Bernardino',
-    precio: null, precioFiltro: 74304, precioPub: { usd: 74304, pre: 'Lotes desde ', fecha: 'ene. 2025' }, entrega: null,
-    tipologia: 'Lotes, townhouses y departamentos',
-    facts: [['Superficie', '90 ha'], ['Lotes', '469, desde 576 m²'], ['Townhouses', '75'], ['Precios publicados en ene. 2025', 'Lotes desde USD 74.304; townhouses desde USD 209.500']],
-    amen: ['Laguna Crystal Lagoons', '17 ha de áreas verdes', 'Dos club houses', 'Gimnasio', 'Paseo comercial'],
-    pagos: 'En enero de 2025: 20 % de entrada y hasta 60 cuotas para los lotes.',
-    nota: 'Arquitectura de Gould Arquitectura.',
-    fotos: ['https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1400&q=70', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=70', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=70'],
-    fuentes: [
-      { nombre: 'Infonegocios', url: 'https://infonegocios.com.py/infomicasa/highlands-el-barrio-cerrado-que-rompio-records-de-venta-en-san-bernardino-con-170-lotes-comercializados', fecha: 'ene. 2025' }
-    ]
+    name: 'Dúplex Lambaré', dev: 'Grupo Eras', tipo: 'Casa', etapa: 'Entregado',
+    barrio: 'Lambaré', ciudad: 'Lambaré',
+    precio: null, entrega: null,
+    tipologia: 'Dúplex de 3 dormitorios', dmin: 3, dmax: 3,
+    facts: [['Viviendas', '2'], ['Superficie', '180 m²'], ['Plantas', 'Planta baja y planta alta']],
+    amen: ['Garaje', 'Cocina', 'Salón comedor', 'Zona de barbacoa', 'Piscina opcional'],
+    pagos: 'Consultar condiciones con la desarrolladora.',
+    nota: 'Proyecto finalizado: dos viviendas dúplex, cómodas y funcionales, pensadas para familias.',
+    fotosReales: true,
+    fotos: ['https://grupoeras.com.ar/wp-content/uploads/2024/04/lambare-hero.jpg', 'https://drive.google.com/thumbnail?id=1n8yenBM6583_vL123l6_C1smxYECaxrr&sz=w1600', 'https://drive.google.com/thumbnail?id=1F_pCArI59lhNuMpFFTwnHnGrn3-c3U_1&sz=w1600', 'https://drive.google.com/thumbnail?id=15Fh1z_rjSUtu9UfIWyj38Hh3twoCChNQ&sz=w1600', 'https://drive.google.com/thumbnail?id=1Mhfu9wP6QQfnoWfb2St5F-dH_0435oGh&sz=w1600', 'https://drive.google.com/thumbnail?id=1Fs3a1qi_xPaHXbe-SXjuQy92lMTXdLhz&sz=w1600', 'https://drive.google.com/thumbnail?id=1gY7Om2XVOFb2LYeR6uovMtcQlCiCC-lO&sz=w1600', 'https://drive.google.com/thumbnail?id=1Itt9FwatH8vP_2os6O1JvV_zNGbhUv7g&sz=w1600', 'https://drive.google.com/thumbnail?id=10moMn5LCunIXnFSCA3OF-aa1ZzbYRktU&sz=w1600', 'https://drive.google.com/thumbnail?id=1ZDZxS7uBNA3LerVJhdC8_qpylu5X36JN&sz=w1600'],
+    fotosTxt: ['Imagen del proyecto', 'Foto real', 'Foto real', 'Foto real', 'Foto real', 'Foto real', 'Foto real', 'Foto real', 'Foto real', 'Foto real'],
+    fuentes: [{ nombre: 'Grupo Eras', url: 'https://grupoeras.com.ar/projects/lambare/', fecha: 'consultado en nov. 2026' }]
   },
   {
-    name: 'Madre Selva', mapa: 'Madre Selva, San Bernardino, Paraguay', dev: 'Rodrigo Pena y Cristian Valente', tipo: 'Barrio cerrado', tambien: ['Lote'], etapa: 'En venta',
-    barrio: 'Ciervo Cuá', ciudad: 'San Bernardino',
-    precio: null, precioFiltro: 60000, precioPub: { usd: 60, hasta: 95, suf: ' por m²', fecha: 'sep. 2024' }, entrega: null,
-    tipologia: 'Lotes de más de 1.000 m²',
-    facts: [['Superficie', '10 ha'], ['Lotes', '67, de más de 1.000 m²'], ['Precio publicado en sep. 2024', 'USD 60–95 por m²']],
-    amen: ['Club house de 600 m²', 'Piscinas', 'Gimnasio, sauna y jacuzzi', 'Canchas', 'Caballerizas', 'Reserva natural', 'Servicios subterráneos'],
-    pagos: 'En septiembre de 2024: hasta 24 cuotas sin interés o 60 cuotas al 8 % anual.',
-    nota: 'Con vista al lago Ypacaraí.',
-    fotos: ['https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1400&q=70', 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1400&q=70', 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1400&q=70'],
-    fuentes: [
-      { nombre: 'Forbes Paraguay', url: 'https://www.forbes.com.py/negocios/con-una-inversion-us-4-millones-nace-san-bernadino-barrio-cerrado-madre-selva-n60060', fecha: 'sep. 2024' }
-    ]
-  },
-  {
-    name: 'Paraná Country Club', mapa: 'Paraná Country Club, Hernandarias, Paraguay', dev: null, tipo: 'Country', tambien: ['Casa', 'Lote'], etapa: 'En venta',
-    barrio: 'Paraná Country Club', ciudad: 'Hernandarias',
-    precio: 210000, entrega: null,
-    tipologia: 'Lotes y casas',
-    facts: [['Lote publicado', 'USD 210.000'], ['Casas publicadas', 'USD 550.000 – 680.000'], ['Casas', '1.100 – 2.384 m² de terreno']],
-    amen: ['Áreas verdes', 'Amenities de club'],
-    pagos: 'Contado; condiciones según cada vendedor.',
-    nota: 'Precios de avisos publicados, no de ventas cerradas.',
-    fotos: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1400&q=70', 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1400&q=70', 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1400&q=70'],
-    fuentes: [
-      { nombre: 'ViaParaguay', url: 'https://viaparaguay.com/es/zona/hernandarias-parana-country-club', fecha: '2026' }
-    ]
-  },
-  {
-    name: 'Urbanización Itauguá', dev: 'IRÚN Inmobiliaria', tipo: 'Lote', etapa: 'En venta',
-    barrio: 'Itauguá', ciudad: 'Itauguá',
-    precio: null, precioTxt: 'G. 40.000.000', precioPyg: 40000000, precioFiltro: 6700, entrega: null,
-    tipologia: 'Lotes desde 360 m²',
-    facts: [['Lotes', 'Desde 360 m²'], ['Contado', 'Desde G. 40.000.000'], ['Entrega inicial', 'Desde G. 8.000.000'], ['Cuotas', 'Desde G. 860.450']],
-    amen: ['Energía eléctrica', 'Agua potable', 'Transporte público'],
-    pagos: 'Entrega desde G. 8.000.000 y cuotas desde G. 860.450.',
-    nota: 'Cerca de la ruta Itauguá–Pirayú.',
-    fotos: ['https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1400&q=70', 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1400&q=70', 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=1400&q=70'],
-    fuentes: [
-      { nombre: 'IRÚN Inmobiliaria', url: 'https://www.iruninmobiliaria.com.py/loteamientos/itaugua/', fecha: 'consultado en oct. 2026' }
-    ]
+    name: 'Dúplex Luque', dev: 'Grupo Eras', tipo: 'Casa', etapa: 'Entregado',
+    barrio: 'Luque', ciudad: 'Luque',
+    precio: null, entrega: null,
+    tipologia: 'Dúplex de 3 dormitorios, 2 tipologías', dmin: 3, dmax: 3,
+    facts: [['Viviendas', '4'], ['Tipología 1', '180 m²'], ['Tipología 2', '150 m²'], ['Plantas', 'Planta baja y planta alta']],
+    amen: ['Garaje', 'Cocina', 'Salón comedor', 'Zona de barbacoa', 'Piscina opcional'],
+    pagos: 'Consultar condiciones con la desarrolladora.',
+    nota: 'Proyecto finalizado: dúplex modernos de diseño eficiente, pensados para familias.',
+    fotosReales: true,
+    fotos: ['https://grupoeras.com.ar/wp-content/uploads/2026/06/duplex-luque.jpg'],
+    fotosTxt: ['Imagen del proyecto'],
+    fuentes: [{ nombre: 'Grupo Eras', url: 'https://grupoeras.com.ar/projects/duplex-luque/', fecha: 'consultado en nov. 2026' }]
   }
 ];

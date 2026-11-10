@@ -220,7 +220,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
       <div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px">
         <sc-for list="{{ galeria }}" as="g" hint-placeholder-count="2">
           <div role="img" aria-label="{{ g.alt }}" style="position:relative;aspect-ratio:16/10;border-radius:20px;overflow:hidden;background:{{ g.bg }}">
-            <span style="position:absolute;left:12px;bottom:10px;padding:3px 9px;border-radius:999px;background:rgba(0,0,0,0.45);color:rgba(245,245,247,0.85);font-size:11px;font-weight:500">Imagen de referencia</span>
+            <span style="position:absolute;left:12px;bottom:10px;padding:3px 9px;border-radius:999px;background:rgba(0,0,0,0.45);color:rgba(245,245,247,0.85);font-size:11px;font-weight:500">{{ g.badge }}</span>
           </div>
         </sc-for>
       </div>
@@ -727,8 +727,8 @@ class Component extends DCLogic {
       eurH: p.precio ? '1.45em' : '0px',
       eurTxt: !p.precio ? '' : M && M.efectiva() !== 'USD' ? 'Publicado en USD ' + p.precio.toLocaleString('es-PY') : s.eur ? '≈ ' + Math.round(p.precio * s.eur).toLocaleString('es-ES') + ' € al cambio de hoy' : '',
       ...this.monedaVals(th),
-      fotoNota: (p.fotos || []).length ? 'Imágenes de referencia del tipo de propiedad, no del proyecto. Las fotos reales pertenecen a la desarrolladora.' : 'Las imágenes de este proyecto pertenecen a su desarrolladora. Puedes verlas en la fuente.',
-      galeria: (p.fotos || []).slice(1).map((f, j) => ({ alt: 'Imagen de referencia ' + (j + 2) + ' de ' + p.tipo.toLowerCase(), bg: `url("${f}") center/cover no-repeat, ${th.ph}` })),
+      fotoNota: (p.fotos || []).length ? (p.fotosReales ? 'Fotos y renders del proyecto publicados por la desarrolladora, ' + p.dev + '.' : 'Imágenes de referencia del tipo de propiedad, no del proyecto. Las fotos reales pertenecen a la desarrolladora.') : 'Las imágenes de este proyecto pertenecen a su desarrolladora. Puedes verlas en la fuente.',
+      galeria: (p.fotos || []).slice(1).map((f, j) => ({ alt: p.fotosReales ? (p.fotosTxt && p.fotosTxt[j + 1] || 'Imagen del proyecto') + ' ' + (j + 2) + ' de ' + p.name : 'Imagen de referencia ' + (j + 2) + ' de ' + p.tipo.toLowerCase(), badge: p.fotosReales ? (p.fotosTxt && p.fotosTxt[j + 1]) || 'Imagen del proyecto' : 'Imagen de referencia', bg: `url("${f}") center/cover no-repeat, ${th.ph}` })),
       hayGaleria: (p.fotos || []).length > 1,
       cmpOn: cmpOn ? 'true' : 'false',
       cmpTxt: cmpOn ? '✓ En tu comparación' : '+ Comparar',
