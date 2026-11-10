@@ -185,11 +185,11 @@
         return '<ul class="aqv-ul">' + a.map(function (x) { return '<li' + (comunes.indexOf(x) !== -1 ? ' data-common' : '') + '>' + esc(x) + '</li>'; }).join('') + '</ul>';
       }],
       ['Desarrolladora', function (p) { return p.dev ? esc(p.dev) : '<span class="aqv-na">Proyecto de terceros</span>'; }],
-      ['Fuente', function (p) {
+      ...(ps.some(function (p) { return (p.fuentes || []).length; }) ? [['Fuente', function (p) {
         return '<span class="aqv-src">' + (p.fuentes || []).map(function (f) {
           return '<a href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(f.nombre) + '</a>, ' + esc(f.fecha);
         }).join(' · ') + '</span>';
-      }],
+      }]] : []),
       ['', function (p, i) { return '<a class="aqv-a" href="Aquaterra%20Ficha.dc.html?p=' + i + '">Ver ficha ›</a>'; }]
     ];
   }
@@ -223,7 +223,7 @@
 
     if (sel.length >= 2 && typeof window.enviarLead === 'function') h += htmlPedido();
 
-    h += '<div class="aqv-ft"><span class="aqv-note">Datos de cada fuente y fecha indicadas; pueden haber cambiado. Los proyectos son de otras desarrolladoras.' +
+    h += '<div class="aqv-ft"><span class="aqv-note">Los datos de cada proyecto pueden cambiar: te los confirmamos en la asesoría.' +
       (eurPorUsd ? ' Euros al cambio de referencia del BCE de hoy, solo orientativo.' : '') + '</span><div class="aqv-btns">' +
       (sel.length >= 2 && typeof window.abrirAsistente === 'function' ? '<button type="button" class="aqv-b aqv-b2" data-act="ia">Pregúntale al asistente</button>' : '') +
       '<a class="aqv-b aqv-b1" href="index.html#contacto">Agenda una asesoría</a></div></div>';

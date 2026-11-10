@@ -5,7 +5,7 @@
 <meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Proyectos para invertir en Paraguay | Aquaterra</title>
-<meta name="description" content="Casas, dúplex, departamentos y countries de Grupo Eras en Asunción y alrededores, Paraguay. Con las especificaciones y las fotos de cada proyecto.">
+<meta name="description" content="Casas, dúplex, departamentos y countries en Asunción y alrededores, Paraguay. Con las especificaciones y las fotos de cada proyecto.">
 <link rel="canonical" href="https://aquaterra-beta.vercel.app/Aquaterra%20Proyectos.dc.html">
 <meta name="theme-color" content="#17191E">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <meta property="og:title" content="Proyectos para invertir en Paraguay | Aquaterra">
-<meta property="og:description" content="Casas, dúplex, departamentos y countries de Grupo Eras en Asunción y alrededores, Paraguay. Con las especificaciones y las fotos de cada proyecto.">
+<meta property="og:description" content="Casas, dúplex, departamentos y countries en Asunción y alrededores, Paraguay. Con las especificaciones y las fotos de cada proyecto.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_ES">
 <meta property="og:site_name" content="Aquaterra">
@@ -141,7 +141,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
   <div style="max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
     <span data-kicker="">Catálogo</span>
     <h1 data-fx="" style="margin:0;font-size:clamp(40px,6vw,80px);line-height:1.02;letter-spacing:-0.035em;font-weight:700;text-wrap:balance">Proyectos que <span data-accent="" style="color:#86868B">analizamos para ti.</span></h1>
-    <p style="margin:0;max-width:560px;font-size:clamp(17px,1.6vw,21px);line-height:1.45;color:{{ th.mute2 }};text-wrap:pretty">Casas, dúplex, departamentos y countries de Grupo Eras en Asunción y alrededores.</p>
+    <p style="margin:0;max-width:560px;font-size:clamp(17px,1.6vw,21px);line-height:1.45;color:{{ th.mute2 }};text-wrap:pretty">Casas, dúplex, departamentos y countries en Asunción y alrededores.</p>
     <p style="margin:0;max-width:620px;font-size:15px;line-height:1.5;color:{{ th.mute }};text-wrap:pretty">Antes de enseñarte un proyecto revisamos la trayectoria de la desarrolladora, la ubicación y su demanda de alquiler, el plan de pagos y la documentación del terreno. Cada ficha indica la fuente y la fecha de sus datos.</p>
   </div>
 </section>
@@ -349,7 +349,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
     </div>
     <span aria-hidden="true" style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(72px,17vw,250px);line-height:0.9;letter-spacing:-0.055em;font-weight:800;margin-left:-0.04em;padding-bottom:0.06em;background:linear-gradient(180deg,rgba(245,245,247,0.92) 35%,rgba(245,245,247,0.05) 100%);-webkit-background-clip:text;background-clip:text;color:transparent">{{ marca }}</span>
     <div style="display:flex;flex-direction:column;gap:16px;padding-top:20px;border-top:1px solid rgba(245,245,247,0.12)">
-    <span style="max-width:720px;font-size:13px;line-height:1.55;color:rgba(245,245,247,0.68)">Los proyectos del catálogo son de otras desarrolladoras. Indicamos la fuente y la fecha de cada dato; pueden haber cambiado.</span>
+    <span style="max-width:720px;font-size:13px;line-height:1.55;color:rgba(245,245,247,0.68)">Los datos de cada proyecto pueden cambiar: te confirmamos precio, disponibilidad y condiciones en la asesoría.</span>
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:rgba(245,245,247,0.75)">
       <span>© 2026 {{ marca }}. Todos los derechos reservados.</span>
       <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="privacidad.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de privacidad</a><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
@@ -616,7 +616,7 @@ class Component extends DCLogic {
       devTxt: p.dev ? 'Proyecto de ' + p.dev : 'Proyecto de terceros',
       precioPre: p.precio || p.precioTxt ? 'Desde ' : '',
       precioTxt: (window.AQMoneda && window.AQMoneda.precio(p)) || (p.precio ? 'USD ' + p.precio.toLocaleString('es-PY') : p.precioTxt) || 'Consultar precio',
-      fuenteTxt: 'Fuente: ' + p.fuentes.map((x) => `${x.nombre}, ${x.fecha}`).join(' · '),
+      fuenteTxt: (p.fuentes || []).length ? 'Fuente: ' + p.fuentes.map((x) => `${x.nombre}, ${x.fecha}`).join(' · ') : '',
       kf: this.keyFigure(p),
       extra: (p.precio || p.precioTxt) ? (p.entrega ? (/^Entregado/.test(p.entrega) ? p.entrega : 'Entrega: ' + p.entrega) : '') : 'Consultar precio',
       cvBg: this.coverBg(p.tipo, p.fotos && p.fotos[0]),

@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <meta property="og:title" content="Ficha de proyecto | Aquaterra">
-<meta property="og:description" content="Ficha de un proyecto inmobiliario en Paraguay: precio publicado, etapa, entrega, amenities, ubicación y fuente del dato. Consulta sin compromiso con un asesor.">
+<meta property="og:description" content="Ficha de un proyecto inmobiliario en Paraguay: precio, etapa, entrega, amenities, ubicación y fotos. Consulta sin compromiso con un asesor.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_ES">
 <meta property="og:site_name" content="Aquaterra">
@@ -151,7 +151,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
       <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
         <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
           <span style="padding:6px 13px;border-radius:999px;font-size:13px;font-weight:600;background:{{ pr.tagBg }};border:1px solid {{ pr.tagBd }};color:{{ pr.tagInk }};backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%)">{{ pr.etapa }}</span>
-          <sc-if value="{{ hayDev }}" hint-placeholder-val="{{ true }}">
+          <sc-if value="{{ hayTerceros }}" hint-placeholder-val="{{ true }}">
             <span style="padding:6px 13px;border-radius:999px;font-size:13px;font-weight:500;background:{{ th.chip }};color:{{ th.mute2 }}">Proyecto de terceros</span>
           </sc-if>
         </div>
@@ -213,7 +213,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
       </div>
       <div style="position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.12)">
         <span style="max-width:520px;font-size:14px;line-height:1.5;color:rgba(245,245,247,0.68)">{{ fotoNota }}</span>
-        <a href="{{ pr.fuenteUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 18px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.22);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#F5F5F7;font-size:15px;font-weight:500;white-space:nowrap" style-hover="background:rgba(255,255,255,0.14);color:#FFFFFF">Ver imágenes en {{ pr.fuenteNombre }} ›</a>
+        <sc-if value="{{ hayFuente }}" hint-placeholder-val="{{ true }}"><a href="{{ pr.fuenteUrl }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 18px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.22);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);color:#F5F5F7;font-size:15px;font-weight:500;white-space:nowrap" style-hover="background:rgba(255,255,255,0.14);color:#FFFFFF">Ver imágenes en {{ pr.fuenteNombre }} ›</a></sc-if>
       </div>
     </div>
     <sc-if value="{{ hayGaleria }}" hint-placeholder-val="{{ true }}">
@@ -224,6 +224,11 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
           </div>
         </sc-for>
       </div>
+      <sc-if value="{{ galMas }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:16px;display:flex;justify-content:center">
+          <button type="button" onClick="{{ galToggle }}" style="min-height:44px;padding:0 22px;border-radius:999px;border:1px solid {{ th.line }};background:{{ th.chip }};color:{{ th.ink }};font-size:15px;font-weight:500;cursor:pointer">{{ galBtnTxt }}</button>
+        </div>
+      </sc-if>
     </sc-if>
   </div>
 </section>
@@ -309,7 +314,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
           <a href="{{ mapaUrl }}" target="_blank" rel="noopener" style="align-self:flex-start;display:flex;align-items:center;gap:4px;min-height:44px;font-size:17px;color:{{ linkC }}">Abrir en Google Maps ›</a>
         </sc-if>
         <sc-if value="{{ sinMapa }}" hint-placeholder-val="{{ false }}">
-          <p style="margin:0;font-size:15px;line-height:1.5;color:{{ th.mute }}">La fuente no publica una ubicación exacta. Te la confirmamos en la consulta.</p>
+          <p style="margin:0;font-size:15px;line-height:1.5;color:{{ th.mute }}">{{ sinMapaTxt }}</p>
         </sc-if>
         <a href="{{ masZona }}" style="align-self:flex-start;display:flex;align-items:center;min-height:44px;font-size:15px;color:{{ linkC }}">{{ masZonaTxt }}</a>
       </div>
@@ -345,6 +350,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
             <span data-kicker="">Documentación</span>
             <h2 style="margin:0;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-0.03em;font-weight:600">De dónde sale <span data-accent="" style="color:#86868B">cada dato.</span></h2>
           </div>
+          <sc-if value="{{ hayFuente }}" hint-placeholder-val="{{ true }}">
           <div id="fuentes" style="display:flex;flex-direction:column;gap:12px;padding:20px 22px;border-radius:20px;background:{{ th.card }}">
             <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Fuentes publicadas</span>
             <sc-for list="{{ fuentes }}" as="fu" hint-placeholder-count="1">
@@ -352,12 +358,13 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
             </sc-for>
             <span style="font-size:13px;line-height:1.5;color:{{ th.mute }}">Proyecto de terceros: {{ marca }} no es su desarrolladora. Son datos públicos que pueden haber cambiado; los confirmamos contigo en la asesoría.</span>
           </div>
+          </sc-if>
           <div style="display:flex;flex-direction:column;gap:10px;padding:20px 22px;border-radius:20px;background:{{ th.card }}">
             <span style="font-size:14px;font-weight:600;color:{{ th.mute }}">Documentos que conviene pedir antes de reservar</span>
             <sc-for list="{{ docs }}" as="dc" hint-placeholder-count="5">
               <span style="display:flex;align-items:flex-start;gap:12px;font-size:15px;line-height:1.5"><span style="width:8px;height:8px;margin-top:7px;flex:0 0 auto;background:#C9F15D;transform:rotate(45deg);border-radius:1px"></span>{{ dc }}</span>
             </sc-for>
-            <span style="font-size:13px;line-height:1.5;color:{{ th.mute }}">Sin documentación publicada en la fuente: la pedimos a la desarrolladora y la revisa tu escribano.</span>
+            <span style="font-size:13px;line-height:1.5;color:{{ th.mute }}">{{ docsNota }}</span>
           </div>
         </div>
       </sc-if>
@@ -474,7 +481,7 @@ footer[data-screen-label]{content-visibility:auto;contain-intrinsic-size:auto 76
     </div>
     <span aria-hidden="true" style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(72px,17vw,250px);line-height:0.9;letter-spacing:-0.055em;font-weight:800;margin-left:-0.04em;padding-bottom:0.06em;background:linear-gradient(180deg,rgba(245,245,247,0.92) 35%,rgba(245,245,247,0.05) 100%);-webkit-background-clip:text;background-clip:text;color:transparent">{{ marca }}</span>
     <div style="display:flex;flex-direction:column;gap:16px;padding-top:20px;border-top:1px solid rgba(245,245,247,0.12)">
-    <span style="max-width:720px;font-size:13px;line-height:1.55;color:rgba(245,245,247,0.68)">Los proyectos del catálogo son de otras desarrolladoras. Indicamos la fuente y la fecha de cada dato; pueden haber cambiado.</span>
+    <span style="max-width:720px;font-size:13px;line-height:1.55;color:rgba(245,245,247,0.68)">Los datos de cada proyecto pueden cambiar: te confirmamos precio, disponibilidad y condiciones en la asesoría.</span>
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:rgba(245,245,247,0.75)">
       <span>© 2026 {{ marca }}. Todos los derechos reservados.</span>
       <span style="display:flex;flex-wrap:wrap;gap:4px 16px"><a href="privacidad.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de privacidad</a><a href="cookies.html" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Política de cookies</a><a href="cookies.html#configurar" data-aq-cookies="" style="color:inherit;text-decoration:underline;text-underline-offset:2px" style-hover="color:#C9F15D">Configurar cookies</a></span>
@@ -573,7 +580,7 @@ class Component extends DCLogic {
     }
     document.title = `${p.name} · ${p.tipo} en ${p.ciudad} | ${marca}`;
     const d = document.querySelector('meta[name="description"]');
-    if (d) d.setAttribute('content', `${p.name}: ${p.tipologia} en ${this.locTxt(p)}. ${p.dev ? 'Proyecto de ' + p.dev : 'Proyecto de terceros'}, con datos de ${p.fuentes[0].nombre}. Consulta precio y condiciones con un asesor de ${marca}.`);
+    if (d) d.setAttribute('content', `${p.name}: ${p.tipologia} en ${this.locTxt(p)}. ${p.dev ? 'Proyecto de ' + p.dev : 'Proyecto de terceros'}${(p.fuentes || []).length ? ', con datos de ' + p.fuentes[0].nombre : ''}. Consulta precio y condiciones con un asesor de ${marca}.`);
   }
 
   // Portada tipográfica (igual que en el catálogo).
@@ -643,10 +650,10 @@ class Component extends DCLogic {
       ['Tipologías', p.tipologia],
       ['Precio de entrada', p.precio ? usd(p.precio) : p.precioTxt || 'Consultar'],
       ...(p.precio && eur ? [['En euros (orientativo)', '≈ ' + Math.round(p.precio * eur).toLocaleString('es-ES') + ' €']] : []),
-      ['Entrega', p.entrega || 'No aplica'],
+      ['Entrega', p.entrega || (p.etapa === 'Entregado' ? 'Entregado' : /construcción|Próximamente/.test(p.etapa) ? 'A consultar' : 'No aplica')],
       ['Desarrolladora', p.dev || 'Sin dato publicado'],
       ...(p.facts || []).filter(([k]) => !/^(Entrega|Tipologías)$/.test(k)),
-      ['Fuente', p.fuentes.map((f) => f.nombre + ', ' + f.fecha).join(' · ')]
+      ...((p.fuentes || []).length ? [['Fuente', p.fuentes.map((f) => f.nombre + ', ' + f.fecha).join(' · ')]] : [])
     ];
     return rows.map(([k, v], j) => ({ k, v, bd: j === rows.length - 1 ? 'transparent' : 'var(--aq-line)', al: 'right' }));
   }
@@ -704,6 +711,9 @@ class Component extends DCLogic {
     const cmpOn = !!(C && C.has(pIdx));
     const nCmp = C ? C.lista().length : 0;
     const ctx = this.contexto(p, pIdx, th);
+    // Proyecto propio (de la marca): sin fuente externa ni aviso de proyecto de terceros.
+    const propio = !!p.dev && p.dev === ((window.MARCA && window.MARCA.nombre) || 'Aquaterra');
+    const fu = (p.fuentes || [])[0];
     const specs = this.specs(p);
     return {
       retirada: s.retirada, vigente: !s.retirada,
@@ -727,8 +737,11 @@ class Component extends DCLogic {
       eurH: p.precio ? '1.45em' : '0px',
       eurTxt: !p.precio ? '' : M && M.efectiva() !== 'USD' ? 'Publicado en USD ' + p.precio.toLocaleString('es-PY') : s.eur ? '≈ ' + Math.round(p.precio * s.eur).toLocaleString('es-ES') + ' € al cambio de hoy' : '',
       ...this.monedaVals(th),
-      fotoNota: (p.fotos || []).length ? (p.fotosReales ? 'Fotos y renders del proyecto publicados por la desarrolladora, ' + p.dev + '.' : 'Imágenes de referencia del tipo de propiedad, no del proyecto. Las fotos reales pertenecen a la desarrolladora.') : 'Las imágenes de este proyecto pertenecen a su desarrolladora. Puedes verlas en la fuente.',
-      galeria: (p.fotos || []).slice(1).map((f, j) => ({ alt: p.fotosReales ? (p.fotosTxt && p.fotosTxt[j + 1] || 'Imagen del proyecto') + ' ' + (j + 2) + ' de ' + p.name : 'Imagen de referencia ' + (j + 2) + ' de ' + p.tipo.toLowerCase(), badge: p.fotosReales ? (p.fotosTxt && p.fotosTxt[j + 1]) || 'Imagen del proyecto' : 'Imagen de referencia', bg: `url("${f}") center/cover no-repeat, ${th.ph}` })),
+      fotoNota: (p.fotos || []).length ? (p.fotosReales ? 'Fotos y renders del proyecto.' : 'Imágenes de referencia del tipo de propiedad, no del proyecto. Las fotos reales pertenecen a la desarrolladora.') : 'Las imágenes de este proyecto pertenecen a su desarrolladora. Puedes verlas en la fuente.',
+      galMas: (p.fotos || []).length - 1 > 8,
+      galBtnTxt: s.galTodas ? 'Ver menos fotos' : 'Ver las ' + (p.fotos || []).length + ' fotos',
+      galToggle: () => this.setState((st) => ({ galTodas: !st.galTodas })),
+      galeria: (p.fotos || []).slice(1, s.galTodas ? undefined : 9).map((f, j) => ({ alt: p.fotosReales ? (p.fotosTxt && p.fotosTxt[j + 1] || 'Imagen del proyecto') + ' ' + (j + 2) + ' de ' + p.name : 'Imagen de referencia ' + (j + 2) + ' de ' + p.tipo.toLowerCase(), badge: p.fotosReales ? (p.fotosTxt && p.fotosTxt[j + 1]) || 'Imagen del proyecto' : 'Imagen de referencia', bg: `url("${f}") center/cover no-repeat, ${th.ph}` })),
       hayGaleria: (p.fotos || []).length > 1,
       cmpOn: cmpOn ? 'true' : 'false',
       cmpTxt: cmpOn ? '✓ En tu comparación' : '+ Comparar',
@@ -773,10 +786,10 @@ class Component extends DCLogic {
         devCorto: p.dev || 'Sin dato publicado',
         precioLbl: this.precioTxt(p) ? 'Desde' : p.precioPub ? 'Precio publicado en ' + p.precioPub.fecha : 'Precio',
         precioTxt: this.precioTxt(p) || (p.precioPub && M ? M.precioPub(p) : '') || 'Consultar precio',
-        entregaTxt: p.entrega || 'No aplica',
+        entregaTxt: p.entrega || (p.etapa === 'Entregado' ? 'Entregado' : /construcción|Próximamente/.test(p.etapa) ? 'A consultar' : 'No aplica'),
         ref: this.ref(pIdx),
-        actualizado: 'Fuente: ' + p.fuentes[0].nombre + ', ' + p.fuentes[0].fecha,
-        fuenteUrl: p.fuentes[0].url, fuenteNombre: p.fuentes[0].nombre,
+        actualizado: fu ? 'Fuente: ' + fu.nombre + ', ' + fu.fecha : '',
+        fuenteUrl: fu ? fu.url : '', fuenteNombre: fu ? fu.nombre : '',
         tagBg: lime ? (night ? 'rgba(201,241,93,0.14)' : 'rgba(201,241,93,0.3)') : th.chip,
         tagBd: lime ? (night ? 'rgba(201,241,93,0.38)' : 'rgba(140,180,30,0.55)') : th.line,
         tagInk: lime ? (night ? '#E4F7B0' : '#3D5300') : th.ink
@@ -788,6 +801,10 @@ class Component extends DCLogic {
         .map(({ o, i }) => ({ ...o, ...this.glass(o.etapa), href: 'Aquaterra%20Ficha.dc.html?p=' + i, loc: this.locTxt(o), kf: this.keyFigure(o), cvBg: this.coverBg(o.tipo, (o.fotos || [])[0]) })),
       consultaRef: this.consultaRef,
       hayDev: !!p.dev,
+      hayTerceros: !propio,
+      hayFuente: !!fu,
+      sinMapaTxt: fu ? 'La fuente no publica una ubicación exacta. Te la confirmamos en la consulta.' : 'Te confirmamos la ubicación exacta en la consulta.',
+      docsNota: propio ? 'Te enviamos la documentación del proyecto en la asesoría y la revisa tu escribano.' : 'Sin documentación publicada en la fuente: la pedimos a la desarrolladora y la revisa tu escribano.',
       hayWa: !!wa,
       waHref: wa ? 'https://wa.me/' + wa + '?text=' + encodeURIComponent('Hola, me interesa ' + p.name + ' (' + this.locTxt(p) + ').') : '',
       facts: [{ k: 'Tipo', v: p.tipo }, { k: 'Etapa', v: p.etapa }].concat(p.facts.map(([k, v]) => ({ k, v }))),
