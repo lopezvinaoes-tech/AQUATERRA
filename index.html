@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" translate="no">
 <head>
 <meta charset="utf-8">
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Aquaterra · Inversión inmobiliaria en Paraguay</title>
 <meta name="description" content="Invierte en propiedades en Paraguay desde España: proyectos en Asunción y el interior, renta en dólares, impuestos bajos y acompañamiento de principio a fin.">
@@ -24,6 +25,7 @@
 <meta property="og:image:alt" content="Aquaterra: invierte en Paraguay desde España">
 <meta name="twitter:card" content="summary_large_image">
 <script>try { if (sessionStorage.getItem('aquaterra-modo') !== 'dia') document.documentElement.setAttribute('data-modo', 'noche'); } catch (e) { document.documentElement.setAttribute('data-modo', 'noche'); }</script>
+<script src="/idioma.js"></script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
 {"@type":"RealEstateAgent","@id":"https://aquaterra-beta.vercel.app/#empresa","name":"Aquaterra","url":"https://aquaterra-beta.vercel.app/","logo":"https://aquaterra-beta.vercel.app/icon-512.png","image":"https://aquaterra-beta.vercel.app/og.jpg","description":"Inversión inmobiliaria en Paraguay para inversores en España: proyectos en Asunción y el interior, compras en pozo y acompañamiento de principio a fin.","address":{"@type":"PostalAddress","addressLocality":"Asunción","addressCountry":"PY"},"areaServed":[{"@type":"Country","name":"Paraguay"},{"@type":"Country","name":"España"}],"knowsLanguage":"es"},
@@ -97,13 +99,14 @@ select option{color:#1D1D1F;background:#FFFFFF}
       <span>{{ marca }}</span>
     </a>
     <sc-if value="{{ navWide }}" hint-placeholder-val="{{ true }}">
-      <nav style="display:flex;align-items:center;gap:clamp(14px,1.8vw,26px)">
+      <nav style="display:flex;align-items:center;gap:clamp(12px,1.25vw,26px)">
         <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="8">
           <a href="{{ n.href }}" data-nav="" aria-current="{{ n.cur }}" style="white-space:nowrap;font-size:13px;letter-spacing:-0.01em;color:{{ n.ink }};font-weight:{{ n.fw }};transition:color .3s" style-hover="opacity:0.7">{{ n.label }}</a>
         </sc-for>
       </nav>
     </sc-if>
     <div style="display:flex;align-items:center;gap:8px">
+      <span data-aq-idioma="" data-compacto="" data-ocultar-movil="" style="display:flex"></span>
       <sc-if value="{{ hdrToggle }}" hint-placeholder-val="{{ false }}">
         <button onClick="{{ toggleMode }}" aria-label="Cambiar modo día / noche" style="position:relative;display:flex;align-items:center;padding:2px;border-radius:9px;border:0;background:{{ segTrack }};cursor:pointer">
           <span style="position:absolute;top:2px;left:{{ knobLeftS }};width:58px;height:28px;border-radius:7px;background:{{ knobBg }};box-shadow:0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);transition:left .35s cubic-bezier(.3,.7,.2,1), background .35s"></span>
@@ -133,6 +136,10 @@ select option{color:#1D1D1F;background:#FFFFFF}
         <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ dayInk }}">Día</span>
         <span style="position:relative;width:84px;height:40px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:{{ nightInk }}">Noche</span>
       </button>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:76px;border-bottom:1px solid {{ th.line }}">
+      <span style="font-size:17px;color:{{ th.mute2 }}">Idioma</span>
+      <span data-aq-idioma="" data-grande="" style="display:flex"></span>
     </div>
     <button onClick="{{ openModal }}" style="margin-top:28px;height:50px;border-radius:14px;border:0;background:#0071E3;color:#FFFFFF;font-size:17px;font-weight:500;cursor:pointer">Reserva tu llamada gratis de 20 min</button>
   </div>

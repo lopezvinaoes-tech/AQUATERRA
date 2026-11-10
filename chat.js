@@ -168,7 +168,7 @@
         method: 'POST',
         signal: corte ? corte.signal : undefined,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mensajes: estado.mensajes.slice(-40), lead: estado.lead, pagina: location.pathname + location.search })
+        body: JSON.stringify({ mensajes: estado.mensajes.slice(-40), lead: estado.lead, pagina: location.pathname + location.search, idioma: window.AQ_IDIOMA || 'es' })
       })
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error(j.error || 'No pude responder ahora.'); return j; }); })
         .then(function (j) {
