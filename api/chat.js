@@ -92,6 +92,16 @@ Catálogo actual (proyectos reales de otras desarrolladoras, con fuente y fecha 
 
 Páginas: [Proyectos](/Aquaterra%20Proyectos.dc.html), [Comprar desde España](/Aquaterra%20Desde%20Espana.dc.html), [Blog](/Aquaterra%20Blog.dc.html), [asesoría](/#contacto).`;
 
+// Se añade al final de SISTEMA cuando la persona ve la web en portugués.
+const IDIOMA_WEB = {
+  pt: `
+
+Idioma: esta persona ve la web en portugués. Responde siempre en portugués de Portugal (trato de "tu" o "você" según escriba, cercano y profesional), aunque los datos de arriba estén en español; si te escribe en otro idioma, responde en ese idioma. Traduce los nombres de las páginas en los enlaces pero no cambies las URL. En la herramienta guardar_contacto, monto y objetivo van siempre con los valores exactos en español de la lista, y el resumen para el asesor, en español.`,
+  en: `
+
+Idioma: esta persona ve la web en inglés. Responde siempre en inglés, cercano y profesional, aunque los datos de arriba estén en español; si te escribe en otro idioma, responde en ese idioma. Traduce los nombres de las páginas en los enlaces pero no cambies las URL. En la herramienta guardar_contacto, monto y objetivo van siempre con los valores exactos en español de la lista, y el resumen para el asesor, en español.`
+};
+
 const HERRAMIENTAS = [{
   name: 'guardar_contacto',
   description: 'Guarda los datos de contacto de la persona para que un asesor de Aquaterra la contacte. Úsala solo cuando la persona haya aceptado explícitamente ser contactada y haya dado su nombre y un email o WhatsApp. Si ya la usaste en esta conversación y la persona da datos nuevos, vuelve a usarla con todo actualizado.',
@@ -332,7 +342,9 @@ module.exports = async (req, res) => {
   }
 
   const ctx = { req, ipHash, mensajes, leadToken: b.lead, pagina: b.pagina };
-  const sistema = SISTEMA.replace('{{CATALOGO}}', catalogo());
+  // La web puede verse en inglés o portugués (selector ES / EN / PT): el asistente contesta en ese idioma.
+  const idioma = IDIOMA_WEB[b.idioma] ? b.idioma : 'es';
+  const sistema = SISTEMA.replace('{{CATALOGO}}', catalogo()) + (IDIOMA_WEB[idioma] || '');
   const ia = PROVEEDOR === 'gemini' ? proveedorGemini(sistema, mensajes) : proveedorClaude(sistema, mensajes);
 
   let lead = null;
@@ -340,7 +352,7 @@ module.exports = async (req, res) => {
     for (let vuelta = 0; vuelta < 3; vuelta++) {
       const r = await ia.turno();
       if (r.rechazo) {
-        return send(res, 200, { respuesta: 'Prefiero no responder a eso. ¿Te ayudo con alguna duda sobre invertir en Paraguay?', lead: lead ? firmar(lead) : undefined });
+        return send(res, 200, { respuesta: idioma === 'pt' ? 'Prefiro não responder a isso. Posso ajudar com alguma dúvida sobre investir no Paraguai?' : idioma === 'en' ? "I'd rather not answer that. Can I help with any question about investing in Paraguay?" : 'Prefiero no responder a eso. ¿Te ayudo con alguna duda sobre invertir en Paraguay?', lead: lead ? firmar(lead) : undefined });
       }
       if (!r.llamadas) {
         return send(res, 200, {

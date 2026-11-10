@@ -74,7 +74,7 @@
     if (cur !== 'USD' && !tasas) return 'Cargando el tipo de cambio… mientras tanto, los precios se muestran en USD.';
     if (c === 'USD') return 'Precios en dólares, como los publica cada fuente.';
     var d = tasas.fecha;
-    var fecha = d && !isNaN(d) ? d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }) : 'hoy';
+    var fecha = d && !isNaN(d) ? d.toLocaleDateString(window.AQ_LOCALE || 'es-ES', { day: 'numeric', month: 'short', year: 'numeric' }) : 'hoy';
     var par = c === 'EUR' ? '1 USD = ' + tasas.EUR.toLocaleString('es-ES', { maximumFractionDigits: 4 }) + ' €' : '1 USD = G. ' + miles(tasas.PYG);
     return 'Convertido desde USD al cambio orientativo del ' + fecha + ' (' + par + '). Tu banco aplicará el suyo.';
   }

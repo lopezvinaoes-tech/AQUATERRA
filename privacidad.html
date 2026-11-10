@@ -11,6 +11,7 @@
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <script>try { if (sessionStorage.getItem('aquaterra-modo') !== 'dia') document.documentElement.setAttribute('data-modo', 'noche'); } catch (e) { document.documentElement.setAttribute('data-modo', 'noche'); }</script>
+<script src="/idioma.js"></script>
 <script src="./marca.js" defer></script>
 <script src="./cookies.js" defer></script>
 <style>
@@ -50,7 +51,7 @@ footer{max-width:880px;margin:0 auto;padding:24px 20px calc(32px + env(safe-area
 <body>
 <header>
   <a class="marca" href="index.html">Aquaterra</a>
-  <a href="index.html" style="font-size:15px">Volver a la web</a>
+  <span style="display:flex;align-items:center;gap:14px"><span data-aq-idioma="" style="display:flex"></span><a href="index.html" style="font-size:15px">Volver a la web</a></span>
 </header>
 <main>
   <h1>Política de privacidad</h1>
