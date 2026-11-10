@@ -5,6 +5,8 @@
 // La elección se guarda en este navegador ('aquaterra-idioma') y se puede forzar con ?lang=en, ?lang=pt o ?lang=es.
 // Para traducir un texto nuevo, añade la frase en español y su traducción a idioma-en.js y a idioma-pt.js.
 // Para que algo no se traduzca nunca (nombres, mensajes de la persona), ponle translate="no".
+// Las páginas llevan <html translate="no"> y <meta name="google" content="notranslate">: el traductor del
+// navegador (Google Translate) se desactiva, porque reescribe el texto por su cuenta y rompe la página y el selector.
 (function () {
   var CLAVE = 'aquaterra-idioma';
   var lang = 'es';
@@ -92,7 +94,8 @@
       for (; el && el.nodeType === 1; el = el.parentElement) {
         var tg = el.tagName;
         if (tg === 'SCRIPT' || tg === 'STYLE' || tg === 'X-DC' || tg === 'TEXTAREA' || tg === 'NOSCRIPT' || tg === 'CODE') return true;
-        if (el.getAttribute('translate') === 'no' || el.isContentEditable) return true;
+        // <html translate="no"> solo frena al traductor del navegador (Google, Edge); no a este.
+        if ((el.getAttribute('translate') === 'no' && tg !== 'HTML' && tg !== 'BODY') || el.isContentEditable) return true;
         var c = el.classList;
         if (c && (c.contains('aqc-user') || c.contains('notranslate'))) return true;
       }
